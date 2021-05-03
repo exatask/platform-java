@@ -1,0 +1,53 @@
+################################################
+###############  .gitignore   ##################
+################################################
+
+################################################
+# Private keys
+#
+# Always ignore private keys from SSL key pairs
+################################################
+*.pem
+
+################################################
+# Dependencies
+#
+# Always ignore dependencies like node_modules,
+# bower_components, packages etc
+################################################
+
+################################################
+# Environment
+#
+# Always ignore application environment details
+################################################
+
+################################################
+# Logs / Caches / Compiled
+#
+# Always ignore application complied files, logs,
+# caches, and other temporary data
+################################################
+.tmp
+*.log
+**/logs/*
+
+################################################
+# Editors
+#
+# Always ignore editors configuration and files
+################################################
+*.iml
+.netbeans
+nbproject
+**/.idea
+.project
+.vscode
+*.code-workspace
+
+################################################
+# OS
+#
+# Always ignore OS generated files
+################################################
+.DS_Store
