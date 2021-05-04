@@ -28,6 +28,8 @@
 # Always ignore application complied files, logs,
 # caches, and other temporary data
 ################################################
+.gradle
+**/build
 .tmp
 *.log
 **/logs/*
