@@ -1,0 +1,80 @@
+plugins {
+  id "java"
+  id "maven-publish"
+  id "org.springframework.boot"
+  id "io.spring.dependency-management"
+}
+
+group = "com.exatask.platform"
+version = "1.0.0-SNAPSHOT"
+
+java {
+  toolchain {
+    languageVersion.set(JavaLanguageVersion.of(8))
+  }
+}
+
+bootJar {
+  enabled = false
+}
+
+jar {
+  enabled = true
+}
+
+dependencies {
+
+  implementation group: "org.apache.logging.log4j", name: "log4j-core", version: "${apacheLog4jVersion}"
+  compileOnly group: "org.projectlombok", name: "lombok", version: "${lombokVersion}"
+  annotationProcessor group: "org.projectlombok", name: "lombok", version: "${lombokVersion}"
+  implementation group: "com.fasterxml.jackson.core", name: "jackson-databind", version: "${fasterxmlJacksonVersion}"
+  implementation group: "org.apache.commons", name: "commons-lang3", version: "${apacheCommonsVersion}"
+  implementation group: "org.apache.commons", name: "commons-collections4", version: "${apacheCollectionsVersion}"
+}
+
+test {
+  useJUnitPlatform()
+}
+
+repositories {
+
+  mavenCentral()
+
+  maven {
+
+    url "https://gitlab.com/api/v4/groups/6962407/-/packages/maven"
+    name "Gitlab"
+    credentials(HttpHeaderCredentials) {
+      name = "Private-Token"
+      value = gitlabPrivateToken
+    }
+    authentication {
+      header(HttpHeaderAuthentication)
+    }
+  }
+}
+
+publishing {
+
+  publications {
+    maven(MavenPublication) {
+
+      artifactId = "logging"
+      from components.java
+    }
+  }
+
+  repositories {
+    maven {
+
+      url "https://gitlab.com/api/v4/projects/26367176/packages/maven"
+      credentials(HttpHeaderCredentials) {
+        name = "Private-Token"
+        value = gitlabPrivateToken
+      }
+      authentication {
+        header(HttpHeaderAuthentication)
+      }
+    }
+  }
+}
