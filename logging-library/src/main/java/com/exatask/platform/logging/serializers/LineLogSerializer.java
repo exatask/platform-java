@@ -1,6 +1,6 @@
 package com.exatask.platform.logging.serializers;
 
-import com.exatask.platform.logging.LogMessage;
+import com.exatask.platform.logging.AppLogMessage;
 import org.apache.commons.collections4.CollectionUtils;
 import org.apache.commons.collections4.MapUtils;
 import org.apache.commons.lang3.ObjectUtils;
@@ -14,7 +14,7 @@ public class LineLogSerializer implements LogSerializer {
   }
 
   @Override
-  public String serialize(LogMessage logMessage) {
+  public String serialize(AppLogMessage logMessage) {
 
     StringBuilder stringBuilder = new StringBuilder();
 

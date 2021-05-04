@@ -16,7 +16,7 @@ import java.util.TimeZone;
 
 @Data
 @JsonInclude(JsonInclude.Include.NON_NULL)
-public class LogMessage {
+public class AppLogMessage {
 
   private final static SimpleDateFormat dateFormatter;
 
@@ -69,9 +69,9 @@ public class LogMessage {
   }
 
   @Builder
-  public static LogMessage buildLogMessage(String message) {
+  public static AppLogMessage buildLogMessage(String message) {
 
-    LogMessage logMessage = new LogMessage();
+    AppLogMessage logMessage = new AppLogMessage();
     Optional.ofNullable(message).ifPresent(logMessage::setMessage);
     return logMessage;
   }

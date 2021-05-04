@@ -1,10 +1,10 @@
 package com.exatask.platform.logging.serializers;
 
-import com.exatask.platform.logging.LogMessage;
+import com.exatask.platform.logging.AppLogMessage;
 
 public interface LogSerializer {
 
   LogSerializerType getType();
 
-  String serialize(LogMessage message);
+  String serialize(AppLogMessage message);
 }

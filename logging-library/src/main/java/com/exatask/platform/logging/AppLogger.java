@@ -8,7 +8,7 @@ import org.apache.logging.log4j.core.LoggerContext;
 
 import java.util.Date;
 
-public class Logger {
+public class AppLogger {
 
   private static final String DEFAULT_SERVICE = "platform-logging";
 
@@ -18,11 +18,11 @@ public class Logger {
 
   private final String serviceName;
 
-  Logger(Class<?> clazz) {
+  AppLogger(Class<?> clazz) {
     this(clazz, DEFAULT_SERVICE);
   }
 
-  Logger(Class<?> clazz, String service) {
+  AppLogger(Class<?> clazz, String service) {
 
     log4jLogger = LogManager.getLogger(clazz);
     serviceName = service;
@@ -36,7 +36,7 @@ public class Logger {
     log(Level.TRACE, message);
   }
 
-  public void trace(LogMessage logMessage) {
+  public void trace(AppLogMessage logMessage) {
     log(Level.TRACE, logMessage);
   }
 
@@ -44,7 +44,7 @@ public class Logger {
     log(Level.DEBUG, message);
   }
 
-  public void debug(LogMessage logMessage) {
+  public void debug(AppLogMessage logMessage) {
     log(Level.DEBUG, logMessage);
   }
 
@@ -52,7 +52,7 @@ public class Logger {
     log(Level.INFO, message);
   }
 
-  public void info(LogMessage logMessage) {
+  public void info(AppLogMessage logMessage) {
     log(Level.INFO, logMessage);
   }
 
@@ -60,7 +60,7 @@ public class Logger {
     log(Level.WARN, message);
   }
 
-  public void warn(LogMessage logMessage) {
+  public void warn(AppLogMessage logMessage) {
     log(Level.WARN, logMessage);
   }
 
@@ -68,7 +68,7 @@ public class Logger {
     log(Level.ERROR, message);
   }
 
-  public void error(LogMessage logMessage) {
+  public void error(AppLogMessage logMessage) {
     log(Level.ERROR, logMessage);
   }
 
@@ -76,17 +76,17 @@ public class Logger {
     log(Level.FATAL, message);
   }
 
-  public void fatal(LogMessage logMessage) {
+  public void fatal(AppLogMessage logMessage) {
     log(Level.FATAL, logMessage);
   }
 
   public void log(Level level, String message) {
 
-    LogMessage logMessage = LogMessage.builder().message(message).build();
+    AppLogMessage logMessage = AppLogMessage.builder().message(message).build();
     this.log(level, logMessage);
   }
 
-  public void log(Level level, LogMessage logMessage) {
+  public void log(Level level, AppLogMessage logMessage) {
 
     logMessage.setLevel(level.toString().toLowerCase());
     logMessage.setServiceName(serviceName);

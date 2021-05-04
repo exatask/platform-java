@@ -1,6 +1,6 @@
 package com.exatask.platform.logging.serializers;
 
-import com.exatask.platform.logging.LogMessage;
+import com.exatask.platform.logging.AppLogMessage;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
@@ -14,7 +14,7 @@ public class JsonLogSerializer implements LogSerializer {
   }
 
   @Override
-  public String serialize(LogMessage logMessage) {
+  public String serialize(AppLogMessage logMessage) {
 
     try {
       return mapper.writeValueAsString(logMessage);
