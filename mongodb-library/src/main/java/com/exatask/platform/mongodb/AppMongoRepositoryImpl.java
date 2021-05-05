@@ -76,19 +76,20 @@ public class AppMongoRepositoryImpl<T, ID extends Serializable> extends SimpleMo
   }
 
   /**
-   * @param query
    * @param projection
+   * @return Map<String, Boolean>
    */
-  private void prepareProjection(Query query, List<String> projection) {
+  private Map<String, Boolean> prepareAppProjection(List<String> projection) {
 
+    Map<String, Boolean> appProjection = new HashMap<>();
     if (projection == null) {
-      return;
+      return appProjection;
     }
 
-    Field fields = query.fields();
     for (String field : projection) {
-      fields.include(field);
+      appProjection.put(field, true);
     }
+    return appProjection;
   }
 
   /**
@@ -160,7 +161,7 @@ public class AppMongoRepositoryImpl<T, ID extends Serializable> extends SimpleMo
 
   @Override
   public List<T> find(Map<String, Object> filters, List<String> projection) {
-    return find(prepareAppFilters(filters), projection, Defaults.DEFAULT_SORT, Defaults.DEFAULT_SKIP, Defaults.DEFAULT_LIMIT);
+    return find(prepareAppFilters(filters), prepareAppProjection(projection), Defaults.DEFAULT_SORT, Defaults.DEFAULT_SKIP, Defaults.DEFAULT_LIMIT);
   }
 
   @Override
@@ -170,7 +171,7 @@ public class AppMongoRepositoryImpl<T, ID extends Serializable> extends SimpleMo
 
   @Override
   public List<T> find(Map<String, Object> filters, List<String> projection, Map<String, Sort.Direction> sort) {
-    return find(prepareAppFilters(filters), projection, sort, Defaults.DEFAULT_SKIP, Defaults.DEFAULT_LIMIT);
+    return find(prepareAppFilters(filters), prepareAppProjection(projection), sort, Defaults.DEFAULT_SKIP, Defaults.DEFAULT_LIMIT);
   }
 
   @Override
@@ -183,7 +184,7 @@ public class AppMongoRepositoryImpl<T, ID extends Serializable> extends SimpleMo
       Map<String, Object> filters, List<String> projection, Map<String, Sort.Direction> sort, Integer skip,
       Integer limit
   ) {
-    return find(prepareAppFilters(filters), projection, sort, Defaults.DEFAULT_SKIP, Defaults.DEFAULT_LIMIT);
+    return find(prepareAppFilters(filters), prepareAppProjection(projection), sort, Defaults.DEFAULT_SKIP, Defaults.DEFAULT_LIMIT);
   }
 
   @Override
@@ -196,7 +197,7 @@ public class AppMongoRepositoryImpl<T, ID extends Serializable> extends SimpleMo
 
   @Override
   public List<T> find(AppFilter filters, List<String> projection) {
-    return find(filters, projection, Defaults.DEFAULT_SORT, Defaults.DEFAULT_SKIP, Defaults.DEFAULT_LIMIT);
+    return find(filters, prepareAppProjection(projection), Defaults.DEFAULT_SORT, Defaults.DEFAULT_SKIP, Defaults.DEFAULT_LIMIT);
   }
 
   @Override
@@ -206,7 +207,7 @@ public class AppMongoRepositoryImpl<T, ID extends Serializable> extends SimpleMo
 
   @Override
   public List<T> find(AppFilter filters, List<String> projection, Map<String, Sort.Direction> sort) {
-    return find(filters, projection, sort, Defaults.DEFAULT_SKIP, Defaults.DEFAULT_LIMIT);
+    return find(filters, prepareAppProjection(projection), sort, Defaults.DEFAULT_SKIP, Defaults.DEFAULT_LIMIT);
   }
 
   @Override
@@ -216,25 +217,7 @@ public class AppMongoRepositoryImpl<T, ID extends Serializable> extends SimpleMo
 
   @Override
   public List<T> find(AppFilter filters, List<String> projection, Map<String, Sort.Direction> sort, Integer skip, Integer limit) {
-
-    skip = skip == null ? Defaults.DEFAULT_SKIP : skip;
-    limit = limit == null ? Defaults.DEFAULT_LIMIT : limit;
-
-    Query query = new Query();
-    prepareFilters(query, filters);
-    prepareProjection(query, projection);
-    prepareSort(query, sort);
-    query.skip(skip).limit(limit);
-
-    this.lastQuery = String.format("%s.find(%s).project(%s).sort(%s).skip(%d).limit(%d)",
-        mongoEntityInformation.getCollectionName(),
-        SerializationUtils.serializeToJsonSafely(query.getQueryObject()),
-        SerializationUtils.serializeToJsonSafely(query.getFieldsObject()),
-        SerializationUtils.serializeToJsonSafely(query.getSortObject()),
-        query.getSkip(), query.getLimit());
-    LOGGER.trace(this.lastQuery);
-
-    return mongoOperations.find(query, mongoEntityInformation.getJavaType(), mongoEntityInformation.getCollectionName());
+    return find(filters, prepareAppProjection(projection), sort, skip, limit);
   }
 
   @Override
