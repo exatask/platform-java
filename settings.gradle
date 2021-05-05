@@ -6,6 +6,7 @@ pluginManagement {
 
 rootProject.name = "platform"
 
+include "i18n-library"
 include "logging-library"
 include "mongodb-library"
 include "redis-library"

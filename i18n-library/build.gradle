@@ -1,0 +1,30 @@
+plugins {
+  id "platform.java-conventions"
+  id "org.springframework.boot"
+}
+
+group = "com.exatask.platform"
+version = "1.0.0-SNAPSHOT"
+
+bootJar {
+  enabled = false
+}
+
+jar {
+  enabled = true
+}
+
+dependencies {
+
+  implementation group: "org.springframework", name: "spring-context"
+}
+
+publishing {
+  publications {
+    maven(MavenPublication) {
+
+      artifactId = "i18n"
+      from components.java
+    }
+  }
+}
