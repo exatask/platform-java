@@ -8,3 +8,4 @@ rootProject.name = "platform"
 
 include "logging-library"
 include "mongodb-library"
+include "redis-library"
