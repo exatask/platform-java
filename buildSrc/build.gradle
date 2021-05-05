@@ -1,0 +1,11 @@
+plugins {
+  id "groovy-gradle-plugin"
+}
+
+dependencies {
+  implementation group: "io.spring.gradle", name: "dependency-management-plugin", version: "${springDependencyMgmtVersion}"
+}
+
+repositories {
+  mavenCentral()
+}

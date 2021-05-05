@@ -1,17 +1,9 @@
 plugins {
-  id "java"
-  id "maven-publish"
-  id "io.spring.dependency-management"
+  id "platform.java-conventions"
 }
 
 group = "com.exatask.platform"
 version = "1.0.0-SNAPSHOT"
-
-java {
-  toolchain {
-    languageVersion.set(JavaLanguageVersion.of(8))
-  }
-}
 
 jar {
   enabled = true
@@ -27,49 +19,12 @@ dependencies {
   implementation group: "org.apache.commons", name: "commons-collections4", version: "${apacheCollectionsVersion}"
 }
 
-test {
-  useJUnitPlatform()
-}
-
-repositories {
-
-  mavenCentral()
-
-  maven {
-
-    url "https://gitlab.com/api/v4/groups/6962407/-/packages/maven"
-    name "Gitlab"
-    credentials(HttpHeaderCredentials) {
-      name = "Private-Token"
-      value = gitlabPrivateToken
-    }
-    authentication {
-      header(HttpHeaderAuthentication)
-    }
-  }
-}
-
 publishing {
-
   publications {
     maven(MavenPublication) {
 
       artifactId = "logging"
       from components.java
-    }
-  }
-
-  repositories {
-    maven {
-
-      url "https://gitlab.com/api/v4/projects/26367176/packages/maven"
-      credentials(HttpHeaderCredentials) {
-        name = "Private-Token"
-        value = gitlabPrivateToken
-      }
-      authentication {
-        header(HttpHeaderAuthentication)
-      }
     }
   }
 }
