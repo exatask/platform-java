@@ -12,17 +12,11 @@ import java.util.Date;
 
 public class AppLogger {
 
-  private static final String DEFAULT_SERVICE = "platform-logging";
-
   private final org.apache.logging.log4j.Logger log4jLogger;
 
   private final LogSerializer serializer;
 
   private final String serviceName;
-
-  AppLogger(String clazz) {
-    this(clazz, DEFAULT_SERVICE);
-  }
 
   AppLogger(String clazz, String service) {
 
