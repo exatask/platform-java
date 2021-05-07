@@ -4,7 +4,7 @@ plugins {
 }
 
 group = "com.exatask.platform"
-version = "1.0.1-SNAPSHOT"
+version = "1.0.2-SNAPSHOT"
 
 bootJar {
   enabled = false
@@ -16,7 +16,9 @@ jar {
 
 dependencies {
 
-  implementation group: "org.springframework.boot", name: "spring-boot-starter-data-mongodb"
+  implementation (group: "org.springframework.boot", name: "spring-boot-starter-data-mongodb") {
+    exclude module: "spring-boot-starter-logging"
+  }
   compileOnly group: "org.projectlombok", name: "lombok", version: "${lombokVersion}"
   annotationProcessor group: "org.projectlombok", name: "lombok", version: "${lombokVersion}"
   implementation group: "com.fasterxml.jackson.core", name: "jackson-databind", version: "${fasterxmlJacksonVersion}"

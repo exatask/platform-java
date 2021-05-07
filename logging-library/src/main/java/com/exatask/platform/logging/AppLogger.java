@@ -2,6 +2,8 @@ package com.exatask.platform.logging;
 
 import com.exatask.platform.logging.serializers.LogSerializer;
 import com.exatask.platform.logging.serializers.LogSerializerFactory;
+import com.exatask.platform.logging.serializers.LogSerializerType;
+import org.apache.commons.lang3.StringUtils;
 import org.apache.logging.log4j.Level;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.core.LoggerContext;
@@ -18,17 +20,21 @@ public class AppLogger {
 
   private final String serviceName;
 
-  AppLogger(Class<?> clazz) {
+  AppLogger(String clazz) {
     this(clazz, DEFAULT_SERVICE);
   }
 
-  AppLogger(Class<?> clazz, String service) {
+  AppLogger(String clazz, String service) {
 
     log4jLogger = LogManager.getLogger(clazz);
     serviceName = service;
 
     LoggerContext loggerContext = ((org.apache.logging.log4j.core.Logger) log4jLogger).getContext();
     String style = loggerContext.getConfiguration().getStrSubstitutor().getVariableResolver().lookup("style");
+
+    if (StringUtils.isEmpty(style)) {
+      style = LogSerializerType.LINE.toString();
+    }
     serializer = LogSerializerFactory.getLogSerializer(style.toUpperCase());
   }
 

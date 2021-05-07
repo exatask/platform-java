@@ -16,7 +16,9 @@ jar {
 
 dependencies {
 
-  implementation group: "org.springframework.boot", name: "spring-boot-starter-data-redis"
+  implementation (group: "org.springframework.boot", name: "spring-boot-starter-data-redis") {
+    exclude module: "spring-boot-starter-logging"
+  }
   implementation group: "redis.clients", name: "jedis", version: "${redisJedisVersion}"
   compileOnly group: "org.projectlombok", name: "lombok", version: "${lombokVersion}"
   annotationProcessor group: "org.projectlombok", name: "lombok", version: "${lombokVersion}"
