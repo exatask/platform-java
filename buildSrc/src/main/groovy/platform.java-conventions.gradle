@@ -18,6 +18,7 @@ test {
 
 repositories {
 
+  mavenLocal()
   mavenCentral()
 
   maven {
