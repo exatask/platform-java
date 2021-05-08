@@ -3,6 +3,7 @@ package com.exatask.platform.logging;
 import com.sun.javafx.fxml.PropertyNotFoundException;
 import lombok.SneakyThrows;
 import org.apache.commons.lang3.StringUtils;
+import org.apache.logging.log4j.util.StackLocatorUtil;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -49,22 +50,22 @@ public class AppLogManager {
   }
 
   public static AppLogger getLogger() {
-    return new AppLogger(AppLogger.class.getName().toLowerCase(), getServiceName());
+    return new AppLogger(StackLocatorUtil.getCallerClass(2).getName(), getServiceName());
   }
 
-  public static AppLogger getLogger(String service) {
-    return new AppLogger(AppLogger.class.getName().toLowerCase(), service);
+  public static AppLogger getLogger(String logger) {
+    return new AppLogger(logger, getServiceName());
+  }
+
+  public static AppLogger getLogger(String logger, String service) {
+    return new AppLogger(logger, service);
   }
 
   public static AppLogger getLogger(Class<?> clazz) {
-    return new AppLogger(clazz.getName().toLowerCase(), getServiceName());
+    return new AppLogger(clazz.getName(), getServiceName());
   }
 
   public static AppLogger getLogger(Class<?> clazz, String service) {
-    return new AppLogger(clazz.getName().toLowerCase(), service);
-  }
-
-  public static AppLogger getLogger(String clazz, String service) {
-    return new AppLogger(clazz.toLowerCase(), service);
+    return new AppLogger(clazz.getName(), service);
   }
 }

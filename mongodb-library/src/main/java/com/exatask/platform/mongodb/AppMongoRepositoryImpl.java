@@ -3,6 +3,7 @@ package com.exatask.platform.mongodb;
 import com.exatask.platform.logging.AppLogManager;
 import com.exatask.platform.logging.AppLogger;
 import com.exatask.platform.mongodb.constants.Defaults;
+import com.exatask.platform.mongodb.constants.Service;
 import com.exatask.platform.mongodb.exceptions.InvalidOperationException;
 import com.exatask.platform.mongodb.filters.AppFilter;
 import com.exatask.platform.mongodb.filters.FilterElement;
@@ -29,7 +30,7 @@ import java.util.Map;
 public class AppMongoRepositoryImpl<T, ID extends Serializable> extends SimpleMongoRepository<T, ID> implements
                                                                                                      AppMongoRepository<T, ID> {
 
-  private static final AppLogger LOGGER = AppLogManager.getLogger(AppMongoRepositoryImpl.class);
+  private static final AppLogger LOGGER = AppLogManager.getLogger(Service.LOGGER_NAME);
 
   private final MongoOperations mongoOperations;
   private final MongoEntityInformation<T, ID> mongoEntityInformation;
