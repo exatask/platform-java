@@ -6,9 +6,9 @@ pluginManagement {
 
 rootProject.name = "platform"
 
-include "api-core-library"
+include "api-library"
 include "i18n-library"
 include "logging-library"
-include "migration-core-library"
+include "migration-library"
 include "mongodb-library"
 include "redis-library"

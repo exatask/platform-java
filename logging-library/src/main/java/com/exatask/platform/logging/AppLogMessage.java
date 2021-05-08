@@ -1,5 +1,6 @@
 package com.exatask.platform.logging;
 
+import com.exatask.platform.logging.helpers.AppStackTraceElement;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.AccessLevel;
@@ -9,22 +10,26 @@ import lombok.Setter;
 import lombok.experimental.Accessors;
 
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 import java.util.TimeZone;
+import java.util.regex.Pattern;
 
 @Data
 @Accessors(chain = true)
 @JsonInclude(JsonInclude.Include.NON_NULL)
 public class AppLogMessage {
 
-  private final static SimpleDateFormat dateFormatter;
+  private final static SimpleDateFormat DATE_FORMATTER;
+
+  private final static Pattern PACKAGES = Pattern.compile("^com\\.exatask\\.(.+)$");
 
   static {
-    dateFormatter = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSSXXX");
-    dateFormatter.setTimeZone(TimeZone.getTimeZone("UTC"));
+    DATE_FORMATTER = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSSXXX");
+    DATE_FORMATTER.setTimeZone(TimeZone.getTimeZone("UTC"));
   }
 
   @JsonProperty("timestamp")
@@ -64,10 +69,33 @@ public class AppLogMessage {
   private Map<String, Object> extraParams;
 
   @JsonProperty("stack_trace")
-  private List<StackTraceElement> stackTrace;
+  private List<AppStackTraceElement> stackTrace;
 
   public String getTimestamp() {
-    return dateFormatter.format(timestamp);
+    return DATE_FORMATTER.format(timestamp);
+  }
+
+  public AppLogMessage setStackTrace(List<StackTraceElement> elements) {
+
+    this.stackTrace = new ArrayList<>();
+
+    for (StackTraceElement element : elements) {
+
+      String className = element.getClassName();
+      if (!PACKAGES.matcher(className).matches()) {
+        continue;
+      }
+
+      this.stackTrace.add(AppStackTraceElement.builder()
+          .file(element.getFileName())
+          .clazz(element.getClassName())
+          .method(element.getMethodName())
+          .line(element.getLineNumber())
+          .build()
+      );
+    }
+
+    return this;
   }
 
   @Builder
