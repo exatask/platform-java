@@ -49,22 +49,22 @@ public class AppLogManager {
   }
 
   public static AppLogger getLogger() {
-    return new AppLogger(AppLogger.class.getName(), getServiceName());
+    return new AppLogger(AppLogger.class.getName().toLowerCase(), getServiceName());
   }
 
   public static AppLogger getLogger(String service) {
-    return new AppLogger(AppLogger.class.getName(), service);
+    return new AppLogger(AppLogger.class.getName().toLowerCase(), service);
   }
 
   public static AppLogger getLogger(Class<?> clazz) {
-    return new AppLogger(clazz.getName(), getServiceName());
+    return new AppLogger(clazz.getName().toLowerCase(), getServiceName());
   }
 
   public static AppLogger getLogger(Class<?> clazz, String service) {
-    return new AppLogger(clazz.getName(), service);
+    return new AppLogger(clazz.getName().toLowerCase(), service);
   }
 
   public static AppLogger getLogger(String clazz, String service) {
-    return new AppLogger(clazz, service);
+    return new AppLogger(clazz.toLowerCase(), service);
   }
 }
