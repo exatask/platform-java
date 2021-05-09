@@ -1,6 +1,6 @@
 package com.exatask.platform.api.handlers;
 
-import com.exatask.platform.api.constants.Service;
+import com.exatask.platform.api.constants.PlatformApiService;
 import com.exatask.platform.api.contexts.AppContextProvider;
 import com.exatask.platform.api.exceptions.BadRequestException;
 import com.exatask.platform.api.exceptions.ForbiddenException;
@@ -29,7 +29,7 @@ import java.util.Arrays;
 @RestControllerAdvice
 public class HttpExceptionHandler {
 
-  private static final AppLogger LOGGER = AppLogManager.getLogger(Service.LOGGER_NAME);
+  private static final AppLogger LOGGER = AppLogManager.getLogger(PlatformApiService.LOGGER_NAME);
 
   private void logException(HttpServletRequest request, HttpException exception) {
 

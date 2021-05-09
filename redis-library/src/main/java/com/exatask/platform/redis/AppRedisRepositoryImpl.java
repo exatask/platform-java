@@ -2,7 +2,7 @@ package com.exatask.platform.redis;
 
 import com.exatask.platform.logging.AppLogManager;
 import com.exatask.platform.logging.AppLogger;
-import com.exatask.platform.redis.constants.Service;
+import com.exatask.platform.redis.constants.RedisService;
 import com.exatask.platform.redis.exceptions.MissingIdentifierException;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -21,7 +21,7 @@ import java.util.concurrent.TimeUnit;
 public class AppRedisRepositoryImpl<T, ID extends Serializable> extends SimpleKeyValueRepository<T, ID> implements
                                                                                                              AppRedisRepository<T, ID> {
 
-  private static final AppLogger LOGGER = AppLogManager.getLogger(Service.LOGGER_NAME);
+  private static final AppLogger LOGGER = AppLogManager.getLogger(RedisService.LOGGER_NAME);
 
   private final EntityInformation<T, ID> entityInformation;
 

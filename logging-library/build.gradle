@@ -17,6 +17,7 @@ dependencies {
   implementation group: "com.fasterxml.jackson.core", name: "jackson-databind", version: "${fasterxmlJacksonVersion}"
   implementation group: "org.apache.commons", name: "commons-lang3", version: "${apacheCommonsVersion}"
   implementation group: "org.apache.commons", name: "commons-collections4", version: "${apacheCollectionsVersion}"
+  implementation project(":utilities-library")
 }
 
 publishing {

@@ -1,6 +1,8 @@
 package com.exatask.platform.api.responses;
 
+import com.exatask.platform.api.constants.Environment;
 import com.exatask.platform.api.exceptions.HttpException;
+import com.exatask.platform.api.utilities.ApiServiceUtility;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.AllArgsConstructor;
@@ -24,7 +26,7 @@ public class HttpErrorResponse extends AppResponse {
   private Map<String, Object> extraParams;
 
   @JsonProperty("stack_trace")
-  private final StackTraceElement[] stackTrace;
+  private StackTraceElement[] stackTrace;
 
   public HttpErrorResponse(HttpException exception) {
 
@@ -32,14 +34,20 @@ public class HttpErrorResponse extends AppResponse {
     message = new Message("error", exception.getMessage(), exception.getError().getErrorCode());
     invalidAttributes = exception.getInvalidAttributes();
     extraParams = exception.getExtraParams();
-    stackTrace = exception.getStackTrace();
+
+    if (ApiServiceUtility.getServiceEnvironment() != Environment.RELEASE) {
+      stackTrace = exception.getStackTrace();
+    }
   }
 
   public HttpErrorResponse(Exception exception) {
 
     status = false;
     message = new Message("error", exception.getMessage(), null);
-    stackTrace = exception.getStackTrace();
+
+    if (ApiServiceUtility.getServiceEnvironment() != Environment.RELEASE) {
+      stackTrace = exception.getStackTrace();
+    }
   }
 
   @Getter

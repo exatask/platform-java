@@ -1,14 +1,9 @@
 plugins {
   id "platform.java-conventions"
-  id "org.springframework.boot"
 }
 
 group = "com.exatask.platform"
 version = "1.0.0"
-
-bootJar {
-  enabled = false
-}
 
 jar {
   enabled = true
@@ -16,22 +11,16 @@ jar {
 
 dependencies {
 
-  implementation (group: "org.springframework.boot", name: "spring-boot-starter-web") {
-    exclude module: "spring-boot-starter-logging"
-  }
   compileOnly group: "org.projectlombok", name: "lombok", version: "${lombokVersion}"
   annotationProcessor group: "org.projectlombok", name: "lombok", version: "${lombokVersion}"
   implementation group: "org.apache.commons", name: "commons-lang3", version: "${apacheCommonsVersion}"
-  implementation project(":utilities-library")
-  implementation project(":i18n-library")
-  implementation project(":logging-library")
 }
 
 publishing {
   publications {
     maven(MavenPublication) {
 
-      artifactId = "api"
+      artifactId = "utilities"
       from components.java
     }
   }
