@@ -5,6 +5,7 @@ import org.apache.commons.lang3.StringUtils;
 
 import java.io.IOException;
 import java.io.InputStream;
+import java.util.HashMap;
 import java.util.Map;
 import java.util.Properties;
 
@@ -12,12 +13,14 @@ public class ServiceUtility {
 
   private static final String APPLICATION_PROPERTIES_FILE = "application.properties";
 
-  private static final String SERVICE_NAME_KEY = "service.name";
-
+  private static final String SPRING_APPLICATION_NAME_KEY = "spring.application.name";
   private static final String SPRING_PROFILE_ENV_KEY = "spring_profiles_active";
   private static final String SPRING_PROFILE_KEY = "spring.profiles.active";
 
-  private static Map<String, Properties> classpathProperties;
+  private static final String SERVICE_NAME_KEY = "service.name";
+  private static final String SERVICE_ENV_KEY = "service.environment";
+
+  private static final Map<String, Properties> classpathProperties = new HashMap<>();
 
   private static Properties loadClasspathProperties(String filePath) {
 
@@ -47,7 +50,7 @@ public class ServiceUtility {
 
     Properties applicationProperties = loadClasspathProperties(APPLICATION_PROPERTIES_FILE);
     if (applicationProperties == null) {
-      throw new RuntimePropertyNotFoundException(key);
+      return null;
     }
 
     return applicationProperties.getProperty(key);
@@ -70,20 +73,41 @@ public class ServiceUtility {
       return name;
     }
 
-    throw new RuntimePropertyNotFoundException(key);
+    return null;
   }
 
   public static String getName() throws RuntimePropertyNotFoundException {
-    return getRuntimeProperty(SERVICE_NAME_KEY);
+
+    String name = getRuntimeProperty(SERVICE_NAME_KEY);
+    if (StringUtils.isNotEmpty(name)) {
+      return name;
+    }
+
+    name = getRuntimeProperty(SPRING_APPLICATION_NAME_KEY);
+    if (StringUtils.isNotEmpty(name)) {
+      return name;
+    }
+
+    throw new RuntimePropertyNotFoundException(SERVICE_NAME_KEY);
   }
 
   public static String getEnvironment() throws RuntimePropertyNotFoundException {
 
-    String env = System.getenv(SPRING_PROFILE_ENV_KEY);
+    String env = getRuntimeProperty(SERVICE_ENV_KEY);
     if (StringUtils.isNotEmpty(env)) {
       return env;
     }
 
-    return getRuntimeProperty(SPRING_PROFILE_KEY);
+    env = System.getenv(SPRING_PROFILE_ENV_KEY);
+    if (StringUtils.isNotEmpty(env)) {
+      return env;
+    }
+
+    env = getRuntimeProperty(SPRING_PROFILE_KEY);
+    if (StringUtils.isNotEmpty(env)) {
+      return env;
+    }
+
+    throw new RuntimePropertyNotFoundException(SERVICE_ENV_KEY);
   }
 }
