@@ -33,14 +33,13 @@ public class HttpExceptionHandler {
 
   private void logException(HttpServletRequest request, HttpException exception) {
 
-    AppLogMessage logMessage = AppLogMessage.builder().message(exception.getMessage()).build();
+    AppLogMessage logMessage = AppLogMessage.builder().exception(exception).build();
     logMessage.setUrl(request.getRequestURI())
         .setTraceId(AppContextProvider.getTraceId())
         .setHttpCode(exception.getHttpStatus().value())
         .setErrorCode(exception.getError().getErrorCode())
         .setInvalidAttributes(exception.getInvalidAttributes())
-        .setExtraParams(exception.getExtraParams())
-        .setStackTrace(Arrays.asList(exception.getStackTrace()));
+        .setExtraParams(exception.getExtraParams());
     LOGGER.error(logMessage);
   }
 

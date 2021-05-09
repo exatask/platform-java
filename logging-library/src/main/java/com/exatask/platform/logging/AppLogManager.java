@@ -1,11 +1,8 @@
 package com.exatask.platform.logging;
 
 import com.exatask.platform.utilities.ServiceUtility;
-import lombok.SneakyThrows;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.logging.log4j.util.StackLocatorUtil;
-
-import java.io.IOException;
 
 public class AppLogManager {
 
@@ -14,7 +11,6 @@ public class AppLogManager {
   private AppLogManager() {
   }
 
-  @SneakyThrows(value = IOException.class)
   private static String getServiceName() {
 
     if (StringUtils.isNotEmpty(serviceName)) {

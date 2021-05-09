@@ -1,5 +1,6 @@
 package com.exatask.platform.logging;
 
+import com.exatask.platform.logging.helpers.AppExceptionCause;
 import com.exatask.platform.logging.helpers.AppStackTraceElement;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonProperty;
@@ -11,6 +12,7 @@ import lombok.experimental.Accessors;
 
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Date;
 import java.util.List;
 import java.util.Map;
@@ -71,13 +73,37 @@ public class AppLogMessage {
   @JsonProperty("stack_trace")
   private List<AppStackTraceElement> stackTrace;
 
+  @JsonProperty("exception_cause")
+  private AppExceptionCause exceptionCause;
+
   public String getTimestamp() {
     return DATE_FORMATTER.format(timestamp);
   }
 
-  public AppLogMessage setStackTrace(List<StackTraceElement> elements) {
+  @Builder
+  public static AppLogMessage buildLogMessage(String message, Exception exception) {
 
-    this.stackTrace = new ArrayList<>();
+    AppLogMessage logMessage = new AppLogMessage();
+    Optional.ofNullable(message).ifPresent(logMessage::setMessage);
+
+    Optional.ofNullable(exception).ifPresent((ex) -> {
+
+      logMessage.setMessage(ex.getMessage());
+      logMessage.setStackTrace(parseStackTrace(Arrays.asList(ex.getStackTrace())));
+
+      Optional.ofNullable(ex.getCause()).ifPresent((cause) -> {
+
+        List<StackTraceElement> elements = Arrays.asList(cause.getStackTrace());
+        logMessage.setExceptionCause(new AppExceptionCause(cause.getMessage(), parseStackTrace(elements)));
+      });
+    });
+
+    return logMessage;
+  }
+
+  private static List<AppStackTraceElement> parseStackTrace(List<StackTraceElement> elements) {
+
+    List<AppStackTraceElement> stackTrace = new ArrayList<>();
 
     for (StackTraceElement element : elements) {
 
@@ -86,23 +112,14 @@ public class AppLogMessage {
         continue;
       }
 
-      this.stackTrace.add(AppStackTraceElement.builder()
+      stackTrace.add(AppStackTraceElement.builder()
           .file(element.getFileName())
           .clazz(element.getClassName())
           .method(element.getMethodName())
           .line(element.getLineNumber())
-          .build()
-      );
+          .build());
     }
 
-    return this;
-  }
-
-  @Builder
-  public static AppLogMessage buildLogMessage(String message) {
-
-    AppLogMessage logMessage = new AppLogMessage();
-    Optional.ofNullable(message).ifPresent(logMessage::setMessage);
-    return logMessage;
+    return stackTrace;
   }
 }

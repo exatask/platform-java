@@ -13,7 +13,6 @@ import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.ResponseStatus;
 
 import javax.servlet.http.HttpServletRequest;
-import java.util.Arrays;
 
 @ControllerAdvice
 public class SystemExceptionHandler {
@@ -22,11 +21,10 @@ public class SystemExceptionHandler {
 
   private void logException(HttpServletRequest request, Exception exception, HttpStatus httpStatus) {
 
-    AppLogMessage logMessage = AppLogMessage.builder().message(exception.getMessage()).build();
+    AppLogMessage logMessage = AppLogMessage.builder().exception(exception).build();
     logMessage.setUrl(request.getRequestURI())
         .setTraceId(AppContextProvider.getTraceId())
-        .setHttpCode(httpStatus.value())
-        .setStackTrace(Arrays.asList(exception.getStackTrace()));
+        .setHttpCode(httpStatus.value());
     LOGGER.error(logMessage);
   }
 

@@ -28,6 +28,9 @@ public class HttpErrorResponse extends AppResponse {
   @JsonProperty("stack_trace")
   private StackTraceElement[] stackTrace;
 
+  @JsonProperty("exception_cause")
+  private Throwable exceptionCause;
+
   public HttpErrorResponse(HttpException exception) {
 
     status = false;
@@ -37,6 +40,7 @@ public class HttpErrorResponse extends AppResponse {
 
     if (ApiServiceUtility.getServiceEnvironment() != Environment.RELEASE) {
       stackTrace = exception.getStackTrace();
+      exceptionCause = exception.getCause();
     }
   }
 
@@ -47,6 +51,7 @@ public class HttpErrorResponse extends AppResponse {
 
     if (ApiServiceUtility.getServiceEnvironment() != Environment.RELEASE) {
       stackTrace = exception.getStackTrace();
+      exceptionCause = exception.getCause();
     }
   }
 

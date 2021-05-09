@@ -25,10 +25,12 @@ public class HttpException extends RuntimeException {
 
   private Map<String, Object> extraParams;
 
-  private StackTraceElement[] stackTrace;
-
   protected HttpException(String message) {
     super(message);
+  }
+
+  protected HttpException(String message, Throwable cause) {
+    super(message, cause);
   }
 
   protected static HttpException buildException(
@@ -50,11 +52,16 @@ public class HttpException extends RuntimeException {
       exceptionMessage = httpStatus.getReasonPhrase();
     }
 
-    HttpException httpException = new HttpException(exceptionMessage);
+    HttpException httpException;
+
+    if (ObjectUtils.isEmpty(exception)) {
+      httpException = new HttpException(exceptionMessage);
+    } else {
+      httpException = new HttpException(exceptionMessage, exception);
+    }
     Optional.ofNullable(httpStatus).ifPresent(httpException::setHttpStatus);
     Optional.ofNullable(invalidAttributes).ifPresent(httpException::setInvalidAttributes);
     Optional.ofNullable(extraParams).ifPresent(httpException::setExtraParams);
-    httpException.setStackTrace(ObjectUtils.defaultIfNull(exception, httpException).getStackTrace());
 
     return httpException;
   }

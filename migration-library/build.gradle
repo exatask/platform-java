@@ -6,6 +6,10 @@ plugins {
 group = "com.exatask.platform"
 version = "1.0.0"
 
+bootJar {
+  enabled = false
+}
+
 jar {
   enabled = true
 }

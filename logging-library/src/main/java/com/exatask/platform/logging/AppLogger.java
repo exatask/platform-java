@@ -8,7 +8,6 @@ import org.apache.logging.log4j.Level;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.core.LoggerContext;
 
-import java.util.Arrays;
 import java.util.Date;
 
 public class AppLogger {
@@ -113,8 +112,7 @@ public class AppLogger {
 
   public void log(Level level, Exception exception) {
 
-    AppLogMessage logMessage = AppLogMessage.builder().message(exception.getMessage()).build();
-    logMessage.setStackTrace(Arrays.asList(exception.getStackTrace()));
+    AppLogMessage logMessage = AppLogMessage.builder().exception(exception).build();
     this.log(level, logMessage);
   }
 
