@@ -3,7 +3,7 @@ plugins {
 }
 
 group = "com.exatask.platform"
-version = "1.0.0"
+version = "1.0.1"
 
 jar {
   enabled = true
@@ -14,6 +14,7 @@ dependencies {
   compileOnly group: "org.projectlombok", name: "lombok", version: "${lombokVersion}"
   annotationProcessor group: "org.projectlombok", name: "lombok", version: "${lombokVersion}"
   implementation group: "org.apache.commons", name: "commons-lang3", version: "${apacheCommonsVersion}"
+  implementation group: "com.fasterxml.jackson.core", name: "jackson-databind", version: "${fasterxmlJacksonVersion}"
 }
 
 publishing {

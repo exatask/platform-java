@@ -4,7 +4,7 @@ plugins {
 }
 
 group = "com.exatask.platform"
-version = "1.0.0"
+version = "1.0.1"
 
 bootJar {
   enabled = false
@@ -24,6 +24,7 @@ dependencies {
   implementation group: "com.fasterxml.jackson.core", name: "jackson-databind", version: "${fasterxmlJacksonVersion}"
   implementation group: "org.apache.commons", name: "commons-lang3", version: "${apacheCommonsVersion}"
   implementation project(":logging-library")
+  implementation project(":utilities-library")
 }
 
 publishing {

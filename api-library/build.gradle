@@ -22,6 +22,7 @@ dependencies {
   compileOnly group: "org.projectlombok", name: "lombok", version: "${lombokVersion}"
   annotationProcessor group: "org.projectlombok", name: "lombok", version: "${lombokVersion}"
   implementation group: "org.apache.commons", name: "commons-lang3", version: "${apacheCommonsVersion}"
+  implementation group: "org.springdoc", name: "springdoc-openapi-ui", version: "${springdocOpenapiVersion}"
   implementation project(":utilities-library")
   implementation project(":i18n-library")
   implementation project(":logging-library")

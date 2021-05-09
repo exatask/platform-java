@@ -4,7 +4,7 @@ plugins {
 }
 
 group = "com.exatask.platform"
-version = "1.0.0"
+version = "1.0.1"
 
 bootJar {
   enabled = false
@@ -24,6 +24,7 @@ dependencies {
   annotationProcessor group: "org.projectlombok", name: "lombok", version: "${lombokVersion}"
   implementation group: "com.fasterxml.jackson.core", name: "jackson-databind", version: "${fasterxmlJacksonVersion}"
   implementation project(":logging-library")
+  implementation project(":utilities-library")
 }
 
 publishing {
