@@ -9,8 +9,5 @@ public abstract class AppService {
 
   protected static final AppLogger LOGGER = AppLogManager.getLogger();
 
-  public AppService() {
-  }
-
   public abstract AppResponse process(AppRequest request);
 }

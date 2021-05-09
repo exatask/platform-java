@@ -1,6 +1,7 @@
 package com.exatask.platform.api.responses;
 
 import com.exatask.platform.api.constants.Environment;
+import com.exatask.platform.api.constants.ResponseMessage;
 import com.exatask.platform.api.exceptions.HttpException;
 import com.exatask.platform.api.utilities.ApiServiceUtility;
 import com.fasterxml.jackson.annotation.JsonInclude;
@@ -34,7 +35,7 @@ public class HttpErrorResponse extends AppResponse {
   public HttpErrorResponse(HttpException exception) {
 
     status = false;
-    message = new Message("error", exception.getMessage(), exception.getError().getErrorCode());
+    message = new Message(ResponseMessage.ERROR, exception.getMessage(), exception.getError().getErrorCode());
     invalidAttributes = exception.getInvalidAttributes();
     extraParams = exception.getExtraParams();
 
@@ -47,7 +48,7 @@ public class HttpErrorResponse extends AppResponse {
   public HttpErrorResponse(Exception exception) {
 
     status = false;
-    message = new Message("error", exception.getMessage(), null);
+    message = new Message(ResponseMessage.ERROR, exception.getMessage(), null);
 
     if (ApiServiceUtility.getServiceEnvironment() != Environment.RELEASE) {
       stackTrace = exception.getStackTrace();
@@ -61,7 +62,7 @@ public class HttpErrorResponse extends AppResponse {
   public static class Message {
 
     @JsonProperty("type")
-    private final String type;
+    private final ResponseMessage type;
 
     @JsonProperty("text")
     private final String text;
