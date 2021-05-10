@@ -17,7 +17,7 @@ import java.util.Set;
 @Component
 public class MongodbHealthCheck implements ServiceHealthCheck {
 
-  @Autowired
+  @Autowired(required = false)
   private Set<MongoTemplate> mongoTemplates;
 
   public Set<ServiceHealthCheckData> healthCheck() {

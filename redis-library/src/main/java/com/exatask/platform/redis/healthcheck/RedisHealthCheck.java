@@ -17,7 +17,7 @@ import java.util.Set;
 @Component
 public class RedisHealthCheck implements ServiceHealthCheck {
 
-  @Autowired
+  @Autowired(required = false)
   private Set<RedisTemplate<String, String>> redisTemplates;
 
   public Set<ServiceHealthCheckData> healthCheck() {
