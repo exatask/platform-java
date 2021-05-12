@@ -4,7 +4,7 @@ import com.exatask.platform.i18n.utilities.I18nSource;
 import org.springframework.stereotype.Service;
 
 @Service
-public class PlatformApiI18nSource implements I18nSource {
+public class ApiI18nSource implements I18nSource {
 
   @Override
   public String[] getMessageSources() {

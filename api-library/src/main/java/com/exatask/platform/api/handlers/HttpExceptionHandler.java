@@ -1,6 +1,6 @@
 package com.exatask.platform.api.handlers;
 
-import com.exatask.platform.api.constants.PlatformApiService;
+import com.exatask.platform.api.constants.ApiService;
 import com.exatask.platform.api.contexts.AppContextProvider;
 import com.exatask.platform.api.exceptions.BadRequestException;
 import com.exatask.platform.api.exceptions.ForbiddenException;
@@ -24,12 +24,11 @@ import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 
 import javax.servlet.http.HttpServletRequest;
-import java.util.Arrays;
 
 @RestControllerAdvice
 public class HttpExceptionHandler {
 
-  private static final AppLogger LOGGER = AppLogManager.getLogger(PlatformApiService.LOGGER_NAME);
+  private static final AppLogger LOGGER = AppLogManager.getLogger(ApiService.LOGGER_NAME);
 
   private void logException(HttpServletRequest request, HttpException exception) {
 

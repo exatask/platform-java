@@ -1,6 +1,6 @@
 package com.exatask.platform.api.services.healthcheck;
 
-import com.exatask.platform.api.configurations.PlatformServiceConfig;
+import com.exatask.platform.api.configurations.ApiServiceConfig;
 import com.exatask.platform.api.requests.AppRequest;
 import com.exatask.platform.api.services.AppService;
 import com.exatask.platform.api.services.healthcheck.responses.HealthCheckResponse;
@@ -17,7 +17,7 @@ import java.util.Set;
 public class HealthCheckService extends AppService {
 
   @Autowired
-  private PlatformServiceConfig platformServiceConfig;
+  private ApiServiceConfig apiServiceConfig;
 
   @Autowired
   private Set<ServiceHealthCheck> platformHealthChecks;
@@ -28,11 +28,11 @@ public class HealthCheckService extends AppService {
     HealthCheckResponse healthCheckResponse = new HealthCheckResponse();
     Map<String, Set<ServiceHealthCheckData>> serviceHealthCheckData = new HashMap<>();
 
-    healthCheckResponse.setName(platformServiceConfig.getName());
-    healthCheckResponse.setCopyright(platformServiceConfig.getCopyright());
-    healthCheckResponse.setEnvironment(platformServiceConfig.getEnvironment());
-    healthCheckResponse.setLicense(platformServiceConfig.getLicense());
-    healthCheckResponse.setVersion(platformServiceConfig.getVersion());
+    healthCheckResponse.setName(apiServiceConfig.getName());
+    healthCheckResponse.setCopyright(apiServiceConfig.getCopyright());
+    healthCheckResponse.setEnvironment(apiServiceConfig.getEnvironment());
+    healthCheckResponse.setLicense(apiServiceConfig.getLicense());
+    healthCheckResponse.setVersion(apiServiceConfig.getVersion());
 
     for (ServiceHealthCheck healthCheck : platformHealthChecks) {
       serviceHealthCheckData.put(healthCheck.getName(), healthCheck.healthCheck());

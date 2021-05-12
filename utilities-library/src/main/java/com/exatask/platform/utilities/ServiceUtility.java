@@ -30,7 +30,7 @@ public class ServiceUtility {
 
     try {
 
-      InputStream propertiesStream = ServiceUtility.class.getClassLoader().getResourceAsStream(filePath);
+      InputStream propertiesStream = Thread.currentThread().getContextClassLoader().getResourceAsStream(filePath);
       Properties applicationProperties = new Properties();
       applicationProperties.load(propertiesStream);
 

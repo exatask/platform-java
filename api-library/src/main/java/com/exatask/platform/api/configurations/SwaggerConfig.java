@@ -1,6 +1,5 @@
 package com.exatask.platform.api.configurations;
 
-import com.exatask.platform.api.utilities.ApiSwaggerUtility;
 import io.swagger.v3.oas.models.Components;
 import io.swagger.v3.oas.models.OpenAPI;
 import io.swagger.v3.oas.models.headers.Header;
@@ -28,13 +27,13 @@ import java.util.List;
 import java.util.Map;
 
 @Configuration
-public class PlatformSwaggerConfig {
+public class SwaggerConfig {
 
   @Autowired
-  private PlatformServiceConfig serviceConfig;
+  private ApiServiceConfig serviceConfig;
 
   @Autowired
-  private ApiSwaggerUtility swaggerUtility;
+  private ApiSwaggerConfig swaggerConfig;
 
   @Value("${server.port}")
   private String serverPort;
@@ -130,7 +129,7 @@ public class PlatformSwaggerConfig {
 
   private Components getComponents() {
 
-    Components components = swaggerUtility.getComponents();
+    Components components = swaggerConfig.getComponents();
     if (ObjectUtils.isEmpty(components)) {
       components = new Components();
     }
@@ -146,12 +145,12 @@ public class PlatformSwaggerConfig {
         .description(serviceConfig.getDescription())
         .version(serviceConfig.getVersion())
         .license((new License()).name(serviceConfig.getLicense()))
-        .contact(swaggerUtility.getContact());
+        .contact(swaggerConfig.getContact());
   }
 
   private List<Tag> getTags() {
 
-    List<Tag> tags = swaggerUtility.getTags();
+    List<Tag> tags = swaggerConfig.getTags();
     if (CollectionUtils.isEmpty(tags)) {
       tags = new ArrayList<>();
     }

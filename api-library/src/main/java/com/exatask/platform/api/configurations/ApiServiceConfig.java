@@ -7,7 +7,7 @@ import org.springframework.context.annotation.Configuration;
 @Data
 @Configuration
 @ConfigurationProperties(prefix = "service")
-public class PlatformServiceConfig {
+public class ApiServiceConfig {
 
   private String name;
 
