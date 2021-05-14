@@ -1,27 +1,26 @@
 package com.exatask.platform.mongodb.schemas;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
-import com.fasterxml.jackson.annotation.JsonProperty;
-import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
+import com.fasterxml.jackson.databind.PropertyNamingStrategy;
+import com.fasterxml.jackson.databind.annotation.JsonNaming;
 import lombok.Builder;
 import lombok.Data;
+import lombok.extern.jackson.Jacksonized;
 import org.springframework.data.mongodb.core.mapping.Field;
 
 @Data
 @Builder
+@Jacksonized
+@JsonNaming(PropertyNamingStrategy.SnakeCaseStrategy.class)
 @JsonInclude(JsonInclude.Include.NON_NULL)
-@JsonDeserialize(builder = FullDate.FullDateBuilder.class)
 public class FullDate {
 
-  @JsonProperty("date")
   @Field("date")
   private Integer date;
 
-  @JsonProperty("month")
   @Field("month")
   private Integer month;
 
-  @JsonProperty("year")
   @Field("year")
   private Integer year;
 }

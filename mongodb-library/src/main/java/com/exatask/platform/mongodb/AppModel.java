@@ -1,7 +1,8 @@
 package com.exatask.platform.mongodb;
 
 import com.exatask.platform.mongodb.serializers.ObjectIdSerializer;
-import com.fasterxml.jackson.annotation.JsonProperty;
+import com.fasterxml.jackson.databind.PropertyNamingStrategy;
+import com.fasterxml.jackson.databind.annotation.JsonNaming;
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 import lombok.AccessLevel;
 import lombok.Getter;
@@ -18,23 +19,21 @@ import java.util.Date;
 
 @Getter
 @NoArgsConstructor
+@JsonNaming(PropertyNamingStrategy.SnakeCaseStrategy.class)
 public abstract class AppModel {
 
   @Id
   @Setter(value = AccessLevel.NONE)
-  @JsonProperty("_id")
   @JsonSerialize(using = ObjectIdSerializer.class)
   @Field("_id")
   protected ObjectId id;
 
   @CreatedDate
-  @JsonProperty("created_at")
   @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME)
   @Field("created_at")
   protected Date createdAt;
 
   @LastModifiedDate
-  @JsonProperty("updated_at")
   @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME)
   @Field("updated_at")
   protected Date updatedAt;

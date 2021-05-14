@@ -32,7 +32,6 @@ public class MongodbHealthCheck implements ServiceHealthCheck {
     for (MongoTemplate template : mongoTemplates) {
 
       MongoDatabase mongoDatabase = template.getMongoDatabaseFactory().getMongoDatabase();
-
       Document mongoProperties = mongoDatabase.runCommand(serverInfo);
 
       mongoHealthCheckData.add(ServiceHealthCheckData.builder()

@@ -3,7 +3,8 @@ package com.exatask.platform.logging;
 import com.exatask.platform.logging.helpers.AppExceptionCause;
 import com.exatask.platform.logging.helpers.AppStackTraceElement;
 import com.fasterxml.jackson.annotation.JsonInclude;
-import com.fasterxml.jackson.annotation.JsonProperty;
+import com.fasterxml.jackson.databind.PropertyNamingStrategy;
+import com.fasterxml.jackson.databind.annotation.JsonNaming;
 import lombok.AccessLevel;
 import lombok.Builder;
 import lombok.Data;
@@ -23,6 +24,7 @@ import java.util.regex.Pattern;
 @Data
 @Accessors(chain = true)
 @JsonInclude(JsonInclude.Include.NON_NULL)
+@JsonNaming(PropertyNamingStrategy.SnakeCaseStrategy.class)
 public class AppLogMessage {
 
   private final static SimpleDateFormat DATE_FORMATTER;
@@ -34,46 +36,33 @@ public class AppLogMessage {
     DATE_FORMATTER.setTimeZone(TimeZone.getTimeZone("UTC"));
   }
 
-  @JsonProperty("timestamp")
   @Setter(AccessLevel.PACKAGE)
   private Date timestamp;
 
-  @JsonProperty("service_name")
   @Setter(AccessLevel.PACKAGE)
   private String serviceName;
 
-  @JsonProperty("trace_id")
   private String traceId;
 
-  @JsonProperty("level")
   @Setter(AccessLevel.PACKAGE)
   private String level;
 
-  @JsonProperty("message")
   private String message;
 
-  @JsonProperty("http_code")
   private Integer httpCode;
 
-  @JsonProperty("url")
   private String url;
 
-  @JsonProperty("error_code")
   private String errorCode;
 
-  @JsonProperty("request_time")
   private Long requestTime;
 
-  @JsonProperty("invalid_attributes")
   private Map<String, String> invalidAttributes;
 
-  @JsonProperty("extra_params")
   private Map<String, Object> extraParams;
 
-  @JsonProperty("stack_trace")
   private List<AppStackTraceElement> stackTrace;
 
-  @JsonProperty("exception_cause")
   private AppExceptionCause exceptionCause;
 
   public String getTimestamp() {

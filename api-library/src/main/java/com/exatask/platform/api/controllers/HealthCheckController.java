@@ -22,6 +22,7 @@ public class HealthCheckController extends AppController {
   @RequestMapping(method = RequestMethod.GET)
   @Operation(
       summary = "Performs a health-check on application and return results",
+      tags = {"monitoring"},
       responses = {
           @ApiResponse(
               responseCode = "200",

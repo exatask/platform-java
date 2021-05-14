@@ -14,9 +14,7 @@ import org.springframework.stereotype.Service;
 @Service
 public class AppMongoTemplate {
 
-  public MongoTemplate getTemplate(MongoProperties mongoProperties) {
-
-    MongoDatabaseFactory connectionFactory = getMongoDatabaseFactory(mongoProperties.getUri());
+  public MongoTemplate getTemplate(MongoDatabaseFactory connectionFactory) {
 
     DbRefResolver refResolver = new DefaultDbRefResolver(connectionFactory);
     MappingMongoConverter mongoConverter = new MappingMongoConverter(refResolver, new MongoMappingContext());
@@ -25,7 +23,7 @@ public class AppMongoTemplate {
     return new MongoTemplate(connectionFactory, mongoConverter);
   }
 
-  private MongoDatabaseFactory getMongoDatabaseFactory(String uri) {
-    return new SimpleMongoClientDatabaseFactory(uri);
+  public MongoDatabaseFactory getDatabaseFactory(MongoProperties mongoProperties) {
+    return new SimpleMongoClientDatabaseFactory(mongoProperties.getUri());
   }
 }

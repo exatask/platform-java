@@ -5,7 +5,8 @@ import com.exatask.platform.api.constants.ResponseMessage;
 import com.exatask.platform.api.exceptions.HttpException;
 import com.exatask.platform.api.utilities.ApiServiceUtility;
 import com.fasterxml.jackson.annotation.JsonInclude;
-import com.fasterxml.jackson.annotation.JsonProperty;
+import com.fasterxml.jackson.databind.PropertyNamingStrategy;
+import com.fasterxml.jackson.databind.annotation.JsonNaming;
 import lombok.AllArgsConstructor;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
@@ -15,21 +16,17 @@ import java.util.Map;
 @Getter
 @EqualsAndHashCode(callSuper = true)
 @JsonInclude(JsonInclude.Include.NON_NULL)
+@JsonNaming(PropertyNamingStrategy.SnakeCaseStrategy.class)
 public class HttpErrorResponse extends AppResponse {
 
-  @JsonProperty("message")
   private final Message message;
 
-  @JsonProperty("invalid_attributes")
   private Map<String, String> invalidAttributes;
 
-  @JsonProperty("extra_params")
   private Map<String, Object> extraParams;
 
-  @JsonProperty("stack_trace")
   private StackTraceElement[] stackTrace;
 
-  @JsonProperty("exception_cause")
   private Throwable exceptionCause;
 
   public HttpErrorResponse(HttpException exception) {
@@ -59,15 +56,13 @@ public class HttpErrorResponse extends AppResponse {
   @Getter
   @AllArgsConstructor
   @JsonInclude(JsonInclude.Include.NON_NULL)
+  @JsonNaming(PropertyNamingStrategy.SnakeCaseStrategy.class)
   public static class Message {
 
-    @JsonProperty("type")
     private final ResponseMessage type;
 
-    @JsonProperty("text")
     private final String text;
 
-    @JsonProperty("error_code")
     private final String errorCode;
   }
 }
