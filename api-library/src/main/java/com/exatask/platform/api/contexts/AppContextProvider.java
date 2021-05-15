@@ -34,7 +34,19 @@ public class AppContextProvider {
     return Objects.nonNull(getContext()) ? getContext().getUserId() : null;
   }
 
+  public static String getUserName() {
+    return Objects.nonNull(getContext()) ? getContext().getUserName() : null;
+  }
+
+  public static String getUserEmailId() {
+    return Objects.nonNull(getContext()) ? getContext().getUserEmailId() : null;
+  }
+
   public static String getOrganizationId() {
     return Objects.nonNull(getContext()) ? getContext().getOrganizationId() : null;
+  }
+
+  public static String getOrganizationName() {
+    return Objects.nonNull(getContext()) ? getContext().getOrganizationName() : null;
   }
 }

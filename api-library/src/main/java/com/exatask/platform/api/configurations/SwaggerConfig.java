@@ -10,18 +10,14 @@ import io.swagger.v3.oas.models.media.Content;
 import io.swagger.v3.oas.models.media.MediaType;
 import io.swagger.v3.oas.models.media.Schema;
 import io.swagger.v3.oas.models.responses.ApiResponse;
-import io.swagger.v3.oas.models.servers.Server;
 import io.swagger.v3.oas.models.tags.Tag;
 import org.apache.commons.lang3.ObjectUtils;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.util.CollectionUtils;
 
-import java.net.InetAddress;
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -35,10 +31,7 @@ public class SwaggerConfig {
   @Autowired
   private ApiSwaggerConfig swaggerConfig;
 
-  @Value("${server.port}")
-  private String serverPort;
-
-  private Map<String, Header> getDefaultApiHeaders() {
+  private Map<String, Header> getDefaultResponseHeaders() {
 
     Map<String, Header> headers = new HashMap<>();
 
@@ -93,7 +86,7 @@ public class SwaggerConfig {
     Content responseContent = new Content();
     responseContent.addMediaType(org.springframework.http.MediaType.APPLICATION_JSON.toString(), (new MediaType()).schema(apiFailure));
     return (new ApiResponse())
-        .headers(this.getDefaultApiHeaders())
+        .headers(this.getDefaultResponseHeaders())
         .content(responseContent);
   }
 
@@ -159,13 +152,6 @@ public class SwaggerConfig {
     return tags;
   }
 
-  private List<Server> getServers() {
-
-    return Collections.singletonList(new Server()
-        .url(InetAddress.getLoopbackAddress().getHostAddress() + ":" + serverPort)
-        .description(serviceConfig.getEnvironment()));
-  }
-
   @Bean
   public OpenAPI documentation() {
 
@@ -173,7 +159,6 @@ public class SwaggerConfig {
         .openapi("3.0.0")
         .components(getComponents())
         .info(getInfo())
-        .servers(getServers())
         .tags(getTags());
   }
 }

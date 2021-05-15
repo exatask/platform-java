@@ -13,5 +13,11 @@ public class AppContext {
 
   private final String organizationId;
 
+  private final String organizationName;
+
   private final String userId;
+
+  private final String userName;
+
+  private final String userEmailId;
 }
