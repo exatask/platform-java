@@ -117,14 +117,15 @@ public class AppMongoRepositoryImpl<T, ID extends Serializable> extends SimpleMo
    * @param query
    * @param sort
    */
-  private void prepareSort(Query query, Map<String, Sort.Direction> sort) {
+  private void prepareSort(Query query, Map<String, Integer> sort) {
 
     if (sort == null) {
       sort = new HashMap<>();
     }
 
-    for (Map.Entry<String, Sort.Direction> entry : sort.entrySet()) {
-      query.with(Sort.by(entry.getValue(), entry.getKey()));
+    for (Map.Entry<String, Integer> entry : sort.entrySet()) {
+      Sort.Direction direction = entry.getValue() == 1 ? Sort.Direction.ASC : Sort.Direction.DESC;
+      query.with(Sort.by(direction, entry.getKey()));
     }
   }
 
@@ -171,28 +172,22 @@ public class AppMongoRepositoryImpl<T, ID extends Serializable> extends SimpleMo
   }
 
   @Override
-  public List<T> find(Map<String, Object> filters, List<String> projection, Map<String, Sort.Direction> sort) {
+  public List<T> find(Map<String, Object> filters, List<String> projection, Map<String, Integer> sort) {
     return find(prepareAppFilters(filters), prepareAppProjection(projection), sort, Defaults.DEFAULT_SKIP, Defaults.DEFAULT_LIMIT);
   }
 
   @Override
-  public List<T> find(Map<String, Object> filters, Map<String, Boolean> projection, Map<String, Sort.Direction> sort) {
+  public List<T> find(Map<String, Object> filters, Map<String, Boolean> projection, Map<String, Integer> sort) {
     return find(prepareAppFilters(filters), projection, sort, Defaults.DEFAULT_SKIP, Defaults.DEFAULT_LIMIT);
   }
 
   @Override
-  public List<T> find(
-      Map<String, Object> filters, List<String> projection, Map<String, Sort.Direction> sort, Integer skip,
-      Integer limit
-  ) {
+  public List<T> find(Map<String, Object> filters, List<String> projection, Map<String, Integer> sort, Integer skip, Integer limit) {
     return find(prepareAppFilters(filters), prepareAppProjection(projection), sort, Defaults.DEFAULT_SKIP, Defaults.DEFAULT_LIMIT);
   }
 
   @Override
-  public List<T> find(
-      Map<String, Object> filters, Map<String, Boolean> projection, Map<String, Sort.Direction> sort, Integer skip,
-      Integer limit
-  ) {
+  public List<T> find(Map<String, Object> filters, Map<String, Boolean> projection, Map<String, Integer> sort, Integer skip, Integer limit) {
     return find(prepareAppFilters(filters), projection, sort, Defaults.DEFAULT_SKIP, Defaults.DEFAULT_LIMIT);
   }
 
@@ -207,22 +202,22 @@ public class AppMongoRepositoryImpl<T, ID extends Serializable> extends SimpleMo
   }
 
   @Override
-  public List<T> find(AppFilter filters, List<String> projection, Map<String, Sort.Direction> sort) {
+  public List<T> find(AppFilter filters, List<String> projection, Map<String, Integer> sort) {
     return find(filters, prepareAppProjection(projection), sort, Defaults.DEFAULT_SKIP, Defaults.DEFAULT_LIMIT);
   }
 
   @Override
-  public List<T> find(AppFilter filters, Map<String, Boolean> projection, Map<String, Sort.Direction> sort) {
+  public List<T> find(AppFilter filters, Map<String, Boolean> projection, Map<String, Integer> sort) {
     return find(filters, projection, sort, Defaults.DEFAULT_SKIP, Defaults.DEFAULT_LIMIT);
   }
 
   @Override
-  public List<T> find(AppFilter filters, List<String> projection, Map<String, Sort.Direction> sort, Integer skip, Integer limit) {
+  public List<T> find(AppFilter filters, List<String> projection, Map<String, Integer> sort, Integer skip, Integer limit) {
     return find(filters, prepareAppProjection(projection), sort, skip, limit);
   }
 
   @Override
-  public List<T> find(AppFilter filters, Map<String, Boolean> projection, Map<String, Sort.Direction> sort, Integer skip, Integer limit) {
+  public List<T> find(AppFilter filters, Map<String, Boolean> projection, Map<String, Integer> sort, Integer skip, Integer limit) {
 
     skip = skip == null ? Defaults.DEFAULT_SKIP : skip;
     limit = limit == null ? Defaults.DEFAULT_LIMIT : limit;

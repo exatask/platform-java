@@ -2,7 +2,6 @@ package com.exatask.platform.api.configurations;
 
 import io.swagger.v3.oas.models.Components;
 import io.swagger.v3.oas.models.OpenAPI;
-import io.swagger.v3.oas.models.headers.Header;
 import io.swagger.v3.oas.models.info.Info;
 import io.swagger.v3.oas.models.info.License;
 import io.swagger.v3.oas.models.media.ArraySchema;
@@ -18,9 +17,7 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.util.CollectionUtils;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 @Configuration
 public class SwaggerConfig {
@@ -30,26 +27,6 @@ public class SwaggerConfig {
 
   @Autowired
   private ApiSwaggerConfig swaggerConfig;
-
-  private Map<String, Header> getDefaultResponseHeaders() {
-
-    Map<String, Header> headers = new HashMap<>();
-
-    headers.put("x-trace-id", (new Header())
-        .schema((new Schema<>()).type("string"))
-        .description("UUID of currently processed request"));
-    headers.put("ratelimit-limit", (new Header())
-        .schema((new Schema<>()).type("integer"))
-        .description("Request limit per time window"));
-    headers.put("ratelimit-remaining", (new Header())
-        .schema((new Schema<>()).type("integer"))
-        .description("The number of requests left for the time window"));
-    headers.put("ratelimit-reset", (new Header())
-        .schema((new Schema<>()).type("string"))
-        .description("The UTC date/time at which the current rate limit window resets"));
-
-    return headers;
-  }
 
   private ApiResponse getApiFailureResponse() {
 
@@ -85,9 +62,7 @@ public class SwaggerConfig {
 
     Content responseContent = new Content();
     responseContent.addMediaType(org.springframework.http.MediaType.APPLICATION_JSON.toString(), (new MediaType()).schema(apiFailure));
-    return (new ApiResponse())
-        .headers(this.getDefaultResponseHeaders())
-        .content(responseContent);
+    return (new ApiResponse()).content(responseContent);
   }
 
   private ApiResponse getApiSuccessResponse() {

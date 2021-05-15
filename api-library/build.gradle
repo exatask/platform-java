@@ -24,7 +24,9 @@ dependencies {
   api project(":i18n-library")
   api project(":logging-library")
 
-  implementation group: "org.springframework.boot", name: "spring-boot-starter-security"
+  implementation (group: "org.springframework.boot", name: "spring-boot-starter-security") {
+    exclude module: "spring-boot-starter-logging"
+  }
   implementation group: "org.apache.commons", name: "commons-lang3", version: "${apacheCommonsVersion}"
   implementation group: "commons-codec", name: "commons-codec", version: "${commonsCodecVersion}"
   implementation project(":utilities-library")

@@ -2,7 +2,6 @@ package com.exatask.platform.mongodb;
 
 import com.exatask.platform.mongodb.filters.AppFilter;
 import com.exatask.platform.mongodb.updates.AppUpdate;
-import org.springframework.data.domain.Sort;
 import org.springframework.data.mongodb.repository.MongoRepository;
 
 import java.io.Serializable;
@@ -15,25 +14,25 @@ public interface AppMongoRepository<T, ID extends Serializable> extends MongoRep
 
   List<T> find(Map<String, Object> filters, Map<String, Boolean> projection);
 
-  List<T> find(Map<String, Object> filters, List<String> projection, Map<String, Sort.Direction> sort);
+  List<T> find(Map<String, Object> filters, List<String> projection, Map<String, Integer> sort);
 
-  List<T> find(Map<String, Object> filters, Map<String, Boolean> projection, Map<String, Sort.Direction> sort);
+  List<T> find(Map<String, Object> filters, Map<String, Boolean> projection, Map<String, Integer> sort);
 
-  List<T> find(Map<String, Object> filters, List<String> projection, Map<String, Sort.Direction> sort, Integer skip, Integer limit);
+  List<T> find(Map<String, Object> filters, List<String> projection, Map<String, Integer> sort, Integer skip, Integer limit);
 
-  List<T> find(Map<String, Object> filters, Map<String, Boolean> projection, Map<String, Sort.Direction> sort, Integer skip, Integer limit);
+  List<T> find(Map<String, Object> filters, Map<String, Boolean> projection, Map<String, Integer> sort, Integer skip, Integer limit);
 
   List<T> find(AppFilter filters, List<String> projection);
 
   List<T> find(AppFilter filters, Map<String, Boolean> projection);
 
-  List<T> find(AppFilter filters, List<String> projection, Map<String, Sort.Direction> sort);
+  List<T> find(AppFilter filters, List<String> projection, Map<String, Integer> sort);
 
-  List<T> find(AppFilter filters, Map<String, Boolean> projection, Map<String, Sort.Direction> sort);
+  List<T> find(AppFilter filters, Map<String, Boolean> projection, Map<String, Integer> sort);
 
-  List<T> find(AppFilter filters, List<String> projection, Map<String, Sort.Direction> sort, Integer skip, Integer limit);
+  List<T> find(AppFilter filters, List<String> projection, Map<String, Integer> sort, Integer skip, Integer limit);
 
-  List<T> find(AppFilter filters, Map<String, Boolean> projection, Map<String, Sort.Direction> sort, Integer skip, Integer limit);
+  List<T> find(AppFilter filters, Map<String, Boolean> projection, Map<String, Integer> sort, Integer skip, Integer limit);
 
   long count(Map<String, Object> filters);
 

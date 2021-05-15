@@ -1,5 +1,6 @@
 package com.exatask.platform.api.contexts;
 
+import java.util.Date;
 import java.util.Objects;
 
 public class AppContextProvider {
@@ -20,6 +21,10 @@ public class AppContextProvider {
 
   public static void unsetContext() {
     context.remove();
+  }
+
+  public static Date getStartTime() {
+    return Objects.nonNull(getContext()) ? getContext().getStartTime() : null;
   }
 
   public static String getTraceId() {
