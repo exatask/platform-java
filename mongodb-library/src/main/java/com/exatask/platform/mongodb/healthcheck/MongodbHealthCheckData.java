@@ -1,5 +1,6 @@
-package com.exatask.platform.utilities.healthcheck;
+package com.exatask.platform.mongodb.healthcheck;
 
+import com.exatask.platform.utilities.healthcheck.ServiceHealthCheckData;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.databind.PropertyNamingStrategy;
 import com.fasterxml.jackson.databind.annotation.JsonNaming;
@@ -10,11 +11,7 @@ import lombok.experimental.SuperBuilder;
 @SuperBuilder
 @JsonInclude(JsonInclude.Include.NON_NULL)
 @JsonNaming(PropertyNamingStrategy.SnakeCaseStrategy.class)
-public class ServiceHealthCheckData {
+public class MongodbHealthCheckData extends ServiceHealthCheckData {
 
-  private final Boolean status;
-
-  private final String version;
-
-  private final String uptime;
+  private final String database;
 }

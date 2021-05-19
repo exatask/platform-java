@@ -1,38 +1,34 @@
 package com.exatask.platform.mongodb.schemas;
 
+import com.exatask.platform.mongodb.constants.ContactType;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.databind.PropertyNamingStrategy;
 import com.fasterxml.jackson.databind.annotation.JsonNaming;
+import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.extern.jackson.Jacksonized;
 import org.springframework.data.mongodb.core.mapping.Field;
 
-import javax.validation.constraints.Max;
-import javax.validation.constraints.Min;
 import javax.validation.constraints.NotEmpty;
 
 @Data
 @Builder
 @Jacksonized
-@JsonNaming(PropertyNamingStrategy.SnakeCaseStrategy.class)
+@AllArgsConstructor
 @JsonInclude(JsonInclude.Include.NON_NULL)
-public class FullDate {
+@JsonNaming(PropertyNamingStrategy.SnakeCaseStrategy.class)
+public class ContactNumber {
 
-  @Min(1)
-  @Max(31)
   @NotEmpty
-  @Field("date")
-  private Integer date;
+  @Field("type")
+  private ContactType type;
 
-  @Min(1)
-  @Max(12)
   @NotEmpty
-  @Field("month")
-  private Integer month;
+  @Field("isd_code")
+  private String isdCode;
 
-  @Min(1900)
   @NotEmpty
-  @Field("year")
-  private Integer year;
+  @Field("number")
+  private String number;
 }
