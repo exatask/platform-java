@@ -16,6 +16,7 @@ jar {
 
 dependencies {
 
+  implementation group: "org.bouncycastle", name: "bcprov-jdk15on", version: "${bouncyCastleVersion}"
   implementation group: "commons-codec", name: "commons-codec", version: "${commonsCodecVersion}"
   implementation project(":logging-library")
 

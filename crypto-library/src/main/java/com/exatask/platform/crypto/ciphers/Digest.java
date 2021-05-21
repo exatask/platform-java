@@ -3,9 +3,11 @@ package com.exatask.platform.crypto.ciphers;
 import com.exatask.platform.crypto.encoders.AppEncoder;
 import com.exatask.platform.crypto.encoders.AppEncoderFactory;
 import com.exatask.platform.crypto.encoders.AppEncoderType;
-import org.apache.commons.codec.digest.DigestUtils;
+import org.bouncycastle.jce.provider.BouncyCastleProvider;
 
 import java.security.MessageDigest;
+import java.security.NoSuchAlgorithmException;
+import java.security.NoSuchProviderException;
 
 public class Digest implements AppCipher {
 
@@ -13,9 +15,10 @@ public class Digest implements AppCipher {
 
   private final AppEncoder encoder;
 
-  public Digest(AppAlgorithm algorithm, AppEncoderType encoderType) {
+  public Digest(AppAlgorithm algorithm, AppEncoderType encoderType)
+      throws NoSuchAlgorithmException, NoSuchProviderException {
 
-    this.cipher = DigestUtils.getDigest(algorithm.getAlgorithm());
+    this.cipher = MessageDigest.getInstance(algorithm.getAlgorithm(), BouncyCastleProvider.PROVIDER_NAME);
     this.encoder = AppEncoderFactory.getEncoder(encoderType);
   }
 

@@ -6,6 +6,7 @@ import com.exatask.platform.crypto.encoders.AppEncoderFactory;
 import com.exatask.platform.crypto.encoders.AppEncoderType;
 import com.exatask.platform.logging.AppLogManager;
 import com.exatask.platform.logging.AppLogger;
+import org.bouncycastle.jce.provider.BouncyCastleProvider;
 
 import javax.crypto.BadPaddingException;
 import javax.crypto.Cipher;
@@ -16,6 +17,7 @@ import javax.crypto.spec.SecretKeySpec;
 import java.security.InvalidAlgorithmParameterException;
 import java.security.InvalidKeyException;
 import java.security.NoSuchAlgorithmException;
+import java.security.NoSuchProviderException;
 import java.util.Map;
 
 public class Aes implements AppCipher {
@@ -28,16 +30,21 @@ public class Aes implements AppCipher {
 
   private final AppEncoder encoder;
 
-  private final String key;
+  private final SecretKeySpec secretKey;
 
-  private final String iv;
+  private final IvParameterSpec ivParameter;
 
-  public Aes(AppAlgorithm algorithm, AppEncoderType encoderType, Map<String, String> cryptoKeys) throws NoSuchPaddingException, NoSuchAlgorithmException {
+  public Aes(AppAlgorithm algorithm, AppEncoderType encoderType, Map<String, String> cryptoKeys)
+      throws NoSuchPaddingException, NoSuchAlgorithmException, NoSuchProviderException {
 
-    this.cipher = Cipher.getInstance(algorithm.getAlgorithm());
+    String key = cryptoKeys.get("key");
+    String iv = cryptoKeys.get("iv");
+
+    this.cipher = Cipher.getInstance(algorithm.getAlgorithm(), BouncyCastleProvider.PROVIDER_NAME);
     this.encoder = AppEncoderFactory.getEncoder(encoderType);
-    this.key = cryptoKeys.get("key");
-    this.iv = cryptoKeys.get("iv");
+
+    this.secretKey = new SecretKeySpec(key.getBytes(), ALGORITHM);
+    this.ivParameter = new IvParameterSpec(iv.getBytes());
   }
 
   @Override
@@ -45,10 +52,7 @@ public class Aes implements AppCipher {
 
     try {
 
-      SecretKeySpec secretKeySpec = new SecretKeySpec(key.getBytes(), ALGORITHM);
-      IvParameterSpec ivParameterSpec = new IvParameterSpec(iv.getBytes());
-
-      cipher.init(Cipher.ENCRYPT_MODE, secretKeySpec, ivParameterSpec);
+      cipher.init(Cipher.ENCRYPT_MODE, secretKey, ivParameter);
       byte[] encryptedBytes = cipher.doFinal(data.getBytes());
       return encoder.encode(encryptedBytes);
 
@@ -64,10 +68,7 @@ public class Aes implements AppCipher {
 
     try {
 
-      SecretKeySpec secretKeySpec = new SecretKeySpec(key.getBytes(), ALGORITHM);
-      IvParameterSpec ivParameterSpec = new IvParameterSpec(iv.getBytes());
-
-      cipher.init(Cipher.DECRYPT_MODE, secretKeySpec, ivParameterSpec);
+      cipher.init(Cipher.DECRYPT_MODE, secretKey, ivParameter);
       byte[] decryptedBytes = cipher.doFinal(encoder.decode(data));
       return new String(decryptedBytes);
 

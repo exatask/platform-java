@@ -2,6 +2,7 @@ package com.exatask.platform.crypto.ciphers;
 
 public enum AppAlgorithm {
 
+  RSA_CBC("RSA/ECB/PKCS1Padding"),
   AES_CBC("AES/CBC/PKCS5Padding"),
   MD5("MD5"),
   SHA1("SHA-1"),
