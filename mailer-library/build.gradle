@@ -1,0 +1,36 @@
+plugins {
+  id "platform.java-conventions"
+  id "org.springframework.boot"
+}
+
+group = "com.exatask.platform"
+version = "1.0.0-SNAPSHOT"
+
+jar {
+  enabled = true
+}
+
+dependencies {
+
+  implementation group: "org.apache.commons", name: "commons-lang3", version: "${apacheCommonsVersion}"
+  implementation group: "javax.mail", name: "mail", version: "${javaxMailVersion}"
+  implementation group: "org.springframework.boot", name: "spring-boot"
+  implementation group: "org.springframework.boot", name: "spring-boot-starter-thymeleaf"
+  implementation project(":logging-library")
+  implementation project(":utilities-library")
+
+  compileOnly platform(group: "software.amazon.awssdk", name: "bom", version: "${awsSdkVersion}")
+  compileOnly group: "software.amazon.awssdk", name: "ses"
+  compileOnly group: "org.projectlombok", name: "lombok", version: "${lombokVersion}"
+  annotationProcessor group: "org.projectlombok", name: "lombok", version: "${lombokVersion}"
+}
+
+publishing {
+  publications {
+    maven(MavenPublication) {
+
+      artifactId = "mailer"
+      from components.java
+    }
+  }
+}
