@@ -16,7 +16,7 @@ jar {
 
 dependencies {
 
-  implementation group: "org.springframework.boot", name: "spring-boot", version: "${springbootVersion}"
+  implementation group: "org.springframework.boot", name: "spring-boot"
 }
 
 publishing {

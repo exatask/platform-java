@@ -77,7 +77,7 @@ public class SwaggerConfig {
 
     Schema<String> messageTypeSchema = new Schema<>();
     messageTypeSchema.type("string")
-        .setDefault("success");
+        .setDefault("SUCCESS");
     messageTypeSchema.setEnum(messageTypeEnum);
 
     Schema<Object> messageSchema = new Schema<>();

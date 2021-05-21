@@ -1,13 +1,8 @@
 package com.exatask.platform.api.errors;
 
-import lombok.AllArgsConstructor;
-import lombok.Getter;
+public interface AppError {
 
-@Getter
-@AllArgsConstructor
-public class AppError {
+  String getErrorCode();
 
-  private final String errorCode;
-
-  private final String localeKey;
+  String getLocaleKey();
 }

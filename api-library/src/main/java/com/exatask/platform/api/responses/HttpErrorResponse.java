@@ -1,6 +1,6 @@
 package com.exatask.platform.api.responses;
 
-import com.exatask.platform.api.constants.Environment;
+import com.exatask.platform.utilities.constants.Environment;
 import com.exatask.platform.api.constants.ResponseMessage;
 import com.exatask.platform.api.exceptions.HttpException;
 import com.exatask.platform.api.utilities.ApiServiceUtility;

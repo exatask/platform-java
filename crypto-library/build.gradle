@@ -1,9 +1,14 @@
 plugins {
   id "platform.java-conventions"
+  id "org.springframework.boot"
 }
 
 group = "com.exatask.platform"
 version = "1.0.0-SNAPSHOT"
+
+bootJar {
+  enabled = false
+}
 
 jar {
   enabled = true
@@ -11,11 +16,9 @@ jar {
 
 dependencies {
 
-  implementation group: "org.apache.commons", name: "commons-lang3", version: "${apacheCommonsVersion}"
-  implementation group: "com.fasterxml.jackson.core", name: "jackson-databind", version: "${fasterxmlJacksonVersion}"
+  implementation group: "commons-codec", name: "commons-codec", version: "${commonsCodecVersion}"
+  implementation project(":logging-library")
 
-  compileOnly platform(group: "software.amazon.awssdk", name: "bom", version: "${awsSdkVersion}")
-  compileOnly group: "software.amazon.awssdk", name: "auth"
   compileOnly group: "org.projectlombok", name: "lombok", version: "${lombokVersion}"
   annotationProcessor group: "org.projectlombok", name: "lombok", version: "${lombokVersion}"
 }
@@ -24,7 +27,7 @@ publishing {
   publications {
     maven(MavenPublication) {
 
-      artifactId = "utilities"
+      artifactId = "crypto"
       from components.java
     }
   }

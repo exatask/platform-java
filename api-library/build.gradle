@@ -28,8 +28,8 @@ dependencies {
     exclude module: "spring-boot-starter-logging"
   }
   implementation group: "org.apache.commons", name: "commons-lang3", version: "${apacheCommonsVersion}"
-  implementation group: "commons-codec", name: "commons-codec", version: "${commonsCodecVersion}"
   implementation project(":utilities-library")
+  implementation project(":crypto-library")
 
   compileOnly group: "org.projectlombok", name: "lombok", version: "${lombokVersion}"
   annotationProcessor group: "org.projectlombok", name: "lombok", version: "${lombokVersion}"
