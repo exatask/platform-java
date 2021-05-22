@@ -8,7 +8,7 @@ import org.springframework.context.annotation.Configuration;
 @Configuration
 public class AppEmailConfiguration {
 
-  @Value("${email.from:no-reply@exatask.com")
+  @Value("${email.from:no-reply@exatask.com}")
   private String fromAddress;
 
   @Value("${email.sender:no-reply@exatask.com}")

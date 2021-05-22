@@ -12,6 +12,8 @@ import org.springframework.data.redis.serializer.GenericJackson2JsonRedisSeriali
 import org.springframework.data.redis.serializer.StringRedisSerializer;
 import org.springframework.stereotype.Service;
 
+import java.util.Optional;
+
 @Service
 public class AppRedisTemplate {
 
@@ -39,7 +41,7 @@ public class AppRedisTemplate {
 
     RedisStandaloneConfiguration redisStandaloneConfiguration = new RedisStandaloneConfiguration(redisProperties.getHost(), redisProperties.getPort());
     redisStandaloneConfiguration.setDatabase(redisProperties.getDatabase());
-    redisStandaloneConfiguration.setPassword(redisProperties.getPassword());
+    Optional.ofNullable(redisProperties.getPassword()).ifPresent(redisStandaloneConfiguration::setPassword);
 
     return new JedisConnectionFactory(redisStandaloneConfiguration);
   }

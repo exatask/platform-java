@@ -12,7 +12,7 @@ import java.util.Map;
 public class AppCipherFactory {
 
   static {
-    Security.addProvider(new BouncyCastleProvider());
+    Security.insertProviderAt(new BouncyCastleProvider(), 1);
   }
 
   private AppCipherFactory() {

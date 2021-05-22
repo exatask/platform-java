@@ -7,13 +7,14 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.support.ResourceBundleMessageSource;
+import org.springframework.util.CollectionUtils;
 
 import java.util.Set;
 
 @Configuration
 public class AppMessageSource {
 
-  @Autowired
+  @Autowired(required = false)
   private Set<I18nSource> messageSources;
 
   @Bean
@@ -24,8 +25,10 @@ public class AppMessageSource {
     bundleMessageSource.setDefaultLocale(LocaleUtility.defaultLocale());
     bundleMessageSource.setUseCodeAsDefaultMessage(true);
 
-    for (I18nSource source : messageSources) {
-      bundleMessageSource.addBasenames(source.getMessageSources());
+    if (!CollectionUtils.isEmpty(messageSources)) {
+      for (I18nSource source : messageSources) {
+        bundleMessageSource.addBasenames(source.getMessageSources());
+      }
     }
 
     return bundleMessageSource;

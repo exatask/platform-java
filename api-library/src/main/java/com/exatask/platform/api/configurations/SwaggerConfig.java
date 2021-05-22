@@ -95,6 +95,36 @@ public class SwaggerConfig {
     return (new ApiResponse()).content(responseContent);
   }
 
+  private ApiResponse getApiEntityResponse() {
+
+    Schema<Boolean> statusSchema = new Schema<>();
+    statusSchema.type("boolean")
+        .setDefault(true);
+
+    Schema<String> entitySchema = new Schema<>();
+    entitySchema.type("string")
+        .setFormat("object-id");
+
+    Schema<String> messageTypeSchema = new Schema<>();
+    messageTypeSchema.type("string")
+        .setDefault("SUCCESS");
+
+    Schema<Object> messageSchema = new Schema<>();
+    messageSchema.type("object")
+        .addProperties("type", messageTypeSchema)
+        .addProperties("text", (new Schema<>()).type("string"));
+
+    Schema<Object> entitySuccess = new Schema<>();
+    entitySuccess.type("object")
+        .addProperties("status", statusSchema)
+        .addProperties("id", entitySchema)
+        .addProperties("message", messageSchema);
+
+    Content responseContent = new Content();
+    responseContent.addMediaType(org.springframework.http.MediaType.APPLICATION_JSON.toString(), (new MediaType()).schema(entitySuccess));
+    return (new ApiResponse()).content(responseContent);
+  }
+
   private Components getComponents() {
 
     Components components = swaggerConfig.getComponents();
@@ -104,7 +134,8 @@ public class SwaggerConfig {
 
     return components
         .addResponses("ApiFailure", getApiFailureResponse())
-        .addResponses("ApiSuccess", getApiSuccessResponse());
+        .addResponses("ApiSuccess", getApiSuccessResponse())
+        .addResponses("ApiEntity", getApiEntityResponse());
   }
 
   private Info getInfo() {
