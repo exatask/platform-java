@@ -8,16 +8,10 @@ import com.exatask.platform.logging.AppLogManager;
 import com.exatask.platform.logging.AppLogger;
 import org.bouncycastle.jce.provider.BouncyCastleProvider;
 
-import javax.crypto.BadPaddingException;
 import javax.crypto.Cipher;
-import javax.crypto.IllegalBlockSizeException;
-import javax.crypto.NoSuchPaddingException;
 import javax.crypto.spec.IvParameterSpec;
 import javax.crypto.spec.SecretKeySpec;
-import java.security.InvalidAlgorithmParameterException;
-import java.security.InvalidKeyException;
-import java.security.NoSuchAlgorithmException;
-import java.security.NoSuchProviderException;
+import java.security.GeneralSecurityException;
 import java.util.Map;
 
 public class Aes implements AppCipher {
@@ -34,8 +28,7 @@ public class Aes implements AppCipher {
 
   private final IvParameterSpec ivParameter;
 
-  public Aes(AppAlgorithm algorithm, AppEncoderType encoderType, Map<String, String> cryptoKeys)
-      throws NoSuchPaddingException, NoSuchAlgorithmException, NoSuchProviderException {
+  public Aes(AppAlgorithm algorithm, AppEncoderType encoderType, Map<String, String> cryptoKeys) throws GeneralSecurityException {
 
     String key = cryptoKeys.get("key");
     String iv = cryptoKeys.get("iv");
@@ -56,7 +49,7 @@ public class Aes implements AppCipher {
       byte[] encryptedBytes = cipher.doFinal(data.getBytes());
       return encoder.encode(encryptedBytes);
 
-    } catch (InvalidKeyException | InvalidAlgorithmParameterException | IllegalBlockSizeException | BadPaddingException exception) {
+    } catch (GeneralSecurityException exception) {
       LOGGER.error(exception);
     }
 
@@ -72,7 +65,7 @@ public class Aes implements AppCipher {
       byte[] decryptedBytes = cipher.doFinal(encoder.decode(data));
       return new String(decryptedBytes);
 
-    } catch (InvalidKeyException | InvalidAlgorithmParameterException | IllegalBlockSizeException | BadPaddingException exception) {
+    } catch (GeneralSecurityException exception) {
       LOGGER.error(exception);
     }
 

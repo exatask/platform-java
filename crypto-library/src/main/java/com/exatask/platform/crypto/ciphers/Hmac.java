@@ -8,9 +8,7 @@ import org.bouncycastle.jce.provider.BouncyCastleProvider;
 import javax.crypto.Mac;
 import javax.crypto.SecretKey;
 import javax.crypto.spec.SecretKeySpec;
-import java.security.InvalidKeyException;
-import java.security.NoSuchAlgorithmException;
-import java.security.NoSuchProviderException;
+import java.security.GeneralSecurityException;
 import java.util.Map;
 
 public class Hmac implements AppCipher {
@@ -19,8 +17,7 @@ public class Hmac implements AppCipher {
 
   private final AppEncoder encoder;
 
-  public Hmac(AppAlgorithm algorithm, AppEncoderType encoderType, Map<String, String> cryptoKeys)
-      throws NoSuchAlgorithmException, NoSuchProviderException, InvalidKeyException {
+  public Hmac(AppAlgorithm algorithm, AppEncoderType encoderType, Map<String, String> cryptoKeys) throws GeneralSecurityException {
 
     SecretKey secretKey = new SecretKeySpec(cryptoKeys.get("key").getBytes(), algorithm.getAlgorithm());
 

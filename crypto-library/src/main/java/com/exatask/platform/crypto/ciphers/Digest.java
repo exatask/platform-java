@@ -5,9 +5,8 @@ import com.exatask.platform.crypto.encoders.AppEncoderFactory;
 import com.exatask.platform.crypto.encoders.AppEncoderType;
 import org.bouncycastle.jce.provider.BouncyCastleProvider;
 
+import java.security.GeneralSecurityException;
 import java.security.MessageDigest;
-import java.security.NoSuchAlgorithmException;
-import java.security.NoSuchProviderException;
 
 public class Digest implements AppCipher {
 
@@ -15,8 +14,7 @@ public class Digest implements AppCipher {
 
   private final AppEncoder encoder;
 
-  public Digest(AppAlgorithm algorithm, AppEncoderType encoderType)
-      throws NoSuchAlgorithmException, NoSuchProviderException {
+  public Digest(AppAlgorithm algorithm, AppEncoderType encoderType) throws GeneralSecurityException {
 
     this.cipher = MessageDigest.getInstance(algorithm.getAlgorithm(), BouncyCastleProvider.PROVIDER_NAME);
     this.encoder = AppEncoderFactory.getEncoder(encoderType);

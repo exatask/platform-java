@@ -9,22 +9,16 @@ import com.exatask.platform.logging.AppLogger;
 import org.bouncycastle.jce.provider.BouncyCastleProvider;
 import org.bouncycastle.util.io.pem.PemReader;
 
-import javax.crypto.BadPaddingException;
 import javax.crypto.Cipher;
 import javax.crypto.EncryptedPrivateKeyInfo;
-import javax.crypto.IllegalBlockSizeException;
-import javax.crypto.NoSuchPaddingException;
 import javax.crypto.SecretKeyFactory;
 import javax.crypto.spec.PBEKeySpec;
 import java.io.FileReader;
 import java.io.IOException;
-import java.security.InvalidKeyException;
+import java.security.GeneralSecurityException;
 import java.security.KeyFactory;
-import java.security.NoSuchAlgorithmException;
-import java.security.NoSuchProviderException;
 import java.security.PrivateKey;
 import java.security.PublicKey;
-import java.security.spec.InvalidKeySpecException;
 import java.security.spec.PKCS8EncodedKeySpec;
 import java.security.spec.X509EncodedKeySpec;
 import java.util.Map;
@@ -44,7 +38,7 @@ public class Rsa implements AppCipher {
   private final PrivateKey privateKey;
 
   public Rsa(AppAlgorithm algorithm, AppEncoderType encoderType, Map<String, String> cryptoKeys)
-      throws NoSuchPaddingException, NoSuchAlgorithmException, NoSuchProviderException, IOException, InvalidKeySpecException, InvalidKeyException {
+      throws GeneralSecurityException, IOException {
 
     String publicKeyFile = cryptoKeys.get("publicKeyFile");
     String privateKeyFile = cryptoKeys.get("privateKeyFile");
@@ -60,7 +54,7 @@ public class Rsa implements AppCipher {
   }
 
   private PrivateKey getPrivateKey(KeyFactory keyFactory, String privateKeyFile, String passphrase)
-      throws InvalidKeySpecException, IOException, NoSuchAlgorithmException, InvalidKeyException {
+      throws GeneralSecurityException, IOException {
 
     PemReader privateKeyReader = new PemReader(new FileReader(privateKeyFile));
     byte[] privateKey = privateKeyReader.readPemObject().getContent();
@@ -82,7 +76,7 @@ public class Rsa implements AppCipher {
   }
 
   private PublicKey getPublicKey(KeyFactory keyFactory, String publicKeyFile)
-      throws IOException, InvalidKeySpecException {
+      throws IOException, GeneralSecurityException {
 
     PemReader publicKeyReader = new PemReader(new FileReader(publicKeyFile));
     byte[] publicKey = publicKeyReader.readPemObject().getContent();
@@ -98,7 +92,7 @@ public class Rsa implements AppCipher {
       byte[] encryptedBytes = this.cipher.doFinal(data.getBytes());
       return this.encoder.encode(encryptedBytes);
 
-    } catch (InvalidKeyException | IllegalBlockSizeException | BadPaddingException exception) {
+    } catch (GeneralSecurityException exception) {
       LOGGER.error(exception);
     }
 
@@ -114,7 +108,7 @@ public class Rsa implements AppCipher {
       byte[] decryptedBytes = this.cipher.doFinal(this.encoder.decode(data));
       return new String(decryptedBytes);
 
-    } catch (InvalidKeyException | IllegalBlockSizeException | BadPaddingException exception) {
+    } catch (GeneralSecurityException exception) {
       LOGGER.error(exception);
     }
 

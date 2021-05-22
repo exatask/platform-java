@@ -12,12 +12,8 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import javax.annotation.PostConstruct;
-import javax.crypto.NoSuchPaddingException;
 import java.io.IOException;
-import java.security.InvalidKeyException;
-import java.security.NoSuchAlgorithmException;
-import java.security.NoSuchProviderException;
-import java.security.spec.InvalidKeySpecException;
+import java.security.GeneralSecurityException;
 
 @Service
 public class SwaggerPasswordEncoder implements PasswordEncoder {
@@ -31,7 +27,7 @@ public class SwaggerPasswordEncoder implements PasswordEncoder {
 
     try {
       cipher = AppCipherFactory.getCipher(AppAlgorithm.MD5, AppEncoderType.HEX, null);
-    } catch (NoSuchPaddingException | NoSuchAlgorithmException | NoSuchProviderException | InvalidKeyException | IOException | InvalidKeySpecException exception) {
+    } catch (GeneralSecurityException | IOException exception) {
       LOGGER.error(exception);
     }
   }
