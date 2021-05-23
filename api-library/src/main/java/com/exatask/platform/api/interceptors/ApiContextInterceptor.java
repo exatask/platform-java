@@ -1,8 +1,8 @@
 package com.exatask.platform.api.interceptors;
 
-import com.exatask.platform.api.constants.ContextHeader;
-import com.exatask.platform.api.contexts.AppContext;
-import com.exatask.platform.api.contexts.AppContextProvider;
+import com.exatask.platform.utilities.constants.ContextHeader;
+import com.exatask.platform.utilities.contexts.AppContext;
+import com.exatask.platform.utilities.contexts.AppContextProvider;
 import org.springframework.stereotype.Service;
 
 import javax.servlet.http.HttpServletRequest;

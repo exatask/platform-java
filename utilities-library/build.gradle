@@ -9,12 +9,17 @@ jar {
   enabled = true
 }
 
+dependencyManagement {
+  imports {
+    mavenBom "software.amazon.awssdk:bom:${awsSdkVersion}"
+  }
+}
+
 dependencies {
 
   implementation group: "org.apache.commons", name: "commons-lang3", version: "${apacheCommonsVersion}"
   implementation group: "com.fasterxml.jackson.core", name: "jackson-databind", version: "${fasterxmlJacksonVersion}"
 
-  compileOnly platform(group: "software.amazon.awssdk", name: "bom", version: "${awsSdkVersion}")
   compileOnly group: "software.amazon.awssdk", name: "auth"
   compileOnly group: "org.projectlombok", name: "lombok", version: "${lombokVersion}"
   annotationProcessor group: "org.projectlombok", name: "lombok", version: "${lombokVersion}"

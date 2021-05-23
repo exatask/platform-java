@@ -1,6 +1,6 @@
 pluginManagement {
   plugins {
-    id "org.springframework.boot" version "${springbootVersion}"
+    id "org.springframework.boot" version "${springBootVersion}"
   }
 }
 
@@ -14,4 +14,5 @@ include "mailer-library"
 include "migration-library"
 include "mongodb-library"
 include "redis-library"
+include "sdk-library"
 include "utilities-library"

@@ -1,4 +1,4 @@
-package com.exatask.platform.api.contexts;
+package com.exatask.platform.utilities.contexts;
 
 import lombok.Builder;
 import lombok.Getter;

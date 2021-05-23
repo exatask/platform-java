@@ -6,8 +6,18 @@ plugins {
 group = "com.exatask.platform"
 version = "1.0.0-SNAPSHOT"
 
+bootJar {
+  enabled = false
+}
+
 jar {
   enabled = true
+}
+
+dependencyManagement {
+  imports {
+    mavenBom "software.amazon.awssdk:bom:${awsSdkVersion}"
+  }
 }
 
 dependencies {
@@ -19,7 +29,6 @@ dependencies {
   implementation project(":logging-library")
   implementation project(":utilities-library")
 
-  compileOnly platform(group: "software.amazon.awssdk", name: "bom", version: "${awsSdkVersion}")
   compileOnly group: "software.amazon.awssdk", name: "ses"
   compileOnly group: "org.projectlombok", name: "lombok", version: "${lombokVersion}"
   annotationProcessor group: "org.projectlombok", name: "lombok", version: "${lombokVersion}"
