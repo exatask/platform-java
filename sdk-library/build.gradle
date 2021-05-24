@@ -22,8 +22,8 @@ dependencyManagement {
 
 dependencies {
 
-  implementation group: "org.springframework.cloud", name: "spring-cloud-starter-openfeign"
-  implementation group: "io.github.openfeign", name: "feign-okhttp", version: "${feignOkhttpVersion}"
+  api group: "org.springframework.cloud", name: "spring-cloud-starter-openfeign"
+  api group: "io.github.openfeign", name: "feign-okhttp", version: "${feignOkhttpVersion}"
   implementation project(":utilities-library")
 }
 

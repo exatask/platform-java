@@ -37,6 +37,7 @@ public class HttpExceptionHandler {
     AppLogMessage logMessage = AppLogMessage.builder().exception(exception).build();
     logMessage.setUrl(request.getRequestURI())
         .setTraceId(AppContextProvider.getTraceId())
+        .setSpanId(AppContextProvider.getSpanId())
         .setHttpCode(exception.getHttpStatus().value())
         .setErrorCode(exception.getError().getErrorCode())
         .setInvalidAttributes(exception.getInvalidAttributes())

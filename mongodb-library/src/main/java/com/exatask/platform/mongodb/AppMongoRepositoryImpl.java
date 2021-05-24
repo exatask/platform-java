@@ -26,6 +26,7 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 
 public class AppMongoRepositoryImpl<T, ID extends Serializable> extends SimpleMongoRepository<T, ID> implements
                                                                                                      AppMongoRepository<T, ID> {
@@ -237,6 +238,59 @@ public class AppMongoRepositoryImpl<T, ID extends Serializable> extends SimpleMo
     LOGGER.trace(this.lastQuery);
 
     return mongoOperations.find(query, mongoEntityInformation.getJavaType(), mongoEntityInformation.getCollectionName());
+  }
+
+  @Override
+  public Optional<T> findOne(Map<String, Object> filters, List<String> projection) {
+    return findOne(prepareAppFilters(filters), prepareAppProjection(projection), Defaults.DEFAULT_SORT);
+  }
+
+  @Override
+  public Optional<T> findOne(Map<String, Object> filters, Map<String, Boolean> projection) {
+    return findOne(prepareAppFilters(filters), projection, Defaults.DEFAULT_SORT);
+  }
+
+  @Override
+  public Optional<T> findOne(Map<String, Object> filters, List<String> projection, Map<String, Integer> sort) {
+    return findOne(prepareAppFilters(filters), prepareAppProjection(projection), sort);
+  }
+
+  @Override
+  public Optional<T> findOne(Map<String, Object> filters, Map<String, Boolean> projection, Map<String, Integer> sort) {
+    return findOne(prepareAppFilters(filters), projection, sort);
+  }
+
+  @Override
+  public Optional<T> findOne(AppFilter filters, List<String> projection) {
+    return findOne(filters, prepareAppProjection(projection), Defaults.DEFAULT_SORT);
+  }
+
+  @Override
+  public Optional<T> findOne(AppFilter filters, Map<String, Boolean> projection) {
+    return findOne(filters, projection, Defaults.DEFAULT_SORT);
+  }
+
+  @Override
+  public Optional<T> findOne(AppFilter filters, List<String> projection, Map<String, Integer> sort) {
+    return findOne(filters, prepareAppProjection(projection), sort);
+  }
+
+  @Override
+  public Optional<T> findOne(AppFilter filters, Map<String, Boolean> projection, Map<String, Integer> sort) {
+
+    Query query = new Query();
+    prepareFilters(query, filters);
+    prepareProjection(query, projection);
+    prepareSort(query, sort);
+
+    this.lastQuery = String.format("%s.findOne(%s).project(%s).sort(%s)",
+        mongoEntityInformation.getCollectionName(),
+        SerializationUtils.serializeToJsonSafely(query.getQueryObject()),
+        SerializationUtils.serializeToJsonSafely(query.getFieldsObject()),
+        SerializationUtils.serializeToJsonSafely(query.getSortObject()));
+    LOGGER.trace(this.lastQuery);
+
+    return Optional.ofNullable(mongoOperations.findOne(query, mongoEntityInformation.getJavaType(), mongoEntityInformation.getCollectionName()));
   }
 
   @Override

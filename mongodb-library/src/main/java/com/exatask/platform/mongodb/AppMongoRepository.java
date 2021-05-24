@@ -7,6 +7,7 @@ import org.springframework.data.mongodb.repository.MongoRepository;
 import java.io.Serializable;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 
 public interface AppMongoRepository<T, ID extends Serializable> extends MongoRepository<T, ID> {
 
@@ -33,6 +34,22 @@ public interface AppMongoRepository<T, ID extends Serializable> extends MongoRep
   List<T> find(AppFilter filters, List<String> projection, Map<String, Integer> sort, Integer skip, Integer limit);
 
   List<T> find(AppFilter filters, Map<String, Boolean> projection, Map<String, Integer> sort, Integer skip, Integer limit);
+
+  Optional<T> findOne(Map<String, Object> filters, List<String> projection);
+
+  Optional<T> findOne(Map<String, Object> filters, Map<String, Boolean> projection);
+
+  Optional<T> findOne(Map<String, Object> filters, List<String> projection, Map<String, Integer> sort);
+
+  Optional<T> findOne(Map<String, Object> filters, Map<String, Boolean> projection, Map<String, Integer> sort);
+
+  Optional<T> findOne(AppFilter filters, List<String> projection);
+
+  Optional<T> findOne(AppFilter filters, Map<String, Boolean> projection);
+
+  Optional<T> findOne(AppFilter filters, List<String> projection, Map<String, Integer> sort);
+
+  Optional<T> findOne(AppFilter filters, Map<String, Boolean> projection, Map<String, Integer> sort);
 
   long count(Map<String, Object> filters);
 

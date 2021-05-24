@@ -44,6 +44,8 @@ public class AppLogMessage {
 
   private String traceId;
 
+  private String spanId;
+
   @Setter(AccessLevel.PACKAGE)
   private String level;
 

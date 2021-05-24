@@ -13,6 +13,8 @@ public class AppContext {
 
   private final String traceId;
 
+  private final String spanId;
+
   private final String sessionId;
 
   private final String organizationId;

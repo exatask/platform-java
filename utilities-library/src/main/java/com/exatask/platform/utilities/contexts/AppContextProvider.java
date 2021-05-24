@@ -31,6 +31,10 @@ public class AppContextProvider {
     return Objects.nonNull(getContext()) ? getContext().getTraceId() : null;
   }
 
+  public static String getSpanId() {
+    return Objects.nonNull(getContext()) ? getContext().getSpanId() : null;
+  }
+
   public static String getSessionId() {
     return Objects.nonNull(getContext()) ? getContext().getSessionId() : null;
   }

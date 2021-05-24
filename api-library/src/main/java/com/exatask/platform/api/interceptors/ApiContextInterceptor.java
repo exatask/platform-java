@@ -9,6 +9,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.util.Date;
 import java.util.Optional;
+import java.util.UUID;
 
 @Service
 public class ApiContextInterceptor extends AppInterceptor {
@@ -18,7 +19,8 @@ public class ApiContextInterceptor extends AppInterceptor {
 
     AppContext.AppContextBuilder appContextBuilder = AppContext.builder()
         .startTime(new Date())
-        .traceId(request.getHeader(ContextHeader.TRACE_ID));
+        .traceId(request.getHeader(ContextHeader.TRACE_ID))
+        .spanId(UUID.randomUUID().toString());
 
     Optional.ofNullable(request.getHeader(ContextHeader.SESSION_ID)).ifPresent(appContextBuilder::sessionId);
 

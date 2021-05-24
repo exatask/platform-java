@@ -15,7 +15,6 @@ public class AppContextInterceptor implements RequestInterceptor {
   public void apply(RequestTemplate template) {
 
     template.header(ContextHeader.TRACE_ID, AppContextProvider.getTraceId());
-
     Optional.ofNullable(AppContextProvider.getSessionId()).ifPresent(sessionId -> template.header(ContextHeader.SESSION_ID, sessionId));
 
     Optional.ofNullable(AppContextProvider.getOrganizationId()).ifPresent(organizationId -> {

@@ -26,6 +26,7 @@ public class SystemExceptionHandler {
     AppLogMessage logMessage = AppLogMessage.builder().exception(exception).build();
     logMessage.setUrl(request.getRequestURI())
         .setTraceId(AppContextProvider.getTraceId())
+        .setSpanId(AppContextProvider.getSpanId())
         .setHttpCode(httpStatus.value());
     LOGGER.error(logMessage);
   }
