@@ -1,6 +1,9 @@
 package com.exatask.platform.sdk;
 
-import feign.Logger;
+import feign.codec.Decoder;
+import feign.codec.Encoder;
+import feign.jackson.JacksonDecoder;
+import feign.jackson.JacksonEncoder;
 import feign.okhttp.OkHttpClient;
 import org.springframework.cloud.openfeign.EnableFeignClients;
 import org.springframework.cloud.openfeign.FeignClientsConfiguration;
@@ -19,7 +22,12 @@ public class AppFeignConfiguration {
   }
 
   @Bean
-  public Logger.Level loggerLevel() {
-    return Logger.Level.BASIC;
+  public Encoder encoder() {
+    return new JacksonEncoder();
+  }
+
+  @Bean
+  public Decoder decoder() {
+    return new JacksonDecoder();
   }
 }

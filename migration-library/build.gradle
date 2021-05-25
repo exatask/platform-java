@@ -20,11 +20,12 @@ dependencies {
     exclude module: "spring-boot-starter-logging"
   }
   api group: "org.springframework.boot", name: "spring-boot-starter-log4j2"
-  api group: "com.github.mongobee", name: "mongobee", version: "${mongobeeVersion}"
-  api (project(":mongodb-library")) {
+  api project(":logging-library")
+
+  implementation group: "com.github.mongobee", name: "mongobee", version: "${mongobeeVersion}"
+  implementation (project(":mongodb-library")) {
     exclude module: "spring-boot-starter-data-mongodb"
   }
-  api project(":logging-library")
 }
 
 publishing {
