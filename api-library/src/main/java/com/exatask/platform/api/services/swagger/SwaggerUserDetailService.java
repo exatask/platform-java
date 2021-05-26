@@ -1,4 +1,4 @@
-package com.exatask.platform.api.services.httpsecurity;
+package com.exatask.platform.api.services.swagger;
 
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Value;

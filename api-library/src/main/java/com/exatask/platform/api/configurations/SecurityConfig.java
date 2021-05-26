@@ -1,7 +1,7 @@
 package com.exatask.platform.api.configurations;
 
-import com.exatask.platform.api.services.httpsecurity.SwaggerPasswordEncoder;
-import com.exatask.platform.api.services.httpsecurity.SwaggerUserDetailService;
+import com.exatask.platform.api.services.swagger.SwaggerPasswordEncoder;
+import com.exatask.platform.api.services.swagger.SwaggerUserDetailService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;

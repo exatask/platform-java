@@ -1,6 +1,7 @@
 package com.exatask.platform.api.configurations;
 
 import com.exatask.platform.api.interceptors.ApiContextInterceptor;
+import com.exatask.platform.api.interceptors.AuthenticationInterceptor;
 import com.exatask.platform.api.interceptors.ServiceEnabledInterceptor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Configuration;
@@ -20,6 +21,9 @@ public class InterceptorConfig implements WebMvcConfigurer {
   @Autowired
   private ApiContextInterceptor apiContextInterceptor;
 
+  @Autowired
+  private AuthenticationInterceptor authenticationInterceptor;
+
   private static final List<String> fullAccessUrls = new ArrayList<>(Arrays.asList(
       "/health-check", "/swagger-ui.html", "/swagger-ui/**", "/v3/api-docs/**", "/favicon*"
   ));
@@ -30,6 +34,9 @@ public class InterceptorConfig implements WebMvcConfigurer {
     registry.addInterceptor(serviceEnabledInterceptor);
 
     registry.addInterceptor(apiContextInterceptor)
-      .excludePathPatterns(fullAccessUrls);
+        .excludePathPatterns(fullAccessUrls);
+
+    registry.addInterceptor(authenticationInterceptor)
+        .excludePathPatterns(fullAccessUrls);
   }
 }

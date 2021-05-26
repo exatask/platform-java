@@ -1,4 +1,4 @@
-package com.exatask.platform.api.services.httpsecurity;
+package com.exatask.platform.api.services.swagger;
 
 import com.exatask.platform.api.constants.ApiService;
 import com.exatask.platform.crypto.ciphers.AppAlgorithm;

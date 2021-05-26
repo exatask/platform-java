@@ -1,9 +1,10 @@
 package com.exatask.platform.sdk.clients;
 
-import com.exatask.platform.sdk.authentications.ServiceAuthenticator;
+import com.exatask.platform.sdk.authenticators.ServiceAuthenticatorFactory;
+import com.exatask.platform.sdk.authenticators.credentials.NoAuthCredentials;
+import com.exatask.platform.sdk.authenticators.credentials.ServiceCredentials;
 import com.exatask.platform.sdk.decoders.ServiceErrorDecoder;
 import com.exatask.platform.sdk.interceptors.AppContextInterceptor;
-import com.exatask.platform.utilities.constants.ServiceAuthentication;
 import feign.Client;
 import feign.Feign;
 import feign.Logger;
@@ -15,12 +16,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.util.CollectionUtils;
 
-import javax.annotation.PostConstruct;
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
-import java.util.Set;
 
 @Service
 public class ServiceClientTemplate<T extends ServiceClient> {
@@ -38,36 +35,21 @@ public class ServiceClientTemplate<T extends ServiceClient> {
   private ServiceErrorDecoder errorDecoder;
 
   @Autowired
-  private Set<ServiceAuthenticator> authenticators;
-
-  @Autowired
   private AppContextInterceptor appContextInterceptor;
 
-  private final Map<ServiceAuthentication, ServiceAuthenticator> serviceAuthenticators = new HashMap<>();
-
-  @PostConstruct
-  private void initialize() {
-    for (ServiceAuthenticator authenticator : authenticators) {
-      serviceAuthenticators.put(authenticator.getAuthentication(), authenticator);
-    }
-  }
-
   public T getServiceClient(Class<T> clazz, String baseUrl) {
-    return getServiceClient(clazz, baseUrl, ServiceAuthentication.NO_AUTH, null);
+    return getServiceClient(clazz, baseUrl, new NoAuthCredentials());
   }
 
-  public T getServiceClient(Class<T> clazz, String baseUrl, ServiceAuthentication serviceAuth, Map<String, String> serviceAuthData) {
-    return getServiceClient(clazz, baseUrl, serviceAuth, serviceAuthData, null);
+  public T getServiceClient(Class<T> clazz, String baseUrl, ServiceCredentials credentials) {
+    return getServiceClient(clazz, baseUrl, credentials, null);
   }
 
-  public T getServiceClient(Class<T> clazz, String baseUrl, ServiceAuthentication serviceAuth, Map<String, String> serviceAuthData, List<RequestInterceptor> interceptors) {
+  public T getServiceClient(Class<T> clazz, String baseUrl, ServiceCredentials credentials, List<RequestInterceptor> interceptors) {
 
     List<RequestInterceptor> interceptorList = new ArrayList<>();
     interceptorList.add(appContextInterceptor);
-
-    if (serviceAuthenticators.containsKey(serviceAuth)) {
-      interceptorList.add(serviceAuthenticators.get(serviceAuth).getInterceptor(serviceAuthData));
-    }
+    interceptorList.add(ServiceAuthenticatorFactory.getServiceAuthenticator(credentials));
 
     if (!CollectionUtils.isEmpty(interceptors)) {
       interceptorList.addAll(interceptors);

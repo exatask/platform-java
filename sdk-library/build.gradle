@@ -29,6 +29,7 @@ dependencies {
   implementation group: "io.github.openfeign", name: "feign-jackson", version: "${feignJacksonVersion}"
   implementation project(":utilities-library")
   implementation project(":logging-library")
+  implementation project(":crypto-library")
 
   compileOnly group: "org.projectlombok", name: "lombok", version: "${lombokVersion}"
   annotationProcessor group: "org.projectlombok", name: "lombok", version: "${lombokVersion}"
