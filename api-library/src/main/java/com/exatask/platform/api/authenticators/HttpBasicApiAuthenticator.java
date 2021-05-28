@@ -1,4 +1,4 @@
-package com.exatask.platform.sdk.authenticators;
+package com.exatask.platform.api.authenticators;
 
 import com.exatask.platform.crypto.encoders.AppEncoder;
 import com.exatask.platform.crypto.encoders.AppEncoderFactory;
@@ -7,11 +7,11 @@ import com.exatask.platform.utilities.constants.ServiceAuth;
 import lombok.Data;
 import lombok.experimental.Accessors;
 
-public class HttpBasicAuthenticator implements Authenticator {
+public class HttpBasicApiAuthenticator implements ApiAuthenticator {
 
   private final String authenticationToken;
 
-  public HttpBasicAuthenticator(Credentials credentials) {
+  public HttpBasicApiAuthenticator(Credentials credentials) {
 
     HttpBasicCredentials httpBasicCredentials = (HttpBasicCredentials) credentials;
 
@@ -28,8 +28,8 @@ public class HttpBasicAuthenticator implements Authenticator {
   }
 
   @Override
-  public String generate() {
-    return authenticationToken;
+  public Boolean authenticate(String token) {
+    return authenticationToken.compareTo(token) == 0;
   }
 
   @Data
@@ -39,10 +39,5 @@ public class HttpBasicAuthenticator implements Authenticator {
     private String username;
 
     private String password;
-
-    @Override
-    public ServiceAuth getAuthentication() {
-      return ServiceAuth.HTTP_BASIC;
-    }
   }
 }

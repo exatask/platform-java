@@ -1,8 +1,8 @@
-package com.exatask.platform.api.authenticators;
+package com.exatask.platform.sdk.authenticators;
 
 import com.exatask.platform.utilities.constants.ServiceAuth;
 
-public class NoAuthAuthenticator implements Authenticator {
+public class NoAuthSdkAuthenticator implements SdkAuthenticator {
 
   @Override
   public ServiceAuth getAuthentication() {
@@ -10,8 +10,8 @@ public class NoAuthAuthenticator implements Authenticator {
   }
 
   @Override
-  public Boolean authenticate(String token) {
-    return true;
+  public String generate() {
+    return null;
   }
 
   public static class NoAuthCredentials implements Credentials {

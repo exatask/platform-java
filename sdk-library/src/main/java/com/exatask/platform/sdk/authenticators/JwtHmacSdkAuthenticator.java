@@ -11,13 +11,13 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
 
-public class JwtHmacAuthenticator implements Authenticator {
+public class JwtHmacSdkAuthenticator implements SdkAuthenticator {
 
   private final JwtHmac signer;
 
   private final JwtHmacCredentials credentials;
 
-  public JwtHmacAuthenticator(Credentials credentials) {
+  public JwtHmacSdkAuthenticator(Credentials credentials) {
 
     JwtHmacCredentials jwtCredentials = (JwtHmacCredentials) credentials;
     Map<String, String> signerKeys = Collections.singletonMap("secret", jwtCredentials.getSecret());

@@ -11,13 +11,13 @@ import org.springframework.util.CollectionUtils;
 import java.util.Collections;
 import java.util.Map;
 
-public class JwtHmacAuthenticator implements Authenticator {
+public class JwtHmacApiAuthenticator implements ApiAuthenticator {
 
   private final JwtHmac signer;
 
   private final JwtHmacCredentials credentials;
 
-  public JwtHmacAuthenticator(Credentials credentials) {
+  public JwtHmacApiAuthenticator(Credentials credentials) {
 
     JwtHmacCredentials jwtCredentials = (JwtHmacCredentials) credentials;
     Map<String, String> signerKeys = Collections.singletonMap("secret", jwtCredentials.getSecret());
@@ -53,10 +53,5 @@ public class JwtHmacAuthenticator implements Authenticator {
     private String secret;
 
     private String audience;
-
-    @Override
-    public ServiceAuth getAuthentication() {
-      return ServiceAuth.JWT_HMAC;
-    }
   }
 }

@@ -1,6 +1,6 @@
 package com.exatask.platform.api.interceptors;
 
-import com.exatask.platform.api.authenticators.Authenticator;
+import com.exatask.platform.api.authenticators.ApiAuthenticator;
 import com.exatask.platform.api.exceptions.ProxyAuthenticationException;
 import com.exatask.platform.utilities.constants.ServiceAuth;
 import com.exatask.platform.utilities.constants.ServiceAuthHeader;
@@ -15,7 +15,7 @@ import javax.servlet.http.HttpServletResponse;
 public class AuthenticationInterceptor extends AppInterceptor {
 
   @Autowired
-  private Authenticator authenticator;
+  private ApiAuthenticator apiAuthenticator;
 
   @Override
   public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler) throws Exception {
@@ -27,12 +27,12 @@ public class AuthenticationInterceptor extends AppInterceptor {
     }
 
     ServiceAuth authType = ServiceAuth.valueOf(authTypeString);
-    if (authType != authenticator.getAuthentication()) {
+    if (authType != apiAuthenticator.getAuthentication()) {
       this.sendPreHandleErrorResponse(ProxyAuthenticationException.builder().build(), request, response);
       return false;
     }
 
-    Boolean tokenValid = authenticator.authenticate(request.getHeader(ServiceAuthHeader.AUTH_TOKEN));
+    Boolean tokenValid = apiAuthenticator.authenticate(request.getHeader(ServiceAuthHeader.AUTH_TOKEN));
     if (!tokenValid) {
       this.sendPreHandleErrorResponse(ProxyAuthenticationException.builder().build(), request, response);
     }

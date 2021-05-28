@@ -1,9 +1,9 @@
 package com.exatask.platform.sdk.interceptors;
 
-import com.exatask.platform.sdk.authenticators.Authenticator;
-import com.exatask.platform.sdk.authenticators.HttpBasicAuthenticator;
-import com.exatask.platform.sdk.authenticators.JwtHmacAuthenticator;
-import com.exatask.platform.sdk.authenticators.NoAuthAuthenticator;
+import com.exatask.platform.sdk.authenticators.SdkAuthenticator;
+import com.exatask.platform.sdk.authenticators.HttpBasicSdkAuthenticator;
+import com.exatask.platform.sdk.authenticators.JwtHmacSdkAuthenticator;
+import com.exatask.platform.sdk.authenticators.NoAuthSdkAuthenticator;
 import com.exatask.platform.sdk.exceptions.InvalidAuthenticatorException;
 import com.exatask.platform.utilities.constants.ServiceAuthHeader;
 import feign.RequestInterceptor;
@@ -11,24 +11,24 @@ import feign.RequestTemplate;
 
 public class AppAuthenticationInterceptor implements RequestInterceptor {
 
-  private final Authenticator authenticator;
+  private final SdkAuthenticator sdkAuthenticator;
 
-  public AppAuthenticationInterceptor(Authenticator.Credentials credentials) {
-    this.authenticator = getAuthenticator(credentials);
+  public AppAuthenticationInterceptor(SdkAuthenticator.Credentials credentials) {
+    this.sdkAuthenticator = getAuthenticator(credentials);
   }
 
-  private Authenticator getAuthenticator(Authenticator.Credentials credentials) {
+  private SdkAuthenticator getAuthenticator(SdkAuthenticator.Credentials credentials) {
 
     switch (credentials.getAuthentication()) {
 
       case HTTP_BASIC:
-        return new HttpBasicAuthenticator(credentials);
+        return new HttpBasicSdkAuthenticator(credentials);
 
       case JWT_HMAC:
-        return new JwtHmacAuthenticator(credentials);
+        return new JwtHmacSdkAuthenticator(credentials);
 
       case NO_AUTH:
-        return new NoAuthAuthenticator();
+        return new NoAuthSdkAuthenticator();
     }
 
     throw new InvalidAuthenticatorException(credentials.getAuthentication().toString());
@@ -37,7 +37,7 @@ public class AppAuthenticationInterceptor implements RequestInterceptor {
   @Override
   public void apply(RequestTemplate template) {
 
-    template.header(ServiceAuthHeader.AUTH_TYPE, authenticator.getAuthentication().toString())
-        .header(ServiceAuthHeader.AUTH_TOKEN, authenticator.generate());
+    template.header(ServiceAuthHeader.AUTH_TYPE, sdkAuthenticator.getAuthentication().toString())
+        .header(ServiceAuthHeader.AUTH_TOKEN, sdkAuthenticator.generate());
   }
 }
