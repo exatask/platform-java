@@ -1,24 +1,23 @@
 package com.exatask.platform.api.authenticators;
 
-import com.exatask.platform.api.authenticators.credentials.ApiCredentials;
-import com.exatask.platform.api.authenticators.credentials.HttpBasicCredentials;
 import com.exatask.platform.crypto.encoders.AppEncoder;
 import com.exatask.platform.crypto.encoders.AppEncoderFactory;
 import com.exatask.platform.crypto.encoders.AppEncoderType;
 import com.exatask.platform.utilities.constants.ServiceAuth;
-import org.apache.commons.lang3.StringUtils;
+import lombok.Data;
+import lombok.experimental.Accessors;
 
-public class HttpBasicAuthenticator implements ApiAuthenticator {
+public class HttpBasicAuthenticator implements Authenticator {
 
   private final String authenticationToken;
 
-  public HttpBasicAuthenticator(ApiCredentials credentials) {
+  public HttpBasicAuthenticator(Credentials credentials) {
 
     HttpBasicCredentials httpBasicCredentials = (HttpBasicCredentials) credentials;
 
     AppEncoder encoder = AppEncoderFactory.getEncoder(AppEncoderType.BASE64);
-    String username = StringUtils.defaultIfEmpty(httpBasicCredentials.getUsername(), "");
-    String password = StringUtils.defaultIfEmpty(httpBasicCredentials.getPassword(), "");
+    String username = httpBasicCredentials.getUsername();
+    String password = httpBasicCredentials.getPassword();
 
     authenticationToken = encoder.encode(String.format("%s:%s", username, password).getBytes());
   }
@@ -29,7 +28,21 @@ public class HttpBasicAuthenticator implements ApiAuthenticator {
   }
 
   @Override
-  public Boolean authenticate(String authToken) {
-    return authToken.compareTo(authenticationToken) == 0;
+  public Boolean authenticate(String token) {
+    return authenticationToken.compareTo(token) == 0;
+  }
+
+  @Data
+  @Accessors(chain = true)
+  public static class HttpBasicCredentials implements Credentials {
+
+    private String username;
+
+    private String password;
+
+    @Override
+    public ServiceAuth getAuthentication() {
+      return ServiceAuth.HTTP_BASIC;
+    }
   }
 }

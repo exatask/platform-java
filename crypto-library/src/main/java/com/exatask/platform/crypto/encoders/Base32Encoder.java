@@ -2,14 +2,11 @@ package com.exatask.platform.crypto.encoders;
 
 import org.apache.commons.codec.binary.Base32;
 
-import javax.annotation.PostConstruct;
-
 public class Base32Encoder implements AppEncoder {
 
-  private Base32 base32;
+  private final Base32 base32;
 
-  @PostConstruct
-  private void initialize() {
+  public Base32Encoder() {
     base32 = new Base32();
   }
 

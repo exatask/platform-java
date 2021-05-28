@@ -2,14 +2,11 @@ package com.exatask.platform.crypto.encoders;
 
 import org.apache.commons.codec.binary.Base64;
 
-import javax.annotation.PostConstruct;
-
 public class Base64Encoder implements AppEncoder {
 
-  private Base64 base64;
+  private final Base64 base64;
 
-  @PostConstruct
-  private void initialize() {
+  public Base64Encoder() {
     base64 = new Base64();
   }
 

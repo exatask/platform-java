@@ -3,36 +3,46 @@ package com.exatask.platform.sdk.authenticators;
 import com.exatask.platform.crypto.encoders.AppEncoder;
 import com.exatask.platform.crypto.encoders.AppEncoderFactory;
 import com.exatask.platform.crypto.encoders.AppEncoderType;
-import com.exatask.platform.sdk.authenticators.credentials.HttpBasicCredentials;
-import com.exatask.platform.sdk.authenticators.credentials.ServiceCredentials;
 import com.exatask.platform.utilities.constants.ServiceAuth;
-import com.exatask.platform.utilities.constants.ServiceAuthHeader;
-import feign.RequestTemplate;
-import org.springframework.util.ObjectUtils;
+import lombok.Data;
+import lombok.experimental.Accessors;
 
-public class HttpBasicAuthenticator implements ServiceAuthenticator {
+public class HttpBasicAuthenticator implements Authenticator {
 
   private final String authenticationToken;
 
-  public HttpBasicAuthenticator(ServiceCredentials credentials) {
+  public HttpBasicAuthenticator(Credentials credentials) {
 
     HttpBasicCredentials httpBasicCredentials = (HttpBasicCredentials) credentials;
 
     AppEncoder encoder = AppEncoderFactory.getEncoder(AppEncoderType.BASE64);
-    String username = ObjectUtils.isEmpty(httpBasicCredentials.getUsername()) ? "" : httpBasicCredentials.getUsername();
-    String password = ObjectUtils.isEmpty(httpBasicCredentials.getPassword()) ? "" : httpBasicCredentials.getPassword();
+    String username = httpBasicCredentials.getUsername();
+    String password = httpBasicCredentials.getPassword();
 
     authenticationToken = encoder.encode(String.format("%s:%s", username, password).getBytes());
   }
 
+  @Override
   public ServiceAuth getAuthentication() {
     return ServiceAuth.HTTP_BASIC;
   }
 
   @Override
-  public void apply(RequestTemplate template) {
+  public String generate() {
+    return authenticationToken;
+  }
 
-    template.header(ServiceAuthHeader.AUTH_TYPE, ServiceAuth.HTTP_BASIC.toString())
-        .header(ServiceAuthHeader.AUTH_TOKEN, authenticationToken);
+  @Data
+  @Accessors(chain = true)
+  public static class HttpBasicCredentials implements Credentials {
+
+    private String username;
+
+    private String password;
+
+    @Override
+    public ServiceAuth getAuthentication() {
+      return ServiceAuth.HTTP_BASIC;
+    }
   }
 }

@@ -1,10 +1,8 @@
 package com.exatask.platform.sdk.authenticators;
 
 import com.exatask.platform.utilities.constants.ServiceAuth;
-import com.exatask.platform.utilities.constants.ServiceAuthHeader;
-import feign.RequestTemplate;
 
-public class NoAuthAuthenticator implements ServiceAuthenticator {
+public class NoAuthAuthenticator implements Authenticator {
 
   @Override
   public ServiceAuth getAuthentication() {
@@ -12,7 +10,15 @@ public class NoAuthAuthenticator implements ServiceAuthenticator {
   }
 
   @Override
-  public void apply(RequestTemplate template) {
-    template.header(ServiceAuthHeader.AUTH_TYPE, ServiceAuth.NO_AUTH.toString());
+  public String generate() {
+    return null;
+  }
+
+  public static class NoAuthCredentials implements Credentials {
+
+    @Override
+    public ServiceAuth getAuthentication() {
+      return ServiceAuth.NO_AUTH;
+    }
   }
 }

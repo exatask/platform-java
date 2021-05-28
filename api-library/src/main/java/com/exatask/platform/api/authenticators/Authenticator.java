@@ -2,9 +2,14 @@ package com.exatask.platform.api.authenticators;
 
 import com.exatask.platform.utilities.constants.ServiceAuth;
 
-public interface ApiAuthenticator {
+public interface Authenticator {
 
   ServiceAuth getAuthentication();
 
-  Boolean authenticate(String authToken);
+  Boolean authenticate(String token);
+
+  interface Credentials {
+
+    ServiceAuth getAuthentication();
+  }
 }
