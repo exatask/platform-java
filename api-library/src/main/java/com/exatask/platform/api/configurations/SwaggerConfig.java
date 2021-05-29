@@ -9,6 +9,8 @@ import io.swagger.v3.oas.models.media.Content;
 import io.swagger.v3.oas.models.media.MediaType;
 import io.swagger.v3.oas.models.media.Schema;
 import io.swagger.v3.oas.models.responses.ApiResponse;
+import io.swagger.v3.oas.models.security.SecurityRequirement;
+import io.swagger.v3.oas.models.security.SecurityScheme;
 import io.swagger.v3.oas.models.tags.Tag;
 import org.apache.commons.lang3.ObjectUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -125,6 +127,30 @@ public class SwaggerConfig {
     return (new ApiResponse()).content(responseContent);
   }
 
+  private SecurityScheme getAuthTypeSecurityScheme() {
+
+    return (new SecurityScheme())
+        .name("x-auth-type")
+        .type(SecurityScheme.Type.APIKEY)
+        .in(SecurityScheme.In.HEADER);
+  }
+
+  private SecurityScheme getAuthTokenSecurityScheme() {
+
+    return (new SecurityScheme())
+        .name("x-auth-token")
+        .type(SecurityScheme.Type.APIKEY)
+        .in(SecurityScheme.In.HEADER);
+  }
+
+  private SecurityScheme getSessionTokenSecurityScheme() {
+
+    return (new SecurityScheme())
+        .name("x-session-token")
+        .type(SecurityScheme.Type.APIKEY)
+        .in(SecurityScheme.In.HEADER);
+  }
+
   private Components getComponents() {
 
     Components components = swaggerConfig.getComponents();
@@ -133,9 +159,20 @@ public class SwaggerConfig {
     }
 
     return components
+        .addSecuritySchemes("AuthType", getAuthTypeSecurityScheme())
+        .addSecuritySchemes("AuthToken", getAuthTokenSecurityScheme())
+        .addSecuritySchemes("SessionToken", getSessionTokenSecurityScheme())
         .addResponses("ApiFailure", getApiFailureResponse())
         .addResponses("ApiSuccess", getApiSuccessResponse())
         .addResponses("ApiEntity", getApiEntityResponse());
+  }
+
+  private List<SecurityRequirement> getSecurityRequirements() {
+
+    List<SecurityRequirement> requirements = new ArrayList<>();
+    requirements.add(new SecurityRequirement().addList("AuthType").addList("AuthToken"));
+    requirements.add(new SecurityRequirement().addList("SessionToken"));
+    return requirements;
   }
 
   private Info getInfo() {
@@ -164,6 +201,7 @@ public class SwaggerConfig {
     return new OpenAPI()
         .openapi("3.0.0")
         .components(getComponents())
+        .security(getSecurityRequirements())
         .info(getInfo())
         .tags(getTags());
   }

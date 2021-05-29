@@ -26,9 +26,16 @@ public class AuthenticationInterceptor extends AppInterceptor {
       return false;
     }
 
-    ServiceAuth authType = ServiceAuth.valueOf(authTypeString);
-    if (authType != apiAuthenticator.getAuthentication()) {
-      this.sendPreHandleErrorResponse(ProxyAuthenticationException.builder().build(), request, response);
+    try {
+
+      ServiceAuth authType = ServiceAuth.valueOf(authTypeString);
+      if (authType != apiAuthenticator.getAuthentication()) {
+        this.sendPreHandleErrorResponse(ProxyAuthenticationException.builder().build(), request, response);
+        return false;
+      }
+
+    } catch (IllegalArgumentException exception) {
+      this.sendPreHandleErrorResponse(ProxyAuthenticationException.builder().exception(exception).build(), request, response);
       return false;
     }
 

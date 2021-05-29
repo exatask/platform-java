@@ -64,6 +64,14 @@ public class LineLogSerializer implements LogSerializer {
           .append(logMessage.getStackTrace());
     }
 
+    if (!ObjectUtils.isEmpty(logMessage.getExceptionCause())) {
+      stringBuilder.append(" [Cause ")
+          .append(logMessage.getExceptionCause().getMessage())
+          .append(" ")
+          .append(logMessage.getExceptionCause().getStackTrace())
+          .append("]");
+    }
+
     return stringBuilder.toString();
   }
 }

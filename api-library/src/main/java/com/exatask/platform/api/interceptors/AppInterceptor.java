@@ -6,6 +6,7 @@ import com.exatask.platform.api.responses.HttpErrorResponse;
 import com.exatask.platform.logging.AppLogManager;
 import com.exatask.platform.logging.AppLogMessage;
 import com.exatask.platform.logging.AppLogger;
+import com.exatask.platform.utilities.contexts.AppContextProvider;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
@@ -22,7 +23,9 @@ public class AppInterceptor implements HandlerInterceptor {
   private void logInterceptorException(Exception exception, HttpServletRequest request) {
 
     AppLogMessage logMessage = AppLogMessage.builder().exception(exception).build();
-    logMessage.setUrl(request.getRequestURI());
+    logMessage.setUrl(request.getRequestURI())
+        .setTraceId(AppContextProvider.getTraceId())
+        .setSpanId(AppContextProvider.getSpanId());
     LOGGER.error(logMessage);
   }
 

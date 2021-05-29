@@ -38,4 +38,12 @@ public class SystemExceptionHandler {
     logException(request, exception, HttpStatus.METHOD_NOT_ALLOWED);
     return new HttpErrorResponse(exception);
   }
+
+  @ExceptionHandler(IllegalArgumentException.class)
+  @ResponseStatus(HttpStatus.NOT_IMPLEMENTED)
+  public HttpErrorResponse handleIllegalArgumentException(HttpServletRequest request, IllegalArgumentException exception) {
+
+    logException(request, exception, HttpStatus.INTERNAL_SERVER_ERROR);
+    return new HttpErrorResponse(exception);
+  }
 }
