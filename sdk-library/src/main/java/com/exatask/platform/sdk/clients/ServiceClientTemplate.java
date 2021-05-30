@@ -1,11 +1,13 @@
 package com.exatask.platform.sdk.clients;
 
-import com.exatask.platform.sdk.authenticators.SdkAuthenticator;
 import com.exatask.platform.sdk.authenticators.NoAuthSdkAuthenticator;
+import com.exatask.platform.sdk.authenticators.SdkAuthenticator;
 import com.exatask.platform.sdk.decoders.ServiceErrorDecoder;
-import com.exatask.platform.sdk.interceptors.AppAuthenticationInterceptor;
-import com.exatask.platform.sdk.interceptors.AppContextInterceptor;
+import com.exatask.platform.sdk.interceptors.ServiceAuthenticationInterceptor;
+import com.exatask.platform.sdk.interceptors.ServiceContextInterceptor;
+import com.exatask.platform.sdk.loggers.ServiceLogger;
 import feign.Client;
+import feign.Contract;
 import feign.Feign;
 import feign.Logger;
 import feign.RequestInterceptor;
@@ -23,6 +25,9 @@ import java.util.List;
 public class ServiceClientTemplate<T extends ServiceClient> {
 
   @Autowired
+  private Contract contract;
+
+  @Autowired
   private Client client;
 
   @Autowired
@@ -35,7 +40,10 @@ public class ServiceClientTemplate<T extends ServiceClient> {
   private ServiceErrorDecoder errorDecoder;
 
   @Autowired
-  private AppContextInterceptor appContextInterceptor;
+  private ServiceLogger logger;
+
+  @Autowired
+  private ServiceContextInterceptor serviceContextInterceptor;
 
   public T getServiceClient(Class<T> clazz, String baseUrl) {
     return getServiceClient(clazz, baseUrl, new NoAuthSdkAuthenticator.NoAuthCredentials());
@@ -48,20 +56,22 @@ public class ServiceClientTemplate<T extends ServiceClient> {
   public T getServiceClient(Class<T> clazz, String baseUrl, SdkAuthenticator.Credentials credentials, List<RequestInterceptor> interceptors) {
 
     List<RequestInterceptor> interceptorList = new ArrayList<>();
-    interceptorList.add(appContextInterceptor);
-    interceptorList.add(new AppAuthenticationInterceptor(credentials));
+    interceptorList.add(serviceContextInterceptor);
+    interceptorList.add(new ServiceAuthenticationInterceptor(credentials));
 
     if (!CollectionUtils.isEmpty(interceptors)) {
       interceptorList.addAll(interceptors);
     }
 
     return Feign.builder()
+        .contract(contract)
+        .client(client)
         .encoder(encoder)
         .decoder(decoder)
+        .logger(logger)
         .logLevel(Logger.Level.BASIC)
         .retryer(Retryer.NEVER_RETRY)
         .errorDecoder(errorDecoder)
-        .client(client)
         .requestInterceptors(interceptorList)
         .target(clazz, baseUrl);
   }

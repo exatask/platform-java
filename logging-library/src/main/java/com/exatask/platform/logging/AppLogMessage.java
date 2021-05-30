@@ -42,8 +42,10 @@ public class AppLogMessage {
   @Setter(AccessLevel.PACKAGE)
   private String serviceName;
 
+  @Setter(AccessLevel.PACKAGE)
   private String traceId;
 
+  @Setter(AccessLevel.PACKAGE)
   private String spanId;
 
   @Setter(AccessLevel.PACKAGE)
@@ -54,6 +56,8 @@ public class AppLogMessage {
   private Integer httpCode;
 
   private String url;
+
+  private String method;
 
   private String errorCode;
 

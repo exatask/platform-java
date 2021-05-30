@@ -9,11 +9,11 @@ import com.exatask.platform.utilities.constants.ServiceAuthHeader;
 import feign.RequestInterceptor;
 import feign.RequestTemplate;
 
-public class AppAuthenticationInterceptor implements RequestInterceptor {
+public class ServiceAuthenticationInterceptor implements RequestInterceptor {
 
   private final SdkAuthenticator sdkAuthenticator;
 
-  public AppAuthenticationInterceptor(SdkAuthenticator.Credentials credentials) {
+  public ServiceAuthenticationInterceptor(SdkAuthenticator.Credentials credentials) {
     this.sdkAuthenticator = getAuthenticator(credentials);
   }
 

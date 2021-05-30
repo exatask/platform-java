@@ -9,7 +9,7 @@ import org.springframework.stereotype.Service;
 import java.util.Optional;
 
 @Service
-public class AppContextInterceptor implements RequestInterceptor {
+public class ServiceContextInterceptor implements RequestInterceptor {
 
   @Override
   public void apply(RequestTemplate template) {

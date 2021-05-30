@@ -5,7 +5,6 @@ import com.exatask.platform.api.responses.HttpErrorResponse;
 import com.exatask.platform.logging.AppLogManager;
 import com.exatask.platform.logging.AppLogMessage;
 import com.exatask.platform.logging.AppLogger;
-import com.exatask.platform.utilities.contexts.AppContextProvider;
 import io.swagger.v3.oas.annotations.Hidden;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.HttpRequestMethodNotSupportedException;
@@ -25,8 +24,7 @@ public class SystemExceptionHandler {
 
     AppLogMessage logMessage = AppLogMessage.builder().exception(exception).build();
     logMessage.setUrl(request.getRequestURI())
-        .setTraceId(AppContextProvider.getTraceId())
-        .setSpanId(AppContextProvider.getSpanId())
+        .setMethod(request.getMethod())
         .setHttpCode(httpStatus.value());
     LOGGER.error(logMessage);
   }

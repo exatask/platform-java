@@ -6,7 +6,6 @@ import com.exatask.platform.api.responses.HttpErrorResponse;
 import com.exatask.platform.logging.AppLogManager;
 import com.exatask.platform.logging.AppLogMessage;
 import com.exatask.platform.logging.AppLogger;
-import com.exatask.platform.utilities.contexts.AppContextProvider;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
@@ -20,23 +19,18 @@ public class AppInterceptor implements HandlerInterceptor {
 
   protected static final AppLogger LOGGER = AppLogManager.getLogger(ApiService.LOGGER_NAME);
 
-  private void logInterceptorException(Exception exception, HttpServletRequest request) {
-
-    AppLogMessage logMessage = AppLogMessage.builder().exception(exception).build();
-    logMessage.setUrl(request.getRequestURI())
-        .setTraceId(AppContextProvider.getTraceId())
-        .setSpanId(AppContextProvider.getSpanId());
-    LOGGER.error(logMessage);
-  }
-
   protected void sendPreHandleErrorResponse(Exception exception, HttpServletRequest request, HttpServletResponse response) {
-
-    logInterceptorException(exception, request);
 
     HttpStatus httpStatus = HttpStatus.INTERNAL_SERVER_ERROR;
     if (exception instanceof HttpException) {
       httpStatus = ((HttpException) exception).getHttpStatus();
     }
+
+    AppLogMessage logMessage = AppLogMessage.builder().exception(exception).build();
+    logMessage.setUrl(request.getRequestURI())
+        .setMethod(request.getMethod())
+        .setHttpCode(httpStatus.value());
+    LOGGER.error(logMessage);
 
     HttpErrorResponse errorResponse = new HttpErrorResponse(exception);
     response.setContentType(MediaType.APPLICATION_JSON.toString());
@@ -46,7 +40,11 @@ public class AppInterceptor implements HandlerInterceptor {
     try {
       response.getWriter().write(mapper.writeValueAsString(errorResponse));
     } catch (IOException ex) {
-      logInterceptorException(ex, request);
+
+      logMessage = AppLogMessage.builder().exception(ex).build();
+      logMessage.setUrl(request.getRequestURI())
+          .setMethod(request.getMethod());
+      LOGGER.error(logMessage);
     }
   }
 }
