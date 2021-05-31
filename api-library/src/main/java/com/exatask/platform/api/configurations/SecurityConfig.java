@@ -29,6 +29,8 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
     http.authorizeRequests()
         .antMatchers(authenticatedUrls)
         .authenticated().and().httpBasic();
+
+    http.csrf().disable();
   }
 
   @Override

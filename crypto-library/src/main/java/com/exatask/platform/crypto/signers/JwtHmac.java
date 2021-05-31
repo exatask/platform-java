@@ -49,7 +49,7 @@ public class JwtHmac implements AppSigner {
     try {
 
       JwtParser jwtParser = Jwts.parserBuilder().setSigningKey(secretKey).build();
-      Claims tokenClaims = jwtParser.parseClaimsJwt(data).getBody();
+      Claims tokenClaims = jwtParser.parseClaimsJws(data).getBody();
 
       return tokenClaims.entrySet().stream().collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue));
 

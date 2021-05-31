@@ -10,6 +10,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.web.HttpRequestMethodNotSupportedException;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
+import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.ResponseStatus;
 
 import javax.servlet.http.HttpServletRequest;
@@ -31,6 +32,7 @@ public class SystemExceptionHandler {
 
   @ExceptionHandler(HttpRequestMethodNotSupportedException.class)
   @ResponseStatus(HttpStatus.METHOD_NOT_ALLOWED)
+  @ResponseBody
   public HttpErrorResponse handleHttpMethodNotAllowed(HttpServletRequest request, HttpRequestMethodNotSupportedException exception) {
 
     logException(request, exception, HttpStatus.METHOD_NOT_ALLOWED);
@@ -39,7 +41,17 @@ public class SystemExceptionHandler {
 
   @ExceptionHandler(IllegalArgumentException.class)
   @ResponseStatus(HttpStatus.NOT_IMPLEMENTED)
-  public HttpErrorResponse handleIllegalArgumentException(HttpServletRequest request, IllegalArgumentException exception) {
+  @ResponseBody
+  public HttpErrorResponse handleNotImplemented(HttpServletRequest request, IllegalArgumentException exception) {
+
+    logException(request, exception, HttpStatus.NOT_IMPLEMENTED);
+    return new HttpErrorResponse(exception);
+  }
+
+  @ExceptionHandler(Exception.class)
+  @ResponseStatus(HttpStatus.INTERNAL_SERVER_ERROR)
+  @ResponseBody
+  public HttpErrorResponse handleInternalServerError(HttpServletRequest request, RuntimeException exception) {
 
     logException(request, exception, HttpStatus.INTERNAL_SERVER_ERROR);
     return new HttpErrorResponse(exception);

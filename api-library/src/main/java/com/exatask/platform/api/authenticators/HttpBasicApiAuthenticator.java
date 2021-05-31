@@ -6,6 +6,7 @@ import com.exatask.platform.crypto.encoders.AppEncoderType;
 import com.exatask.platform.utilities.constants.ServiceAuth;
 import lombok.Data;
 import lombok.experimental.Accessors;
+import org.apache.commons.lang3.StringUtils;
 
 public class HttpBasicApiAuthenticator implements ApiAuthenticator {
 
@@ -29,6 +30,11 @@ public class HttpBasicApiAuthenticator implements ApiAuthenticator {
 
   @Override
   public Boolean authenticate(String token) {
+
+    if (StringUtils.isEmpty(token)) {
+      return false;
+    }
+
     return authenticationToken.compareTo(token) == 0;
   }
 

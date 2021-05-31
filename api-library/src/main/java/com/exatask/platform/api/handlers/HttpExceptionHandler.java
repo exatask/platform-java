@@ -20,6 +20,7 @@ import com.exatask.platform.logging.AppLogger;
 import io.swagger.v3.oas.annotations.Hidden;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.ExceptionHandler;
+import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 
@@ -45,6 +46,7 @@ public class HttpExceptionHandler {
 
   @ExceptionHandler(BadRequestException.class)
   @ResponseStatus(HttpStatus.BAD_REQUEST)
+  @ResponseBody
   public HttpErrorResponse handleBadRequest(HttpServletRequest request, BadRequestException exception) {
 
     logException(request, exception);
@@ -53,6 +55,7 @@ public class HttpExceptionHandler {
 
   @ExceptionHandler(ForbiddenException.class)
   @ResponseStatus(HttpStatus.FORBIDDEN)
+  @ResponseBody
   public HttpErrorResponse handleForbidden(HttpServletRequest request, ForbiddenException exception) {
 
     logException(request, exception);
@@ -61,6 +64,7 @@ public class HttpExceptionHandler {
 
   @ExceptionHandler(MethodNotAllowedException.class)
   @ResponseStatus(HttpStatus.METHOD_NOT_ALLOWED)
+  @ResponseBody
   public HttpErrorResponse handleMethodNotAllowed(HttpServletRequest request, MethodNotAllowedException exception) {
 
     logException(request, exception);
@@ -69,6 +73,7 @@ public class HttpExceptionHandler {
 
   @ExceptionHandler(NotFoundException.class)
   @ResponseStatus(HttpStatus.NOT_FOUND)
+  @ResponseBody
   public HttpErrorResponse handleNotFound(HttpServletRequest request, NotFoundException exception) {
 
     logException(request, exception);
@@ -77,6 +82,7 @@ public class HttpExceptionHandler {
 
   @ExceptionHandler(PreconditionFailedException.class)
   @ResponseStatus(HttpStatus.PRECONDITION_FAILED)
+  @ResponseBody
   public HttpErrorResponse handlePreconditionFailed(HttpServletRequest request, PreconditionFailedException exception) {
 
     logException(request, exception);
@@ -85,6 +91,7 @@ public class HttpExceptionHandler {
 
   @ExceptionHandler(InternalServerErrorException.class)
   @ResponseStatus(HttpStatus.INTERNAL_SERVER_ERROR)
+  @ResponseBody
   public HttpErrorResponse handleServerError(HttpServletRequest request, InternalServerErrorException exception) {
 
     logException(request, exception);
@@ -93,6 +100,7 @@ public class HttpExceptionHandler {
 
   @ExceptionHandler(ServiceUnavailableException.class)
   @ResponseStatus(HttpStatus.SERVICE_UNAVAILABLE)
+  @ResponseBody
   public HttpErrorResponse handleServiceUnavailable(HttpServletRequest request, ServiceUnavailableException exception) {
 
     logException(request, exception);
@@ -101,6 +109,7 @@ public class HttpExceptionHandler {
 
   @ExceptionHandler(UnauthorizedException.class)
   @ResponseStatus(HttpStatus.UNAUTHORIZED)
+  @ResponseBody
   public HttpErrorResponse handleUnauthorized(HttpServletRequest request, UnauthorizedException exception) {
 
     logException(request, exception);
@@ -109,6 +118,7 @@ public class HttpExceptionHandler {
 
   @ExceptionHandler(TooManyRequestsException.class)
   @ResponseStatus(HttpStatus.TOO_MANY_REQUESTS)
+  @ResponseBody
   public HttpErrorResponse handleTooManyRequests(HttpServletRequest request, TooManyRequestsException exception) {
 
     logException(request, exception);
@@ -117,6 +127,7 @@ public class HttpExceptionHandler {
 
   @ExceptionHandler(UnsupportedMediaTypeException.class)
   @ResponseStatus(HttpStatus.UNSUPPORTED_MEDIA_TYPE)
+  @ResponseBody
   public HttpErrorResponse handleUnsupportedMediaType(HttpServletRequest request, UnsupportedMediaTypeException exception) {
 
     logException(request, exception);
@@ -125,6 +136,7 @@ public class HttpExceptionHandler {
 
   @ExceptionHandler(PayloadTooLargeException.class)
   @ResponseStatus(HttpStatus.PAYLOAD_TOO_LARGE)
+  @ResponseBody
   public HttpErrorResponse handlePayloadTooLarge(HttpServletRequest request, PayloadTooLargeException exception) {
 
     logException(request, exception);
