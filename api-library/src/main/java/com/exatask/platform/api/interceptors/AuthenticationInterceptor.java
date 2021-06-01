@@ -3,7 +3,7 @@ package com.exatask.platform.api.interceptors;
 import com.exatask.platform.api.authenticators.ApiAuthenticator;
 import com.exatask.platform.api.exceptions.ProxyAuthenticationException;
 import com.exatask.platform.utilities.constants.ServiceAuth;
-import com.exatask.platform.utilities.constants.ServiceAuthHeader;
+import com.exatask.platform.utilities.constants.ServiceAuthData;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -20,7 +20,7 @@ public class AuthenticationInterceptor extends AppInterceptor {
   @Override
   public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler) throws Exception {
 
-    String authTypeString = request.getHeader(ServiceAuthHeader.AUTH_TYPE);
+    String authTypeString = request.getHeader(ServiceAuthData.AUTH_TYPE_HEADER);
     if (StringUtils.isEmpty(authTypeString)) {
       this.sendPreHandleErrorResponse(ProxyAuthenticationException.builder().build(), request, response);
       return false;
@@ -39,7 +39,7 @@ public class AuthenticationInterceptor extends AppInterceptor {
       return false;
     }
 
-    Boolean tokenValid = apiAuthenticator.authenticate(request.getHeader(ServiceAuthHeader.AUTH_TOKEN));
+    Boolean tokenValid = apiAuthenticator.authenticate(request.getHeader(ServiceAuthData.AUTH_TOKEN_HEADER));
     if (!tokenValid) {
       this.sendPreHandleErrorResponse(ProxyAuthenticationException.builder().build(), request, response);
     }

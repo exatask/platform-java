@@ -1,11 +1,11 @@
 package com.exatask.platform.sdk.interceptors;
 
-import com.exatask.platform.sdk.authenticators.SdkAuthenticator;
 import com.exatask.platform.sdk.authenticators.HttpBasicSdkAuthenticator;
 import com.exatask.platform.sdk.authenticators.JwtHmacSdkAuthenticator;
 import com.exatask.platform.sdk.authenticators.NoAuthSdkAuthenticator;
+import com.exatask.platform.sdk.authenticators.SdkAuthenticator;
 import com.exatask.platform.sdk.exceptions.InvalidAuthenticatorException;
-import com.exatask.platform.utilities.constants.ServiceAuthHeader;
+import com.exatask.platform.utilities.constants.ServiceAuthData;
 import feign.RequestInterceptor;
 import feign.RequestTemplate;
 
@@ -37,7 +37,7 @@ public class ServiceAuthenticationInterceptor implements RequestInterceptor {
   @Override
   public void apply(RequestTemplate template) {
 
-    template.header(ServiceAuthHeader.AUTH_TYPE, sdkAuthenticator.getAuthentication().toString())
-        .header(ServiceAuthHeader.AUTH_TOKEN, sdkAuthenticator.generate());
+    template.header(ServiceAuthData.AUTH_TYPE_HEADER, sdkAuthenticator.getAuthentication().toString())
+        .header(ServiceAuthData.AUTH_TOKEN_HEADER, sdkAuthenticator.generate());
   }
 }

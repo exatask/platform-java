@@ -8,6 +8,7 @@ import com.exatask.platform.logging.AppLogger;
 import io.swagger.v3.oas.annotations.Hidden;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.HttpRequestMethodNotSupportedException;
+import org.springframework.web.bind.MissingServletRequestParameterException;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.ResponseBody;
@@ -30,10 +31,19 @@ public class SystemExceptionHandler {
     LOGGER.error(logMessage);
   }
 
+  @ExceptionHandler(MissingServletRequestParameterException.class)
+  @ResponseStatus(HttpStatus.BAD_REQUEST)
+  @ResponseBody
+  public HttpErrorResponse handleBadRequest(HttpServletRequest request, Exception exception) {
+
+    logException(request, exception, HttpStatus.BAD_REQUEST);
+    return new HttpErrorResponse(exception);
+  }
+
   @ExceptionHandler(HttpRequestMethodNotSupportedException.class)
   @ResponseStatus(HttpStatus.METHOD_NOT_ALLOWED)
   @ResponseBody
-  public HttpErrorResponse handleHttpMethodNotAllowed(HttpServletRequest request, HttpRequestMethodNotSupportedException exception) {
+  public HttpErrorResponse handleHttpMethodNotAllowed(HttpServletRequest request, Exception exception) {
 
     logException(request, exception, HttpStatus.METHOD_NOT_ALLOWED);
     return new HttpErrorResponse(exception);
@@ -42,7 +52,7 @@ public class SystemExceptionHandler {
   @ExceptionHandler(IllegalArgumentException.class)
   @ResponseStatus(HttpStatus.NOT_IMPLEMENTED)
   @ResponseBody
-  public HttpErrorResponse handleNotImplemented(HttpServletRequest request, IllegalArgumentException exception) {
+  public HttpErrorResponse handleNotImplemented(HttpServletRequest request, Exception exception) {
 
     logException(request, exception, HttpStatus.NOT_IMPLEMENTED);
     return new HttpErrorResponse(exception);
@@ -51,7 +61,7 @@ public class SystemExceptionHandler {
   @ExceptionHandler(Exception.class)
   @ResponseStatus(HttpStatus.INTERNAL_SERVER_ERROR)
   @ResponseBody
-  public HttpErrorResponse handleInternalServerError(HttpServletRequest request, RuntimeException exception) {
+  public HttpErrorResponse handleInternalServerError(HttpServletRequest request, Exception exception) {
 
     logException(request, exception, HttpStatus.INTERNAL_SERVER_ERROR);
     return new HttpErrorResponse(exception);
