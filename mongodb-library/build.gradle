@@ -3,7 +3,6 @@ plugins {
   id "org.springframework.boot"
 }
 
-group = "com.exatask.platform"
 version = "1.0.0-SNAPSHOT"
 
 bootJar {
@@ -21,14 +20,14 @@ dependencies {
   }
   api group: "org.springframework.boot", name: "spring-boot-starter-validation"
 
-  compileOnly group: "org.projectlombok", name: "lombok", version: "${lombokVersion}"
-  annotationProcessor group: "org.projectlombok", name: "lombok", version: "${lombokVersion}"
-
   implementation group: "com.fasterxml.jackson.core", name: "jackson-databind", version: "${fasterxmlJacksonVersion}"
   implementation group: "org.apache.commons", name: "commons-lang3", version: "${apacheCommonsVersion}"
   implementation project(":logging-library")
   implementation project(":utilities-library")
   implementation project(":i18n-library")
+
+  compileOnly group: "org.projectlombok", name: "lombok", version: "${lombokVersion}"
+  annotationProcessor group: "org.projectlombok", name: "lombok", version: "${lombokVersion}"
 }
 
 publishing {

@@ -3,7 +3,6 @@ plugins {
   id "org.springframework.boot"
 }
 
-group = "com.exatask.platform"
 version = "1.0.0-SNAPSHOT"
 
 bootJar {

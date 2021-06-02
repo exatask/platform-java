@@ -3,7 +3,6 @@ plugins {
   id "org.springframework.boot"
 }
 
-group = "com.exatask.platform"
 version = "1.0.0-SNAPSHOT"
 
 bootJar {
@@ -20,13 +19,13 @@ dependencies {
     exclude module: "spring-boot-starter-logging"
   }
 
-  compileOnly group: "org.projectlombok", name: "lombok", version: "${lombokVersion}"
-  annotationProcessor group: "org.projectlombok", name: "lombok", version: "${lombokVersion}"
-
   implementation group: "redis.clients", name: "jedis", version: "${redisJedisVersion}"
   implementation group: "com.fasterxml.jackson.core", name: "jackson-databind", version: "${fasterxmlJacksonVersion}"
   implementation project(":logging-library")
   implementation project(":utilities-library")
+
+  compileOnly group: "org.projectlombok", name: "lombok", version: "${lombokVersion}"
+  annotationProcessor group: "org.projectlombok", name: "lombok", version: "${lombokVersion}"
 }
 
 publishing {

@@ -13,6 +13,10 @@ java {
   }
 }
 
+compileJava {
+  options.encoding = "UTF-8"
+}
+
 test {
   useJUnitPlatform()
 }
@@ -50,5 +54,12 @@ publishing {
         header(HttpHeaderAuthentication)
       }
     }
+  }
+}
+
+dependencyManagement {
+  imports {
+    mavenBom "org.springframework.cloud:spring-cloud-dependencies:${springCloudVersion}"
+    mavenBom "software.amazon.awssdk:bom:${awsSdkVersion}"
   }
 }

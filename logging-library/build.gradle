@@ -2,7 +2,6 @@ plugins {
   id "platform.java-conventions"
 }
 
-group = "com.exatask.platform"
 version = "1.0.0-SNAPSHOT"
 
 jar {
@@ -11,14 +10,14 @@ jar {
 
 dependencies {
 
-  compileOnly group: "org.projectlombok", name: "lombok", version: "${lombokVersion}"
-  annotationProcessor group: "org.projectlombok", name: "lombok", version: "${lombokVersion}"
-
   implementation group: "org.apache.logging.log4j", name: "log4j-core", version: "${apacheLog4jVersion}"
   implementation group: "com.fasterxml.jackson.core", name: "jackson-databind", version: "${fasterxmlJacksonVersion}"
   implementation group: "org.apache.commons", name: "commons-lang3", version: "${apacheCommonsVersion}"
   implementation group: "org.apache.commons", name: "commons-collections4", version: "${apacheCollectionsVersion}"
   implementation project(":utilities-library")
+
+  compileOnly group: "org.projectlombok", name: "lombok", version: "${lombokVersion}"
+  annotationProcessor group: "org.projectlombok", name: "lombok", version: "${lombokVersion}"
 }
 
 publishing {

@@ -1,5 +1,10 @@
 package com.exatask.platform.crypto.ciphers;
 
+import lombok.AllArgsConstructor;
+import lombok.Getter;
+
+@Getter
+@AllArgsConstructor
 public enum AppAlgorithm {
 
   RSA_CBC("RSA/ECB/PKCS1Padding"),
@@ -9,12 +14,4 @@ public enum AppAlgorithm {
   HMAC_SHA256("HmacSHA256");
 
   private final String algorithm;
-
-  AppAlgorithm(String algorithm) {
-    this.algorithm = algorithm;
-  }
-
-  public String getAlgorithm() {
-    return this.algorithm;
-  }
 }

@@ -3,7 +3,6 @@ plugins {
   id "org.springframework.boot"
 }
 
-group = "com.exatask.platform"
 version = "1.0.0-SNAPSHOT"
 
 bootJar {
@@ -12,12 +11,6 @@ bootJar {
 
 jar {
   enabled = true
-}
-
-dependencyManagement {
-  imports {
-    mavenBom "org.springframework.cloud:spring-cloud-dependencies:${springCloudVersion}"
-  }
 }
 
 dependencies {

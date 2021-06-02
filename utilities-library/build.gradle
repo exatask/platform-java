@@ -2,17 +2,10 @@ plugins {
   id "platform.java-conventions"
 }
 
-group = "com.exatask.platform"
 version = "1.0.0-SNAPSHOT"
 
 jar {
   enabled = true
-}
-
-dependencyManagement {
-  imports {
-    mavenBom "software.amazon.awssdk:bom:${awsSdkVersion}"
-  }
 }
 
 dependencies {

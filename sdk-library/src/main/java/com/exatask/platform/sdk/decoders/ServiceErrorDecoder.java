@@ -13,6 +13,7 @@ import feign.codec.ErrorDecoder;
 import org.springframework.stereotype.Service;
 
 import java.io.IOException;
+import java.nio.charset.StandardCharsets;
 
 import static feign.FeignException.errorStatus;
 
@@ -30,7 +31,7 @@ public class ServiceErrorDecoder implements ErrorDecoder {
 
     try {
 
-      String content = Util.toString(response.body().asReader());
+      String content = Util.toString(response.body().asReader(StandardCharsets.UTF_8));
       HttpErrorResponse errorResponse = MAPPER.readValue(content, HttpErrorResponse.class);
 
       return SdkException.builder()
