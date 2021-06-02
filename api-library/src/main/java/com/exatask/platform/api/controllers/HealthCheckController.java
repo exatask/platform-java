@@ -9,8 +9,11 @@ import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.security.SecurityRequirements;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 
 @RestController
@@ -20,6 +23,8 @@ public class HealthCheckController extends AppController {
   @Autowired
   private HealthCheckService healthCheckService;
 
+  @ResponseBody
+  @ResponseStatus(HttpStatus.OK)
   @RequestMapping(method = RequestMethod.GET)
   @Operation(
       summary = "Performs a health-check on application and return results",
