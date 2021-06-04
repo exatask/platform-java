@@ -59,6 +59,7 @@ public class HttpException extends RuntimeException {
     } else {
       httpException = new HttpException(exceptionMessage, exception);
     }
+    Optional.ofNullable(appError).ifPresent(httpException::setError);
     Optional.ofNullable(httpStatus).ifPresent(httpException::setHttpStatus);
     Optional.ofNullable(invalidAttributes).ifPresent(httpException::setInvalidAttributes);
     Optional.ofNullable(extraParams).ifPresent(httpException::setExtraParams);

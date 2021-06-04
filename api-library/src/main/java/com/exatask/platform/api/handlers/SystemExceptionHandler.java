@@ -7,12 +7,12 @@ import com.exatask.platform.logging.AppLogMessage;
 import com.exatask.platform.logging.AppLogger;
 import io.swagger.v3.oas.annotations.Hidden;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.HttpRequestMethodNotSupportedException;
 import org.springframework.web.bind.MissingServletRequestParameterException;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.ResponseBody;
-import org.springframework.web.bind.annotation.ResponseStatus;
 
 import javax.servlet.http.HttpServletRequest;
 
@@ -31,39 +31,40 @@ public class SystemExceptionHandler {
     LOGGER.error(logMessage);
   }
 
-  @ExceptionHandler(MissingServletRequestParameterException.class)
-  @ResponseStatus(HttpStatus.BAD_REQUEST)
-  @ResponseBody
-  public HttpErrorResponse handleBadRequest(HttpServletRequest request, Exception exception) {
+  private Boolean isBadRequest(Exception exception) {
 
-    logException(request, exception, HttpStatus.BAD_REQUEST);
-    return new HttpErrorResponse(exception);
+    return (exception instanceof MissingServletRequestParameterException);
   }
 
-  @ExceptionHandler(HttpRequestMethodNotSupportedException.class)
-  @ResponseStatus(HttpStatus.METHOD_NOT_ALLOWED)
-  @ResponseBody
-  public HttpErrorResponse handleHttpMethodNotAllowed(HttpServletRequest request, Exception exception) {
+  private Boolean isMethodNotAllowed(Exception exception) {
 
-    logException(request, exception, HttpStatus.METHOD_NOT_ALLOWED);
-    return new HttpErrorResponse(exception);
+    return (exception instanceof HttpRequestMethodNotSupportedException);
   }
 
-  @ExceptionHandler(IllegalArgumentException.class)
-  @ResponseStatus(HttpStatus.NOT_IMPLEMENTED)
-  @ResponseBody
-  public HttpErrorResponse handleNotImplemented(HttpServletRequest request, Exception exception) {
+  private Boolean isNotImplemented(Exception exception) {
 
-    logException(request, exception, HttpStatus.NOT_IMPLEMENTED);
-    return new HttpErrorResponse(exception);
+    return (exception instanceof IllegalArgumentException);
   }
 
-  @ExceptionHandler(Exception.class)
-  @ResponseStatus(HttpStatus.INTERNAL_SERVER_ERROR)
-  @ResponseBody
-  public HttpErrorResponse handleInternalServerError(HttpServletRequest request, Exception exception) {
+  private HttpStatus exceptionHttpStatus(Exception exception) {
 
-    logException(request, exception, HttpStatus.INTERNAL_SERVER_ERROR);
-    return new HttpErrorResponse(exception);
+    if (isBadRequest(exception)) {
+      return HttpStatus.BAD_REQUEST;
+    } else if (isMethodNotAllowed(exception)) {
+      return HttpStatus.METHOD_NOT_ALLOWED;
+    } else if (isNotImplemented(exception)) {
+      return HttpStatus.NOT_IMPLEMENTED;
+    }
+
+    return HttpStatus.INTERNAL_SERVER_ERROR;
+  }
+
+  @ExceptionHandler
+  @ResponseBody
+  public ResponseEntity<HttpErrorResponse> handleSystemException(HttpServletRequest request, Exception exception) {
+
+    HttpStatus httpStatus = exceptionHttpStatus(exception);
+    logException(request, exception, httpStatus);
+    return new ResponseEntity<>(new HttpErrorResponse(exception), httpStatus);
   }
 }

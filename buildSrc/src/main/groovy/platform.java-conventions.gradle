@@ -63,3 +63,7 @@ dependencyManagement {
     mavenBom "software.amazon.awssdk:bom:${awsSdkVersion}"
   }
 }
+
+configurations.all {
+  exclude module: "spring-boot-starter-logging"
+}

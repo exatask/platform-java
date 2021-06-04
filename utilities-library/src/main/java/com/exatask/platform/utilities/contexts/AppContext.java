@@ -5,8 +5,8 @@ import lombok.Getter;
 
 import java.util.Date;
 
-@Builder
 @Getter
+@Builder(toBuilder = true)
 public class AppContext {
 
   private final Date startTime;

@@ -11,4 +11,6 @@ public class ServiceAuthData {
   public static final String AUTH_JWT_EXPIRY_LABEL = "exp";
 
   public static final String AUTH_SUBJECT = "service-auth";
+
+  public static final Integer AUTH_DEFAULT_EXPIRY = 60;
 }

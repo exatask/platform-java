@@ -5,6 +5,7 @@ import com.exatask.platform.utilities.constants.ServiceAuth;
 import com.exatask.platform.utilities.constants.ServiceAuthData;
 import lombok.Data;
 import lombok.experimental.Accessors;
+import org.springframework.util.ObjectUtils;
 
 import java.util.Collections;
 import java.util.Date;
@@ -34,11 +35,16 @@ public class JwtHmacSdkAuthenticator implements SdkAuthenticator {
   @Override
   public String generate() {
 
+    Integer expiry = credentials.getExpiry();
+    if (ObjectUtils.isEmpty(expiry) || expiry <= 0) {
+      expiry = ServiceAuthData.AUTH_DEFAULT_EXPIRY;
+    }
+
     Map<String, Object> signData = new HashMap<>();
     signData.put(ServiceAuthData.AUTH_JWT_SUBJECT_LABEL, ServiceAuthData.AUTH_SUBJECT);
     signData.put(ServiceAuthData.AUTH_JWT_ISSUER_LABEL, credentials.getIssuer());
     signData.put(ServiceAuthData.AUTH_JWT_AUDIENCE_LABEL, credentials.getAudience());
-    signData.put(ServiceAuthData.AUTH_JWT_EXPIRY_LABEL, new Date(System.currentTimeMillis() + (credentials.getExpiry() * 1000)));
+    signData.put(ServiceAuthData.AUTH_JWT_EXPIRY_LABEL, new Date(System.currentTimeMillis() + (expiry * 1000)));
 
     return this.signer.sign(signData);
   }
