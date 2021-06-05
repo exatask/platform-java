@@ -8,8 +8,10 @@ public enum ResponseMessage implements AppConstant {
   ERROR,
   WARNING;
 
+  private static final String LOCALE_PREFIX = "constants.response.";
+
   @Override
   public String toLocale() {
-    return AppTranslator.toLocale( "constants.response." + this);
+    return AppTranslator.toLocale( LOCALE_PREFIX + this);
   }
 }

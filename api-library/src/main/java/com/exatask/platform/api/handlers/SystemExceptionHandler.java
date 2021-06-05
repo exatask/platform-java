@@ -1,6 +1,9 @@
 package com.exatask.platform.api.handlers;
 
 import com.exatask.platform.api.constants.ApiService;
+import com.exatask.platform.api.errors.CommonError;
+import com.exatask.platform.api.exceptions.BadRequestException;
+import com.exatask.platform.api.exceptions.HttpException;
 import com.exatask.platform.api.responses.HttpErrorResponse;
 import com.exatask.platform.logging.AppLogManager;
 import com.exatask.platform.logging.AppLogMessage;
@@ -8,13 +11,18 @@ import com.exatask.platform.logging.AppLogger;
 import io.swagger.v3.oas.annotations.Hidden;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.validation.FieldError;
 import org.springframework.web.HttpRequestMethodNotSupportedException;
+import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.MissingServletRequestParameterException;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 import javax.servlet.http.HttpServletRequest;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 @Hidden
 @ControllerAdvice
@@ -31,40 +39,76 @@ public class SystemExceptionHandler {
     LOGGER.error(logMessage);
   }
 
-  private Boolean isBadRequest(Exception exception) {
+  private void logException(HttpServletRequest request, HttpException exception) {
 
-    return (exception instanceof MissingServletRequestParameterException);
+    AppLogMessage logMessage = AppLogMessage.builder().exception(exception).build();
+    logMessage.setUrl(request.getRequestURI())
+        .setMethod(request.getMethod())
+        .setHttpCode(exception.getHttpStatus().value())
+        .setErrorCode(exception.getError().getErrorCode())
+        .setInvalidAttributes(exception.getInvalidAttributes())
+        .setExtraParams(exception.getExtraParams());
+    LOGGER.error(logMessage);
   }
 
-  private Boolean isMethodNotAllowed(Exception exception) {
+  @ExceptionHandler({
+      MissingServletRequestParameterException.class,
+      HttpRequestMethodNotSupportedException.class,
+      IllegalArgumentException.class,
+      MethodArgumentNotValidException.class
+  })
+  @ResponseBody
+  public ResponseEntity<HttpErrorResponse> handleSystemException(HttpServletRequest request, Exception exception) throws Exception {
 
-    return (exception instanceof HttpRequestMethodNotSupportedException);
+    if (exception instanceof MissingServletRequestParameterException) {
+
+      return handleException(request, exception, HttpStatus.BAD_REQUEST);
+
+    } else if (exception instanceof HttpRequestMethodNotSupportedException) {
+
+      return handleException(request, exception, HttpStatus.METHOD_NOT_ALLOWED);
+
+    } else if (exception instanceof IllegalArgumentException) {
+
+      return handleException(request, exception, HttpStatus.NOT_IMPLEMENTED);
+
+    } else if (exception instanceof MethodArgumentNotValidException) {
+
+      return handleMethodArgumentNotValidException(request, (MethodArgumentNotValidException) exception);
+
+    } else {
+
+      throw exception;
+    }
   }
 
-  private Boolean isNotImplemented(Exception exception) {
+  private ResponseEntity<HttpErrorResponse> handleMethodArgumentNotValidException(HttpServletRequest request, MethodArgumentNotValidException exception) {
 
-    return (exception instanceof IllegalArgumentException);
-  }
+    List<FieldError> fieldErrors = exception.getBindingResult().getFieldErrors();
+    Map<String, String> invalidAttributes = new HashMap<>();
 
-  private HttpStatus exceptionHttpStatus(Exception exception) {
-
-    if (isBadRequest(exception)) {
-      return HttpStatus.BAD_REQUEST;
-    } else if (isMethodNotAllowed(exception)) {
-      return HttpStatus.METHOD_NOT_ALLOWED;
-    } else if (isNotImplemented(exception)) {
-      return HttpStatus.NOT_IMPLEMENTED;
+    for (FieldError error : fieldErrors) {
+      invalidAttributes.put(error.getField(), error.getDefaultMessage());
     }
 
-    return HttpStatus.INTERNAL_SERVER_ERROR;
+    HttpException httpException = BadRequestException.builder()
+        .appError(CommonError.INVALID_REQUEST_DATA)
+        .exception(exception)
+        .invalidAttributes(invalidAttributes)
+        .build();
+
+    return handleException(request, httpException);
   }
 
-  @ExceptionHandler
-  @ResponseBody
-  public ResponseEntity<HttpErrorResponse> handleSystemException(HttpServletRequest request, Exception exception) {
+  private ResponseEntity<HttpErrorResponse> handleException(HttpServletRequest request, Exception exception, HttpStatus httpStatus) {
 
-    HttpStatus httpStatus = exceptionHttpStatus(exception);
     logException(request, exception, httpStatus);
     return new ResponseEntity<>(new HttpErrorResponse(exception), httpStatus);
+  }
+
+  private ResponseEntity<HttpErrorResponse> handleException(HttpServletRequest request, HttpException exception) {
+
+    logException(request, exception);
+    return new ResponseEntity<>(new HttpErrorResponse(exception), exception.getHttpStatus());
   }
 }

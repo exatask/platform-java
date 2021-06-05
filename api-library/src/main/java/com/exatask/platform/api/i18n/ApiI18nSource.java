@@ -8,6 +8,6 @@ public class ApiI18nSource implements I18nSource {
 
   @Override
   public String[] getMessageSources() {
-    return new String[] {"i18n.api-constants"};
+    return new String[] {"i18n.api-constants", "i18n.api-errors"};
   }
 }
