@@ -3,19 +3,19 @@ package com.exatask.platform.utilities.contexts;
 import java.util.Date;
 import java.util.Objects;
 
-public class AppContextProvider {
+public class RequestContextProvider {
 
-  private static final ThreadLocal<AppContext> context = new ThreadLocal<>();
+  private static final ThreadLocal<RequestContext> context = new ThreadLocal<>();
 
-  public static AppContext setContext(AppContext appContext) {
+  public static RequestContext setContext(RequestContext requestContext) {
 
-    final AppContext previousAppContext = getContext();
+    final RequestContext previousRequestContext = getContext();
     unsetContext();
-    context.set(appContext);
-    return previousAppContext;
+    context.set(requestContext);
+    return previousRequestContext;
   }
 
-  public static AppContext getContext() {
+  public static RequestContext getContext() {
     return context.get();
   }
 

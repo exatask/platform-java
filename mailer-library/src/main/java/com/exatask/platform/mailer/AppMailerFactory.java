@@ -2,14 +2,12 @@ package com.exatask.platform.mailer;
 
 import com.exatask.platform.mailer.aws.AppAwsMailer;
 import com.exatask.platform.mailer.exceptions.InvalidMailerException;
-import org.springframework.context.annotation.AnnotationConfigApplicationContext;
+import com.exatask.platform.utilities.ApplicationContextUtility;
 
 import java.util.HashMap;
 import java.util.Map;
 
 public class AppMailerFactory {
-
-  private static final AnnotationConfigApplicationContext applicationContext = new AnnotationConfigApplicationContext(AppMailerFactory.class);
 
   private static final Map<Mailer, AppMailer> mailerList = new HashMap<>();
 
@@ -30,7 +28,7 @@ public class AppMailerFactory {
     switch (mailer) {
 
       case AWS:
-        appMailer = applicationContext.getBean(AppAwsMailer.class);
+        appMailer = ApplicationContextUtility.getBean(AppAwsMailer.class);
         break;
 
       default:

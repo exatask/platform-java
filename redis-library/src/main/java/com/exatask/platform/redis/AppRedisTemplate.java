@@ -1,14 +1,11 @@
 package com.exatask.platform.redis;
 
-import com.fasterxml.jackson.annotation.JsonAutoDetect;
-import com.fasterxml.jackson.annotation.PropertyAccessor;
-import com.fasterxml.jackson.databind.ObjectMapper;
 import org.springframework.boot.autoconfigure.data.redis.RedisProperties;
 import org.springframework.data.redis.connection.RedisConnectionFactory;
 import org.springframework.data.redis.connection.RedisStandaloneConfiguration;
 import org.springframework.data.redis.connection.jedis.JedisConnectionFactory;
 import org.springframework.data.redis.core.StringRedisTemplate;
-import org.springframework.data.redis.serializer.GenericJackson2JsonRedisSerializer;
+import org.springframework.data.redis.serializer.Jackson2JsonRedisSerializer;
 import org.springframework.data.redis.serializer.StringRedisSerializer;
 import org.springframework.stereotype.Service;
 
@@ -21,7 +18,7 @@ public class AppRedisTemplate {
 
     RedisConnectionFactory redisConnection = getRedisConnectionFactory(redisProperties);
     StringRedisSerializer stringSerializer = getStringRedisSerializer();
-    GenericJackson2JsonRedisSerializer jsonSerializer = getJsonRedisSerializer();
+    Jackson2JsonRedisSerializer<String> jsonSerializer = getJsonRedisSerializer();
 
     StringRedisTemplate redisTemplate = new StringRedisTemplate();
     redisTemplate.setConnectionFactory(redisConnection);
@@ -50,10 +47,7 @@ public class AppRedisTemplate {
     return new StringRedisSerializer();
   }
 
-  private GenericJackson2JsonRedisSerializer getJsonRedisSerializer() {
-
-    ObjectMapper objectMapper = new ObjectMapper();
-    objectMapper.setVisibility(PropertyAccessor.FIELD, JsonAutoDetect.Visibility.ANY);
-    return new GenericJackson2JsonRedisSerializer(objectMapper);
+  private Jackson2JsonRedisSerializer<String> getJsonRedisSerializer() {
+    return new Jackson2JsonRedisSerializer<>(String.class);
   }
 }

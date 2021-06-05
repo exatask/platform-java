@@ -1,8 +1,8 @@
 package com.exatask.platform.api.interceptors;
 
-import com.exatask.platform.utilities.constants.ContextHeader;
-import com.exatask.platform.utilities.contexts.AppContext;
-import com.exatask.platform.utilities.contexts.AppContextProvider;
+import com.exatask.platform.utilities.constants.RequestContextHeader;
+import com.exatask.platform.utilities.contexts.RequestContext;
+import com.exatask.platform.utilities.contexts.RequestContextProvider;
 import org.springframework.stereotype.Service;
 
 import javax.servlet.http.HttpServletRequest;
@@ -17,25 +17,25 @@ public class ApiContextInterceptor extends AppInterceptor {
   @Override
   public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler) throws Exception {
 
-    AppContext.AppContextBuilder appContextBuilder = AppContext.builder()
+    RequestContext.RequestContextBuilder requestContextBuilder = RequestContext.builder()
         .startTime(new Date())
-        .traceId(request.getHeader(ContextHeader.TRACE_ID))
+        .traceId(request.getHeader(RequestContextHeader.TRACE_ID))
         .spanId(UUID.randomUUID().toString());
 
-    Optional.ofNullable(request.getHeader(ContextHeader.SESSION_ID)).ifPresent(appContextBuilder::sessionId);
+    Optional.ofNullable(request.getHeader(RequestContextHeader.SESSION_ID)).ifPresent(requestContextBuilder::sessionId);
 
-    Optional.ofNullable(request.getHeader(ContextHeader.ORGANIZATION_ID)).ifPresent((organizationId) ->
-        appContextBuilder
+    Optional.ofNullable(request.getHeader(RequestContextHeader.ORGANIZATION_ID)).ifPresent((organizationId) ->
+        requestContextBuilder
           .organizationId(organizationId)
-          .organizationName(request.getHeader(ContextHeader.ORGANIZATION_NAME)));
+          .organizationName(request.getHeader(RequestContextHeader.ORGANIZATION_NAME)));
 
-    Optional.ofNullable(request.getHeader(ContextHeader.USER_ID)).ifPresent((userId) ->
-        appContextBuilder
+    Optional.ofNullable(request.getHeader(RequestContextHeader.USER_ID)).ifPresent((userId) ->
+        requestContextBuilder
           .userId(userId)
-          .userName(request.getHeader(ContextHeader.USER_NAME))
-          .userEmailId(request.getHeader(ContextHeader.USER_EMAIL_ID)));
+          .userName(request.getHeader(RequestContextHeader.USER_NAME))
+          .userEmailId(request.getHeader(RequestContextHeader.USER_EMAIL_ID)));
 
-    AppContextProvider.setContext(appContextBuilder.build());
+    RequestContextProvider.setContext(requestContextBuilder.build());
     return true;
   }
 }

@@ -1,6 +1,6 @@
 package com.exatask.platform.utilities.constants;
 
-public class ContextHeader {
+public class RequestContextHeader {
 
   public static final String TRACE_ID = "x-trace-id";
   public static final String SESSION_ID = "x-session-id";

@@ -7,7 +7,7 @@ import java.util.Date;
 
 @Getter
 @Builder(toBuilder = true)
-public class AppContext {
+public class RequestContext {
 
   private final Date startTime;
 

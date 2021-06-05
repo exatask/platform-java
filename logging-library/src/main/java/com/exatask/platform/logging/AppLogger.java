@@ -3,7 +3,7 @@ package com.exatask.platform.logging;
 import com.exatask.platform.logging.serializers.LogSerializer;
 import com.exatask.platform.logging.serializers.LogSerializerFactory;
 import com.exatask.platform.logging.serializers.LogSerializerType;
-import com.exatask.platform.utilities.contexts.AppContextProvider;
+import com.exatask.platform.utilities.contexts.RequestContextProvider;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.logging.log4j.Level;
 import org.apache.logging.log4j.LogManager;
@@ -121,8 +121,8 @@ public class AppLogger {
 
     logMessage.setLevel(level.toString().toLowerCase())
         .setServiceName(serviceName)
-        .setTraceId(AppContextProvider.getTraceId())
-        .setSpanId(AppContextProvider.getSpanId())
+        .setTraceId(RequestContextProvider.getTraceId())
+        .setSpanId(RequestContextProvider.getSpanId())
         .setTimestamp(new Date());
     log4jLogger.log(level, serializer.serialize(logMessage));
   }

@@ -1,7 +1,7 @@
 package com.exatask.platform.sdk.interceptors;
 
-import com.exatask.platform.utilities.constants.ContextHeader;
-import com.exatask.platform.utilities.contexts.AppContextProvider;
+import com.exatask.platform.utilities.constants.RequestContextHeader;
+import com.exatask.platform.utilities.contexts.RequestContextProvider;
 import feign.RequestInterceptor;
 import feign.RequestTemplate;
 import org.springframework.stereotype.Service;
@@ -14,18 +14,19 @@ public class ServiceContextInterceptor implements RequestInterceptor {
   @Override
   public void apply(RequestTemplate template) {
 
-    template.header(ContextHeader.TRACE_ID, AppContextProvider.getTraceId());
-    Optional.ofNullable(AppContextProvider.getSessionId()).ifPresent(sessionId -> template.header(ContextHeader.SESSION_ID, sessionId));
+    template.header(RequestContextHeader.TRACE_ID, RequestContextProvider.getTraceId());
+    Optional.ofNullable(RequestContextProvider.getSessionId()).ifPresent(sessionId -> template.header(
+        RequestContextHeader.SESSION_ID, sessionId));
 
-    Optional.ofNullable(AppContextProvider.getOrganizationId()).ifPresent(organizationId -> {
-      template.header(ContextHeader.ORGANIZATION_ID, organizationId)
-          .header(ContextHeader.ORGANIZATION_NAME, AppContextProvider.getOrganizationName());
+    Optional.ofNullable(RequestContextProvider.getOrganizationId()).ifPresent(organizationId -> {
+      template.header(RequestContextHeader.ORGANIZATION_ID, organizationId)
+          .header(RequestContextHeader.ORGANIZATION_NAME, RequestContextProvider.getOrganizationName());
     });
 
-    Optional.ofNullable(AppContextProvider.getUserId()).ifPresent(userId -> {
-      template.header(ContextHeader.USER_ID, userId)
-          .header(ContextHeader.USER_NAME, AppContextProvider.getUserName())
-          .header(ContextHeader.USER_EMAIL_ID, AppContextProvider.getUserEmailId());
+    Optional.ofNullable(RequestContextProvider.getUserId()).ifPresent(userId -> {
+      template.header(RequestContextHeader.USER_ID, userId)
+          .header(RequestContextHeader.USER_NAME, RequestContextProvider.getUserName())
+          .header(RequestContextHeader.USER_EMAIL_ID, RequestContextProvider.getUserEmailId());
     });
   }
 }

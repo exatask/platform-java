@@ -1,5 +1,6 @@
 plugins {
   id "platform.java-conventions"
+  id "org.springframework.boot"
 }
 
 version = "1.0.0-SNAPSHOT"
@@ -10,6 +11,7 @@ jar {
 
 dependencies {
 
+  implementation group: "org.springframework", name: "spring-context"
   implementation group: "org.apache.commons", name: "commons-lang3", version: "${apacheCommonsVersion}"
   implementation group: "com.fasterxml.jackson.core", name: "jackson-databind", version: "${fasterxmlJacksonVersion}"
 
