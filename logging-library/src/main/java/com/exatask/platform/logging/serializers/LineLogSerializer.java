@@ -41,6 +41,8 @@ public class LineLogSerializer implements LogSerializer {
 
     if (ObjectUtils.anyNotNull(logMessage.getUrl(), logMessage.getRequestTime())) {
       stringBuilder.append(" [")
+          .append(StringUtils.defaultString(logMessage.getMethod(), "-"))
+          .append(" ")
           .append(StringUtils.defaultString(logMessage.getUrl(), "-"))
           .append(", ")
           .append(ObjectUtils.defaultIfNull(logMessage.getRequestTime(), "-"))
