@@ -40,16 +40,14 @@ public class AppLogMessage {
   private Date timestamp;
 
   @Setter(AccessLevel.PACKAGE)
+  private String level;
+
+  @Setter(AccessLevel.PACKAGE)
   private String serviceName;
 
-  @Setter(AccessLevel.PACKAGE)
   private String traceId;
 
-  @Setter(AccessLevel.PACKAGE)
   private String spanId;
-
-  @Setter(AccessLevel.PACKAGE)
-  private String level;
 
   private String message;
 

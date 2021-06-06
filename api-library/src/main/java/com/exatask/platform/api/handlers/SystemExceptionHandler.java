@@ -20,9 +20,12 @@ import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 import javax.servlet.http.HttpServletRequest;
+import javax.validation.ConstraintViolation;
+import javax.validation.ConstraintViolationException;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 @Hidden
 @ControllerAdvice
@@ -55,29 +58,23 @@ public class SystemExceptionHandler {
       MissingServletRequestParameterException.class,
       HttpRequestMethodNotSupportedException.class,
       IllegalArgumentException.class,
-      MethodArgumentNotValidException.class
+      MethodArgumentNotValidException.class,
+      ConstraintViolationException.class
   })
   @ResponseBody
   public ResponseEntity<HttpErrorResponse> handleSystemException(HttpServletRequest request, Exception exception) throws Exception {
 
     if (exception instanceof MissingServletRequestParameterException) {
-
       return handleException(request, exception, HttpStatus.BAD_REQUEST);
-
     } else if (exception instanceof HttpRequestMethodNotSupportedException) {
-
       return handleException(request, exception, HttpStatus.METHOD_NOT_ALLOWED);
-
     } else if (exception instanceof IllegalArgumentException) {
-
       return handleException(request, exception, HttpStatus.NOT_IMPLEMENTED);
-
     } else if (exception instanceof MethodArgumentNotValidException) {
-
       return handleMethodArgumentNotValidException(request, (MethodArgumentNotValidException) exception);
-
+    } else if (exception instanceof ConstraintViolationException) {
+      return handleConstraintViolationException(request, (ConstraintViolationException) exception);
     } else {
-
       throw exception;
     }
   }
@@ -96,7 +93,23 @@ public class SystemExceptionHandler {
         .exception(exception)
         .invalidAttributes(invalidAttributes)
         .build();
+    return handleException(request, httpException);
+  }
 
+  private ResponseEntity<HttpErrorResponse> handleConstraintViolationException(HttpServletRequest request, ConstraintViolationException exception) {
+
+    Set<ConstraintViolation<?>> violations = exception.getConstraintViolations();
+    Map<String, String> invalidAttributes = new HashMap<>();
+
+    for (ConstraintViolation<?> violation : violations) {
+      invalidAttributes.put(violation.getPropertyPath().toString(), violation.getMessage());
+    }
+
+    HttpException httpException = BadRequestException.builder()
+        .appError(CommonError.INVALID_REQUEST_DATA)
+        .exception(exception)
+        .invalidAttributes(invalidAttributes)
+        .build();
     return handleException(request, httpException);
   }
 

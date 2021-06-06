@@ -1,15 +1,18 @@
 package com.exatask.platform.api.responses;
 
-import com.exatask.platform.utilities.constants.Environment;
 import com.exatask.platform.api.constants.ResponseMessage;
 import com.exatask.platform.api.exceptions.HttpException;
 import com.exatask.platform.api.utilities.ApiServiceUtility;
+import com.exatask.platform.utilities.constants.Environment;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonInclude;
+import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.databind.PropertyNamingStrategy;
 import com.fasterxml.jackson.databind.annotation.JsonNaming;
 import lombok.AllArgsConstructor;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
+import org.apache.commons.lang3.ObjectUtils;
 
 import java.util.Map;
 
@@ -27,6 +30,7 @@ public class HttpErrorResponse extends AppResponse {
 
   private StackTraceElement[] stackTrace;
 
+  @JsonIgnore
   private Throwable exceptionCause;
 
   public HttpErrorResponse(HttpException exception) {
@@ -51,6 +55,11 @@ public class HttpErrorResponse extends AppResponse {
       stackTrace = exception.getStackTrace();
       exceptionCause = exception.getCause();
     }
+  }
+
+  @JsonProperty("exception_cause")
+  public String getExceptionCause() {
+    return ObjectUtils.defaultIfNull(exceptionCause, "").toString();
   }
 
   @Getter

@@ -21,7 +21,7 @@ public class HttpErrorResponse extends AppResponse {
 
   private StackTraceElement[] stackTrace;
 
-  private Throwable exceptionCause;
+  private String exceptionCause;
 
   @Getter
   @JsonInclude(JsonInclude.Include.NON_NULL)

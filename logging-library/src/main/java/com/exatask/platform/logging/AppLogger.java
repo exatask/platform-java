@@ -121,9 +121,16 @@ public class AppLogger {
 
     logMessage.setLevel(level.toString().toLowerCase())
         .setServiceName(serviceName)
-        .setTraceId(RequestContextProvider.getTraceId())
-        .setSpanId(RequestContextProvider.getSpanId())
         .setTimestamp(new Date());
+
+    if (StringUtils.isEmpty(logMessage.getTraceId())) {
+      logMessage.setTraceId(RequestContextProvider.getTraceId());
+    }
+
+    if (StringUtils.isEmpty(logMessage.getSpanId())) {
+      logMessage.setSpanId(RequestContextProvider.getSpanId());
+    }
+
     log4jLogger.log(level, serializer.serialize(logMessage));
   }
 }

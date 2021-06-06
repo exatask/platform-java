@@ -30,7 +30,8 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
         .antMatchers(authenticatedUrls)
         .authenticated().and().httpBasic();
 
-    http.csrf().disable();
+    http.csrf().disable()
+        .headers().disable();
   }
 
   @Override
