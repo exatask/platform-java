@@ -1,8 +1,8 @@
 package com.exatask.platform.logging;
 
+import com.exatask.platform.logging.constants.LoggingService;
 import com.exatask.platform.utilities.ServiceUtility;
 import org.apache.commons.lang3.StringUtils;
-import org.apache.logging.log4j.util.StackLocatorUtil;
 
 public class AppLogManager {
 
@@ -22,7 +22,7 @@ public class AppLogManager {
   }
 
   public static AppLogger getLogger() {
-    return new AppLogger(StackLocatorUtil.getCallerClass(2).getName(), getServiceName());
+    return new AppLogger(LoggingService.LOGGER_NAME, getServiceName());
   }
 
   public static AppLogger getLogger(String logger) {
@@ -34,10 +34,10 @@ public class AppLogManager {
   }
 
   public static AppLogger getLogger(Class<?> clazz) {
-    return new AppLogger(clazz.getName(), getServiceName());
+    return new AppLogger(clazz.getPackage().getName(), getServiceName());
   }
 
   public static AppLogger getLogger(Class<?> clazz, String service) {
-    return new AppLogger(clazz.getName(), service);
+    return new AppLogger(clazz.getPackage().getName(), service);
   }
 }

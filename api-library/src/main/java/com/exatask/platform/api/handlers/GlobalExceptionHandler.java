@@ -1,6 +1,5 @@
 package com.exatask.platform.api.handlers;
 
-import com.exatask.platform.api.constants.ApiService;
 import com.exatask.platform.api.responses.HttpErrorResponse;
 import com.exatask.platform.logging.AppLogManager;
 import com.exatask.platform.logging.AppLogMessage;
@@ -18,7 +17,7 @@ import javax.servlet.http.HttpServletRequest;
 @ControllerAdvice
 public class GlobalExceptionHandler {
 
-  private static final AppLogger LOGGER = AppLogManager.getLogger(ApiService.LOGGER_NAME);
+  private static final AppLogger LOGGER = AppLogManager.getLogger();
 
   private void logException(HttpServletRequest request, Exception exception) {
 

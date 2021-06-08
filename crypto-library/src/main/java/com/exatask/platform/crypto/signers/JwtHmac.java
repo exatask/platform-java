@@ -1,6 +1,5 @@
 package com.exatask.platform.crypto.signers;
 
-import com.exatask.platform.crypto.constants.CryptoService;
 import com.exatask.platform.logging.AppLogManager;
 import com.exatask.platform.logging.AppLogger;
 import io.jsonwebtoken.Claims;
@@ -21,7 +20,7 @@ import java.util.stream.Collectors;
 
 public class JwtHmac implements AppSigner {
 
-  private static final AppLogger LOGGER = AppLogManager.getLogger(CryptoService.LOGGER_NAME);
+  private static final AppLogger LOGGER = AppLogManager.getLogger();
 
   private final SecretKey secretKey;
 

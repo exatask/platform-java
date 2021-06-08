@@ -1,6 +1,5 @@
 package com.exatask.platform.crypto.ciphers;
 
-import com.exatask.platform.crypto.constants.CryptoService;
 import com.exatask.platform.crypto.encoders.AppEncoder;
 import com.exatask.platform.crypto.encoders.AppEncoderFactory;
 import com.exatask.platform.crypto.encoders.AppEncoderType;
@@ -25,7 +24,7 @@ import java.util.Map;
 
 public class Rsa implements AppCipher {
 
-  private final static AppLogger LOGGER = AppLogManager.getLogger(CryptoService.LOGGER_NAME);
+  private final static AppLogger LOGGER = AppLogManager.getLogger();
 
   private final static String ALGORITHM = "RSA";
 

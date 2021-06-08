@@ -1,6 +1,5 @@
 package com.exatask.platform.crypto.encoders;
 
-import com.exatask.platform.crypto.constants.CryptoService;
 import com.exatask.platform.logging.AppLogManager;
 import com.exatask.platform.logging.AppLogger;
 import org.apache.commons.codec.DecoderException;
@@ -8,7 +7,7 @@ import org.apache.commons.codec.binary.Hex;
 
 public class HexEncoder implements AppEncoder {
 
-  protected static final AppLogger LOGGER = AppLogManager.getLogger(CryptoService.LOGGER_NAME);
+  protected static final AppLogger LOGGER = AppLogManager.getLogger();
 
   @Override
   public String encode(byte[] data) {

@@ -1,6 +1,5 @@
 package com.exatask.platform.api.handlers;
 
-import com.exatask.platform.api.constants.ApiService;
 import com.exatask.platform.api.errors.CommonError;
 import com.exatask.platform.api.exceptions.BadRequestException;
 import com.exatask.platform.api.exceptions.HttpException;
@@ -36,7 +35,7 @@ import java.util.Set;
 @Order(Ordered.HIGHEST_PRECEDENCE)
 public class SystemExceptionHandler {
 
-  private static final AppLogger LOGGER = AppLogManager.getLogger(ApiService.LOGGER_NAME);
+  private static final AppLogger LOGGER = AppLogManager.getLogger();
 
   private void logException(HttpServletRequest request, Exception exception, HttpStatus httpStatus) {
 

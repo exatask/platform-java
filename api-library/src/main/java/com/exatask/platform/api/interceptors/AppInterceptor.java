@@ -1,6 +1,5 @@
 package com.exatask.platform.api.interceptors;
 
-import com.exatask.platform.api.constants.ApiService;
 import com.exatask.platform.api.exceptions.HttpException;
 import com.exatask.platform.api.responses.HttpErrorResponse;
 import com.exatask.platform.logging.AppLogManager;
@@ -17,7 +16,7 @@ import java.io.IOException;
 
 public class AppInterceptor implements HandlerInterceptor {
 
-  protected static final AppLogger LOGGER = AppLogManager.getLogger(ApiService.LOGGER_NAME);
+  protected static final AppLogger LOGGER = AppLogManager.getLogger();
 
   protected void sendPreHandleErrorResponse(Exception exception, HttpServletRequest request, HttpServletResponse response) {
 

@@ -2,7 +2,6 @@ package com.exatask.platform.sdk.decoders;
 
 import com.exatask.platform.logging.AppLogManager;
 import com.exatask.platform.logging.AppLogger;
-import com.exatask.platform.sdk.constants.SdkService;
 import com.exatask.platform.sdk.exceptions.SdkException;
 import com.exatask.platform.sdk.responses.HttpErrorResponse;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -20,7 +19,7 @@ import static feign.FeignException.errorStatus;
 @Service
 public class ServiceErrorDecoder implements ErrorDecoder {
 
-  private static final AppLogger LOGGER = AppLogManager.getLogger(SdkService.LOGGER_NAME);
+  private static final AppLogger LOGGER = AppLogManager.getLogger();
 
   private static final ObjectMapper MAPPER = new ObjectMapper();
 

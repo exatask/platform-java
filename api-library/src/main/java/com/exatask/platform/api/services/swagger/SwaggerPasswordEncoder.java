@@ -1,6 +1,5 @@
 package com.exatask.platform.api.services.swagger;
 
-import com.exatask.platform.api.constants.ApiService;
 import com.exatask.platform.crypto.ciphers.AppAlgorithm;
 import com.exatask.platform.crypto.ciphers.AppCipher;
 import com.exatask.platform.crypto.ciphers.AppCipherFactory;
@@ -18,7 +17,7 @@ import java.security.GeneralSecurityException;
 @Service
 public class SwaggerPasswordEncoder implements PasswordEncoder {
 
-  private static final AppLogger LOGGER = AppLogManager.getLogger(ApiService.LOGGER_NAME);
+  private static final AppLogger LOGGER = AppLogManager.getLogger();
 
   private AppCipher cipher;
 

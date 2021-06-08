@@ -2,13 +2,12 @@ package com.exatask.platform.mailer;
 
 import com.exatask.platform.logging.AppLogManager;
 import com.exatask.platform.logging.AppLogger;
-import com.exatask.platform.mailer.constants.MailerService;
+import com.exatask.platform.mailer.configuration.AppEmailConfiguration;
 import com.exatask.platform.mailer.email.EmailAttachment;
 import com.exatask.platform.mailer.email.EmailMessage;
 import com.exatask.platform.mailer.email.EmailOptions;
 import com.exatask.platform.mailer.email.EmailResponse;
 import com.exatask.platform.mailer.templates.AppTemplateEngine;
-import com.exatask.platform.mailer.configuration.AppEmailConfiguration;
 import org.apache.commons.lang3.ArrayUtils;
 import org.apache.commons.lang3.ObjectUtils;
 import org.apache.commons.lang3.StringUtils;
@@ -30,7 +29,7 @@ import java.util.stream.Collectors;
 
 public abstract class AppMailer {
 
-  protected static final AppLogger LOGGER = AppLogManager.getLogger(MailerService.LOGGER_NAME);
+  protected static final AppLogger LOGGER = AppLogManager.getLogger();
 
   protected static final String CHARSET_UTF8 = "UTF-8";
 

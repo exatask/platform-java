@@ -2,7 +2,6 @@ package com.exatask.platform.migration.beans;
 
 import com.exatask.platform.logging.AppLogManager;
 import com.exatask.platform.logging.AppLogger;
-import com.exatask.platform.migration.constants.MigrationService;
 import com.github.mongobee.Mongobee;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
@@ -11,7 +10,7 @@ import org.springframework.context.annotation.Configuration;
 @Configuration
 public class MongodbBean {
 
-  private static final AppLogger LOGGER = AppLogManager.getLogger(MigrationService.LOGGER_NAME);
+  private static final AppLogger LOGGER = AppLogManager.getLogger();
 
   private static final String CHANGELOG_COLLECTION = "changelogs";
   private static final String CHANGELOG_LOCK_COLLECTION = "changelog_locks";

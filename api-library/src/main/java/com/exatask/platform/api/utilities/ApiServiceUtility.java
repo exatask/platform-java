@@ -1,15 +1,14 @@
 package com.exatask.platform.api.utilities;
 
-import com.exatask.platform.api.constants.ApiService;
-import com.exatask.platform.utilities.constants.Environment;
 import com.exatask.platform.logging.AppLogManager;
 import com.exatask.platform.logging.AppLogger;
 import com.exatask.platform.utilities.ServiceUtility;
+import com.exatask.platform.utilities.constants.Environment;
 import com.exatask.platform.utilities.exceptions.RuntimePropertyNotFoundException;
 
 public class ApiServiceUtility {
 
-  private static final AppLogger LOGGER = AppLogManager.getLogger(ApiService.LOGGER_NAME);
+  private static final AppLogger LOGGER = AppLogManager.getLogger();
 
   private static Environment environment = null;
 

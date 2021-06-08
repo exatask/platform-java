@@ -3,7 +3,6 @@ package com.exatask.platform.sdk.loggers;
 import com.exatask.platform.logging.AppLogManager;
 import com.exatask.platform.logging.AppLogMessage;
 import com.exatask.platform.logging.AppLogger;
-import com.exatask.platform.sdk.constants.SdkService;
 import feign.Logger;
 import feign.Request;
 import feign.Response;
@@ -19,7 +18,7 @@ import java.util.Map;
 @Service
 public class ServiceLogger extends Logger {
 
-  private static final AppLogger LOGGER = AppLogManager.getLogger(SdkService.LOGGER_NAME);
+  private static final AppLogger LOGGER = AppLogManager.getLogger();
 
   @Override
   protected void log(String configKey, String format, Object... args) {
