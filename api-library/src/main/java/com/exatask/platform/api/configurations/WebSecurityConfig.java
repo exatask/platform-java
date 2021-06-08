@@ -11,7 +11,7 @@ import org.springframework.security.config.annotation.web.configuration.WebSecur
 
 @Configuration
 @EnableWebSecurity
-public class SecurityConfig extends WebSecurityConfigurerAdapter {
+public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
 
   private static final String[] authenticatedUrls = new String[] {
       "/swagger-ui.html", "/swagger-ui/**", "/v3/api-docs/**"
@@ -26,12 +26,21 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
   @Override
   protected void configure(HttpSecurity http) throws Exception {
 
+    http.cors().disable()
+        .csrf().disable()
+        .jee().disable()
+        .formLogin().disable()
+        .httpBasic().disable()
+        .headers().disable()
+        .securityContext().disable()
+        .sessionManagement().disable()
+        .rememberMe().disable()
+        .anonymous().disable()
+        .logout().disable();
+
     http.authorizeRequests()
         .antMatchers(authenticatedUrls)
         .authenticated().and().httpBasic();
-
-    http.csrf().disable()
-        .headers().disable();
   }
 
   @Override

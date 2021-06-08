@@ -9,15 +9,19 @@ import com.exatask.platform.logging.AppLogManager;
 import com.exatask.platform.logging.AppLogMessage;
 import com.exatask.platform.logging.AppLogger;
 import io.swagger.v3.oas.annotations.Hidden;
+import org.springframework.core.Ordered;
+import org.springframework.core.annotation.Order;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.validation.BindException;
 import org.springframework.validation.FieldError;
 import org.springframework.web.HttpRequestMethodNotSupportedException;
-import org.springframework.web.bind.MethodArgumentNotValidException;
+import org.springframework.web.bind.MissingPathVariableException;
 import org.springframework.web.bind.MissingServletRequestParameterException;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.servlet.NoHandlerFoundException;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.validation.ConstraintViolation;
@@ -29,6 +33,7 @@ import java.util.Set;
 
 @Hidden
 @ControllerAdvice
+@Order(Ordered.HIGHEST_PRECEDENCE)
 public class SystemExceptionHandler {
 
   private static final AppLogger LOGGER = AppLogManager.getLogger(ApiService.LOGGER_NAME);
@@ -58,11 +63,13 @@ public class SystemExceptionHandler {
       MissingServletRequestParameterException.class,
       HttpRequestMethodNotSupportedException.class,
       IllegalArgumentException.class,
-      MethodArgumentNotValidException.class,
-      ConstraintViolationException.class
+      ConstraintViolationException.class,
+      NoHandlerFoundException.class,
+      MissingPathVariableException.class,
+      BindException.class
   })
   @ResponseBody
-  public ResponseEntity<HttpErrorResponse> handleSystemException(HttpServletRequest request, Exception exception) throws Exception {
+  public ResponseEntity<HttpErrorResponse> handleSystemException(HttpServletRequest request, Exception exception) {
 
     if (exception instanceof MissingServletRequestParameterException) {
       return handleException(request, exception, HttpStatus.BAD_REQUEST);
@@ -70,16 +77,18 @@ public class SystemExceptionHandler {
       return handleException(request, exception, HttpStatus.METHOD_NOT_ALLOWED);
     } else if (exception instanceof IllegalArgumentException) {
       return handleException(request, exception, HttpStatus.NOT_IMPLEMENTED);
-    } else if (exception instanceof MethodArgumentNotValidException) {
-      return handleMethodArgumentNotValidException(request, (MethodArgumentNotValidException) exception);
+    } else if (exception instanceof NoHandlerFoundException) {
+      return handleException(request, exception, HttpStatus.NOT_FOUND);
+    } else if (exception instanceof BindException) {
+      return handleBindException(request, (BindException) exception);
     } else if (exception instanceof ConstraintViolationException) {
       return handleConstraintViolationException(request, (ConstraintViolationException) exception);
     } else {
-      throw exception;
+      return handleException(request, exception, HttpStatus.INTERNAL_SERVER_ERROR);
     }
   }
 
-  private ResponseEntity<HttpErrorResponse> handleMethodArgumentNotValidException(HttpServletRequest request, MethodArgumentNotValidException exception) {
+  private ResponseEntity<HttpErrorResponse> handleBindException(HttpServletRequest request, BindException exception) {
 
     List<FieldError> fieldErrors = exception.getBindingResult().getFieldErrors();
     Map<String, String> invalidAttributes = new HashMap<>();
