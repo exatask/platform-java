@@ -2,13 +2,22 @@ package com.exatask.platform.utilities;
 
 import com.exatask.platform.utilities.exceptions.RuntimePropertyNotFoundException;
 import lombok.Getter;
+import org.apache.commons.lang3.ObjectUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.env.Environment;
 import org.springframework.stereotype.Service;
 
+import java.io.IOException;
+import java.io.InputStream;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Properties;
+
 @Service
 public class ServiceUtility {
+
+  private static final String APPLICATION_PROPERTIES_FILE = "application.properties";
 
   private static final String SPRING_APPLICATION_NAME_KEY = "spring.application.name";
   private static final String SPRING_PROFILE_ENV_KEY = "spring_profiles_active";
@@ -24,14 +33,48 @@ public class ServiceUtility {
   @Getter
   private static Environment environment;
 
+  private final static Properties applicationProperties = new Properties();
+
+  private final static List<String> loadedPropertyFiles = new ArrayList<>();
+
   @Autowired
   public ServiceUtility(Environment environment) {
     ServiceUtility.environment = environment;
   }
 
+  private static void loadClasspathProperties(String filePath) {
+
+    if (loadedPropertyFiles.contains(filePath)) {
+      return;
+    }
+
+    try (InputStream propertiesStream = Thread.currentThread().getContextClassLoader().getResourceAsStream(filePath)) {
+
+      applicationProperties.load(propertiesStream);
+      loadedPropertyFiles.add(filePath);
+
+    } catch (IOException exception) {
+
+      System.out.println(exception.getMessage());
+      exception.printStackTrace();
+    }
+  }
+
+  private static String getApplicationProperty(String key) {
+
+    loadClasspathProperties(APPLICATION_PROPERTIES_FILE);
+    return applicationProperties.getProperty(key);
+  }
+
   private static String getRuntimeProperty(String key) {
 
-    String value = environment.getProperty(key);
+    String value = "";
+    if (ObjectUtils.isEmpty(environment)) {
+      value = getApplicationProperty(key);
+    } else {
+      value = environment.getProperty(key);
+    }
+
     if (StringUtils.isNotEmpty(value)) {
       return value;
     }
