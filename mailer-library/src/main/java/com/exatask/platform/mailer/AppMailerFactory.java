@@ -1,7 +1,8 @@
 package com.exatask.platform.mailer;
 
-import com.exatask.platform.mailer.aws.AppAwsMailer;
+import com.exatask.platform.mailer.transports.aws.AwsMailer;
 import com.exatask.platform.mailer.exceptions.InvalidMailerException;
+import com.exatask.platform.mailer.transports.smtp.SmtpMailer;
 import com.exatask.platform.utilities.ApplicationContextUtility;
 
 import java.util.HashMap;
@@ -27,8 +28,12 @@ public class AppMailerFactory {
     AppMailer appMailer;
     switch (mailer) {
 
+      case SMTP:
+        appMailer = ApplicationContextUtility.getBean(SmtpMailer.class);
+        break;
+
       case AWS:
-        appMailer = ApplicationContextUtility.getBean(AppAwsMailer.class);
+        appMailer = ApplicationContextUtility.getBean(AwsMailer.class);
         break;
 
       default:

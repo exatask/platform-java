@@ -19,7 +19,7 @@ public class ApiServiceUtility {
     }
 
     try {
-      environment = Environment.valueOf(ServiceUtility.getEnvironment().toUpperCase());
+      environment = Environment.valueOf(ServiceUtility.getServiceEnvironment().toUpperCase());
 
     } catch (RuntimePropertyNotFoundException | IllegalArgumentException exception) {
 

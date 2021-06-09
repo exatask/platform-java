@@ -17,7 +17,7 @@ public class AppLogManager {
       return serviceName;
     }
 
-    serviceName = ServiceUtility.getName();
+    serviceName = ServiceUtility.getServiceName();
     return serviceName;
   }
 

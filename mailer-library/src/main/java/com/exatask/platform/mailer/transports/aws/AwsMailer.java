@@ -1,11 +1,11 @@
-package com.exatask.platform.mailer.aws;
+package com.exatask.platform.mailer.transports.aws;
 
 import com.exatask.platform.mailer.AppMailer;
+import com.exatask.platform.mailer.configuration.EmailProperties;
 import com.exatask.platform.mailer.email.EmailMessage;
 import com.exatask.platform.mailer.email.EmailResponse;
-import com.exatask.platform.mailer.templates.AppTemplateEngine;
-import com.exatask.platform.mailer.configuration.AppEmailConfiguration;
-import com.exatask.platform.utilities.cloud.aws.AwsCredentialUtility;
+import com.exatask.platform.mailer.templates.TemplateEngine;
+import com.exatask.platform.utilities.properties.AwsProperties;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Lazy;
 import org.springframework.stereotype.Component;
@@ -15,7 +15,6 @@ import software.amazon.awssdk.services.ses.model.RawMessage;
 import software.amazon.awssdk.services.ses.model.SendRawEmailRequest;
 import software.amazon.awssdk.services.ses.model.SendRawEmailResponse;
 
-import javax.annotation.PostConstruct;
 import javax.mail.MessagingException;
 import javax.mail.Session;
 import javax.mail.internet.MimeMessage;
@@ -25,21 +24,18 @@ import java.util.Properties;
 
 @Lazy
 @Component
-public class AppAwsMailer extends AppMailer {
+public class AwsMailer extends AppMailer {
 
-  private SesClient sesClient;
+  private final SesClient sesClient;
 
   @Autowired
-  public AppAwsMailer(AppTemplateEngine appTemplateEngine, AppEmailConfiguration appEmailUtility) {
-    super(appTemplateEngine, appEmailUtility);
-  }
+  public AwsMailer(AwsProperties awsProperties, TemplateEngine templateEngine, EmailProperties emailProperties) {
 
-  @PostConstruct
-  private void initialize() {
+    super(templateEngine, emailProperties);
 
     sesClient = SesClient.builder()
-        .region(AwsCredentialUtility.getRegion())
-        .credentialsProvider(AwsCredentialUtility.getCredentialsProvider())
+        .region(awsProperties.getRegion())
+        .credentialsProvider(awsProperties.getCredentialsProvider())
         .build();
   }
 

@@ -1,6 +1,9 @@
-package com.exatask.platform.utilities.cloud.aws;
+package com.exatask.platform.utilities.properties;
 
-import com.exatask.platform.utilities.ApplicationUtility;
+import com.exatask.platform.utilities.ServiceUtility;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.NoArgsConstructor;
 import org.apache.commons.lang3.ObjectUtils;
 import org.apache.commons.lang3.StringUtils;
 import software.amazon.awssdk.auth.credentials.AwsBasicCredentials;
@@ -9,7 +12,10 @@ import software.amazon.awssdk.auth.credentials.DefaultCredentialsProvider;
 import software.amazon.awssdk.auth.credentials.StaticCredentialsProvider;
 import software.amazon.awssdk.regions.Region;
 
-public class AwsCredentialUtility {
+@Builder
+@AllArgsConstructor
+@NoArgsConstructor
+public class AwsProperties {
 
   private static final String AWS_ACCESS_KEY_ID = "aws.accessKeyId";
   private static final String AWS_SECRET_KEY = "aws.secretKey";
@@ -17,9 +23,18 @@ public class AwsCredentialUtility {
 
   private static final Region DEFAULT_REGION = Region.AP_SOUTH_1;
 
-  public static Region getRegion() {
+  private String region;
 
-    String region = ApplicationUtility.getApplicationProperty(AWS_REGION);
+  private String accessKeyId;
+
+  private String secretKey;
+
+  public Region getRegion() {
+
+    if (StringUtils.isEmpty(this.region)) {
+      region = ServiceUtility.getServiceProperty(AWS_REGION);
+    }
+
     if (StringUtils.isNotEmpty(region)) {
       return ObjectUtils.defaultIfNull(Region.of(region), DEFAULT_REGION);
     } else {
@@ -27,10 +42,15 @@ public class AwsCredentialUtility {
     }
   }
 
-  public static AwsCredentialsProvider getCredentialsProvider() {
+  public AwsCredentialsProvider getCredentialsProvider() {
 
-    String accessKeyId = ApplicationUtility.getApplicationProperty(AWS_ACCESS_KEY_ID);
-    String secretKey = ApplicationUtility.getApplicationProperty(AWS_SECRET_KEY);
+    if (StringUtils.isEmpty(accessKeyId)) {
+      accessKeyId = ServiceUtility.getServiceProperty(AWS_ACCESS_KEY_ID);
+    }
+
+    if (StringUtils.isEmpty(secretKey)) {
+      secretKey = ServiceUtility.getServiceProperty(AWS_SECRET_KEY);
+    }
 
     if (StringUtils.isNotEmpty(accessKeyId) && StringUtils.isNotEmpty(secretKey)) {
 

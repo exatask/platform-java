@@ -10,7 +10,7 @@ import org.thymeleaf.templateresolver.ClassLoaderTemplateResolver;
 import org.thymeleaf.templateresolver.ITemplateResolver;
 
 @Configuration
-public class AppTemplateConfiguration {
+public class TemplateConfiguration {
 
   @Autowired
   private ResourceBundleMessageSource messageSource;

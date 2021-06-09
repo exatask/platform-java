@@ -16,6 +16,7 @@ dependencies {
   implementation group: "com.fasterxml.jackson.core", name: "jackson-databind", version: "${fasterxmlJacksonVersion}"
 
   compileOnly group: "software.amazon.awssdk", name: "auth"
+  compileOnly group: "javax.mail", name: "mail", version: "${javaxMailVersion}"
   compileOnly group: "org.projectlombok", name: "lombok", version: "${lombokVersion}"
   annotationProcessor group: "org.projectlombok", name: "lombok", version: "${lombokVersion}"
 }

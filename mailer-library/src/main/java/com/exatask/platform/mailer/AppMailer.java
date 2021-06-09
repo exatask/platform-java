@@ -2,12 +2,13 @@ package com.exatask.platform.mailer;
 
 import com.exatask.platform.logging.AppLogManager;
 import com.exatask.platform.logging.AppLogger;
-import com.exatask.platform.mailer.configuration.AppEmailConfiguration;
+import com.exatask.platform.mailer.configuration.EmailProperties;
 import com.exatask.platform.mailer.email.EmailAttachment;
 import com.exatask.platform.mailer.email.EmailMessage;
 import com.exatask.platform.mailer.email.EmailOptions;
 import com.exatask.platform.mailer.email.EmailResponse;
-import com.exatask.platform.mailer.templates.AppTemplateEngine;
+import com.exatask.platform.mailer.templates.TemplateEngine;
+import lombok.RequiredArgsConstructor;
 import org.apache.commons.lang3.ArrayUtils;
 import org.apache.commons.lang3.ObjectUtils;
 import org.apache.commons.lang3.StringUtils;
@@ -27,6 +28,7 @@ import java.util.List;
 import java.util.Objects;
 import java.util.stream.Collectors;
 
+@RequiredArgsConstructor
 public abstract class AppMailer {
 
   protected static final AppLogger LOGGER = AppLogManager.getLogger();
@@ -38,15 +40,9 @@ public abstract class AppMailer {
   private static final String MIME_SUBTYPE_ALTERNATE = "alternate";
   private static final String MIME_SUBTYPE_MIXED = "mixed";
 
-  private final AppTemplateEngine appTemplateEngine;
+  private final TemplateEngine templateEngine;
 
-  private final AppEmailConfiguration appEmailUtility;
-
-  public AppMailer(AppTemplateEngine appTemplateEngine, AppEmailConfiguration appEmailUtility) {
-
-    this.appTemplateEngine = appTemplateEngine;
-    this.appEmailUtility = appEmailUtility;
-  }
+  private final EmailProperties emailProperties;
 
   public abstract EmailResponse send(EmailMessage message);
 
@@ -57,11 +53,11 @@ public abstract class AppMailer {
       return;
     }
 
-    message.setFrom(new InternetAddress(StringUtils.defaultIfEmpty(emailOptions.getFrom(), appEmailUtility.getFromAddress())));
-    message.setSender(new InternetAddress(StringUtils.defaultIfEmpty(emailOptions.getSender(), appEmailUtility.getSenderAddress())));
+    message.setFrom(new InternetAddress(StringUtils.defaultIfEmpty(emailOptions.getFrom(), emailProperties.getFromAddress())));
+    message.setSender(new InternetAddress(StringUtils.defaultIfEmpty(emailOptions.getSender(), emailProperties.getSenderAddress())));
 
     InternetAddress[] replyToAddresses = new InternetAddress[]{
-        new InternetAddress(StringUtils.defaultIfEmpty(emailOptions.getReplyTo(), appEmailUtility.getReplyToAddress()))
+        new InternetAddress(StringUtils.defaultIfEmpty(emailOptions.getReplyTo(), emailProperties.getReplyToAddress()))
     };
     message.setReplyTo(replyToAddresses);
   }
@@ -89,12 +85,12 @@ public abstract class AppMailer {
     MimeMultipart messageBody = new MimeMultipart(MIME_SUBTYPE_ALTERNATE);
 
     MimeBodyPart textBodyPart = new MimeBodyPart();
-    String textBody = appTemplateEngine.renderText(emailMessage.getTemplate(), emailMessage.getTemplateVariables());
+    String textBody = templateEngine.renderText(emailMessage.getTemplate(), emailMessage.getTemplateVariables());
     textBodyPart.setContent(textBody, Mimetype.MIMETYPE_TEXT_PLAIN);
     messageBody.addBodyPart(textBodyPart);
 
     MimeBodyPart htmlBodyPart = new MimeBodyPart();
-    String htmlBody = appTemplateEngine.renderHtml(emailMessage.getTemplate(), emailMessage.getTemplateVariables());
+    String htmlBody = templateEngine.renderHtml(emailMessage.getTemplate(), emailMessage.getTemplateVariables());
     htmlBodyPart.setContent(htmlBody, MIME_TYPE_HTML);
     messageBody.addBodyPart(htmlBodyPart);
 

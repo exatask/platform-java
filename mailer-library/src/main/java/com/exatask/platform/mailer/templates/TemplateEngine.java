@@ -9,7 +9,7 @@ import org.thymeleaf.spring5.SpringTemplateEngine;
 import java.util.Map;
 
 @Component
-public class AppTemplateEngine {
+public class TemplateEngine {
 
   @Autowired
   @Qualifier("htmlTemplateEngine")
