@@ -2,7 +2,7 @@ package com.exatask.platform.crypto.ciphers;
 
 import com.exatask.platform.crypto.encoders.AppEncoder;
 import com.exatask.platform.crypto.encoders.AppEncoderFactory;
-import com.exatask.platform.crypto.encoders.AppEncoderType;
+import com.exatask.platform.crypto.encoders.AppEncoderAlgorithm;
 import org.bouncycastle.jce.provider.BouncyCastleProvider;
 
 import javax.crypto.Mac;
@@ -17,7 +17,7 @@ public class Hmac implements AppCipher {
 
   private final AppEncoder encoder;
 
-  public Hmac(AppAlgorithm algorithm, AppEncoderType encoderType, Map<String, String> cryptoKeys) throws GeneralSecurityException {
+  public Hmac(AppCipherAlgorithm algorithm, AppEncoderAlgorithm encoderType, Map<String, String> cryptoKeys) throws GeneralSecurityException {
 
     SecretKey secretKey = new SecretKeySpec(cryptoKeys.get("key").getBytes(), algorithm.getAlgorithm());
 

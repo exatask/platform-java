@@ -2,7 +2,7 @@ package com.exatask.platform.api.authenticators;
 
 import com.exatask.platform.crypto.encoders.AppEncoder;
 import com.exatask.platform.crypto.encoders.AppEncoderFactory;
-import com.exatask.platform.crypto.encoders.AppEncoderType;
+import com.exatask.platform.crypto.encoders.AppEncoderAlgorithm;
 import com.exatask.platform.utilities.constants.ServiceAuth;
 import lombok.Data;
 import lombok.experimental.Accessors;
@@ -16,7 +16,7 @@ public class HttpBasicApiAuthenticator implements ApiAuthenticator {
 
     HttpBasicCredentials httpBasicCredentials = (HttpBasicCredentials) credentials;
 
-    AppEncoder encoder = AppEncoderFactory.getEncoder(AppEncoderType.BASE64);
+    AppEncoder encoder = AppEncoderFactory.getEncoder(AppEncoderAlgorithm.BASE64);
     String username = httpBasicCredentials.getUsername();
     String password = httpBasicCredentials.getPassword();
 

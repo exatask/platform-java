@@ -1,6 +1,6 @@
 package com.exatask.platform.crypto.encoders;
 
-public enum AppEncoderType {
+public enum AppEncoderAlgorithm {
 
   BASE32,
   BASE64,

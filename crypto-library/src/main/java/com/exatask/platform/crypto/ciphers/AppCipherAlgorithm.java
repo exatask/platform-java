@@ -5,7 +5,7 @@ import lombok.Getter;
 
 @Getter
 @AllArgsConstructor
-public enum AppAlgorithm {
+public enum AppCipherAlgorithm {
 
   RSA_CBC("RSA/ECB/PKCS1Padding"),
   AES_CBC("AES/CBC/PKCS5Padding"),

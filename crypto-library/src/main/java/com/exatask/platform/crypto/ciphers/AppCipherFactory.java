@@ -1,6 +1,6 @@
 package com.exatask.platform.crypto.ciphers;
 
-import com.exatask.platform.crypto.encoders.AppEncoderType;
+import com.exatask.platform.crypto.encoders.AppEncoderAlgorithm;
 import com.exatask.platform.crypto.exceptions.InvalidCipherException;
 import lombok.experimental.UtilityClass;
 import org.bouncycastle.jce.provider.BouncyCastleProvider;
@@ -20,12 +20,12 @@ public class AppCipherFactory {
   public static AppCipher getCipher(String algorithm, String encoderType, Map<String, String> cipherKeys)
       throws GeneralSecurityException, IOException {
 
-    AppAlgorithm cipher = AppAlgorithm.valueOf(algorithm);
-    AppEncoderType encoder = AppEncoderType.valueOf(encoderType);
+    AppCipherAlgorithm cipher = AppCipherAlgorithm.valueOf(algorithm);
+    AppEncoderAlgorithm encoder = AppEncoderAlgorithm.valueOf(encoderType);
     return getCipher(cipher, encoder, cipherKeys);
   }
 
-  public static AppCipher getCipher(AppAlgorithm algorithm, AppEncoderType encoder, Map<String, String> cipherKeys)
+  public static AppCipher getCipher(AppCipherAlgorithm algorithm, AppEncoderAlgorithm encoder, Map<String, String> cipherKeys)
       throws GeneralSecurityException, IOException {
 
     switch (algorithm) {

@@ -2,7 +2,7 @@ package com.exatask.platform.crypto.ciphers;
 
 import com.exatask.platform.crypto.encoders.AppEncoder;
 import com.exatask.platform.crypto.encoders.AppEncoderFactory;
-import com.exatask.platform.crypto.encoders.AppEncoderType;
+import com.exatask.platform.crypto.encoders.AppEncoderAlgorithm;
 import com.exatask.platform.logging.AppLogManager;
 import com.exatask.platform.logging.AppLogger;
 import org.bouncycastle.jce.provider.BouncyCastleProvider;
@@ -36,7 +36,7 @@ public class Rsa implements AppCipher {
 
   private final PrivateKey privateKey;
 
-  public Rsa(AppAlgorithm algorithm, AppEncoderType encoderType, Map<String, String> cryptoKeys)
+  public Rsa(AppCipherAlgorithm algorithm, AppEncoderAlgorithm encoderType, Map<String, String> cryptoKeys)
       throws GeneralSecurityException, IOException {
 
     String publicKeyFile = cryptoKeys.get("publicKeyFile");

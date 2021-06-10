@@ -1,9 +1,9 @@
 package com.exatask.platform.api.services.swagger;
 
-import com.exatask.platform.crypto.ciphers.AppAlgorithm;
+import com.exatask.platform.crypto.ciphers.AppCipherAlgorithm;
 import com.exatask.platform.crypto.ciphers.AppCipher;
 import com.exatask.platform.crypto.ciphers.AppCipherFactory;
-import com.exatask.platform.crypto.encoders.AppEncoderType;
+import com.exatask.platform.crypto.encoders.AppEncoderAlgorithm;
 import com.exatask.platform.logging.AppLogManager;
 import com.exatask.platform.logging.AppLogger;
 import org.apache.commons.lang3.StringUtils;
@@ -25,7 +25,7 @@ public class SwaggerPasswordEncoder implements PasswordEncoder {
   private void initialize() {
 
     try {
-      cipher = AppCipherFactory.getCipher(AppAlgorithm.MD5, AppEncoderType.HEX, null);
+      cipher = AppCipherFactory.getCipher(AppCipherAlgorithm.MD5, AppEncoderAlgorithm.HEX, null);
     } catch (GeneralSecurityException | IOException exception) {
       LOGGER.error(exception);
     }

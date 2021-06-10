@@ -10,11 +10,11 @@ public class AppPasswordFactory {
 
   public static AppPassword getPassword(String algorithm, Map<String, String> passwordKeys) {
 
-    AppAlgorithm password = AppAlgorithm.valueOf(algorithm);
+    AppPasswordAlgorithm password = AppPasswordAlgorithm.valueOf(algorithm);
     return getPassword(password, passwordKeys);
   }
 
-  public static AppPassword getPassword(AppAlgorithm algorithm, Map<String, String> passwordKeys) {
+  public static AppPassword getPassword(AppPasswordAlgorithm algorithm, Map<String, String> passwordKeys) {
 
     switch (algorithm) {
 

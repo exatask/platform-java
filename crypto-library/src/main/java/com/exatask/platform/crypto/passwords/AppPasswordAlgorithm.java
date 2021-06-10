@@ -1,6 +1,6 @@
 package com.exatask.platform.crypto.passwords;
 
-public enum AppAlgorithm {
+public enum AppPasswordAlgorithm {
 
   TOTP,
   HOTP

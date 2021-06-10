@@ -10,15 +10,15 @@ import java.util.Objects;
 @UtilityClass
 public class AppEncoderFactory {
 
-  private static final Map<AppEncoderType, AppEncoder> encoderList = new HashMap<>();
+  private static final Map<AppEncoderAlgorithm, AppEncoder> encoderList = new HashMap<>();
 
   public static AppEncoder getEncoder(String type) {
 
-    AppEncoderType encoder = AppEncoderType.valueOf(type);
+    AppEncoderAlgorithm encoder = AppEncoderAlgorithm.valueOf(type);
     return getEncoder(encoder);
   }
 
-  public static AppEncoder getEncoder(AppEncoderType type) {
+  public static AppEncoder getEncoder(AppEncoderAlgorithm type) {
 
     if (encoderList.containsKey(type)) {
       return encoderList.get(type);

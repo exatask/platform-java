@@ -2,7 +2,7 @@ package com.exatask.platform.crypto.ciphers;
 
 import com.exatask.platform.crypto.encoders.AppEncoder;
 import com.exatask.platform.crypto.encoders.AppEncoderFactory;
-import com.exatask.platform.crypto.encoders.AppEncoderType;
+import com.exatask.platform.crypto.encoders.AppEncoderAlgorithm;
 import com.exatask.platform.logging.AppLogManager;
 import com.exatask.platform.logging.AppLogger;
 import org.bouncycastle.jce.provider.BouncyCastleProvider;
@@ -27,7 +27,7 @@ public class Aes implements AppCipher {
 
   private final IvParameterSpec ivParameter;
 
-  public Aes(AppAlgorithm algorithm, AppEncoderType encoderType, Map<String, String> cryptoKeys) throws GeneralSecurityException {
+  public Aes(AppCipherAlgorithm algorithm, AppEncoderAlgorithm encoderType, Map<String, String> cryptoKeys) throws GeneralSecurityException {
 
     String key = cryptoKeys.get("key");
     String iv = cryptoKeys.get("iv");

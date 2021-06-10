@@ -9,7 +9,7 @@ public class InvalidPasswordException extends RuntimeException{
 
   public InvalidPasswordException(String password) {
 
-    super(String.format("Implementation for password %s doesn't exist", password));
+    super(String.format("Implementation for Password %s doesn't exist", password));
     this.password = password;
   }
 }

@@ -1,11 +1,11 @@
 package com.exatask.platform.crypto.passwords;
 
-import com.exatask.platform.crypto.ciphers.AppAlgorithm;
+import com.exatask.platform.crypto.ciphers.AppCipherAlgorithm;
 import com.exatask.platform.crypto.ciphers.AppCipher;
 import com.exatask.platform.crypto.ciphers.AppCipherFactory;
 import com.exatask.platform.crypto.encoders.AppEncoder;
 import com.exatask.platform.crypto.encoders.AppEncoderFactory;
-import com.exatask.platform.crypto.encoders.AppEncoderType;
+import com.exatask.platform.crypto.encoders.AppEncoderAlgorithm;
 import com.exatask.platform.crypto.exceptions.PasswordGenerationException;
 import com.exatask.platform.logging.AppLogManager;
 import com.exatask.platform.logging.AppLogger;
@@ -21,12 +21,14 @@ public class Hotp implements AppPassword {
 
   private static final int[] DIGITS_POWER = {1, 10, 100, 1000, 10000, 100000, 1000000, 10000000, 100000000};
 
-  private static final AppEncoderType encoderType = AppEncoderType.HEX;
+  private static final AppEncoderAlgorithm encoderType = AppEncoderAlgorithm.HEX;
 
   private final AppEncoder appEncoder = AppEncoderFactory.getEncoder(encoderType);
 
   @Override
   public String generate(String key, int length) {
+
+    length = length < 0 ? 4 : Math.min(length, 8);
 
     long movingFactor = System.currentTimeMillis();
     byte[] message = new byte[8];
@@ -39,7 +41,7 @@ public class Hotp implements AppPassword {
     try {
 
       Map<String, String> cipherKeys = Collections.singletonMap("key", key);
-      AppCipher cipher = AppCipherFactory.getCipher(AppAlgorithm.HMAC_SHA1, encoderType, cipherKeys);
+      AppCipher cipher = AppCipherFactory.getCipher(AppCipherAlgorithm.HMAC_SHA1, encoderType, cipherKeys);
       encryptedMessage = cipher.encrypt(new String(message));
 
     } catch (GeneralSecurityException | IOException exception) {

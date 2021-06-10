@@ -10,11 +10,11 @@ public class AppSignerFactory {
 
   public static AppSigner getSigner(String algorithm, Map<String, String> signerKeys) {
 
-    AppAlgorithm signer = AppAlgorithm.valueOf(algorithm);
+    AppSignerAlgorithm signer = AppSignerAlgorithm.valueOf(algorithm);
     return getSigner(signer, signerKeys);
   }
 
-  public static AppSigner getSigner(AppAlgorithm algorithm, Map<String, String> signerKeys) {
+  public static AppSigner getSigner(AppSignerAlgorithm algorithm, Map<String, String> signerKeys) {
 
     switch (algorithm) {
 
