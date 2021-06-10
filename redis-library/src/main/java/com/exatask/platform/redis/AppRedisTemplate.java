@@ -14,14 +14,13 @@ import java.util.Optional;
 @Service
 public class AppRedisTemplate {
 
-  public StringRedisTemplate getRedisTemplate(RedisProperties redisProperties) {
+  public StringRedisTemplate getTemplate(RedisConnectionFactory connectionFactory) {
 
-    RedisConnectionFactory redisConnection = getRedisConnectionFactory(redisProperties);
     StringRedisSerializer stringSerializer = getStringRedisSerializer();
     Jackson2JsonRedisSerializer<String> jsonSerializer = getJsonRedisSerializer();
 
     StringRedisTemplate redisTemplate = new StringRedisTemplate();
-    redisTemplate.setConnectionFactory(redisConnection);
+    redisTemplate.setConnectionFactory(connectionFactory);
     redisTemplate.setEnableTransactionSupport(false);
 
     redisTemplate.setEnableDefaultSerializer(false);
@@ -34,7 +33,7 @@ public class AppRedisTemplate {
     return redisTemplate;
   }
 
-  private RedisConnectionFactory getRedisConnectionFactory(RedisProperties redisProperties) {
+  public RedisConnectionFactory getConnectionFactory(RedisProperties redisProperties) {
 
     RedisStandaloneConfiguration redisStandaloneConfiguration = new RedisStandaloneConfiguration(redisProperties.getHost(), redisProperties.getPort());
     redisStandaloneConfiguration.setDatabase(redisProperties.getDatabase());

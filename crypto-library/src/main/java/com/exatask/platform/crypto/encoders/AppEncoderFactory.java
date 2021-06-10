@@ -1,17 +1,16 @@
 package com.exatask.platform.crypto.encoders;
 
 import com.exatask.platform.crypto.exceptions.InvalidEncoderException;
+import lombok.experimental.UtilityClass;
 
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Objects;
 
+@UtilityClass
 public class AppEncoderFactory {
 
   private static final Map<AppEncoderType, AppEncoder> encoderList = new HashMap<>();
-
-  private AppEncoderFactory() {
-  }
 
   public static AppEncoder getEncoder(String type) {
 

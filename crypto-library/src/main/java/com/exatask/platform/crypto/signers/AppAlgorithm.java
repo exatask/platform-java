@@ -1,6 +1,6 @@
 package com.exatask.platform.crypto.signers;
 
-public enum AppSignMethod {
+public enum AppAlgorithm {
 
   JWT_HMAC
 }

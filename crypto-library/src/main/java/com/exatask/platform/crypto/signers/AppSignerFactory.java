@@ -1,28 +1,27 @@
 package com.exatask.platform.crypto.signers;
 
 import com.exatask.platform.crypto.exceptions.InvalidSignerException;
+import lombok.experimental.UtilityClass;
 
 import java.util.Map;
 
+@UtilityClass
 public class AppSignerFactory {
 
-  private AppSignerFactory() {
-  }
+  public static AppSigner getSigner(String algorithm, Map<String, String> signerKeys) {
 
-  public static AppSigner getSigner(String signMethod, Map<String, String> signerKeys) {
-
-    AppSignMethod signer = AppSignMethod.valueOf(signMethod);
+    AppAlgorithm signer = AppAlgorithm.valueOf(algorithm);
     return getSigner(signer, signerKeys);
   }
 
-  public static AppSigner getSigner(AppSignMethod signMethod, Map<String, String> signerKeys) {
+  public static AppSigner getSigner(AppAlgorithm algorithm, Map<String, String> signerKeys) {
 
-    switch (signMethod) {
+    switch (algorithm) {
 
       case JWT_HMAC:
         return new JwtHmac(signerKeys);
     }
 
-    throw new InvalidSignerException(signMethod.toString());
+    throw new InvalidSignerException(algorithm.toString());
   }
 }

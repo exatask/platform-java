@@ -2,6 +2,7 @@ package com.exatask.platform.crypto.ciphers;
 
 import com.exatask.platform.crypto.encoders.AppEncoderType;
 import com.exatask.platform.crypto.exceptions.InvalidCipherException;
+import lombok.experimental.UtilityClass;
 import org.bouncycastle.jce.provider.BouncyCastleProvider;
 
 import java.io.IOException;
@@ -9,13 +10,11 @@ import java.security.GeneralSecurityException;
 import java.security.Security;
 import java.util.Map;
 
+@UtilityClass
 public class AppCipherFactory {
 
   static {
     Security.insertProviderAt(new BouncyCastleProvider(), 1);
-  }
-
-  private AppCipherFactory() {
   }
 
   public static AppCipher getCipher(String algorithm, String encoderType, Map<String, String> cipherKeys)
@@ -41,7 +40,9 @@ public class AppCipherFactory {
       case SHA1:
         return new Digest(algorithm, encoder);
 
+      case HMAC_SHA1:
       case HMAC_SHA256:
+      case HMAC_SHA512:
         return new Hmac(algorithm, encoder, cipherKeys);
     }
 
