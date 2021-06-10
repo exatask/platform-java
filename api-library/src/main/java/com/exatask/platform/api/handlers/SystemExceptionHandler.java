@@ -82,9 +82,14 @@ public class SystemExceptionHandler {
       return handleBindException(request, (BindException) exception);
     } else if (exception instanceof ConstraintViolationException) {
       return handleConstraintViolationException(request, (ConstraintViolationException) exception);
-    } else {
-      return handleException(request, exception, HttpStatus.INTERNAL_SERVER_ERROR);
     }
+
+    Exception exceptionCause = (Exception) exception.getCause();
+    if (exceptionCause instanceof IllegalArgumentException) {
+      return handleException(request, exceptionCause, HttpStatus.NOT_IMPLEMENTED);
+    }
+
+    return handleException(request, exception, HttpStatus.INTERNAL_SERVER_ERROR);
   }
 
   private ResponseEntity<HttpErrorResponse> handleBindException(HttpServletRequest request, BindException exception) {
