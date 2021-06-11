@@ -86,7 +86,7 @@ public abstract class AppMailer {
       subjectVariables = emailMessage.getSubjectVariables().toArray(new String[]{});
     }
 
-    message.setSubject(emailMessage.getSubject().toLocale(subjectVariables), CHARSET_UTF8);
+    message.setSubject(emailMessage.getTemplate().subject(subjectVariables), CHARSET_UTF8);
   }
 
   protected void prepareContent(MimeMessage message, EmailMessage emailMessage) throws MessagingException {
@@ -94,12 +94,12 @@ public abstract class AppMailer {
     MimeMultipart messageBody = new MimeMultipart(MIME_SUBTYPE_ALTERNATE);
 
     MimeBodyPart textBodyPart = new MimeBodyPart();
-    String textBody = templateEngine.renderText(emailMessage.getTemplate(), emailMessage.getTemplateVariables());
+    String textBody = templateEngine.renderText(emailMessage.getTemplate().template(), emailMessage.getTemplateVariables());
     textBodyPart.setContent(textBody, Mimetype.MIMETYPE_TEXT_PLAIN);
     messageBody.addBodyPart(textBodyPart);
 
     MimeBodyPart htmlBodyPart = new MimeBodyPart();
-    String htmlBody = templateEngine.renderHtml(emailMessage.getTemplate(), emailMessage.getTemplateVariables());
+    String htmlBody = templateEngine.renderHtml(emailMessage.getTemplate().template(), emailMessage.getTemplateVariables());
     htmlBodyPart.setContent(htmlBody, MIME_TYPE_HTML);
     messageBody.addBodyPart(htmlBodyPart);
 
