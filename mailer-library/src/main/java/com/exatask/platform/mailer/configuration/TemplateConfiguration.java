@@ -24,7 +24,7 @@ public class TemplateConfiguration {
     return templateEngine;
   }
 
-  @Bean(name = "txtTemplateEngine")
+  @Bean(name = "textTemplateEngine")
   public SpringTemplateEngine txtTemplateEngine() {
 
     SpringTemplateEngine templateEngine = new SpringTemplateEngine();
@@ -33,7 +33,7 @@ public class TemplateConfiguration {
     return templateEngine;
   }
 
-  @Bean(name = "htmlTemplateEngine")
+  @Bean(name = "htmlTemplateResolver")
   public ITemplateResolver htmlTemplateResolver() {
 
     ClassLoaderTemplateResolver templateResolver = new ClassLoaderTemplateResolver();
@@ -44,7 +44,7 @@ public class TemplateConfiguration {
     return templateResolver;
   }
 
-  @Bean(name = "txtTemplateEngine")
+  @Bean(name = "textTemplateResolver")
   public ITemplateResolver txtTemplateResolver() {
 
     ClassLoaderTemplateResolver templateResolver = new ClassLoaderTemplateResolver();

@@ -2,7 +2,6 @@ package com.exatask.platform.mailer;
 
 import com.exatask.platform.logging.AppLogManager;
 import com.exatask.platform.logging.AppLogger;
-import com.exatask.platform.mailer.configuration.EmailProperties;
 import com.exatask.platform.mailer.email.EmailAttachment;
 import com.exatask.platform.mailer.email.EmailMessage;
 import com.exatask.platform.mailer.email.EmailOptions;
@@ -33,6 +32,8 @@ public abstract class AppMailer {
 
   protected static final AppLogger LOGGER = AppLogManager.getLogger();
 
+  protected static final String DEFAULT_SOURCE_ADDRESS = "no-reply@exatask.com";
+
   protected static final String CHARSET_UTF8 = "UTF-8";
 
   private static final String MIME_TYPE_HTML = "text/html; charset=UTF-8";
@@ -41,8 +42,6 @@ public abstract class AppMailer {
   private static final String MIME_SUBTYPE_MIXED = "mixed";
 
   private final TemplateEngine templateEngine;
-
-  private final EmailProperties emailProperties;
 
   public abstract EmailResponse send(EmailMessage message);
 
@@ -53,11 +52,11 @@ public abstract class AppMailer {
       return;
     }
 
-    message.setFrom(new InternetAddress(StringUtils.defaultIfEmpty(emailOptions.getFrom(), emailProperties.getFromAddress())));
-    message.setSender(new InternetAddress(StringUtils.defaultIfEmpty(emailOptions.getSender(), emailProperties.getSenderAddress())));
+    message.setFrom(new InternetAddress(StringUtils.defaultIfEmpty(emailOptions.getFrom(), DEFAULT_SOURCE_ADDRESS)));
+    message.setSender(new InternetAddress(StringUtils.defaultIfEmpty(emailOptions.getSender(), DEFAULT_SOURCE_ADDRESS)));
 
     InternetAddress[] replyToAddresses = new InternetAddress[]{
-        new InternetAddress(StringUtils.defaultIfEmpty(emailOptions.getReplyTo(), emailProperties.getReplyToAddress()))
+        new InternetAddress(StringUtils.defaultIfEmpty(emailOptions.getReplyTo(), DEFAULT_SOURCE_ADDRESS))
     };
     message.setReplyTo(replyToAddresses);
   }

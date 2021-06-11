@@ -16,8 +16,8 @@ public class TemplateEngine {
   private SpringTemplateEngine htmlTemplateEngine;
 
   @Autowired
-  @Qualifier("txtTemplateEngine")
-  private SpringTemplateEngine txtTemplateEngine;
+  @Qualifier("textTemplateEngine")
+  private SpringTemplateEngine textTemplateEngine;
 
   public String renderHtml(String template, Map<String, Object> templateVariables) {
 
@@ -30,6 +30,6 @@ public class TemplateEngine {
 
     Context templateContext = new Context();
     templateContext.setVariables(templateVariables);
-    return txtTemplateEngine.process(template, templateContext);
+    return textTemplateEngine.process(template, templateContext);
   }
 }

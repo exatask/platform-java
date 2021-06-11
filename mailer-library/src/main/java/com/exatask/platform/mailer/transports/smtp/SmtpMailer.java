@@ -1,7 +1,6 @@
 package com.exatask.platform.mailer.transports.smtp;
 
 import com.exatask.platform.mailer.AppMailer;
-import com.exatask.platform.mailer.configuration.EmailProperties;
 import com.exatask.platform.mailer.email.EmailMessage;
 import com.exatask.platform.mailer.email.EmailResponse;
 import com.exatask.platform.mailer.templates.TemplateEngine;
@@ -20,9 +19,9 @@ public class SmtpMailer extends AppMailer {
 
   private final Authenticator authenticator;
 
-  public SmtpMailer(SmtpProperties smtpProperties, TemplateEngine templateEngine, EmailProperties emailProperties) {
+  public SmtpMailer(SmtpProperties smtpProperties, TemplateEngine templateEngine) {
 
-    super(templateEngine, emailProperties);
+    super(templateEngine);
 
     this.properties = new Properties();
     this.properties.put("mail.smtp.auth", true);

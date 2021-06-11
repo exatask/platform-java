@@ -36,5 +36,5 @@ public class EmailMessage {
   @Singular
   private final List<EmailAttachment> attachments;
 
-  private final EmailOptions options;
+  private final EmailOptions options = new EmailOptions();
 }

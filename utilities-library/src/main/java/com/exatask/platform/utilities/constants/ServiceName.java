@@ -8,16 +8,18 @@ import lombok.Getter;
 public enum ServiceName {
 
   GATEWAY,
-  CONFIGURATION("/configuration", false, false),
+  CONFIGURATION("/configuration"),
   METADATA("/metadata", true, false),
-  ORGANIZATION("/organization", false, false),
-  EMPLOYEE("/employee", false, false),
-  IDENTITY("/identity", false, false),
-  ACCESS_CONTROL("/access-control", false, false),
-  ATTENDANCE("/attendance", false, false),
-  PAYROLL("/payroll", false, false),
-  RECRUITMENT("/recruitment", false, false),
-  ASSET("/asset", false, false);
+  ORGANIZATION("/organization", true, false),
+  EMPLOYEE("/employee"),
+  IDENTITY("/identity"),
+  ACCESS_CONTROL("/access-control"),
+  ATTENDANCE("/attendance"),
+  PAYROLL("/payroll"),
+  RECRUITMENT("/recruitment"),
+  ASSET("/asset"),
+  NOTIFICATION("/notification"),
+  LOGBOOK("/logbook");
 
   private final String uri;
 
@@ -28,6 +30,13 @@ public enum ServiceName {
   ServiceName() {
 
     this.uri = null;
+    this.userRouting =
+        this.adminRouting = false;
+  }
+
+  ServiceName(String uri) {
+
+    this.uri = uri;
     this.userRouting =
         this.adminRouting = false;
   }

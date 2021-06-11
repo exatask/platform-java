@@ -1,7 +1,6 @@
 package com.exatask.platform.mailer.transports.aws;
 
 import com.exatask.platform.mailer.AppMailer;
-import com.exatask.platform.mailer.configuration.EmailProperties;
 import com.exatask.platform.mailer.email.EmailMessage;
 import com.exatask.platform.mailer.email.EmailResponse;
 import com.exatask.platform.mailer.templates.TemplateEngine;
@@ -23,9 +22,9 @@ public class AwsMailer extends AppMailer {
 
   private final SesClient sesClient;
 
-  public AwsMailer(AwsProperties awsProperties, TemplateEngine templateEngine, EmailProperties emailProperties) {
+  public AwsMailer(AwsProperties awsProperties, TemplateEngine templateEngine) {
 
-    super(templateEngine, emailProperties);
+    super(templateEngine);
 
     sesClient = SesClient.builder()
         .region(awsProperties.getRegion())
