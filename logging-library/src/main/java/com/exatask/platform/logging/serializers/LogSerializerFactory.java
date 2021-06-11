@@ -1,16 +1,16 @@
 package com.exatask.platform.logging.serializers;
 
+import lombok.experimental.UtilityClass;
+
 import java.util.HashMap;
 import java.util.Map;
 
+@UtilityClass
 public class LogSerializerFactory {
 
   private static final Map<LogSerializerType, LogSerializer> serializerList = new HashMap<>();
 
   private static final LogSerializer defaultSerializer = initializeLogSerializer(LogSerializerType.LINE);
-
-  private LogSerializerFactory() {
-  }
 
   public static LogSerializer getLogSerializer(String type) {
 

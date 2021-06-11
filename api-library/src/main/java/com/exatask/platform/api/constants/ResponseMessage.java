@@ -11,7 +11,7 @@ public enum ResponseMessage implements AppConstant {
   private static final String LOCALE_PREFIX = "constants.response.";
 
   @Override
-  public String toLocale() {
+  public String toLocale(String... args) {
     return AppTranslator.toLocale( LOCALE_PREFIX + this);
   }
 }

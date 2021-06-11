@@ -2,14 +2,13 @@ package com.exatask.platform.logging;
 
 import com.exatask.platform.logging.constants.LoggingService;
 import com.exatask.platform.utilities.ServiceUtility;
+import lombok.experimental.UtilityClass;
 import org.apache.commons.lang3.StringUtils;
 
+@UtilityClass
 public class AppLogManager {
 
   private static String serviceName = null;
-
-  private AppLogManager() {
-  }
 
   private static String getServiceName() {
 

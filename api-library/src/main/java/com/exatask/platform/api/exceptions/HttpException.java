@@ -1,7 +1,6 @@
 package com.exatask.platform.api.exceptions;
 
 import com.exatask.platform.api.errors.AppError;
-import com.exatask.platform.i18n.AppTranslator;
 import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.Setter;
@@ -45,7 +44,7 @@ public class HttpException extends RuntimeException {
     String exceptionMessage = StringUtils.isNotEmpty(message) ? message : "";
 
     if (appError != null) {
-      exceptionMessage = AppTranslator.toLocale(appError.getLocaleKey(), errorArguments.toArray(new String[]{}));
+      exceptionMessage = appError.toLocale(errorArguments.toArray(new String[]{}));
     } else if (exception != null) {
       exceptionMessage = exception.getMessage();
     } else if (httpStatus != null) {

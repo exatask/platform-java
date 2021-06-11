@@ -2,7 +2,6 @@ package com.exatask.platform.api.responses;
 
 import com.exatask.platform.api.constants.ResponseMessage;
 import com.exatask.platform.api.responses.messages.AppResponseMessage;
-import com.exatask.platform.i18n.AppTranslator;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.databind.PropertyNamingStrategy;
 import com.fasterxml.jackson.databind.annotation.JsonNaming;
@@ -19,7 +18,7 @@ public class HttpSuccessResponse extends AppResponse {
   private final Message message;
 
   public HttpSuccessResponse(AppResponseMessage responseMessage) {
-    message = new Message(ResponseMessage.SUCCESS, AppTranslator.toLocale(responseMessage.getLocaleKey()));
+    message = new Message(ResponseMessage.SUCCESS, responseMessage.toLocale());
   }
 
   @Getter

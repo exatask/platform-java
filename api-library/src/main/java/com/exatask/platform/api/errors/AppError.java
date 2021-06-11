@@ -4,5 +4,5 @@ public interface AppError {
 
   String getErrorCode();
 
-  String getLocaleKey();
+  String toLocale(String... args);
 }

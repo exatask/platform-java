@@ -6,9 +6,6 @@ import com.exatask.platform.mailer.email.EmailMessage;
 import com.exatask.platform.mailer.email.EmailResponse;
 import com.exatask.platform.mailer.templates.TemplateEngine;
 import com.exatask.platform.utilities.properties.AwsProperties;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.context.annotation.Lazy;
-import org.springframework.stereotype.Component;
 import software.amazon.awssdk.core.SdkBytes;
 import software.amazon.awssdk.services.ses.SesClient;
 import software.amazon.awssdk.services.ses.model.RawMessage;
@@ -22,13 +19,10 @@ import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.util.Properties;
 
-@Lazy
-@Component
 public class AwsMailer extends AppMailer {
 
   private final SesClient sesClient;
 
-  @Autowired
   public AwsMailer(AwsProperties awsProperties, TemplateEngine templateEngine, EmailProperties emailProperties) {
 
     super(templateEngine, emailProperties);
@@ -50,7 +44,7 @@ public class AwsMailer extends AppMailer {
       prepareSender(message, emailMessage);
       prepareRecipients(message, emailMessage);
 
-      message.setSubject(message.getSubject(), CHARSET_UTF8);
+      prepareSubject(message, emailMessage);
       prepareContent(message, emailMessage);
 
       ByteArrayOutputStream messageStream = new ByteArrayOutputStream();

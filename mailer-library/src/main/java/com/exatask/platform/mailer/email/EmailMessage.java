@@ -1,33 +1,40 @@
 package com.exatask.platform.mailer.email;
 
+import com.exatask.platform.mailer.AppSubject;
 import lombok.Builder;
-import lombok.Data;
+import lombok.Getter;
 import lombok.Singular;
 import lombok.experimental.Accessors;
 
 import java.util.List;
 import java.util.Map;
 
-@Data
+@Getter
 @Builder
 @Accessors(chain = true)
 public class EmailMessage {
 
-  private List<String> to;
+  @Singular("to")
+  private final List<String> to;
 
-  private List<String> cc;
+  @Singular("cc")
+  private final List<String> cc;
 
-  private List<String> bcc;
+  @Singular("bcc")
+  private final List<String> bcc;
 
-  private String subject;
-
-  private String template;
-
-  @Singular
-  private Map<String, Object> templateVariables;
+  private final AppSubject subject;
 
   @Singular
-  private List<EmailAttachment> attachments;
+  private final List<String> subjectVariables;
 
-  private EmailOptions options;
+  private final String template;
+
+  @Singular
+  private final Map<String, Object> templateVariables;
+
+  @Singular
+  private final List<EmailAttachment> attachments;
+
+  private final EmailOptions options;
 }

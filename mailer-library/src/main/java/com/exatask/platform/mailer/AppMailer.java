@@ -80,6 +80,16 @@ public abstract class AppMailer {
     }
   }
 
+  protected void prepareSubject(MimeMessage message, EmailMessage emailMessage) throws MessagingException {
+
+    String[] subjectVariables = new String[]{};
+    if (!CollectionUtils.isEmpty(emailMessage.getSubjectVariables())) {
+      subjectVariables = emailMessage.getSubjectVariables().toArray(new String[]{});
+    }
+
+    message.setSubject(emailMessage.getSubject().toLocale(subjectVariables), CHARSET_UTF8);
+  }
+
   protected void prepareContent(MimeMessage message, EmailMessage emailMessage) throws MessagingException {
 
     MimeMultipart messageBody = new MimeMultipart(MIME_SUBTYPE_ALTERNATE);

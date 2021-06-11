@@ -1,5 +1,6 @@
 package com.exatask.platform.api.errors;
 
+import com.exatask.platform.i18n.AppTranslator;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 
@@ -14,7 +15,7 @@ public enum CommonError implements AppError {
   private final String errorCode;
 
   @Override
-  public String getLocaleKey() {
-    return LOCALE_PREFIX + this;
+  public String toLocale(String... args) {
+    return AppTranslator.toLocale(LOCALE_PREFIX + this, args);
   }
 }

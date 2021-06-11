@@ -6,9 +6,6 @@ import com.exatask.platform.mailer.email.EmailMessage;
 import com.exatask.platform.mailer.email.EmailResponse;
 import com.exatask.platform.mailer.templates.TemplateEngine;
 import com.exatask.platform.utilities.properties.SmtpProperties;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.context.annotation.Lazy;
-import org.springframework.stereotype.Component;
 
 import javax.mail.Authenticator;
 import javax.mail.MessagingException;
@@ -17,15 +14,12 @@ import javax.mail.Transport;
 import javax.mail.internet.MimeMessage;
 import java.util.Properties;
 
-@Lazy
-@Component
 public class SmtpMailer extends AppMailer {
 
   private final Properties properties;
 
   private final Authenticator authenticator;
 
-  @Autowired
   public SmtpMailer(SmtpProperties smtpProperties, TemplateEngine templateEngine, EmailProperties emailProperties) {
 
     super(templateEngine, emailProperties);
@@ -51,7 +45,7 @@ public class SmtpMailer extends AppMailer {
       prepareSender(message, emailMessage);
       prepareRecipients(message, emailMessage);
 
-      message.setSubject(message.getSubject(), CHARSET_UTF8);
+      prepareSubject(message, emailMessage);
       prepareContent(message, emailMessage);
 
       Transport.send(message);

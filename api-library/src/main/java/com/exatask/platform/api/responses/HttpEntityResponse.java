@@ -2,7 +2,6 @@ package com.exatask.platform.api.responses;
 
 import com.exatask.platform.api.constants.ResponseMessage;
 import com.exatask.platform.api.responses.messages.AppResponseMessage;
-import com.exatask.platform.i18n.AppTranslator;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.databind.PropertyNamingStrategy;
 import com.fasterxml.jackson.databind.annotation.JsonNaming;
@@ -23,7 +22,7 @@ public class HttpEntityResponse<T> extends AppResponse {
   public HttpEntityResponse(T id, AppResponseMessage responseMessage) {
 
     this.id = id;
-    this.message = new Message(ResponseMessage.SUCCESS, AppTranslator.toLocale(responseMessage.getLocaleKey()));
+    this.message = new Message(ResponseMessage.SUCCESS, responseMessage.toLocale());
   }
 
   @Getter

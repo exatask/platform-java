@@ -2,5 +2,5 @@ package com.exatask.platform.api.constants;
 
 public interface AppConstant {
 
-  String toLocale();
+  String toLocale(String... args);
 }
