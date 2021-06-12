@@ -12,6 +12,7 @@ import org.springframework.core.Ordered;
 import org.springframework.core.annotation.Order;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.http.converter.HttpMessageNotReadableException;
 import org.springframework.validation.BindException;
 import org.springframework.validation.FieldError;
 import org.springframework.web.HttpRequestMethodNotSupportedException;
@@ -61,16 +62,18 @@ public class SystemExceptionHandler {
   @ExceptionHandler({
       MissingServletRequestParameterException.class,
       HttpRequestMethodNotSupportedException.class,
-      IllegalArgumentException.class,
+      HttpMessageNotReadableException.class,
       ConstraintViolationException.class,
-      NoHandlerFoundException.class,
       MissingPathVariableException.class,
+      IllegalArgumentException.class,
+      NoHandlerFoundException.class,
       BindException.class
   })
   @ResponseBody
   public ResponseEntity<HttpErrorResponse> handleSystemException(HttpServletRequest request, Exception exception) {
 
-    if (exception instanceof MissingServletRequestParameterException) {
+    if (exception instanceof MissingServletRequestParameterException ||
+        exception instanceof HttpMessageNotReadableException) {
       return handleException(request, exception, HttpStatus.BAD_REQUEST);
     } else if (exception instanceof HttpRequestMethodNotSupportedException) {
       return handleException(request, exception, HttpStatus.METHOD_NOT_ALLOWED);

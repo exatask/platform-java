@@ -4,7 +4,7 @@ public interface AppTemplate {
 
   String layout();
 
-  String template();
+  String content();
 
   String subject(String... args);
 }

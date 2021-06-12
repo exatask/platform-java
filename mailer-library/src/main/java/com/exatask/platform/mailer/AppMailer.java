@@ -91,7 +91,6 @@ public abstract class AppMailer {
 
     MimeMultipart messageBody = new MimeMultipart(MIME_SUBTYPE_ALTERNATE);
     messageBody.addBodyPart(templateEngine.renderText(emailMessage.getTemplate(), emailMessage.getTemplateVariables()));
-    messageBody.addBodyPart(templateEngine.renderHtml(emailMessage.getTemplate(), emailMessage.getTemplateVariables()));
 
     MimeBodyPart bodyWrapper = new MimeBodyPart();
     bodyWrapper.setContent(messageBody);
