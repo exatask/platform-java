@@ -1,7 +1,7 @@
 package com.exatask.platform.mailer;
 
 import com.exatask.platform.mailer.exceptions.InvalidMailerException;
-import com.exatask.platform.mailer.templates.TemplateEngine;
+import com.exatask.platform.mailer.templates.AppTemplateEngine;
 import com.exatask.platform.mailer.transports.aws.AwsMailer;
 import com.exatask.platform.mailer.transports.smtp.SmtpMailer;
 import com.exatask.platform.utilities.properties.AwsProperties;
@@ -16,7 +16,7 @@ public class AppMailerFactory {
 
   private static final Map<Mailer, AppMailer> mailerList = new HashMap<>();
 
-  public static AppMailer getInstance(Mailer mailer, Object properties, TemplateEngine templateEngine) {
+  public static AppMailer getInstance(Mailer mailer, Object properties, AppTemplateEngine templateEngine) {
 
     if (mailer == null) {
       throw new InvalidMailerException("null");

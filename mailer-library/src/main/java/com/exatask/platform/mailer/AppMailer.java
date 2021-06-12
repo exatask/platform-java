@@ -6,13 +6,12 @@ import com.exatask.platform.mailer.email.EmailAttachment;
 import com.exatask.platform.mailer.email.EmailMessage;
 import com.exatask.platform.mailer.email.EmailOptions;
 import com.exatask.platform.mailer.email.EmailResponse;
-import com.exatask.platform.mailer.templates.TemplateEngine;
+import com.exatask.platform.mailer.templates.AppTemplateEngine;
 import lombok.RequiredArgsConstructor;
 import org.apache.commons.lang3.ArrayUtils;
 import org.apache.commons.lang3.ObjectUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.util.CollectionUtils;
-import software.amazon.awssdk.core.internal.util.Mimetype;
 
 import javax.activation.DataHandler;
 import javax.activation.FileDataSource;
@@ -23,6 +22,7 @@ import javax.mail.internet.InternetAddress;
 import javax.mail.internet.MimeBodyPart;
 import javax.mail.internet.MimeMessage;
 import javax.mail.internet.MimeMultipart;
+import java.io.IOException;
 import java.util.List;
 import java.util.Objects;
 import java.util.stream.Collectors;
@@ -36,14 +36,12 @@ public abstract class AppMailer {
 
   protected static final String CHARSET_UTF8 = "UTF-8";
 
-  private static final String MIME_TYPE_HTML = "text/html; charset=UTF-8";
-
   private static final String MIME_SUBTYPE_ALTERNATE = "alternate";
   private static final String MIME_SUBTYPE_MIXED = "mixed";
 
-  private final TemplateEngine templateEngine;
+  private final AppTemplateEngine templateEngine;
 
-  public abstract EmailResponse send(EmailMessage message);
+  public abstract EmailResponse send(EmailMessage message) throws MessagingException, IOException;
 
   protected void prepareSender(MimeMessage message, EmailMessage emailMessage) throws MessagingException {
 
@@ -92,16 +90,8 @@ public abstract class AppMailer {
   protected void prepareContent(MimeMessage message, EmailMessage emailMessage) throws MessagingException {
 
     MimeMultipart messageBody = new MimeMultipart(MIME_SUBTYPE_ALTERNATE);
-
-    MimeBodyPart textBodyPart = new MimeBodyPart();
-    String textBody = templateEngine.renderText(emailMessage.getTemplate().template(), emailMessage.getTemplateVariables());
-    textBodyPart.setContent(textBody, Mimetype.MIMETYPE_TEXT_PLAIN);
-    messageBody.addBodyPart(textBodyPart);
-
-    MimeBodyPart htmlBodyPart = new MimeBodyPart();
-    String htmlBody = templateEngine.renderHtml(emailMessage.getTemplate().template(), emailMessage.getTemplateVariables());
-    htmlBodyPart.setContent(htmlBody, MIME_TYPE_HTML);
-    messageBody.addBodyPart(htmlBodyPart);
+    messageBody.addBodyPart(templateEngine.renderText(emailMessage.getTemplate(), emailMessage.getTemplateVariables()));
+    messageBody.addBodyPart(templateEngine.renderHtml(emailMessage.getTemplate(), emailMessage.getTemplateVariables()));
 
     MimeBodyPart bodyWrapper = new MimeBodyPart();
     bodyWrapper.setContent(messageBody);

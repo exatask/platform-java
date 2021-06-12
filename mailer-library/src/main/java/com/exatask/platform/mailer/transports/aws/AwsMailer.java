@@ -3,7 +3,7 @@ package com.exatask.platform.mailer.transports.aws;
 import com.exatask.platform.mailer.AppMailer;
 import com.exatask.platform.mailer.email.EmailMessage;
 import com.exatask.platform.mailer.email.EmailResponse;
-import com.exatask.platform.mailer.templates.TemplateEngine;
+import com.exatask.platform.mailer.templates.AppTemplateEngine;
 import com.exatask.platform.utilities.properties.AwsProperties;
 import software.amazon.awssdk.core.SdkBytes;
 import software.amazon.awssdk.services.ses.SesClient;
@@ -22,7 +22,7 @@ public class AwsMailer extends AppMailer {
 
   private final SesClient sesClient;
 
-  public AwsMailer(AwsProperties awsProperties, TemplateEngine templateEngine) {
+  public AwsMailer(AwsProperties awsProperties, AppTemplateEngine templateEngine) {
 
     super(templateEngine);
 
@@ -33,7 +33,7 @@ public class AwsMailer extends AppMailer {
   }
 
   @Override
-  public EmailResponse send(EmailMessage emailMessage) {
+  public EmailResponse send(EmailMessage emailMessage) throws MessagingException, IOException {
 
     try {
 
@@ -65,7 +65,7 @@ public class AwsMailer extends AppMailer {
 
     } catch (MessagingException | IOException exception) {
       LOGGER.error(exception);
+      throw exception;
     }
-    return null;
   }
 }

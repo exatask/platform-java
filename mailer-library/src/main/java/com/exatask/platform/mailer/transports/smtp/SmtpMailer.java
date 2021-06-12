@@ -3,7 +3,7 @@ package com.exatask.platform.mailer.transports.smtp;
 import com.exatask.platform.mailer.AppMailer;
 import com.exatask.platform.mailer.email.EmailMessage;
 import com.exatask.platform.mailer.email.EmailResponse;
-import com.exatask.platform.mailer.templates.TemplateEngine;
+import com.exatask.platform.mailer.templates.AppTemplateEngine;
 import com.exatask.platform.utilities.properties.SmtpProperties;
 
 import javax.mail.Authenticator;
@@ -19,7 +19,7 @@ public class SmtpMailer extends AppMailer {
 
   private final Authenticator authenticator;
 
-  public SmtpMailer(SmtpProperties smtpProperties, TemplateEngine templateEngine) {
+  public SmtpMailer(SmtpProperties smtpProperties, AppTemplateEngine templateEngine) {
 
     super(templateEngine);
 
@@ -34,7 +34,7 @@ public class SmtpMailer extends AppMailer {
   }
 
   @Override
-  public EmailResponse send(EmailMessage emailMessage) {
+  public EmailResponse send(EmailMessage emailMessage) throws MessagingException {
 
     try {
 
@@ -48,11 +48,13 @@ public class SmtpMailer extends AppMailer {
       prepareContent(message, emailMessage);
 
       Transport.send(message);
-      return EmailResponse.builder().build();
+      return EmailResponse.builder()
+          .messageId(message.getMessageID())
+          .build();
 
     } catch (MessagingException exception) {
       LOGGER.error(exception);
+      throw exception;
     }
-    return null;
   }
 }
