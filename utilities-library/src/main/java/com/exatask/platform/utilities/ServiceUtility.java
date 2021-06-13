@@ -75,20 +75,19 @@ public class ServiceUtility {
       value = environment.getProperty(key);
     }
 
+    String systemProperty = System.getProperty(key);
+    if (StringUtils.isNotEmpty(systemProperty)) {
+      value = systemProperty;
+    }
+
+    String environmentProperty = System.getenv(key);
+    if (StringUtils.isNotEmpty(environmentProperty)) {
+      value = environmentProperty;
+    }
+
     if (StringUtils.isNotEmpty(value)) {
       return value;
     }
-
-    value = System.getProperty(key);
-    if (StringUtils.isNotEmpty(value)) {
-      return value;
-    }
-
-    value = System.getenv(key);
-    if (StringUtils.isNotEmpty(value)) {
-      return value;
-    }
-
     return null;
   }
 
@@ -135,5 +134,15 @@ public class ServiceUtility {
     }
 
     throw new RuntimePropertyNotFoundException(key);
+  }
+
+  public static String getServiceProperty(String key, String defaultValue) {
+
+    String value = getRuntimeProperty(key);
+    if (StringUtils.isNotEmpty(value)) {
+      return value;
+    } else {
+      return defaultValue;
+    }
   }
 }

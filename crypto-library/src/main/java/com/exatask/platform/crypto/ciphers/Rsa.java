@@ -1,19 +1,21 @@
 package com.exatask.platform.crypto.ciphers;
 
 import com.exatask.platform.crypto.encoders.AppEncoder;
-import com.exatask.platform.crypto.encoders.AppEncoderFactory;
 import com.exatask.platform.crypto.encoders.AppEncoderAlgorithm;
+import com.exatask.platform.crypto.encoders.AppEncoderFactory;
 import com.exatask.platform.logging.AppLogManager;
 import com.exatask.platform.logging.AppLogger;
 import org.bouncycastle.jce.provider.BouncyCastleProvider;
 import org.bouncycastle.util.io.pem.PemReader;
+import org.springframework.core.io.ClassPathResource;
 
 import javax.crypto.Cipher;
 import javax.crypto.EncryptedPrivateKeyInfo;
 import javax.crypto.SecretKeyFactory;
 import javax.crypto.spec.PBEKeySpec;
-import java.io.FileReader;
 import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
 import java.security.GeneralSecurityException;
 import java.security.KeyFactory;
 import java.security.PrivateKey;
@@ -55,7 +57,8 @@ public class Rsa implements AppCipher {
   private PrivateKey getPrivateKey(KeyFactory keyFactory, String privateKeyFile, String passphrase)
       throws GeneralSecurityException, IOException {
 
-    PemReader privateKeyReader = new PemReader(new FileReader(privateKeyFile));
+    InputStream privateKeyStream = new ClassPathResource(privateKeyFile).getInputStream();
+    PemReader privateKeyReader = new PemReader(new InputStreamReader(privateKeyStream));
     byte[] privateKey = privateKeyReader.readPemObject().getContent();
     PKCS8EncodedKeySpec privateKeySpec;
 
@@ -77,7 +80,8 @@ public class Rsa implements AppCipher {
   private PublicKey getPublicKey(KeyFactory keyFactory, String publicKeyFile)
       throws IOException, GeneralSecurityException {
 
-    PemReader publicKeyReader = new PemReader(new FileReader(publicKeyFile));
+    InputStream publicKeyStream = new ClassPathResource(publicKeyFile).getInputStream();
+    PemReader publicKeyReader = new PemReader(new InputStreamReader(publicKeyStream));
     byte[] publicKey = publicKeyReader.readPemObject().getContent();
     return keyFactory.generatePublic(new X509EncodedKeySpec(publicKey));
   }
