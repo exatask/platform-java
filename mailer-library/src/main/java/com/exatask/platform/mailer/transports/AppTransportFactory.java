@@ -12,9 +12,9 @@ import java.util.Map;
 @UtilityClass
 public class AppTransportFactory {
 
-  private static final Map<TransportType, AppTransport> mailerList = new HashMap<>();
+  private static final Map<AppTransportType, AppTransport> mailerList = new HashMap<>();
 
-  public static AppTransport getInstance(TransportType transportType, Object properties, AppTemplateEngine templateEngine) {
+  public static AppTransport getInstance(AppTransportType transportType, Object properties, AppTemplateEngine templateEngine) {
 
     if (transportType == null) {
       throw new InvalidMailerException("null");

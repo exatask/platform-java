@@ -1,6 +1,6 @@
 package com.exatask.platform.mailer.transports;
 
-public enum TransportType {
+public enum AppTransportType {
 
   SMTP,
   AWS
