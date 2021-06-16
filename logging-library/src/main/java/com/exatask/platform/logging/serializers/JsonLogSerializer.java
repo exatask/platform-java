@@ -4,13 +4,13 @@ import com.exatask.platform.logging.AppLogMessage;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
-public class JsonLogSerializer implements LogSerializer {
+public class JsonLogSerializer implements AppLogSerializer {
 
   private final ObjectMapper mapper = new ObjectMapper();
 
   @Override
-  public LogSerializerType getType() {
-    return LogSerializerType.JSON;
+  public AppLogSerializerType getType() {
+    return AppLogSerializerType.JSON;
   }
 
   @Override

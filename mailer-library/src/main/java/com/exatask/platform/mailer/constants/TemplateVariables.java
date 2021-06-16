@@ -1,5 +1,8 @@
 package com.exatask.platform.mailer.constants;
 
+import lombok.experimental.UtilityClass;
+
+@UtilityClass
 public class TemplateVariables {
 
   public static final String TEMPLATE_VARIABLE_PREFIX = "template.";

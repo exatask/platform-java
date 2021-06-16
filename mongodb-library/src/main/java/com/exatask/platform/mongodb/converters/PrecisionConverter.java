@@ -9,7 +9,7 @@ import java.math.BigDecimal;
 import java.math.RoundingMode;
 
 @Service
-public class PrecisionConverter implements Converter<Double, Double> {
+public class PrecisionConverter implements AppConverter<Double, Double> {
 
   @Override
   public Class<?> getAnnotation() {

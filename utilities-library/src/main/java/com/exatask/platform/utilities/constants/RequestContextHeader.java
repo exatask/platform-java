@@ -1,5 +1,8 @@
 package com.exatask.platform.utilities.constants;
 
+import lombok.experimental.UtilityClass;
+
+@UtilityClass
 public class RequestContextHeader {
 
   public static final String TRACE_ID = "x-trace-id";

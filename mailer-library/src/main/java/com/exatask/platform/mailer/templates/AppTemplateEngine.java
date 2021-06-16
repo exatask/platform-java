@@ -2,9 +2,6 @@ package com.exatask.platform.mailer.templates;
 
 import com.exatask.platform.mailer.constants.TemplateVariables;
 import com.exatask.platform.utilities.ServiceUtility;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.context.annotation.Lazy;
-import org.springframework.stereotype.Component;
 import org.springframework.util.MimeType;
 import org.springframework.util.MimeTypeUtils;
 import org.thymeleaf.ITemplateEngine;
@@ -13,7 +10,6 @@ import org.thymeleaf.context.Context;
 import org.thymeleaf.context.IContext;
 import org.thymeleaf.templatemode.TemplateMode;
 
-import javax.annotation.PostConstruct;
 import javax.mail.MessagingException;
 import javax.mail.internet.MimeBodyPart;
 import java.nio.charset.StandardCharsets;
@@ -22,7 +18,6 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
 
-@Component
 public class AppTemplateEngine {
 
   private static final MimeType MIME_TYPE_TEXT = new MimeType(MimeTypeUtils.TEXT_PLAIN, StandardCharsets.UTF_8);
@@ -35,8 +30,11 @@ public class AppTemplateEngine {
 
   private final Map<String, Object> defaultVariables = new HashMap<>();
 
-  @PostConstruct
-  private void initialize() {
+  private final ITemplateEngine templateEngine;
+
+  public AppTemplateEngine(ITemplateEngine engine) {
+
+    this.templateEngine = engine;
 
     Calendar now = Calendar.getInstance();
     defaultVariables.put("now", Collections.singletonMap("year", now.get(Calendar.YEAR)));
@@ -55,10 +53,6 @@ public class AppTemplateEngine {
 
     defaultVariables.put("exatask", exataskVariables);
   }
-
-  @Lazy
-  @Autowired
-  private ITemplateEngine templateEngine;
 
   public MimeBodyPart renderText(AppTemplate template, Map<String, Object> templateVariables) throws MessagingException {
 

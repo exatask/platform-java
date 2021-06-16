@@ -8,7 +8,7 @@ import lombok.Data;
 import lombok.experimental.Accessors;
 import org.apache.commons.lang3.StringUtils;
 
-public class HttpBasicApiAuthenticator implements ApiAuthenticator {
+public class HttpBasicApiAuthenticator implements AppApiAuthenticator {
 
   private final String authenticationToken;
 

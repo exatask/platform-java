@@ -7,7 +7,7 @@ import com.exatask.platform.utilities.constants.ServiceAuth;
 import lombok.Data;
 import lombok.experimental.Accessors;
 
-public class HttpBasicSdkAuthenticator implements SdkAuthenticator {
+public class HttpBasicSdkAuthenticator implements AppSdkAuthenticator {
 
   private final String authenticationToken;
 

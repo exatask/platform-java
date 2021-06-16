@@ -1,5 +1,6 @@
 package com.exatask.platform.redis;
 
+import lombok.experimental.UtilityClass;
 import org.springframework.boot.autoconfigure.data.redis.RedisProperties;
 import org.springframework.data.redis.connection.RedisConnectionFactory;
 import org.springframework.data.redis.connection.RedisStandaloneConfiguration;
@@ -7,14 +8,13 @@ import org.springframework.data.redis.connection.jedis.JedisConnectionFactory;
 import org.springframework.data.redis.core.StringRedisTemplate;
 import org.springframework.data.redis.serializer.Jackson2JsonRedisSerializer;
 import org.springframework.data.redis.serializer.StringRedisSerializer;
-import org.springframework.stereotype.Service;
 
 import java.util.Optional;
 
-@Service
+@UtilityClass
 public class AppRedisTemplate {
 
-  public StringRedisTemplate getTemplate(RedisConnectionFactory connectionFactory) {
+  public static StringRedisTemplate getTemplate(RedisConnectionFactory connectionFactory) {
 
     StringRedisSerializer stringSerializer = getStringRedisSerializer();
     Jackson2JsonRedisSerializer<String> jsonSerializer = getJsonRedisSerializer();
@@ -33,7 +33,7 @@ public class AppRedisTemplate {
     return redisTemplate;
   }
 
-  public RedisConnectionFactory getConnectionFactory(RedisProperties redisProperties) {
+  public static RedisConnectionFactory getConnectionFactory(RedisProperties redisProperties) {
 
     RedisStandaloneConfiguration redisStandaloneConfiguration = new RedisStandaloneConfiguration(redisProperties.getHost(), redisProperties.getPort());
     redisStandaloneConfiguration.setDatabase(redisProperties.getDatabase());
@@ -42,11 +42,11 @@ public class AppRedisTemplate {
     return new JedisConnectionFactory(redisStandaloneConfiguration);
   }
 
-  private StringRedisSerializer getStringRedisSerializer() {
+  private static StringRedisSerializer getStringRedisSerializer() {
     return new StringRedisSerializer();
   }
 
-  private Jackson2JsonRedisSerializer<String> getJsonRedisSerializer() {
+  private static Jackson2JsonRedisSerializer<String> getJsonRedisSerializer() {
     return new Jackson2JsonRedisSerializer<>(String.class);
   }
 }

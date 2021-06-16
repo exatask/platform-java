@@ -6,17 +6,17 @@ import java.util.HashMap;
 import java.util.Map;
 
 @UtilityClass
-public class LogSerializerFactory {
+public class AppLogSerializerFactory {
 
-  private static final Map<LogSerializerType, LogSerializer> serializerList = new HashMap<>();
+  private static final Map<AppLogSerializerType, AppLogSerializer> serializerList = new HashMap<>();
 
-  private static final LogSerializer defaultSerializer = initializeLogSerializer(LogSerializerType.LINE);
+  private static final AppLogSerializer defaultSerializer = initializeLogSerializer(AppLogSerializerType.LINE);
 
-  public static LogSerializer getLogSerializer(String type) {
+  public static AppLogSerializer getLogSerializer(String type) {
 
     try {
 
-      LogSerializerType serializerType = LogSerializerType.valueOf(type);
+      AppLogSerializerType serializerType = AppLogSerializerType.valueOf(type);
       return getLogSerializer(serializerType);
 
     } catch (IllegalArgumentException exception) {
@@ -24,18 +24,18 @@ public class LogSerializerFactory {
     }
   }
 
-  public static LogSerializer getLogSerializer(LogSerializerType type) {
+  public static AppLogSerializer getLogSerializer(AppLogSerializerType type) {
 
     if (serializerList.containsKey(type)) {
       return serializerList.get(type);
     }
 
-    LogSerializer logSerializer = initializeLogSerializer(type);
+    AppLogSerializer logSerializer = initializeLogSerializer(type);
     serializerList.put(type, logSerializer);
     return logSerializer;
   }
 
-  private static LogSerializer initializeLogSerializer(LogSerializerType type) {
+  private static AppLogSerializer initializeLogSerializer(AppLogSerializerType type) {
 
     switch(type) {
 

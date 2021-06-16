@@ -8,7 +8,7 @@ import java.util.List;
 public class AppUpdate {
 
   @Getter
-  private List<UpdateElement> updates;
+  private final List<UpdateElement> updates;
 
   public AppUpdate() {
     updates = new ArrayList<>();

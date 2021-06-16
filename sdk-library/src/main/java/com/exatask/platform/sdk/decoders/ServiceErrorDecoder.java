@@ -5,6 +5,7 @@ import com.exatask.platform.logging.AppLogger;
 import com.exatask.platform.sdk.exceptions.SdkException;
 import com.exatask.platform.sdk.responses.HttpErrorResponse;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import feign.FeignException;
 import feign.Request;
 import feign.Response;
 import feign.Util;
@@ -13,8 +14,6 @@ import org.springframework.stereotype.Service;
 
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
-
-import static feign.FeignException.errorStatus;
 
 @Service
 public class ServiceErrorDecoder implements ErrorDecoder {
@@ -45,7 +44,7 @@ public class ServiceErrorDecoder implements ErrorDecoder {
     } catch (IOException exception) {
 
       LOGGER.error(exception);
-      return errorStatus(methodKey, response);
+      return FeignException.errorStatus(methodKey, response);
     }
   }
 }

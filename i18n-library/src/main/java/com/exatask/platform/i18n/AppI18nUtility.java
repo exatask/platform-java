@@ -1,36 +1,34 @@
 package com.exatask.platform.i18n;
 
 import com.exatask.platform.i18n.constants.LocaleConstants;
-import com.exatask.platform.i18n.utilities.I18nSource;
-import com.exatask.platform.i18n.utilities.LocaleUtility;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.context.annotation.Bean;
-import org.springframework.context.annotation.Configuration;
+import com.exatask.platform.i18n.sources.AppI18nSource;
+import lombok.experimental.UtilityClass;
 import org.springframework.context.support.ResourceBundleMessageSource;
 import org.springframework.util.CollectionUtils;
 
+import java.util.Locale;
 import java.util.Set;
 
-@Configuration
-public class AppMessageSource {
+@UtilityClass
+public class AppI18nUtility {
 
-  @Autowired(required = false)
-  private Set<I18nSource> messageSources;
-
-  @Bean
-  public ResourceBundleMessageSource messageSource() {
+  public static ResourceBundleMessageSource messageSource(Set<AppI18nSource> messageSources) {
 
     ResourceBundleMessageSource bundleMessageSource = new ResourceBundleMessageSource();
     bundleMessageSource.setDefaultEncoding(LocaleConstants.DEFAULT_ENCODING);
-    bundleMessageSource.setDefaultLocale(LocaleUtility.defaultLocale());
+    bundleMessageSource.setDefaultLocale(defaultLocale());
     bundleMessageSource.setUseCodeAsDefaultMessage(true);
 
     if (!CollectionUtils.isEmpty(messageSources)) {
-      for (I18nSource source : messageSources) {
+      for (AppI18nSource source : messageSources) {
         bundleMessageSource.addBasenames(source.getMessageSources());
       }
     }
 
     return bundleMessageSource;
+  }
+
+  public static Locale defaultLocale() {
+    return new Locale(LocaleConstants.DEFAULT_LANGUAGE, LocaleConstants.DEFAULT_COUNTRY);
   }
 }

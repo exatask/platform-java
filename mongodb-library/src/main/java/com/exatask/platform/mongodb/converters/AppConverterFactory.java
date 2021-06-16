@@ -8,22 +8,22 @@ import java.util.Map;
 import java.util.Set;
 
 @Service
-public class ConverterFactory {
+public class AppConverterFactory {
 
-  private static final Map<Class<?>, Converter<?, ?>> converterList = new HashMap<>();
+  private static final Map<Class<?>, AppConverter<?, ?>> converterList = new HashMap<>();
 
   @Autowired
-  public ConverterFactory(Set<Converter<?, ?>> converters) {
+  public AppConverterFactory(Set<AppConverter<?, ?>> converters) {
     createConverterList(converters);
   }
 
-  private void createConverterList(Set<Converter<?, ?>> converters) {
-    for (Converter<?, ?> converter : converters) {
+  private void createConverterList(Set<AppConverter<?, ?>> converters) {
+    for (AppConverter<?, ?> converter : converters) {
       converterList.put(converter.getAnnotation(), converter);
     }
   }
 
-  public static Converter<?, ?> getConverter(Class<?> annotationClass) {
+  public static AppConverter<?, ?> getConverter(Class<?> annotationClass) {
 
     if (!converterList.containsKey(annotationClass)) {
       throw new IllegalArgumentException();
@@ -32,7 +32,7 @@ public class ConverterFactory {
     return converterList.get(annotationClass);
   }
 
-  public static Map<Class<?>, Converter<?, ?>> getConverters() {
+  public static Map<Class<?>, AppConverter<?, ?>> getConverters() {
     return converterList;
   }
 

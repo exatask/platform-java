@@ -7,14 +7,14 @@ import com.exatask.platform.api.services.healthcheck.responses.HealthCheckRespon
 import com.exatask.platform.utilities.healthcheck.ServiceHealthCheck;
 import com.exatask.platform.utilities.healthcheck.ServiceHealthCheckData;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Component;
+import org.springframework.stereotype.Service;
 
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Set;
 
-@Component("healthCheckService")
-public class HealthCheckService extends AppService {
+@Service("healthCheckService")
+public class HealthCheckService extends AppService<AppRequest, HealthCheckResponse> {
 
   @Autowired
   private ApiServiceConfig apiServiceConfig;

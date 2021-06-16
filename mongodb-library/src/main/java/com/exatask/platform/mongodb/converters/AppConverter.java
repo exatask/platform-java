@@ -3,7 +3,7 @@ package com.exatask.platform.mongodb.converters;
 import java.lang.annotation.Annotation;
 import java.lang.reflect.Field;
 
-public interface Converter<S, T> {
+public interface AppConverter<S, T> {
 
   Class<?> getAnnotation();
 

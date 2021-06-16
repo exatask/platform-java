@@ -11,7 +11,7 @@ import org.springframework.util.CollectionUtils;
 import java.util.Collections;
 import java.util.Map;
 
-public class JwtHmacApiAuthenticator implements ApiAuthenticator {
+public class JwtHmacApiAuthenticator implements AppApiAuthenticator {
 
   private final JwtHmac signer;
 

@@ -1,8 +1,11 @@
 package com.exatask.platform.utilities.contexts;
 
-import java.util.Date;
-import java.util.Objects;
+import lombok.experimental.UtilityClass;
+import org.apache.commons.lang3.ObjectUtils;
 
+import java.util.Date;
+
+@UtilityClass
 public class RequestContextProvider {
 
   private static final ThreadLocal<RequestContext> context = new ThreadLocal<>();
@@ -24,38 +27,38 @@ public class RequestContextProvider {
   }
 
   public static Date getStartTime() {
-    return Objects.nonNull(getContext()) ? getContext().getStartTime() : null;
+    return ObjectUtils.isEmpty(getContext()) ? getContext().getStartTime() : null;
   }
 
   public static String getTraceId() {
-    return Objects.nonNull(getContext()) ? getContext().getTraceId() : null;
+    return ObjectUtils.isEmpty(getContext()) ? getContext().getTraceId() : null;
   }
 
   public static String getSpanId() {
-    return Objects.nonNull(getContext()) ? getContext().getSpanId() : null;
+    return ObjectUtils.isEmpty(getContext()) ? getContext().getSpanId() : null;
   }
 
   public static String getSessionId() {
-    return Objects.nonNull(getContext()) ? getContext().getSessionId() : null;
+    return ObjectUtils.isEmpty(getContext()) ? getContext().getSessionId() : null;
   }
 
   public static String getUserId() {
-    return Objects.nonNull(getContext()) ? getContext().getUserId() : null;
+    return ObjectUtils.isEmpty(getContext()) ? getContext().getUserId() : null;
   }
 
   public static String getUserName() {
-    return Objects.nonNull(getContext()) ? getContext().getUserName() : null;
+    return ObjectUtils.isEmpty(getContext()) ? getContext().getUserName() : null;
   }
 
   public static String getUserEmailId() {
-    return Objects.nonNull(getContext()) ? getContext().getUserEmailId() : null;
+    return ObjectUtils.isEmpty(getContext()) ? getContext().getUserEmailId() : null;
   }
 
   public static String getOrganizationId() {
-    return Objects.nonNull(getContext()) ? getContext().getOrganizationId() : null;
+    return ObjectUtils.isEmpty(getContext()) ? getContext().getOrganizationId() : null;
   }
 
   public static String getOrganizationName() {
-    return Objects.nonNull(getContext()) ? getContext().getOrganizationName() : null;
+    return ObjectUtils.isEmpty(getContext()) ? getContext().getOrganizationName() : null;
   }
 }

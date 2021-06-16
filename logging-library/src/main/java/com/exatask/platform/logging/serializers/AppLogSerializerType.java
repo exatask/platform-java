@@ -1,6 +1,6 @@
 package com.exatask.platform.logging.serializers;
 
-public enum LogSerializerType {
+public enum AppLogSerializerType {
 
   LINE,
   JSON

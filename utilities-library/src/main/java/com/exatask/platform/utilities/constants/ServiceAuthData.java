@@ -1,5 +1,8 @@
 package com.exatask.platform.utilities.constants;
 
+import lombok.experimental.UtilityClass;
+
+@UtilityClass
 public class ServiceAuthData {
 
   public static final String AUTH_TYPE_HEADER = "x-auth-type";

@@ -1,5 +1,8 @@
 package com.exatask.platform.crypto.constants;
 
+import lombok.experimental.UtilityClass;
+
+@UtilityClass
 public class CryptoService {
 
   public static final String SERVICE_NAME = "crypto-library";

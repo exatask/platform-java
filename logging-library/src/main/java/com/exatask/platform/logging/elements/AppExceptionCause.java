@@ -1,4 +1,4 @@
-package com.exatask.platform.logging.helpers;
+package com.exatask.platform.logging.elements;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.databind.PropertyNamingStrategy;

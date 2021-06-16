@@ -1,6 +1,6 @@
 package com.exatask.platform.mongodb.annotations;
 
-import com.exatask.platform.mongodb.utilities.MongoCipher;
+import com.exatask.platform.mongodb.ciphers.MongoCipher;
 
 import java.lang.annotation.Documented;
 import java.lang.annotation.ElementType;

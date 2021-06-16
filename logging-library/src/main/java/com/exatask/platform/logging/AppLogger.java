@@ -1,21 +1,22 @@
 package com.exatask.platform.logging;
 
-import com.exatask.platform.logging.serializers.LogSerializer;
-import com.exatask.platform.logging.serializers.LogSerializerFactory;
-import com.exatask.platform.logging.serializers.LogSerializerType;
+import com.exatask.platform.logging.serializers.AppLogSerializer;
+import com.exatask.platform.logging.serializers.AppLogSerializerFactory;
+import com.exatask.platform.logging.serializers.AppLogSerializerType;
 import com.exatask.platform.utilities.contexts.RequestContextProvider;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.logging.log4j.Level;
 import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.apache.logging.log4j.core.LoggerContext;
 
 import java.util.Date;
 
 public class AppLogger {
 
-  private final org.apache.logging.log4j.Logger log4jLogger;
+  private final Logger log4jLogger;
 
-  private final LogSerializer serializer;
+  private final AppLogSerializer serializer;
 
   private final String serviceName;
 
@@ -28,9 +29,9 @@ public class AppLogger {
     String style = loggerContext.getConfiguration().getStrSubstitutor().getVariableResolver().lookup("style");
 
     if (StringUtils.isEmpty(style)) {
-      style = LogSerializerType.LINE.toString();
+      style = AppLogSerializerType.LINE.toString();
     }
-    serializer = LogSerializerFactory.getLogSerializer(style.toUpperCase());
+    serializer = AppLogSerializerFactory.getLogSerializer(style.toUpperCase());
   }
 
   public void trace(String message) {

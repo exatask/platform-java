@@ -1,4 +1,4 @@
-package com.exatask.platform.mailer;
+package com.exatask.platform.mailer.transports;
 
 import com.exatask.platform.logging.AppLogManager;
 import com.exatask.platform.logging.AppLogger;
@@ -28,7 +28,7 @@ import java.util.Objects;
 import java.util.stream.Collectors;
 
 @RequiredArgsConstructor
-public abstract class AppMailer {
+public abstract class AppTransport {
 
   protected static final AppLogger LOGGER = AppLogManager.getLogger();
 

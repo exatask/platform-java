@@ -15,8 +15,9 @@ jar {
 
 dependencies {
 
-  api group: "org.springframework.boot", name: "spring-boot-starter-data-redis"
-
+  implementation (group: "org.springframework.boot", name: "spring-boot-starter-data-redis") {
+    exclude module: "lettuce-core"
+  }
   implementation group: "redis.clients", name: "jedis", version: "${redisJedisVersion}"
   implementation group: "com.fasterxml.jackson.core", name: "jackson-databind", version: "${fasterxmlJacksonVersion}"
   implementation project(":logging-library")

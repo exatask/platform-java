@@ -15,9 +15,7 @@ jar {
 
 dependencies {
 
-  api group: "org.springframework.cloud", name: "spring-cloud-starter-openfeign"
-  api group: "com.fasterxml.jackson.core", name: "jackson-databind", version: "${fasterxmlJacksonVersion}"
-
+  implementation group: "org.springframework.cloud", name: "spring-cloud-starter-openfeign"
   implementation group: "io.github.openfeign", name: "feign-okhttp", version: "${feignOkhttpVersion}"
   implementation group: "io.github.openfeign", name: "feign-jackson", version: "${feignJacksonVersion}"
   implementation project(":utilities-library")

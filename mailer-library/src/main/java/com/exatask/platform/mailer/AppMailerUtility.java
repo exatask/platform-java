@@ -1,8 +1,6 @@
-package com.exatask.platform.mailer.configuration;
+package com.exatask.platform.mailer;
 
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.context.annotation.Bean;
-import org.springframework.context.annotation.Configuration;
+import lombok.experimental.UtilityClass;
 import org.springframework.context.support.ResourceBundleMessageSource;
 import org.springframework.util.ResourceUtils;
 import org.thymeleaf.spring5.SpringTemplateEngine;
@@ -13,16 +11,12 @@ import org.thymeleaf.templateresolver.ITemplateResolver;
 import java.nio.charset.StandardCharsets;
 import java.util.Collections;
 
-@Configuration
-public class TemplateConfig {
+@UtilityClass
+public class AppMailerUtility {
 
   private static final String MAILER_DIR = "mailers/";
 
-  @Autowired
-  private ResourceBundleMessageSource messageSource;
-
-  @Bean
-  public SpringTemplateEngine templateEngine() {
+  public static SpringTemplateEngine templateEngine(ResourceBundleMessageSource messageSource) {
 
     SpringTemplateEngine templateEngine = new SpringTemplateEngine();
     templateEngine.addTemplateResolver(htmlTemplateResolver());
@@ -31,8 +25,7 @@ public class TemplateConfig {
     return templateEngine;
   }
 
-  @Bean(name = "htmlTemplateResolver")
-  public ITemplateResolver htmlTemplateResolver() {
+  public static ITemplateResolver htmlTemplateResolver() {
 
     SpringResourceTemplateResolver templateResolver = new SpringResourceTemplateResolver();
     templateResolver.setOrder(1);
@@ -44,8 +37,7 @@ public class TemplateConfig {
     return templateResolver;
   }
 
-  @Bean(name = "textTemplateResolver")
-  public ITemplateResolver textTemplateResolver() {
+  public static ITemplateResolver textTemplateResolver() {
 
     SpringResourceTemplateResolver templateResolver = new SpringResourceTemplateResolver();
     templateResolver.setOrder(2);

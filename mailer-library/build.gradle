@@ -15,10 +15,10 @@ jar {
 
 dependencies {
 
-  implementation group: "org.apache.commons", name: "commons-lang3", version: "${apacheCommonsVersion}"
-  implementation group: "javax.mail", name: "mail", version: "${javaxMailVersion}"
   implementation group: "org.springframework.boot", name: "spring-boot"
   implementation group: "org.springframework.boot", name: "spring-boot-starter-thymeleaf"
+  implementation group: "org.apache.commons", name: "commons-lang3", version: "${apacheCommonsVersion}"
+  implementation group: "javax.mail", name: "mail", version: "${javaxMailVersion}"
   implementation project(":logging-library")
   implementation project(":utilities-library")
   implementation project(":i18n-library")

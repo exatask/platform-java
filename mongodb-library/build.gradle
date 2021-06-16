@@ -15,9 +15,8 @@ jar {
 
 dependencies {
 
-  api group: "org.springframework.boot", name: "spring-boot-starter-data-mongodb"
-  api group: "org.springframework.boot", name: "spring-boot-starter-validation"
-
+  implementation group: "org.springframework.boot", name: "spring-boot-starter-data-mongodb"
+  implementation group: "org.springframework.boot", name: "spring-boot-starter-validation"
   implementation group: "com.fasterxml.jackson.core", name: "jackson-databind", version: "${fasterxmlJacksonVersion}"
   implementation group: "org.apache.commons", name: "commons-lang3", version: "${apacheCommonsVersion}"
   implementation project(":logging-library")

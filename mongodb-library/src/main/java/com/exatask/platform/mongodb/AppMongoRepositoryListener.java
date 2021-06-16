@@ -1,7 +1,7 @@
 package com.exatask.platform.mongodb;
 
-import com.exatask.platform.mongodb.converters.Converter;
-import com.exatask.platform.mongodb.converters.ConverterFactory;
+import com.exatask.platform.mongodb.converters.AppConverter;
+import com.exatask.platform.mongodb.converters.AppConverterFactory;
 import com.exatask.platform.mongodb.constants.Operation;
 import com.exatask.platform.mongodb.fields.FieldAnnotations;
 import com.exatask.platform.mongodb.utilities.DocumentUtility;
@@ -39,7 +39,7 @@ public class AppMongoRepositoryListener extends AbstractMongoEventListener<AppMo
 
         for (Annotation annotation : fieldAnnotations) {
 
-          Converter<?, ?> converter = ConverterFactory.getConverter(annotation.annotationType());
+          AppConverter<?, ?> converter = AppConverterFactory.getConverter(annotation.annotationType());
           if (operation == Operation.READ) {
             value = converter.read(value, annotation, fieldInfo.getField());
           } else {

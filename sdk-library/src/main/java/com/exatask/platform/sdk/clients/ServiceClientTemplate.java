@@ -1,7 +1,7 @@
 package com.exatask.platform.sdk.clients;
 
 import com.exatask.platform.sdk.authenticators.NoAuthSdkAuthenticator;
-import com.exatask.platform.sdk.authenticators.SdkAuthenticator;
+import com.exatask.platform.sdk.authenticators.AppSdkAuthenticator;
 import com.exatask.platform.sdk.decoders.ServiceErrorDecoder;
 import com.exatask.platform.sdk.interceptors.ServiceAuthenticationInterceptor;
 import com.exatask.platform.sdk.interceptors.ServiceContextInterceptor;
@@ -22,7 +22,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 @Service
-public class ServiceClientTemplate<T extends ServiceClient> {
+public class ServiceClientTemplate<T extends AppServiceClient> {
 
   @Autowired
   private Contract contract;
@@ -46,14 +46,14 @@ public class ServiceClientTemplate<T extends ServiceClient> {
   private ServiceContextInterceptor serviceContextInterceptor;
 
   public T getServiceClient(Class<T> clazz, String baseUrl) {
-    return getServiceClient(clazz, baseUrl, new NoAuthSdkAuthenticator.NoAuthCredentials());
+    return getServiceClient(clazz, baseUrl, new NoAuthSdkAuthenticator.NoAuthCredentials(), null);
   }
 
-  public T getServiceClient(Class<T> clazz, String baseUrl, SdkAuthenticator.Credentials credentials) {
+  public T getServiceClient(Class<T> clazz, String baseUrl, AppSdkAuthenticator.Credentials credentials) {
     return getServiceClient(clazz, baseUrl, credentials, null);
   }
 
-  public T getServiceClient(Class<T> clazz, String baseUrl, SdkAuthenticator.Credentials credentials, List<RequestInterceptor> interceptors) {
+  public T getServiceClient(Class<T> clazz, String baseUrl, AppSdkAuthenticator.Credentials credentials, List<RequestInterceptor> interceptors) {
 
     List<RequestInterceptor> interceptorList = new ArrayList<>();
     interceptorList.add(serviceContextInterceptor);

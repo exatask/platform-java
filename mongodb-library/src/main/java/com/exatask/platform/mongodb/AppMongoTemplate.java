@@ -1,5 +1,6 @@
 package com.exatask.platform.mongodb;
 
+import lombok.experimental.UtilityClass;
 import org.springframework.boot.autoconfigure.mongo.MongoProperties;
 import org.springframework.data.mongodb.MongoDatabaseFactory;
 import org.springframework.data.mongodb.core.MongoTemplate;
@@ -9,12 +10,11 @@ import org.springframework.data.mongodb.core.convert.DefaultDbRefResolver;
 import org.springframework.data.mongodb.core.convert.DefaultMongoTypeMapper;
 import org.springframework.data.mongodb.core.convert.MappingMongoConverter;
 import org.springframework.data.mongodb.core.mapping.MongoMappingContext;
-import org.springframework.stereotype.Service;
 
-@Service
+@UtilityClass
 public class AppMongoTemplate {
 
-  public MongoTemplate getTemplate(MongoDatabaseFactory connectionFactory) {
+  public static MongoTemplate getTemplate(MongoDatabaseFactory connectionFactory) {
 
     DbRefResolver refResolver = new DefaultDbRefResolver(connectionFactory);
     MappingMongoConverter mongoConverter = new MappingMongoConverter(refResolver, new MongoMappingContext());
@@ -23,7 +23,7 @@ public class AppMongoTemplate {
     return new MongoTemplate(connectionFactory, mongoConverter);
   }
 
-  public MongoDatabaseFactory getDatabaseFactory(MongoProperties mongoProperties) {
+  public static MongoDatabaseFactory getDatabaseFactory(MongoProperties mongoProperties) {
     return new SimpleMongoClientDatabaseFactory(mongoProperties.getUri());
   }
 }

@@ -15,14 +15,13 @@ jar {
 
 dependencies {
 
-  api group: "org.springframework.boot", name: "spring-boot-starter"
-  api group: "org.springframework.boot", name: "spring-boot-starter-log4j2"
-  api project(":logging-library")
+  implementation project(":logging-library")
 
-  implementation group: "com.github.mongobee", name: "mongobee", version: "${mongobeeVersion}"
-  implementation (project(":mongodb-library")) {
-    exclude module: "spring-boot-starter-data-mongodb"
-  }
+  compileOnly group: "org.springframework.boot", name: "spring-boot-starter-data-mongodb"
+  compileOnly group: "com.github.mongobee", name: "mongobee", version: "${mongobeeVersion}"
+  compileOnly group: "org.projectlombok", name: "lombok", version: "${lombokVersion}"
+
+  annotationProcessor group: "org.projectlombok", name: "lombok", version: "${lombokVersion}"
 }
 
 publishing {

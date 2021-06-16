@@ -12,6 +12,7 @@ import org.springframework.data.redis.core.RedisHash;
 import org.springframework.data.redis.core.RedisKeyValueAdapter;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.data.repository.core.EntityInformation;
+import org.springframework.util.ReflectionUtils;
 
 import java.io.Serializable;
 import java.lang.reflect.Field;
@@ -41,12 +42,12 @@ public class AppRedisRepositoryImpl<T, ID extends Serializable> extends SimpleKe
     this.objectMapper = new ObjectMapper();
 
     Field adapter = keyValueOperations.getClass().getDeclaredField("adapter");
-    adapter.setAccessible(true);
+    ReflectionUtils.makeAccessible(adapter);
     RedisKeyValueAdapter redisKeyValueAdapter = (RedisKeyValueAdapter) adapter.get(keyValueOperations);
     adapter.setAccessible(false);
 
     Field redisOps = redisKeyValueAdapter.getClass().getDeclaredField("redisOps");
-    redisOps.setAccessible(true);
+    ReflectionUtils.makeAccessible(redisOps);
     this.redisTemplate = (RedisTemplate<String, String>) redisOps.get(redisKeyValueAdapter);
     redisOps.setAccessible(false);
 

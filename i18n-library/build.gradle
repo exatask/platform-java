@@ -16,6 +16,9 @@ jar {
 dependencies {
 
   implementation group: "org.springframework.boot", name: "spring-boot", version: "${springBootVersion}"
+
+  compileOnly group: "org.projectlombok", name: "lombok", version: "${lombokVersion}"
+  annotationProcessor group: "org.projectlombok", name: "lombok", version: "${lombokVersion}"
 }
 
 publishing {

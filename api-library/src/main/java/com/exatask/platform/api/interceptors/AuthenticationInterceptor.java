@@ -1,6 +1,6 @@
 package com.exatask.platform.api.interceptors;
 
-import com.exatask.platform.api.authenticators.ApiAuthenticator;
+import com.exatask.platform.api.authenticators.AppApiAuthenticator;
 import com.exatask.platform.api.exceptions.ProxyAuthenticationException;
 import com.exatask.platform.utilities.constants.ServiceAuth;
 import com.exatask.platform.utilities.constants.ServiceAuthData;
@@ -15,7 +15,7 @@ import javax.servlet.http.HttpServletResponse;
 public class AuthenticationInterceptor extends AppInterceptor {
 
   @Autowired
-  private ApiAuthenticator apiAuthenticator;
+  private AppApiAuthenticator apiAuthenticator;
 
   @Override
   public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler) throws Exception {

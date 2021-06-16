@@ -1,8 +1,7 @@
-package com.exatask.platform.mailer.transports.smtp;
+package com.exatask.platform.mailer.transports;
 
 import com.exatask.platform.logging.AppLogManager;
 import com.exatask.platform.logging.AppLogger;
-import com.exatask.platform.mailer.AppMailer;
 import com.exatask.platform.mailer.email.EmailMessage;
 import com.exatask.platform.mailer.email.EmailResponse;
 import com.exatask.platform.mailer.templates.AppTemplateEngine;
@@ -17,7 +16,7 @@ import javax.net.ssl.SSLContext;
 import java.security.NoSuchAlgorithmException;
 import java.util.Properties;
 
-public class SmtpMailer extends AppMailer {
+public class SmtpTransport extends AppTransport {
 
   private static final AppLogger LOGGER = AppLogManager.getLogger();
 
@@ -25,7 +24,7 @@ public class SmtpMailer extends AppMailer {
 
   private final Authenticator authenticator;
 
-  public SmtpMailer(SmtpProperties smtpProperties, AppTemplateEngine templateEngine) {
+  public SmtpTransport(SmtpProperties smtpProperties, AppTemplateEngine templateEngine) {
 
     super(templateEngine);
 

@@ -1,5 +1,8 @@
 package com.exatask.platform.logging.constants;
 
+import lombok.experimental.UtilityClass;
+
+@UtilityClass
 public class LoggingService {
 
   public static final String SERVICE_NAME = "logging-library";

@@ -1,4 +1,4 @@
-package com.exatask.platform.mongodb.utilities;
+package com.exatask.platform.mongodb.ciphers;
 
 public interface MongoCipher {
 

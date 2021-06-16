@@ -1,7 +1,8 @@
 package com.exatask.platform.mongodb.utilities;
 
-import com.exatask.platform.mongodb.converters.ConverterFactory;
+import com.exatask.platform.mongodb.converters.AppConverterFactory;
 import com.exatask.platform.mongodb.fields.FieldAnnotations;
+import lombok.experimental.UtilityClass;
 import org.apache.commons.lang3.reflect.FieldUtils;
 import org.springframework.data.mongodb.core.mapping.Field;
 
@@ -12,18 +13,16 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
+@UtilityClass
 public class DocumentUtility {
 
   private static final Map<Class<?>, Map<String, FieldAnnotations>> converterAnnotations = new HashMap<>();
-
-  private DocumentUtility() {
-  }
 
   private static Map<String, FieldAnnotations> processConverterAnnotation(Class<?> clazz) {
 
     java.lang.reflect.Field[] fields = FieldUtils.getAllFields(clazz);
     Map<String, FieldAnnotations> fieldAnnotationList = new HashMap<>();
-    Set<Class<?>> converters = ConverterFactory.getConverterAnnotations();
+    Set<Class<?>> converters = AppConverterFactory.getConverterAnnotations();
 
     for (java.lang.reflect.Field field : fields) {
 

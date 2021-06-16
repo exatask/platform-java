@@ -2,7 +2,7 @@ package com.exatask.platform.api.authenticators;
 
 import com.exatask.platform.utilities.constants.ServiceAuth;
 
-public class NoAuthApiAuthenticator implements ApiAuthenticator {
+public class NoAuthApiAuthenticator implements AppApiAuthenticator {
 
   @Override
   public ServiceAuth getAuthentication() {

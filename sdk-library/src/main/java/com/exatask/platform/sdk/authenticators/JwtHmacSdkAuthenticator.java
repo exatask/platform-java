@@ -12,7 +12,7 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
 
-public class JwtHmacSdkAuthenticator implements SdkAuthenticator {
+public class JwtHmacSdkAuthenticator implements AppSdkAuthenticator {
 
   private final JwtHmac signer;
 

@@ -1,5 +1,8 @@
 package com.exatask.platform.i18n.constants;
 
+import lombok.experimental.UtilityClass;
+
+@UtilityClass
 public class LocaleConstants {
 
   public static final String DEFAULT_ENCODING = "UTF-8";

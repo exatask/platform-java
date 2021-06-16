@@ -1,6 +1,5 @@
-package com.exatask.platform.mailer.transports.aws;
+package com.exatask.platform.mailer.transports;
 
-import com.exatask.platform.mailer.AppMailer;
 import com.exatask.platform.mailer.email.EmailMessage;
 import com.exatask.platform.mailer.email.EmailResponse;
 import com.exatask.platform.mailer.templates.AppTemplateEngine;
@@ -18,11 +17,11 @@ import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.util.Properties;
 
-public class AwsMailer extends AppMailer {
+public class AwsTransport extends AppTransport {
 
   private final SesClient sesClient;
 
-  public AwsMailer(AwsProperties awsProperties, AppTemplateEngine templateEngine) {
+  public AwsTransport(AwsProperties awsProperties, AppTemplateEngine templateEngine) {
 
     super(templateEngine);
 

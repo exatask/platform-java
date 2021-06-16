@@ -1,7 +1,7 @@
 package com.exatask.platform.mongodb.converters;
 
 import com.exatask.platform.mongodb.annotations.Encrypted;
-import com.exatask.platform.mongodb.utilities.MongoCipher;
+import com.exatask.platform.mongodb.ciphers.MongoCipher;
 import com.exatask.platform.utilities.ApplicationContextUtility;
 import org.springframework.stereotype.Service;
 
@@ -9,7 +9,7 @@ import java.lang.annotation.Annotation;
 import java.lang.reflect.Field;
 
 @Service
-public class EncryptedConverter implements Converter<String, String> {
+public class EncryptedConverter implements AppConverter<String, String> {
 
   @Override
   public Class<?> getAnnotation() {

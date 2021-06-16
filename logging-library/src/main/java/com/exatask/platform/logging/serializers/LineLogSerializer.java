@@ -6,11 +6,11 @@ import org.apache.commons.collections4.MapUtils;
 import org.apache.commons.lang3.ObjectUtils;
 import org.apache.commons.lang3.StringUtils;
 
-public class LineLogSerializer implements LogSerializer {
+public class LineLogSerializer implements AppLogSerializer {
 
   @Override
-  public LogSerializerType getType() {
-    return LogSerializerType.LINE;
+  public AppLogSerializerType getType() {
+    return AppLogSerializerType.LINE;
   }
 
   @Override

@@ -1,7 +1,7 @@
 package com.exatask.platform.logging;
 
-import com.exatask.platform.logging.helpers.AppExceptionCause;
-import com.exatask.platform.logging.helpers.AppStackTraceElement;
+import com.exatask.platform.logging.elements.AppExceptionCause;
+import com.exatask.platform.logging.elements.AppStackTraceElement;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.databind.PropertyNamingStrategy;
 import com.fasterxml.jackson.databind.annotation.JsonNaming;

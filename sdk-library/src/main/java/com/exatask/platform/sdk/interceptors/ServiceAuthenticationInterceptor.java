@@ -3,7 +3,7 @@ package com.exatask.platform.sdk.interceptors;
 import com.exatask.platform.sdk.authenticators.HttpBasicSdkAuthenticator;
 import com.exatask.platform.sdk.authenticators.JwtHmacSdkAuthenticator;
 import com.exatask.platform.sdk.authenticators.NoAuthSdkAuthenticator;
-import com.exatask.platform.sdk.authenticators.SdkAuthenticator;
+import com.exatask.platform.sdk.authenticators.AppSdkAuthenticator;
 import com.exatask.platform.sdk.exceptions.InvalidAuthenticatorException;
 import com.exatask.platform.utilities.constants.ServiceAuthData;
 import feign.RequestInterceptor;
@@ -11,13 +11,13 @@ import feign.RequestTemplate;
 
 public class ServiceAuthenticationInterceptor implements RequestInterceptor {
 
-  private final SdkAuthenticator sdkAuthenticator;
+  private final AppSdkAuthenticator sdkAuthenticator;
 
-  public ServiceAuthenticationInterceptor(SdkAuthenticator.Credentials credentials) {
+  public ServiceAuthenticationInterceptor(AppSdkAuthenticator.Credentials credentials) {
     this.sdkAuthenticator = getAuthenticator(credentials);
   }
 
-  private SdkAuthenticator getAuthenticator(SdkAuthenticator.Credentials credentials) {
+  private AppSdkAuthenticator getAuthenticator(AppSdkAuthenticator.Credentials credentials) {
 
     switch (credentials.getAuthentication()) {
 
