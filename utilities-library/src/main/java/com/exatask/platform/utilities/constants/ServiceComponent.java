@@ -8,12 +8,7 @@ import lombok.Getter;
 public enum ServiceComponent {
 
   USER("/user"),
-  ADMIN("/admin"),
-  MIGRATION;
+  ADMIN("/admin");
 
   private final String uri;
-
-  ServiceComponent() {
-    this.uri = null;
-  }
 }

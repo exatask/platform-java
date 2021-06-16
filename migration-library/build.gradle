@@ -16,6 +16,7 @@ jar {
 dependencies {
 
   implementation project(":logging-library")
+  implementation project(":utilities-library")
 
   compileOnly group: "org.springframework.boot", name: "spring-boot-starter-data-mongodb"
   compileOnly group: "com.github.mongobee", name: "mongobee", version: "${mongobeeVersion}"
