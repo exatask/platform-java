@@ -10,7 +10,7 @@ public abstract class MongodbChangelog {
 
   protected static final AppLogger LOGGER = AppLogManager.getLogger();
 
-  protected MongoDatabase mongoDatabase;
+  protected final MongoDatabase mongoDatabase;
 
   public abstract void execute();
 }

@@ -29,6 +29,7 @@ public class ServiceUtility {
   public static final String CONFIG_SERVICE_URL_KEY = "exatask.config-service.url";
   public static final String CONFIG_SERVICE_USERNAME_KEY = "exatask.config-service.username";
   public static final String CONFIG_SERVICE_PASSWORD_KEY = "exatask.config-service.password";
+  public static final String CONFIG_SERVICE_SECRET_KEY = "exatask.config-service.secret";
 
   @Getter
   private static Environment environment;

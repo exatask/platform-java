@@ -27,38 +27,38 @@ public class RequestContextProvider {
   }
 
   public static Date getStartTime() {
-    return ObjectUtils.isEmpty(getContext()) ? getContext().getStartTime() : null;
+    return ObjectUtils.isNotEmpty(getContext()) ? getContext().getStartTime() : null;
   }
 
   public static String getTraceId() {
-    return ObjectUtils.isEmpty(getContext()) ? getContext().getTraceId() : null;
+    return ObjectUtils.isNotEmpty(getContext()) ? getContext().getTraceId() : null;
   }
 
   public static String getSpanId() {
-    return ObjectUtils.isEmpty(getContext()) ? getContext().getSpanId() : null;
+    return ObjectUtils.isNotEmpty(getContext()) ? getContext().getSpanId() : null;
   }
 
   public static String getSessionId() {
-    return ObjectUtils.isEmpty(getContext()) ? getContext().getSessionId() : null;
+    return ObjectUtils.isNotEmpty(getContext()) ? getContext().getSessionId() : null;
   }
 
   public static String getUserId() {
-    return ObjectUtils.isEmpty(getContext()) ? getContext().getUserId() : null;
+    return ObjectUtils.isNotEmpty(getContext()) ? getContext().getUserId() : null;
   }
 
   public static String getUserName() {
-    return ObjectUtils.isEmpty(getContext()) ? getContext().getUserName() : null;
+    return ObjectUtils.isNotEmpty(getContext()) ? getContext().getUserName() : null;
   }
 
   public static String getUserEmailId() {
-    return ObjectUtils.isEmpty(getContext()) ? getContext().getUserEmailId() : null;
+    return ObjectUtils.isNotEmpty(getContext()) ? getContext().getUserEmailId() : null;
   }
 
   public static String getOrganizationId() {
-    return ObjectUtils.isEmpty(getContext()) ? getContext().getOrganizationId() : null;
+    return ObjectUtils.isNotEmpty(getContext()) ? getContext().getOrganizationId() : null;
   }
 
   public static String getOrganizationName() {
-    return ObjectUtils.isEmpty(getContext()) ? getContext().getOrganizationName() : null;
+    return ObjectUtils.isNotEmpty(getContext()) ? getContext().getOrganizationName() : null;
   }
 }
