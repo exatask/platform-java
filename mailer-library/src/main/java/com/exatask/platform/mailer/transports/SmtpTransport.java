@@ -13,7 +13,9 @@ import javax.mail.Session;
 import javax.mail.Transport;
 import javax.mail.internet.MimeMessage;
 import javax.net.ssl.SSLContext;
+import java.io.IOException;
 import java.security.NoSuchAlgorithmException;
+import java.util.List;
 import java.util.Properties;
 
 public class SmtpTransport extends AppTransport {
@@ -48,7 +50,7 @@ public class SmtpTransport extends AppTransport {
   }
 
   @Override
-  public EmailResponse send(EmailMessage emailMessage) throws MessagingException {
+  public EmailResponse send(EmailMessage emailMessage) throws MessagingException, IOException {
 
     try {
 
@@ -56,17 +58,20 @@ public class SmtpTransport extends AppTransport {
       MimeMessage message = new MimeMessage(session);
 
       prepareSender(message, emailMessage);
-      prepareRecipients(message, emailMessage);
+      List<String> recipients = prepareRecipients(message, emailMessage);
 
-      prepareSubject(message, emailMessage);
-      prepareContent(message, emailMessage);
+      String subject = prepareSubject(message, emailMessage);
+      String body = prepareContent(message, emailMessage);
 
       Transport.send(message);
       return EmailResponse.builder()
           .messageId(message.getMessageID())
+          .subject(subject)
+          .textBody(body)
+          .accepted(recipients)
           .build();
 
-    } catch (MessagingException exception) {
+    } catch (MessagingException | IOException exception) {
       LOGGER.error(exception);
       throw exception;
     }

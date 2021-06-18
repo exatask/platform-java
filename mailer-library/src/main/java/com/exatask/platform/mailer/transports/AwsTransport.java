@@ -15,6 +15,7 @@ import javax.mail.Session;
 import javax.mail.internet.MimeMessage;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
+import java.util.List;
 import java.util.Properties;
 
 public class AwsTransport extends AppTransport {
@@ -40,10 +41,10 @@ public class AwsTransport extends AppTransport {
       MimeMessage message = new MimeMessage(session);
 
       prepareSender(message, emailMessage);
-      prepareRecipients(message, emailMessage);
+      List<String> recipients = prepareRecipients(message, emailMessage);
 
-      prepareSubject(message, emailMessage);
-      prepareContent(message, emailMessage);
+      String subject = prepareSubject(message, emailMessage);
+      String body = prepareContent(message, emailMessage);
 
       ByteArrayOutputStream messageStream = new ByteArrayOutputStream();
       message.writeTo(messageStream);
@@ -60,6 +61,9 @@ public class AwsTransport extends AppTransport {
 
       return EmailResponse.builder()
           .messageId(messageResponse.messageId())
+          .subject(subject)
+          .textBody(body)
+          .accepted(recipients)
           .build();
 
     } catch (MessagingException | IOException exception) {

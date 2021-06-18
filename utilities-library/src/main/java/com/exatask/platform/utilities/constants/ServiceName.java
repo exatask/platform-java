@@ -11,15 +11,8 @@ public enum ServiceName {
   CONFIGURATION("/configuration"),
   METADATA("/metadata", true, false),
   ORGANIZATION("/organization", true, false),
-  EMPLOYEE("/employee"),
-  IDENTITY("/identity"),
-  ACCESS_CONTROL("/access-control"),
-  ATTENDANCE("/attendance"),
-  PAYROLL("/payroll"),
-  RECRUITMENT("/recruitment"),
-  ASSET("/asset"),
   NOTIFICATION("/notification"),
-  LOGBOOK("/logbook");
+  NOTIFICATION_AUDIT("/notification-audit");
 
   private final String uri;
 

@@ -22,7 +22,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 @Service
-public class ServiceClientTemplate<T extends AppServiceClient> {
+public class ServiceClientTemplate {
 
   @Autowired
   private Contract contract;
@@ -45,15 +45,15 @@ public class ServiceClientTemplate<T extends AppServiceClient> {
   @Autowired
   private ServiceContextInterceptor serviceContextInterceptor;
 
-  public T getServiceClient(Class<T> clazz, String baseUrl) {
+  public <T extends AppServiceClient> T getServiceClient(Class<T> clazz, String baseUrl) {
     return getServiceClient(clazz, baseUrl, new NoAuthSdkAuthenticator.NoAuthCredentials(), null);
   }
 
-  public T getServiceClient(Class<T> clazz, String baseUrl, AppSdkAuthenticator.Credentials credentials) {
+  public <T extends AppServiceClient> T getServiceClient(Class<T> clazz, String baseUrl, AppSdkAuthenticator.Credentials credentials) {
     return getServiceClient(clazz, baseUrl, credentials, null);
   }
 
-  public T getServiceClient(Class<T> clazz, String baseUrl, AppSdkAuthenticator.Credentials credentials, List<RequestInterceptor> interceptors) {
+  public <T extends AppServiceClient> T getServiceClient(Class<T> clazz, String baseUrl, AppSdkAuthenticator.Credentials credentials, List<RequestInterceptor> interceptors) {
 
     List<RequestInterceptor> interceptorList = new ArrayList<>();
     interceptorList.add(serviceContextInterceptor);

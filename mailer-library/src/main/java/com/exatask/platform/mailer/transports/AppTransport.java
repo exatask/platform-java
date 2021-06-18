@@ -23,6 +23,8 @@ import javax.mail.internet.MimeBodyPart;
 import javax.mail.internet.MimeMessage;
 import javax.mail.internet.MimeMultipart;
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Objects;
 import java.util.stream.Collectors;
@@ -59,38 +61,49 @@ public abstract class AppTransport {
     message.setReplyTo(replyToAddresses);
   }
 
-  protected void prepareRecipients(MimeMessage message, EmailMessage emailMessage) throws MessagingException {
+  protected List<String> prepareRecipients(MimeMessage message, EmailMessage emailMessage) throws MessagingException {
 
+    List<String> recipients = new ArrayList<>();
     InternetAddress[] toAddresses = prepareAddresses(emailMessage.getTo());
     if (!ArrayUtils.isEmpty(toAddresses)) {
       message.setRecipients(Message.RecipientType.TO, toAddresses);
+      recipients.addAll(Arrays.stream(toAddresses).map(InternetAddress::getAddress).collect(Collectors.toList()));
     }
 
     InternetAddress[] ccAddresses = prepareAddresses(emailMessage.getCc());
     if (!ArrayUtils.isEmpty(ccAddresses)) {
       message.setRecipients(Message.RecipientType.CC, ccAddresses);
+      recipients.addAll(Arrays.stream(ccAddresses).map(InternetAddress::getAddress).collect(Collectors.toList()));
     }
 
     InternetAddress[] bccAddresses = prepareAddresses(emailMessage.getBcc());
     if (!ArrayUtils.isEmpty(bccAddresses)) {
       message.setRecipients(Message.RecipientType.BCC, bccAddresses);
+      recipients.addAll(Arrays.stream(bccAddresses).map(InternetAddress::getAddress).collect(Collectors.toList()));
     }
+
+    return recipients;
   }
 
-  protected void prepareSubject(MimeMessage message, EmailMessage emailMessage) throws MessagingException {
+  protected String prepareSubject(MimeMessage message, EmailMessage emailMessage) throws MessagingException {
 
     String[] subjectVariables = new String[]{};
     if (!CollectionUtils.isEmpty(emailMessage.getSubjectVariables())) {
       subjectVariables = emailMessage.getSubjectVariables().toArray(new String[]{});
     }
 
-    message.setSubject(emailMessage.getTemplate().subject(subjectVariables), CHARSET_UTF8);
+    String subject = emailMessage.getTemplate().subject(subjectVariables);
+    message.setSubject(subject, CHARSET_UTF8);
+    return subject;
   }
 
-  protected void prepareContent(MimeMessage message, EmailMessage emailMessage) throws MessagingException {
+  protected String prepareContent(MimeMessage message, EmailMessage emailMessage) throws MessagingException, IOException {
+
+    MimeBodyPart htmlBody = templateEngine.renderHtml(emailMessage.getTemplate(), emailMessage.getTemplateVariables());
+    MimeBodyPart textBody = templateEngine.renderText(emailMessage.getTemplate(), emailMessage.getTemplateVariables());
 
     MimeMultipart messageBody = new MimeMultipart(MIME_SUBTYPE_ALTERNATE);
-    messageBody.addBodyPart(templateEngine.renderText(emailMessage.getTemplate(), emailMessage.getTemplateVariables()));
+    messageBody.addBodyPart(htmlBody);
 
     MimeBodyPart bodyWrapper = new MimeBodyPart();
     bodyWrapper.setContent(messageBody);
@@ -100,6 +113,8 @@ public abstract class AppTransport {
 
     messageContent.addBodyPart(bodyWrapper);
     prepareAttachments(messageContent, emailMessage);
+
+    return textBody.getContent().toString();
   }
 
   private void prepareAttachments(MimeMultipart messageContent, EmailMessage emailMessage) throws MessagingException {
