@@ -8,7 +8,8 @@ import lombok.Getter;
 @AllArgsConstructor
 public enum CommonError implements AppError {
 
-  INVALID_REQUEST_DATA("ERR-CMN-001");
+  INVALID_REQUEST_DATA("ERR-COMMON-001"),
+  INVALID_SERVLET_REQUEST_CONTEXT("ERR-COMMON-002");
 
   private static final String LOCALE_PREFIX = "errors.common.";
 

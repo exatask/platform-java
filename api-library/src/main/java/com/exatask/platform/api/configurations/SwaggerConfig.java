@@ -150,10 +150,10 @@ public class SwaggerConfig {
         .in(SecurityScheme.In.HEADER);
   }
 
-  private SecurityScheme getSessionTokenSecurityScheme() {
+  private SecurityScheme getSessionIdSecurityScheme() {
 
     return (new SecurityScheme())
-        .name("x-session-token")
+        .name("x-session-id")
         .type(SecurityScheme.Type.APIKEY)
         .in(SecurityScheme.In.HEADER);
   }
@@ -168,7 +168,7 @@ public class SwaggerConfig {
     return components
         .addSecuritySchemes("AuthType", getAuthTypeSecurityScheme())
         .addSecuritySchemes("AuthToken", getAuthTokenSecurityScheme())
-        .addSecuritySchemes("SessionToken", getSessionTokenSecurityScheme())
+        .addSecuritySchemes("SessionId", getSessionIdSecurityScheme())
         .addResponses("ApiFailure", getApiFailureResponse())
         .addResponses("ApiSuccess", getApiSuccessResponse())
         .addResponses("ApiEntity", getApiEntityResponse());
@@ -178,7 +178,7 @@ public class SwaggerConfig {
 
     List<SecurityRequirement> requirements = new ArrayList<>();
     requirements.add(new SecurityRequirement().addList("AuthType").addList("AuthToken"));
-    requirements.add(new SecurityRequirement().addList("SessionToken"));
+    requirements.add(new SecurityRequirement().addList("SessionId"));
     return requirements;
   }
 

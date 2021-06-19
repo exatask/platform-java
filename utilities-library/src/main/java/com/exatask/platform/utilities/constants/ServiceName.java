@@ -12,7 +12,8 @@ public enum ServiceName {
   METADATA("/metadata", true, false),
   ORGANIZATION("/organization", true, false),
   NOTIFICATION("/notification"),
-  NOTIFICATION_AUDIT("/notification-audit");
+  NOTIFICATION_AUDIT("/notification-audit"),
+  ENTITY_AUDIT("/entity-audit");
 
   private final String uri;
 

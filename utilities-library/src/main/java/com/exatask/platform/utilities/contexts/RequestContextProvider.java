@@ -27,38 +27,56 @@ public class RequestContextProvider {
   }
 
   public static Date getStartTime() {
-    return ObjectUtils.isNotEmpty(getContext()) ? getContext().getStartTime() : null;
+
+    RequestContext requestContext = getContext();
+    return ObjectUtils.isNotEmpty(requestContext) ? requestContext.getStartTime() : null;
   }
 
   public static String getTraceId() {
-    return ObjectUtils.isNotEmpty(getContext()) ? getContext().getTraceId() : null;
+
+    RequestContext requestContext = getContext();
+    return ObjectUtils.isNotEmpty(requestContext) ? requestContext.getTraceId() : null;
   }
 
   public static String getSpanId() {
-    return ObjectUtils.isNotEmpty(getContext()) ? getContext().getSpanId() : null;
+
+    RequestContext requestContext = getContext();
+    return ObjectUtils.isNotEmpty(requestContext) ? requestContext.getSpanId() : null;
   }
 
   public static String getSessionId() {
-    return ObjectUtils.isNotEmpty(getContext()) ? getContext().getSessionId() : null;
+
+    RequestContext requestContext = getContext();
+    return ObjectUtils.isNotEmpty(requestContext) ? requestContext.getSessionId() : null;
   }
 
   public static String getUserId() {
-    return ObjectUtils.isNotEmpty(getContext()) ? getContext().getUserId() : null;
+
+    RequestContext requestContext = getContext();
+    return ObjectUtils.isNotEmpty(requestContext) ? requestContext.getUserId() : null;
   }
 
   public static String getUserName() {
-    return ObjectUtils.isNotEmpty(getContext()) ? getContext().getUserName() : null;
+
+    RequestContext requestContext = getContext();
+    return ObjectUtils.isNotEmpty(requestContext) ? requestContext.getUserName() : null;
   }
 
   public static String getUserEmailId() {
-    return ObjectUtils.isNotEmpty(getContext()) ? getContext().getUserEmailId() : null;
+
+    RequestContext requestContext = getContext();
+    return ObjectUtils.isNotEmpty(requestContext) ? requestContext.getUserEmailId() : null;
   }
 
   public static String getOrganizationId() {
-    return ObjectUtils.isNotEmpty(getContext()) ? getContext().getOrganizationId() : null;
+
+    RequestContext requestContext = getContext();
+    return ObjectUtils.isNotEmpty(requestContext) ? requestContext.getOrganizationId() : null;
   }
 
   public static String getOrganizationName() {
-    return ObjectUtils.isNotEmpty(getContext()) ? getContext().getOrganizationName() : null;
+
+    RequestContext requestContext = getContext();
+    return ObjectUtils.isNotEmpty(requestContext) ? requestContext.getOrganizationName() : null;
   }
 }
