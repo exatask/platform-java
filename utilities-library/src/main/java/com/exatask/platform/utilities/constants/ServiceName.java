@@ -11,6 +11,9 @@ public enum ServiceName {
   CONFIGURATION("/configuration"),
   METADATA("/metadata", true, false),
   ORGANIZATION("/organization", true, false),
+  EMPLOYEE("/employee", true, false),
+  IDENTITY("/identity", true, false),
+  ACCESS_CONTROL("/access-control"),
   NOTIFICATION("/notification"),
   NOTIFICATION_AUDIT("/notification-audit"),
   ENTITY_AUDIT("/entity-audit");

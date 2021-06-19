@@ -338,7 +338,7 @@ public class AppMongoRepositoryImpl<T, ID extends Serializable> extends SimpleMo
     this.lastQuery = String.format("%s.updateOne(%s, %s)",
         mongoEntityInformation.getCollectionName(),
         SerializationUtils.serializeToJsonSafely(query.getQueryObject()),
-        update.toString());
+        update);
     LOGGER.trace(this.lastQuery);
 
     UpdateResult result = mongoOperations.updateFirst(query, update, mongoEntityInformation.getJavaType(), mongoEntityInformation.getCollectionName());
@@ -372,7 +372,7 @@ public class AppMongoRepositoryImpl<T, ID extends Serializable> extends SimpleMo
     this.lastQuery = String.format("%s.updateMany(%s, %s)",
         mongoEntityInformation.getCollectionName(),
         SerializationUtils.serializeToJsonSafely(query.getQueryObject()),
-        update.toString());
+        update);
     LOGGER.trace(this.lastQuery);
 
     UpdateResult result = mongoOperations.updateMulti(query, update, mongoEntityInformation.getJavaType(), mongoEntityInformation.getCollectionName());
@@ -399,7 +399,7 @@ public class AppMongoRepositoryImpl<T, ID extends Serializable> extends SimpleMo
     this.lastQuery = String.format("%s.updateOne(%s, %s)",
         mongoEntityInformation.getCollectionName(),
         SerializationUtils.serializeToJsonSafely(query.getQueryObject()),
-        update.toString());
+        update);
     LOGGER.trace(this.lastQuery);
 
     UpdateResult result = mongoOperations.updateFirst(query, update, mongoEntityInformation.getJavaType(), mongoEntityInformation.getCollectionName());
@@ -434,7 +434,7 @@ public class AppMongoRepositoryImpl<T, ID extends Serializable> extends SimpleMo
     this.lastQuery = String.format("%s.upsert(%s, %s)",
         mongoEntityInformation.getCollectionName(),
         SerializationUtils.serializeToJsonSafely(query.getQueryObject()),
-        update.toString());
+        update);
     LOGGER.trace(this.lastQuery);
 
     UpdateResult result = mongoOperations.updateMulti(query, update, mongoEntityInformation.getJavaType(), mongoEntityInformation.getCollectionName());
