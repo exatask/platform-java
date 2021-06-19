@@ -21,9 +21,9 @@ public class RequestContext {
 
   private final String organizationName;
 
-  private final String userId;
+  private final String employeeId;
 
-  private final String userName;
+  private final String employeeName;
 
-  private final String userEmailId;
+  private final String employeeEmailId;
 }

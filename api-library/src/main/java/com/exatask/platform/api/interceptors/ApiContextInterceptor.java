@@ -29,11 +29,11 @@ public class ApiContextInterceptor extends AppInterceptor {
           .organizationId(organizationId)
           .organizationName(request.getHeader(RequestContextHeader.ORGANIZATION_NAME)));
 
-    Optional.ofNullable(request.getHeader(RequestContextHeader.USER_ID)).ifPresent((userId) ->
+    Optional.ofNullable(request.getHeader(RequestContextHeader.EMPLOYEE_ID)).ifPresent((employeeId) ->
         requestContextBuilder
-          .userId(userId)
-          .userName(request.getHeader(RequestContextHeader.USER_NAME))
-          .userEmailId(request.getHeader(RequestContextHeader.USER_EMAIL_ID)));
+          .employeeId(employeeId)
+          .employeeName(request.getHeader(RequestContextHeader.EMPLOYEE_NAME))
+          .employeeEmailId(request.getHeader(RequestContextHeader.EMPLOYEE_EMAIL_ID)));
 
     RequestContextProvider.setContext(requestContextBuilder.build());
     return true;

@@ -23,10 +23,10 @@ public class ServiceContextInterceptor implements RequestInterceptor {
           .header(RequestContextHeader.ORGANIZATION_NAME, RequestContextProvider.getOrganizationName());
     });
 
-    Optional.ofNullable(RequestContextProvider.getUserId()).ifPresent(userId -> {
-      template.header(RequestContextHeader.USER_ID, userId)
-          .header(RequestContextHeader.USER_NAME, RequestContextProvider.getUserName())
-          .header(RequestContextHeader.USER_EMAIL_ID, RequestContextProvider.getUserEmailId());
+    Optional.ofNullable(RequestContextProvider.getEmployeeId()).ifPresent(employeeId -> {
+      template.header(RequestContextHeader.EMPLOYEE_ID, employeeId)
+          .header(RequestContextHeader.EMPLOYEE_NAME, RequestContextProvider.getEmployeeName())
+          .header(RequestContextHeader.EMPLOYEE_EMAIL_ID, RequestContextProvider.getEmployeeEmailId());
     });
   }
 }

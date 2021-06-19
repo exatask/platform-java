@@ -50,22 +50,22 @@ public class RequestContextProvider {
     return ObjectUtils.isNotEmpty(requestContext) ? requestContext.getSessionId() : null;
   }
 
-  public static String getUserId() {
+  public static String getEmployeeId() {
 
     RequestContext requestContext = getContext();
-    return ObjectUtils.isNotEmpty(requestContext) ? requestContext.getUserId() : null;
+    return ObjectUtils.isNotEmpty(requestContext) ? requestContext.getEmployeeId() : null;
   }
 
-  public static String getUserName() {
+  public static String getEmployeeName() {
 
     RequestContext requestContext = getContext();
-    return ObjectUtils.isNotEmpty(requestContext) ? requestContext.getUserName() : null;
+    return ObjectUtils.isNotEmpty(requestContext) ? requestContext.getEmployeeName() : null;
   }
 
-  public static String getUserEmailId() {
+  public static String getEmployeeEmailId() {
 
     RequestContext requestContext = getContext();
-    return ObjectUtils.isNotEmpty(requestContext) ? requestContext.getUserEmailId() : null;
+    return ObjectUtils.isNotEmpty(requestContext) ? requestContext.getEmployeeEmailId() : null;
   }
 
   public static String getOrganizationId() {

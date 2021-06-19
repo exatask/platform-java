@@ -11,7 +11,7 @@ public class RequestContextHeader {
   public static final String ORGANIZATION_ID = "x-organization-id";
   public static final String ORGANIZATION_NAME = "x-organization-name";
 
-  public static final String USER_ID = "x-user-id";
-  public static final String USER_NAME = "x-user-name";
-  public static final String USER_EMAIL_ID = "x-user-email-id";
+  public static final String EMPLOYEE_ID = "x-employee-id";
+  public static final String EMPLOYEE_NAME = "x-employee-name";
+  public static final String EMPLOYEE_EMAIL_ID = "x-employee-email-id";
 }
