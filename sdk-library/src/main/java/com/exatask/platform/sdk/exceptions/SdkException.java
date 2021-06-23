@@ -1,6 +1,6 @@
 package com.exatask.platform.sdk.exceptions;
 
-import com.exatask.platform.sdk.responses.HttpErrorResponse;
+import com.exatask.platform.service.responses.HttpErrorResponse;
 import feign.Request;
 import lombok.Builder;
 import lombok.Getter;

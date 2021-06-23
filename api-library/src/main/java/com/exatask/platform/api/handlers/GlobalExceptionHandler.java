@@ -1,9 +1,10 @@
 package com.exatask.platform.api.handlers;
 
-import com.exatask.platform.api.responses.HttpErrorResponse;
+import com.exatask.platform.api.utilities.HttpResponseUtility;
 import com.exatask.platform.logging.AppLogManager;
 import com.exatask.platform.logging.AppLogMessage;
 import com.exatask.platform.logging.AppLogger;
+import com.exatask.platform.service.responses.HttpErrorResponse;
 import io.swagger.v3.oas.annotations.Hidden;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -33,6 +34,6 @@ public class GlobalExceptionHandler {
   public ResponseEntity<HttpErrorResponse> handleGlobalException(HttpServletRequest request, Exception exception) {
 
     logException(request, exception);
-    return new ResponseEntity<>(new HttpErrorResponse(exception), HttpStatus.INTERNAL_SERVER_ERROR);
+    return new ResponseEntity<>(HttpResponseUtility.httpErrorResponse(exception), HttpStatus.INTERNAL_SERVER_ERROR);
   }
 }

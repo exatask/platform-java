@@ -1,4 +1,4 @@
-package com.exatask.platform.api.errors;
+package com.exatask.platform.utilities.errors;
 
 public interface AppError {
 

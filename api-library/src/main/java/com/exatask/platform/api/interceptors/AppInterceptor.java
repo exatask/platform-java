@@ -1,10 +1,11 @@
 package com.exatask.platform.api.interceptors;
 
 import com.exatask.platform.api.exceptions.HttpException;
-import com.exatask.platform.api.responses.HttpErrorResponse;
+import com.exatask.platform.api.utilities.HttpResponseUtility;
 import com.exatask.platform.logging.AppLogManager;
 import com.exatask.platform.logging.AppLogMessage;
 import com.exatask.platform.logging.AppLogger;
+import com.exatask.platform.service.responses.HttpErrorResponse;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
@@ -31,7 +32,7 @@ public class AppInterceptor implements HandlerInterceptor {
         .setHttpCode(httpStatus.value());
     LOGGER.error(logMessage);
 
-    HttpErrorResponse errorResponse = new HttpErrorResponse(exception);
+    HttpErrorResponse errorResponse = HttpResponseUtility.httpErrorResponse(exception);
     response.setContentType(MediaType.APPLICATION_JSON.toString());
     response.setStatus(httpStatus.value());
 

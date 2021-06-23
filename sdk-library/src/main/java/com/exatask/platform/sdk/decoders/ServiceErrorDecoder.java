@@ -3,7 +3,7 @@ package com.exatask.platform.sdk.decoders;
 import com.exatask.platform.logging.AppLogManager;
 import com.exatask.platform.logging.AppLogger;
 import com.exatask.platform.sdk.exceptions.SdkException;
-import com.exatask.platform.sdk.responses.HttpErrorResponse;
+import com.exatask.platform.service.responses.HttpErrorResponse;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import feign.FeignException;
 import feign.Request;

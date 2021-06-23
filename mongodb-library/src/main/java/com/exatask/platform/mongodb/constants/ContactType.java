@@ -1,8 +1,9 @@
 package com.exatask.platform.mongodb.constants;
 
 import com.exatask.platform.i18n.AppTranslator;
+import com.exatask.platform.utilities.constants.AppConstant;
 
-public enum ContactType implements AppModelConstant {
+public enum ContactType implements AppConstant {
 
   PERSONAL,
   OFFICIAL,

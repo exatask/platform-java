@@ -1,4 +1,4 @@
-package com.exatask.platform.api.responses.messages;
+package com.exatask.platform.service.responses.messages;
 
 public interface AppResponseMessage {
 

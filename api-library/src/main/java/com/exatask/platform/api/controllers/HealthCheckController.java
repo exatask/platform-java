@@ -3,6 +3,7 @@ package com.exatask.platform.api.controllers;
 import com.exatask.platform.api.constants.Endpoints;
 import com.exatask.platform.api.services.healthcheck.HealthCheckService;
 import com.exatask.platform.api.services.healthcheck.responses.HealthCheckResponse;
+import com.exatask.platform.service.controllers.AppController;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.Schema;

@@ -1,10 +1,11 @@
 package com.exatask.platform.api.handlers;
 
 import com.exatask.platform.api.exceptions.HttpException;
-import com.exatask.platform.api.responses.HttpErrorResponse;
+import com.exatask.platform.api.utilities.HttpResponseUtility;
 import com.exatask.platform.logging.AppLogManager;
 import com.exatask.platform.logging.AppLogMessage;
 import com.exatask.platform.logging.AppLogger;
+import com.exatask.platform.service.responses.HttpErrorResponse;
 import io.swagger.v3.oas.annotations.Hidden;
 import org.springframework.core.Ordered;
 import org.springframework.core.annotation.Order;
@@ -39,6 +40,6 @@ public class HttpExceptionHandler {
   public ResponseEntity<HttpErrorResponse> handleHttpException(HttpServletRequest request, HttpException exception) {
 
     logException(request, exception);
-    return new ResponseEntity<>(new HttpErrorResponse(exception), exception.getHttpStatus());
+    return new ResponseEntity<>(HttpResponseUtility.httpErrorResponse(exception), exception.getHttpStatus());
   }
 }

@@ -1,4 +1,4 @@
-package com.exatask.platform.api.responses;
+package com.exatask.platform.service.responses;
 
 import com.fasterxml.jackson.databind.PropertyNamingStrategy;
 import com.fasterxml.jackson.databind.annotation.JsonNaming;

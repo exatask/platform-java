@@ -1,6 +1,6 @@
 package com.exatask.platform.api.exceptions;
 
-import com.exatask.platform.api.errors.AppError;
+import com.exatask.platform.utilities.errors.AppError;
 import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.Setter;

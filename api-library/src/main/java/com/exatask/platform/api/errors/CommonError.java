@@ -1,6 +1,7 @@
 package com.exatask.platform.api.errors;
 
 import com.exatask.platform.i18n.AppTranslator;
+import com.exatask.platform.utilities.errors.AppError;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 

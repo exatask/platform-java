@@ -1,6 +1,6 @@
 package com.exatask.platform.api.exceptions;
 
-import com.exatask.platform.api.errors.AppError;
+import com.exatask.platform.utilities.errors.AppError;
 import lombok.Builder;
 import lombok.Singular;
 import org.springframework.http.HttpStatus;
