@@ -1,11 +1,7 @@
 package com.exatask.platform.mongodb.schemas;
 
-import com.fasterxml.jackson.annotation.JsonInclude;
-import com.fasterxml.jackson.databind.PropertyNamingStrategy;
-import com.fasterxml.jackson.databind.annotation.JsonNaming;
 import lombok.Builder;
 import lombok.Data;
-import lombok.extern.jackson.Jacksonized;
 import org.springframework.data.mongodb.core.mapping.Field;
 
 import javax.validation.constraints.Max;
@@ -14,9 +10,6 @@ import javax.validation.constraints.NotEmpty;
 
 @Data
 @Builder
-@Jacksonized
-@JsonNaming(PropertyNamingStrategy.SnakeCaseStrategy.class)
-@JsonInclude(JsonInclude.Include.NON_NULL)
 public class FullDate {
 
   @Min(1)

@@ -1,11 +1,11 @@
 package com.exatask.platform.sdk.interceptors;
 
+import com.exatask.platform.constants.services.ServiceAuthData;
+import com.exatask.platform.sdk.authenticators.AppSdkAuthenticator;
 import com.exatask.platform.sdk.authenticators.HttpBasicSdkAuthenticator;
 import com.exatask.platform.sdk.authenticators.JwtHmacSdkAuthenticator;
 import com.exatask.platform.sdk.authenticators.NoAuthSdkAuthenticator;
-import com.exatask.platform.sdk.authenticators.AppSdkAuthenticator;
 import com.exatask.platform.sdk.exceptions.InvalidAuthenticatorException;
-import com.exatask.platform.utilities.constants.ServiceAuthData;
 import feign.RequestInterceptor;
 import feign.RequestTemplate;
 

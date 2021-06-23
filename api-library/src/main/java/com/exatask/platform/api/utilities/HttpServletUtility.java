@@ -2,7 +2,7 @@ package com.exatask.platform.api.utilities;
 
 import com.exatask.platform.api.errors.CommonError;
 import com.exatask.platform.api.exceptions.InternalServerErrorException;
-import com.exatask.platform.utilities.constants.RequestSource;
+import com.exatask.platform.constants.requests.RequestSource;
 import lombok.experimental.UtilityClass;
 import org.apache.commons.lang3.ObjectUtils;
 import org.apache.commons.lang3.StringUtils;

@@ -20,6 +20,7 @@ dependencies {
   implementation group: "org.springframework.boot", name: "spring-boot-starter-security"
   implementation group: "org.apache.commons", name: "commons-lang3", version: "${apacheCommonsVersion}"
   implementation group: "org.springdoc", name: "springdoc-openapi-ui", version: "${springdocOpenapiVersion}"
+  implementation project(":constants-library")
   implementation project(":i18n-library")
   implementation project(":logging-library")
   implementation project(":utilities-library")

@@ -1,22 +1,15 @@
 package com.exatask.platform.mongodb.schemas;
 
+import com.exatask.platform.constants.entities.Geolocation;
 import com.exatask.platform.mongodb.annotations.Precision;
-import com.exatask.platform.mongodb.constants.Geolocation;
-import com.fasterxml.jackson.annotation.JsonInclude;
-import com.fasterxml.jackson.databind.PropertyNamingStrategy;
-import com.fasterxml.jackson.databind.annotation.JsonNaming;
 import lombok.Builder;
 import lombok.Data;
-import lombok.extern.jackson.Jacksonized;
 import org.springframework.data.mongodb.core.mapping.Field;
 
 import javax.validation.constraints.NotEmpty;
 
 @Data
 @Builder
-@Jacksonized
-@JsonNaming(PropertyNamingStrategy.SnakeCaseStrategy.class)
-@JsonInclude(JsonInclude.Include.NON_NULL)
 public class Address {
 
   @NotEmpty
@@ -59,9 +52,6 @@ public class Address {
 
   @Data
   @Builder
-  @Jacksonized
-  @JsonNaming(PropertyNamingStrategy.SnakeCaseStrategy.class)
-  @JsonInclude(JsonInclude.Include.NON_NULL)
   public static class Location {
 
     @Field("type")

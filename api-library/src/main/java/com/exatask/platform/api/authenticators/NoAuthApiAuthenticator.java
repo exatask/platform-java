@@ -1,6 +1,6 @@
 package com.exatask.platform.api.authenticators;
 
-import com.exatask.platform.utilities.constants.ServiceAuth;
+import com.exatask.platform.constants.services.ServiceAuth;
 
 public class NoAuthApiAuthenticator implements AppApiAuthenticator {
 

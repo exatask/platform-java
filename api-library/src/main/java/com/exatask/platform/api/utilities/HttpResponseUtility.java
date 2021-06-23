@@ -1,10 +1,10 @@
 package com.exatask.platform.api.utilities;
 
 import com.exatask.platform.api.exceptions.HttpException;
+import com.exatask.platform.constants.services.ServiceEnvironment;
 import com.exatask.platform.service.responses.HttpErrorResponse;
-import com.exatask.platform.service.responses.messages.ResponseMessage;
 import com.exatask.platform.service.responses.messages.MessageType;
-import com.exatask.platform.utilities.constants.Environment;
+import com.exatask.platform.service.responses.messages.ResponseMessage;
 import lombok.experimental.UtilityClass;
 import org.apache.commons.lang3.ObjectUtils;
 
@@ -27,7 +27,7 @@ public class HttpResponseUtility {
           .extraParams(httpException.getExtraParams());
     }
 
-    if (ApiServiceUtility.getServiceEnvironment() != Environment.RELEASE) {
+    if (ApiServiceUtility.getServiceEnvironment() != ServiceEnvironment.RELEASE) {
       httpErrorResponseBuilder.stackTrace(exception.getStackTrace());
       httpErrorResponseBuilder.exceptionCause(ObjectUtils.defaultIfNull(exception.getCause(), "").toString());
     }

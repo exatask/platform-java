@@ -1,8 +1,8 @@
 package com.exatask.platform.sdk.authenticators;
 
+import com.exatask.platform.constants.services.ServiceAuth;
+import com.exatask.platform.constants.services.ServiceAuthData;
 import com.exatask.platform.crypto.signers.JwtHmac;
-import com.exatask.platform.utilities.constants.ServiceAuth;
-import com.exatask.platform.utilities.constants.ServiceAuthData;
 import lombok.Data;
 import lombok.experimental.Accessors;
 import org.springframework.util.ObjectUtils;

@@ -5,19 +5,15 @@ plugins {
 
 version = "1.0.0-SNAPSHOT"
 
-bootJar {
-  enabled = false
-}
-
 jar {
   enabled = true
 }
 
 dependencies {
 
-  implementation group: "com.fasterxml.jackson.core", name: "jackson-databind", version: "${fasterxmlJacksonVersion}"
-  implementation project(":logging-library")
-  implementation project(":constants-library")
+  implementation group: "org.springframework", name: "spring-context"
+  implementation project(":utilities-library")
+  implementation project(":i18n-library")
 
   compileOnly group: "org.projectlombok", name: "lombok", version: "${lombokVersion}"
   annotationProcessor group: "org.projectlombok", name: "lombok", version: "${lombokVersion}"
@@ -27,7 +23,7 @@ publishing {
   publications {
     maven(MavenPublication) {
 
-      artifactId = "service"
+      artifactId = "constants"
       from components.java
     }
   }

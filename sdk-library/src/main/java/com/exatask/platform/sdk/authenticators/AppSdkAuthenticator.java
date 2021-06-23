@@ -1,6 +1,6 @@
 package com.exatask.platform.sdk.authenticators;
 
-import com.exatask.platform.utilities.constants.ServiceAuth;
+import com.exatask.platform.constants.services.ServiceAuth;
 
 public interface AppSdkAuthenticator {
 

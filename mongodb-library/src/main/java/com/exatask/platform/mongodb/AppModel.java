@@ -1,9 +1,5 @@
 package com.exatask.platform.mongodb;
 
-import com.exatask.platform.mongodb.serializers.ObjectIdSerializer;
-import com.fasterxml.jackson.databind.PropertyNamingStrategy;
-import com.fasterxml.jackson.databind.annotation.JsonNaming;
-import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -19,12 +15,10 @@ import java.util.Date;
 
 @Getter
 @NoArgsConstructor
-@JsonNaming(PropertyNamingStrategy.SnakeCaseStrategy.class)
 public abstract class AppModel {
 
   @Id
   @Setter(value = AccessLevel.NONE)
-  @JsonSerialize(using = ObjectIdSerializer.class)
   @Field("_id")
   protected ObjectId id;
 
