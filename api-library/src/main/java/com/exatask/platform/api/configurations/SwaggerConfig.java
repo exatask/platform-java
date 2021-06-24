@@ -53,13 +53,6 @@ public class SwaggerConfig {
         .addProperties("method", (new Schema<>()).type("string"))
         .addProperties("line", (new Schema<>()).type("integer"));
 
-    Schema<Object> exceptionCauseSchema = new Schema<>();
-    exceptionCauseSchema.type("object")
-        .addProperties("cause", (new Schema<>()).type("string"))
-        .addProperties("stackTrace", (new ArraySchema()).items(stackTraceSchema))
-        .addProperties("message", (new Schema<>()).type("string"))
-        .addProperties("localizedMessage", (new Schema<>()).type("string"));
-
     Schema<Object> apiFailure = new Schema<>();
     apiFailure.type("object")
         .addProperties("status", statusSchema)
@@ -67,7 +60,7 @@ public class SwaggerConfig {
         .addProperties("invalid_attributes", (new Schema<>()).type("object"))
         .addProperties("extra_params", (new Schema<>()).type("object"))
         .addProperties("stack_trace", (new ArraySchema()).items(stackTraceSchema))
-        .addProperties("exception_cause", exceptionCauseSchema);
+        .addProperties("exception_cause", (new Schema<>()).type("string"));
 
     Content responseContent = new Content();
     responseContent.addMediaType(org.springframework.http.MediaType.APPLICATION_JSON.toString(), (new MediaType()).schema(apiFailure));

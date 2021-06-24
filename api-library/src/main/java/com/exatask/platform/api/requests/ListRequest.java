@@ -1,6 +1,7 @@
 package com.exatask.platform.api.requests;
 
 import com.exatask.platform.service.requests.AppRequest;
+import com.exatask.platform.service.requests.HttpRequestOperators;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.databind.PropertyNamingStrategy;
 import com.fasterxml.jackson.databind.annotation.JsonNaming;
@@ -50,7 +51,7 @@ public class ListRequest extends AppRequest {
     }
 
     for (String field : sort) {
-      if (field.charAt(0) == NEGATION_OPERATOR) {
+      if (field.charAt(0) == HttpRequestOperators.NEGATION_OPERATOR) {
         sortList.put(field.substring(1), -1);
       } else {
         sortList.put(field, 1);
