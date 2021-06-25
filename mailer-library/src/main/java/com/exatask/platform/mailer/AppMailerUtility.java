@@ -1,5 +1,6 @@
 package com.exatask.platform.mailer;
 
+import com.exatask.platform.utilities.ApplicationContextUtility;
 import lombok.experimental.UtilityClass;
 import org.springframework.context.support.ResourceBundleMessageSource;
 import org.springframework.util.ResourceUtils;
@@ -14,7 +15,7 @@ import java.util.Collections;
 @UtilityClass
 public class AppMailerUtility {
 
-  private static final String MAILER_DIR = "mailers/";
+  private static final String EMAIL_DIR = "emails/";
 
   public static SpringTemplateEngine templateEngine(ResourceBundleMessageSource messageSource) {
 
@@ -28,9 +29,10 @@ public class AppMailerUtility {
   public static ITemplateResolver htmlTemplateResolver() {
 
     SpringResourceTemplateResolver templateResolver = new SpringResourceTemplateResolver();
+    templateResolver.setApplicationContext(ApplicationContextUtility.getApplicationContext());
     templateResolver.setOrder(1);
     templateResolver.setResolvablePatterns(Collections.singleton("html/*"));
-    templateResolver.setPrefix(ResourceUtils.CLASSPATH_URL_PREFIX + MAILER_DIR);
+    templateResolver.setPrefix(ResourceUtils.CLASSPATH_URL_PREFIX + EMAIL_DIR);
     templateResolver.setSuffix(".html");
     templateResolver.setTemplateMode(TemplateMode.HTML);
     templateResolver.setCharacterEncoding(StandardCharsets.UTF_8.name());
@@ -40,9 +42,10 @@ public class AppMailerUtility {
   public static ITemplateResolver textTemplateResolver() {
 
     SpringResourceTemplateResolver templateResolver = new SpringResourceTemplateResolver();
+    templateResolver.setApplicationContext(ApplicationContextUtility.getApplicationContext());
     templateResolver.setOrder(2);
     templateResolver.setResolvablePatterns(Collections.singleton("text/*"));
-    templateResolver.setPrefix(ResourceUtils.CLASSPATH_URL_PREFIX + MAILER_DIR);
+    templateResolver.setPrefix(ResourceUtils.CLASSPATH_URL_PREFIX + EMAIL_DIR);
     templateResolver.setSuffix(".txt");
     templateResolver.setTemplateMode(TemplateMode.TEXT);
     templateResolver.setCharacterEncoding(StandardCharsets.UTF_8.name());

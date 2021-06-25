@@ -15,18 +15,19 @@ public class ServiceContextInterceptor implements RequestInterceptor {
   public void apply(RequestTemplate template) {
 
     template.header(RequestContextHeader.TRACE_ID, RequestContextProvider.getTraceId());
-    Optional.ofNullable(RequestContextProvider.getSessionId()).ifPresent(sessionId -> template.header(
-        RequestContextHeader.SESSION_ID, sessionId));
+    Optional.ofNullable(RequestContextProvider.getSessionId()).ifPresent(sessionId ->
+        template.header(RequestContextHeader.SESSION_ID, sessionId)
+    );
 
-    Optional.ofNullable(RequestContextProvider.getOrganizationId()).ifPresent(organizationId -> {
-      template.header(RequestContextHeader.ORGANIZATION_ID, organizationId)
-          .header(RequestContextHeader.ORGANIZATION_NAME, RequestContextProvider.getOrganizationName());
-    });
+    Optional.ofNullable(RequestContextProvider.getOrganizationId()).ifPresent(organizationId ->
+        template.header(RequestContextHeader.ORGANIZATION_ID, organizationId)
+            .header(RequestContextHeader.ORGANIZATION_NAME, RequestContextProvider.getOrganizationName())
+    );
 
-    Optional.ofNullable(RequestContextProvider.getEmployeeId()).ifPresent(employeeId -> {
-      template.header(RequestContextHeader.EMPLOYEE_ID, employeeId)
-          .header(RequestContextHeader.EMPLOYEE_NAME, RequestContextProvider.getEmployeeName())
-          .header(RequestContextHeader.EMPLOYEE_EMAIL_ID, RequestContextProvider.getEmployeeEmailId());
-    });
+    Optional.ofNullable(RequestContextProvider.getEmployeeId()).ifPresent(employeeId ->
+        template.header(RequestContextHeader.EMPLOYEE_ID, employeeId)
+            .header(RequestContextHeader.EMPLOYEE_NAME, RequestContextProvider.getEmployeeName())
+            .header(RequestContextHeader.EMPLOYEE_EMAIL_ID, RequestContextProvider.getEmployeeEmailId())
+    );
   }
 }

@@ -58,7 +58,7 @@ public class AppTemplateEngine {
   public MimeBodyPart renderText(AppEmailTemplate template, Map<String, Object> templateVariables) throws MessagingException {
 
     IContext templateContext = getTemplateContext(template, TEXT_DIR, templateVariables);
-    TemplateSpec templateSpec = new TemplateSpec(TEXT_DIR + LAYOUT_DIR + template.layout(), TemplateMode.TEXT);
+    TemplateSpec templateSpec = new TemplateSpec(templateContext.getVariable("content").toString(), TemplateMode.TEXT);
     MimeBodyPart textBodyPart = new MimeBodyPart();
 
     String textBody = templateEngine.process(templateSpec, templateContext);

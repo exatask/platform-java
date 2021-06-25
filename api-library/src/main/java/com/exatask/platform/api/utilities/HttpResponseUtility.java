@@ -6,7 +6,8 @@ import com.exatask.platform.service.responses.HttpErrorResponse;
 import com.exatask.platform.service.responses.messages.MessageType;
 import com.exatask.platform.service.responses.messages.ResponseMessage;
 import lombok.experimental.UtilityClass;
-import org.apache.commons.lang3.ObjectUtils;
+
+import java.util.Optional;
 
 @UtilityClass
 public class HttpResponseUtility {
@@ -29,7 +30,7 @@ public class HttpResponseUtility {
 
     if (ApiServiceUtility.getServiceEnvironment() != ServiceEnvironment.RELEASE) {
       httpErrorResponseBuilder.stackTrace(exception.getStackTrace());
-      httpErrorResponseBuilder.exceptionCause(ObjectUtils.defaultIfNull(exception.getCause(), "").toString());
+      Optional.ofNullable(exception.getCause()).ifPresent(cause -> httpErrorResponseBuilder.exceptionCause(cause.toString()));
     }
 
     HttpErrorResponse httpErrorResponse = httpErrorResponseBuilder
