@@ -23,7 +23,7 @@ publishing {
   publications {
     maven(MavenPublication) {
 
-      artifactId = "constants"
+      artifactId = "exatask-constants"
       from components.java
     }
   }

@@ -31,7 +31,7 @@ publishing {
   publications {
     maven(MavenPublication) {
 
-      artifactId = "redis"
+      artifactId = "exatask-redis"
       from components.java
     }
   }

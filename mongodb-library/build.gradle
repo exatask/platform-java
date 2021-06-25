@@ -31,7 +31,7 @@ publishing {
   publications {
     maven(MavenPublication) {
 
-      artifactId = "mongodb"
+      artifactId = "exatask-mongodb"
       from components.java
     }
   }

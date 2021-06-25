@@ -1,6 +1,7 @@
 package com.exatask.platform.mailer.templates;
 
 import com.exatask.platform.mailer.constants.TemplateVariables;
+import com.exatask.platform.utilities.templates.AppEmailTemplate;
 import com.exatask.platform.utilities.ServiceUtility;
 import org.springframework.util.MimeType;
 import org.springframework.util.MimeTypeUtils;
@@ -54,7 +55,7 @@ public class AppTemplateEngine {
     defaultVariables.put("exatask", exataskVariables);
   }
 
-  public MimeBodyPart renderText(AppTemplate template, Map<String, Object> templateVariables) throws MessagingException {
+  public MimeBodyPart renderText(AppEmailTemplate template, Map<String, Object> templateVariables) throws MessagingException {
 
     IContext templateContext = getTemplateContext(template, TEXT_DIR, templateVariables);
     TemplateSpec templateSpec = new TemplateSpec(TEXT_DIR + LAYOUT_DIR + template.layout(), TemplateMode.TEXT);
@@ -65,7 +66,7 @@ public class AppTemplateEngine {
     return textBodyPart;
   }
 
-  public MimeBodyPart renderHtml(AppTemplate template, Map<String, Object> templateVariables) throws MessagingException {
+  public MimeBodyPart renderHtml(AppEmailTemplate template, Map<String, Object> templateVariables) throws MessagingException {
 
     IContext templateContext = getTemplateContext(template, HTML_DIR, templateVariables);
     TemplateSpec templateSpec = new TemplateSpec(HTML_DIR + LAYOUT_DIR + template.layout(), TemplateMode.HTML);
@@ -76,7 +77,7 @@ public class AppTemplateEngine {
     return htmlBodyPart;
   }
 
-  private IContext getTemplateContext(AppTemplate template, String templateBaseDir, Map<String, Object> templateVariables) {
+  private IContext getTemplateContext(AppEmailTemplate template, String templateBaseDir, Map<String, Object> templateVariables) {
 
     Map<String, Object> variables = new HashMap<>(templateVariables);
     variables.putAll(defaultVariables);

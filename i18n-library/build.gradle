@@ -25,7 +25,7 @@ publishing {
   publications {
     maven(MavenPublication) {
 
-      artifactId = "i18n"
+      artifactId = "exatask-i18n"
       from components.java
     }
   }

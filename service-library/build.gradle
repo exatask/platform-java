@@ -27,7 +27,7 @@ publishing {
   publications {
     maven(MavenPublication) {
 
-      artifactId = "service"
+      artifactId = "exatask-service"
       from components.java
     }
   }

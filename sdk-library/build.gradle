@@ -32,7 +32,7 @@ publishing {
   publications {
     maven(MavenPublication) {
 
-      artifactId = "sdk"
+      artifactId = "exatask-sdk"
       from components.java
     }
   }

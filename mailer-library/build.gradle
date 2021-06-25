@@ -32,7 +32,7 @@ publishing {
   publications {
     maven(MavenPublication) {
 
-      artifactId = "mailer"
+      artifactId = "exatask-mailer"
       from components.java
     }
   }

@@ -27,7 +27,7 @@ publishing {
   publications {
     maven(MavenPublication) {
 
-      artifactId = "logging"
+      artifactId = "exatask-logging"
       from components.java
     }
   }
