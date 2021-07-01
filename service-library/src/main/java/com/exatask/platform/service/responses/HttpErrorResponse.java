@@ -4,24 +4,26 @@ import com.exatask.platform.service.responses.messages.ResponseMessage;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.databind.PropertyNamingStrategy;
 import com.fasterxml.jackson.databind.annotation.JsonNaming;
-import lombok.Builder;
-import lombok.Getter;
+import lombok.Data;
+import lombok.EqualsAndHashCode;
+import lombok.experimental.Accessors;
 
 import java.util.Map;
 
-@Getter
-@Builder
+@Data
+@Accessors(chain = true)
+@EqualsAndHashCode(callSuper = true)
 @JsonInclude(JsonInclude.Include.NON_NULL)
 @JsonNaming(PropertyNamingStrategy.SnakeCaseStrategy.class)
 public class HttpErrorResponse extends AppResponse {
 
-  private final ResponseMessage message;
+  private ResponseMessage message;
 
-  private final Map<String, String> invalidAttributes;
+  private Map<String, String> invalidAttributes;
 
-  private final Map<String, Object> extraParams;
+  private Map<String, Object> extraParams;
 
-  private final StackTraceElement[] stackTrace;
+  private StackTraceElement[] stackTrace;
 
-  private final String exceptionCause;
+  private String exceptionCause;
 }

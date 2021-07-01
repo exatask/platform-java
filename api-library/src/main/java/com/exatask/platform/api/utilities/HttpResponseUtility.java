@@ -14,30 +14,27 @@ public class HttpResponseUtility {
 
   public static HttpErrorResponse httpErrorResponse(Exception exception) {
 
-    HttpErrorResponse.HttpErrorResponseBuilder httpErrorResponseBuilder = HttpErrorResponse.builder();
+    HttpErrorResponse httpErrorResponse = new HttpErrorResponse();
 
-    ResponseMessage.ResponseMessageBuilder responseMessageBuilder = ResponseMessage.builder()
-        .type(MessageType.ERROR)
-        .text(exception.getMessage());
+    ResponseMessage responseMessage = new ResponseMessage();
+    responseMessage.setType(MessageType.ERROR)
+        .setText(exception.getMessage());
 
     if (exception instanceof HttpException) {
 
       HttpException httpException = (HttpException) exception;
-      responseMessageBuilder.errorCode(httpException.getError().getErrorCode());
-      httpErrorResponseBuilder.invalidAttributes(httpException.getInvalidAttributes())
-          .extraParams(httpException.getExtraParams());
+      responseMessage.setErrorCode(httpException.getError().getErrorCode());
+      httpErrorResponse.setInvalidAttributes(httpException.getInvalidAttributes())
+          .setExtraParams(httpException.getExtraParams());
     }
 
     if (ApiServiceUtility.getServiceEnvironment() != ServiceEnvironment.RELEASE) {
-      httpErrorResponseBuilder.stackTrace(exception.getStackTrace());
-      Optional.ofNullable(exception.getCause()).ifPresent(cause -> httpErrorResponseBuilder.exceptionCause(cause.toString()));
+      httpErrorResponse.setStackTrace(exception.getStackTrace());
+      Optional.ofNullable(exception.getCause()).ifPresent(cause -> httpErrorResponse.setExceptionCause(cause.toString()));
     }
 
-    HttpErrorResponse httpErrorResponse = httpErrorResponseBuilder
-        .message(responseMessageBuilder.build())
-        .build();
-
-    httpErrorResponse.setStatus(false);
+    httpErrorResponse.setMessage(responseMessage)
+        .setStatus(false);
     return httpErrorResponse;
   }
 }

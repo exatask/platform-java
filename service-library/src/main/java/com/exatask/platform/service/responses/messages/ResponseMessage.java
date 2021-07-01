@@ -3,18 +3,18 @@ package com.exatask.platform.service.responses.messages;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.databind.PropertyNamingStrategy;
 import com.fasterxml.jackson.databind.annotation.JsonNaming;
-import lombok.Builder;
-import lombok.Getter;
+import lombok.Data;
+import lombok.experimental.Accessors;
 
-@Getter
-@Builder
+@Data
+@Accessors(chain = true)
 @JsonInclude(JsonInclude.Include.NON_NULL)
 @JsonNaming(PropertyNamingStrategy.SnakeCaseStrategy.class)
 public class ResponseMessage {
 
-  private final MessageType type;
+  private MessageType type;
 
-  private final String text;
+  private String text;
 
-  private final String errorCode;
+  private String errorCode;
 }
