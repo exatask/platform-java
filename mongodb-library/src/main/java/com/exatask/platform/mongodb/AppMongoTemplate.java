@@ -1,6 +1,11 @@
 package com.exatask.platform.mongodb;
 
+import com.mongodb.ConnectionString;
+import com.mongodb.MongoClientSettings;
+import com.mongodb.client.MongoClient;
+import com.mongodb.client.MongoClients;
 import lombok.experimental.UtilityClass;
+import org.bson.UuidRepresentation;
 import org.springframework.boot.autoconfigure.mongo.MongoProperties;
 import org.springframework.data.mongodb.MongoDatabaseFactory;
 import org.springframework.data.mongodb.core.MongoTemplate;
@@ -24,6 +29,14 @@ public class AppMongoTemplate {
   }
 
   public static MongoDatabaseFactory getDatabaseFactory(MongoProperties mongoProperties) {
-    return new SimpleMongoClientDatabaseFactory(mongoProperties.getUri());
+
+    ConnectionString connectionString = new ConnectionString(mongoProperties.getUri());
+    MongoClientSettings clientSettings = MongoClientSettings.builder()
+        .uuidRepresentation(UuidRepresentation.STANDARD)
+        .applyConnectionString(connectionString)
+        .build();
+    MongoClient mongoClient = MongoClients.create(clientSettings);
+
+    return new SimpleMongoClientDatabaseFactory(mongoClient, connectionString.getDatabase());
   }
 }

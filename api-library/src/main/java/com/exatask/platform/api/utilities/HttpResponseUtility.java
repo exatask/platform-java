@@ -23,7 +23,7 @@ public class HttpResponseUtility {
     if (exception instanceof HttpException) {
 
       HttpException httpException = (HttpException) exception;
-      responseMessage.setErrorCode(httpException.getError().getErrorCode());
+      Optional.ofNullable(httpException.getError()).ifPresent(error -> responseMessage.setErrorCode(error.getErrorCode()));
       httpErrorResponse.setInvalidAttributes(httpException.getInvalidAttributes())
           .setExtraParams(httpException.getExtraParams());
     }

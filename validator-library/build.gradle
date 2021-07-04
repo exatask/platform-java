@@ -1,0 +1,29 @@
+plugins {
+  id "platform.java-conventions"
+  id "org.springframework.boot"
+}
+
+version = "1.0.0-SNAPSHOT"
+
+jar {
+  enabled = true
+}
+
+dependencies {
+
+  implementation group: "jakarta.validation", name: "jakarta.validation-api"
+  implementation project(":logging-library")
+
+  compileOnly group: "org.projectlombok", name: "lombok", version: "${lombokVersion}"
+  annotationProcessor group: "org.projectlombok", name: "lombok", version: "${lombokVersion}"
+}
+
+publishing {
+  publications {
+    maven(MavenPublication) {
+
+      artifactId = "exatask-validator"
+      from components.java
+    }
+  }
+}

@@ -334,6 +334,7 @@ public class AppMongoRepositoryImpl<T, ID extends Serializable> extends SimpleMo
 
     Update update = new Update();
     prepareUpdates(update, updates);
+    update.set("updated_at", new Date());
 
     this.lastQuery = String.format("%s.updateOne(%s, %s)",
         mongoEntityInformation.getCollectionName(),
@@ -368,6 +369,7 @@ public class AppMongoRepositoryImpl<T, ID extends Serializable> extends SimpleMo
 
     Update update = new Update();
     prepareUpdates(update, updates);
+    update.set("updated_at", new Date());
 
     this.lastQuery = String.format("%s.updateMany(%s, %s)",
         mongoEntityInformation.getCollectionName(),
@@ -395,6 +397,7 @@ public class AppMongoRepositoryImpl<T, ID extends Serializable> extends SimpleMo
 
     Update update = new Update();
     prepareUpdates(update, updates);
+    update.set("updated_at", new Date());
 
     this.lastQuery = String.format("%s.updateOne(%s, %s)",
         mongoEntityInformation.getCollectionName(),
@@ -430,6 +433,7 @@ public class AppMongoRepositoryImpl<T, ID extends Serializable> extends SimpleMo
     Update update = new Update();
     prepareUpdates(update, updates);
     update.setOnInsert("created_at", new Date());
+    update.set("updated_at", new Date());
 
     this.lastQuery = String.format("%s.upsert(%s, %s)",
         mongoEntityInformation.getCollectionName(),
