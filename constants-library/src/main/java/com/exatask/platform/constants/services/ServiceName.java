@@ -15,8 +15,7 @@ public enum ServiceName {
   IDENTITY("/identity", true, false),
   ACCESS_CONTROL("/access-control"),
   NOTIFICATION("/notification"),
-  NOTIFICATION_AUDIT("/notification-audit"),
-  ENTITY_AUDIT("/entity-audit");
+  AUDIT("/audit");
 
   private final String uri;
 

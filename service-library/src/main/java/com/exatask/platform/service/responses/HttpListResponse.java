@@ -1,23 +1,25 @@
 package com.exatask.platform.service.responses;
 
-import com.exatask.platform.service.responses.messages.AppResponseMessage;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.databind.PropertyNamingStrategy;
 import com.fasterxml.jackson.databind.annotation.JsonNaming;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 
+import java.util.List;
+
 @Data
 @EqualsAndHashCode(callSuper = true)
 @JsonInclude(JsonInclude.Include.NON_NULL)
 @JsonNaming(PropertyNamingStrategy.SnakeCaseStrategy.class)
-public class HttpEntityResponse<T> extends HttpSuccessResponse {
+public class HttpListResponse<T> extends AppResponse {
 
-  private final T id;
+  private Long count;
 
-  public HttpEntityResponse(T id, AppResponseMessage responseMessage) {
+  private List<T> data;
 
-    super(responseMessage);
-    this.id = id;
+  public HttpListResponse(Long count, List<T> data) {
+    this.count = count;
+    this.data = data;
   }
 }
