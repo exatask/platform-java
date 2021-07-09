@@ -19,6 +19,7 @@ dependencies {
   implementation project(":logging-library")
   implementation project(":constants-library")
 
+  compileOnly group: "org.hibernate.validator", name: "hibernate-validator"
   compileOnly group: "org.projectlombok", name: "lombok", version: "${lombokVersion}"
   annotationProcessor group: "org.projectlombok", name: "lombok", version: "${lombokVersion}"
 }
