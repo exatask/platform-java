@@ -4,6 +4,7 @@ import com.exatask.platform.crypto.encoders.AppEncoder;
 import com.exatask.platform.crypto.encoders.AppEncoderFactory;
 import com.exatask.platform.crypto.encoders.AppEncoderAlgorithm;
 import org.bouncycastle.jce.provider.BouncyCastleProvider;
+import org.springframework.util.ObjectUtils;
 
 import java.security.GeneralSecurityException;
 import java.security.MessageDigest;
@@ -22,6 +23,11 @@ public class Digest implements AppCipher {
 
   @Override
   public String encrypt(String data) {
+
+    if (ObjectUtils.isEmpty(data)) {
+      return data;
+    }
+
     byte[] byteEncodedData = cipher.digest(data.getBytes());
     return encoder.encode(byteEncodedData);
   }

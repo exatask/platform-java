@@ -1,0 +1,23 @@
+plugins {
+  id "platform.java-conventions"
+  id "org.springframework.boot"
+}
+
+version = "1.0.0-SNAPSHOT"
+
+jar {
+  enabled = true
+}
+
+dependencies {
+}
+
+publishing {
+  publications {
+    maven(MavenPublication) {
+
+      artifactId = "exatask-storage"
+      from components.java
+    }
+  }
+}

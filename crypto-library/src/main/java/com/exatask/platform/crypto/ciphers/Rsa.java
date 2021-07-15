@@ -8,6 +8,7 @@ import com.exatask.platform.logging.AppLogger;
 import org.bouncycastle.jce.provider.BouncyCastleProvider;
 import org.bouncycastle.util.io.pem.PemReader;
 import org.springframework.core.io.ClassPathResource;
+import org.springframework.util.ObjectUtils;
 
 import javax.crypto.Cipher;
 import javax.crypto.EncryptedPrivateKeyInfo;
@@ -89,6 +90,10 @@ public class Rsa implements AppCipher {
   @Override
   public String encrypt(String data) {
 
+    if (ObjectUtils.isEmpty(data)) {
+      return data;
+    }
+
     try {
 
       this.cipher.init(Cipher.ENCRYPT_MODE, publicKey);
@@ -104,6 +109,10 @@ public class Rsa implements AppCipher {
 
   @Override
   public String decrypt(String data) {
+
+    if (ObjectUtils.isEmpty(data)) {
+      return data;
+    }
 
     try {
 

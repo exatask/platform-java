@@ -6,6 +6,7 @@ import com.exatask.platform.crypto.encoders.AppEncoderAlgorithm;
 import com.exatask.platform.logging.AppLogManager;
 import com.exatask.platform.logging.AppLogger;
 import org.bouncycastle.jce.provider.BouncyCastleProvider;
+import org.springframework.util.ObjectUtils;
 
 import javax.crypto.Cipher;
 import javax.crypto.spec.IvParameterSpec;
@@ -42,6 +43,10 @@ public class Aes implements AppCipher {
   @Override
   public String encrypt(String data) {
 
+    if (ObjectUtils.isEmpty(data)) {
+      return data;
+    }
+
     try {
 
       cipher.init(Cipher.ENCRYPT_MODE, secretKey, ivParameter);
@@ -57,6 +62,10 @@ public class Aes implements AppCipher {
 
   @Override
   public String decrypt(String data) {
+
+    if (ObjectUtils.isEmpty(data)) {
+      return data;
+    }
 
     try {
 

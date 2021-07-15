@@ -7,13 +7,14 @@ import lombok.Data;
 import org.springframework.data.mongodb.core.mapping.Field;
 
 import javax.validation.constraints.NotEmpty;
+import javax.validation.constraints.NotNull;
 
 @Data
 @Builder
 @AllArgsConstructor
 public class ContactNumber {
 
-  @NotEmpty
+  @NotNull
   @Field("type")
   private ContactType type;
 
