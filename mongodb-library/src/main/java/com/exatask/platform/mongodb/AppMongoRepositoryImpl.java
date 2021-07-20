@@ -11,6 +11,7 @@ import com.exatask.platform.mongodb.updates.UpdateElement;
 import com.mongodb.client.result.UpdateResult;
 import org.bson.types.ObjectId;
 import org.springframework.data.domain.Sort;
+import org.springframework.data.mongodb.core.FindAndModifyOptions;
 import org.springframework.data.mongodb.core.MongoOperations;
 import org.springframework.data.mongodb.core.query.Criteria;
 import org.springframework.data.mongodb.core.query.Field;
@@ -237,6 +238,67 @@ public class AppMongoRepositoryImpl<T, ID extends Serializable> extends SimpleMo
     LOGGER.trace(this.lastQuery);
 
     return mongoOperations.find(query, mongoEntityInformation.getJavaType(), mongoEntityInformation.getCollectionName());
+  }
+
+  @Override
+  public T findAndUpdate(Map<String, Object> filters, Map<String, Object> updates, List<String> projection, Boolean upsert) {
+    return findAndUpdate(prepareAppFilters(filters), prepareAppUpdates(updates), prepareAppProjection(projection), upsert);
+  }
+
+  @Override
+  public T findAndUpdate(Map<String, Object> filters, Map<String, Object> updates, Map<String, Boolean> projection, Boolean upsert) {
+    return findAndUpdate(prepareAppFilters(filters), prepareAppUpdates(updates), projection, upsert);
+  }
+
+  @Override
+  public T findAndUpdate(Map<String, Object> filters, AppUpdate updates, List<String> projection, Boolean upsert) {
+    return findAndUpdate(prepareAppFilters(filters), updates, prepareAppProjection(projection), upsert);
+  }
+
+  @Override
+  public T findAndUpdate(Map<String, Object> filters, AppUpdate updates, Map<String, Boolean> projection, Boolean upsert) {
+    return findAndUpdate(prepareAppFilters(filters), updates, projection, upsert);
+  }
+
+  @Override
+  public T findAndUpdate(AppFilter filters, Map<String, Object> updates, List<String> projection, Boolean upsert) {
+    return findAndUpdate(filters, prepareAppUpdates(updates), prepareAppProjection(projection), upsert);
+  }
+
+  @Override
+  public T findAndUpdate(AppFilter filters, Map<String, Object> updates, Map<String, Boolean> projection, Boolean upsert) {
+    return findAndUpdate(filters, prepareAppUpdates(updates), projection, upsert);
+  }
+
+  @Override
+  public T findAndUpdate(AppFilter filters, AppUpdate updates, List<String> projection, Boolean upsert) {
+    return findAndUpdate(filters, updates, prepareAppProjection(projection), upsert);
+  }
+
+  @Override
+  public T findAndUpdate(AppFilter filters, AppUpdate updates, Map<String, Boolean> projection, Boolean upsert) {
+
+    Query query = new Query();
+    prepareFilters(query, filters);
+    prepareProjection(query, projection);
+
+    Update update = new Update();
+    prepareUpdates(update, updates);
+    update.set("updated_at", new Date());
+
+    FindAndModifyOptions options = new FindAndModifyOptions();
+    options.returnNew(true)
+        .upsert(upsert);
+
+    this.lastQuery = String.format("%s.findAndModify(%s).project(%s).update(%s).options(%s)",
+        mongoEntityInformation.getCollectionName(),
+        SerializationUtils.serializeToJsonSafely(query.getQueryObject()),
+        SerializationUtils.serializeToJsonSafely(query.getFieldsObject()),
+        update,
+        SerializationUtils.serializeToJsonSafely(options));
+    LOGGER.trace(this.lastQuery);
+
+    return mongoOperations.findAndModify(query, update, options, mongoEntityInformation.getJavaType(), mongoEntityInformation.getCollectionName());
   }
 
   @Override

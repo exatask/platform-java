@@ -1,4 +1,4 @@
-package com.exatask.platform.api.utilities;
+package com.exatask.platform.sdk.utilities;
 
 import com.exatask.platform.constants.services.ServiceEnvironment;
 import com.exatask.platform.logging.AppLogManager;
@@ -8,7 +8,7 @@ import com.exatask.platform.utilities.exceptions.RuntimePropertyNotFoundExceptio
 import lombok.experimental.UtilityClass;
 
 @UtilityClass
-public class ApiServiceUtility {
+public class SdkServiceUtility {
 
   private static final AppLogger LOGGER = AppLogManager.getLogger();
 

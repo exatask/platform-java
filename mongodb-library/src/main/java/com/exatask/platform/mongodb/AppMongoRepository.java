@@ -35,6 +35,22 @@ public interface AppMongoRepository<T, ID extends Serializable> extends MongoRep
 
   List<T> find(AppFilter filters, Map<String, Boolean> projection, Map<String, Integer> sort, Integer skip, Integer limit);
 
+  T findAndUpdate(Map<String, Object> filters, Map<String, Object> updates, List<String> projection, Boolean upsert);
+
+  T findAndUpdate(Map<String, Object> filters, Map<String, Object> updates, Map<String, Boolean> projection, Boolean upsert);
+
+  T findAndUpdate(Map<String, Object> filters, AppUpdate updates, List<String> projection, Boolean upsert);
+
+  T findAndUpdate(Map<String, Object> filters, AppUpdate updates, Map<String, Boolean> projection, Boolean upsert);
+
+  T findAndUpdate(AppFilter filters, Map<String, Object> updates, List<String> projection, Boolean upsert);
+
+  T findAndUpdate(AppFilter filters, Map<String, Object> updates, Map<String, Boolean> projection, Boolean upsert);
+
+  T findAndUpdate(AppFilter filters, AppUpdate updates, List<String> projection, Boolean upsert);
+
+  T findAndUpdate(AppFilter filters, AppUpdate updates, Map<String, Boolean> projection, Boolean upsert);
+
   Optional<T> findOne(Map<String, Object> filters, List<String> projection);
 
   Optional<T> findOne(Map<String, Object> filters, Map<String, Boolean> projection);
