@@ -160,6 +160,10 @@ public class AppLogger {
       logMessage.setTraceId(RequestContextProvider.getTraceId());
     }
 
+    if (StringUtils.isEmpty(logMessage.getParentId())) {
+      logMessage.setParentId(RequestContextProvider.getParentId());
+    }
+
     if (StringUtils.isEmpty(logMessage.getSpanId())) {
       logMessage.setSpanId(RequestContextProvider.getSpanId());
     }

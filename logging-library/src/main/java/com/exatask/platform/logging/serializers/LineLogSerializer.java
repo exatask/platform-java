@@ -25,6 +25,8 @@ public class LineLogSerializer implements AppLogSerializer {
         .append(": ")
         .append(StringUtils.defaultString(logMessage.getTraceId(), "-"))
         .append(", ")
+        .append(StringUtils.defaultString(logMessage.getParentId(), "-"))
+        .append(", ")
         .append(StringUtils.defaultString(logMessage.getSpanId(), "-"))
         .append("] ")
         .append(logMessage.getLevel().toUpperCase())

@@ -14,7 +14,9 @@ public class ServiceContextInterceptor implements RequestInterceptor {
   @Override
   public void apply(RequestTemplate template) {
 
-    template.header(RequestContextHeader.TRACE_ID, RequestContextProvider.getTraceId());
+    template.header(RequestContextHeader.TRACE_ID, RequestContextProvider.getTraceId())
+        .header(RequestContextHeader.PARENT_ID, RequestContextProvider.getSpanId());
+
     Optional.ofNullable(RequestContextProvider.getSessionId()).ifPresent(sessionId ->
         template.header(RequestContextHeader.SESSION_ID, sessionId)
     );

@@ -20,6 +20,7 @@ public class ApiContextInterceptor extends AppInterceptor {
     RequestContext.RequestContextBuilder requestContextBuilder = RequestContext.builder()
         .startTime(new Date())
         .traceId(request.getHeader(RequestContextHeader.TRACE_ID))
+        .parentId(request.getHeader(RequestContextHeader.PARENT_ID))
         .spanId(UUID.randomUUID().toString());
 
     Optional.ofNullable(request.getHeader(RequestContextHeader.SESSION_ID)).ifPresent(requestContextBuilder::sessionId);

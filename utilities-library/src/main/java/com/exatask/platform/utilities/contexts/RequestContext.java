@@ -13,6 +13,8 @@ public class RequestContext {
 
   private final String traceId;
 
+  private final String parentId;
+
   private final String spanId;
 
   private final String sessionId;

@@ -38,6 +38,12 @@ public class RequestContextProvider {
     return ObjectUtils.isNotEmpty(requestContext) ? requestContext.getTraceId() : null;
   }
 
+  public static String getParentId() {
+
+    RequestContext requestContext = getContext();
+    return ObjectUtils.isNotEmpty(requestContext) ? requestContext.getParentId() : null;
+  }
+
   public static String getSpanId() {
 
     RequestContext requestContext = getContext();

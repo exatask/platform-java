@@ -47,6 +47,8 @@ public class AppLogMessage {
 
   private String traceId;
 
+  private String parentId;
+
   private String spanId;
 
   private String message;

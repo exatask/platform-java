@@ -6,6 +6,7 @@ import lombok.experimental.UtilityClass;
 public class RequestContextHeader {
 
   public static final String TRACE_ID = "x-trace-id";
+  public static final String PARENT_ID = "x-parent-id";
   public static final String SESSION_ID = "x-session-id";
 
   public static final String ORGANIZATION_ID = "x-organization-id";
