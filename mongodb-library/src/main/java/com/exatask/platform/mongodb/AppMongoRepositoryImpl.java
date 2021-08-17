@@ -45,6 +45,15 @@ public class AppMongoRepositoryImpl<T, ID extends Serializable> extends SimpleMo
     this.mongoOperations = mongoOperations;
   }
 
+  private ObjectId prepareObjectId(ID id) {
+
+    if (id instanceof ObjectId) {
+      return (ObjectId) id;
+    } else {
+      return new ObjectId(id.toString());
+    }
+  }
+
   /**
    * @param filters
    * @return AppFilter
@@ -452,7 +461,7 @@ public class AppMongoRepositoryImpl<T, ID extends Serializable> extends SimpleMo
   public boolean updateById(ID id, AppUpdate updates) {
 
     Criteria criteria = new Criteria("_id");
-    criteria.is(new ObjectId(id.toString()));
+    criteria.is(prepareObjectId(id));
 
     Query query = new Query();
     query.addCriteria(criteria);
