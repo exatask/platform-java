@@ -5,7 +5,7 @@ import lombok.experimental.UtilityClass;
 @UtilityClass
 public class Locale {
 
-  public static final String TIMEZONE = "Asia/Kolkata";
-  public static final String LANGUAGE = "en-in";
-  public static final String CURRENCY = "INR";
+  public static final String DEFAULT_TIMEZONE = "Asia/Kolkata";
+  public static final String DEFAULT_CURRENCY = "INR";
+  public static final String DEFAULT_LOCALE = "en-in";
 }
