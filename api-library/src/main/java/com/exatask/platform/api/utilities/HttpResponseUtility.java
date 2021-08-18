@@ -2,9 +2,9 @@ package com.exatask.platform.api.utilities;
 
 import com.exatask.platform.api.exceptions.HttpException;
 import com.exatask.platform.constants.services.ServiceEnvironment;
-import com.exatask.platform.service.responses.HttpErrorResponse;
-import com.exatask.platform.service.responses.messages.MessageType;
-import com.exatask.platform.service.responses.messages.ResponseMessage;
+import com.exatask.platform.dto.responses.HttpErrorResponse;
+import com.exatask.platform.dto.responses.messages.MessageType;
+import com.exatask.platform.dto.responses.messages.ResponseMessage;
 import lombok.experimental.UtilityClass;
 
 import java.util.Optional;

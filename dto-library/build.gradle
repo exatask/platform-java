@@ -15,13 +15,11 @@ jar {
 
 dependencies {
 
-  implementation project(":logging-library")
-  implementation project(":utilities-library")
+  implementation group: "com.fasterxml.jackson.core", name: "jackson-databind", version: "${fasterxmlJacksonVersion}"
+  implementation project(":constants-library")
 
-  compileOnly group: "org.springframework.boot", name: "spring-boot-starter-data-mongodb"
-  compileOnly group: "com.github.mongobee", name: "mongobee", version: "${mongobeeVersion}"
+  compileOnly group: "org.hibernate.validator", name: "hibernate-validator"
   compileOnly group: "org.projectlombok", name: "lombok", version: "${lombokVersion}"
-
   annotationProcessor group: "org.projectlombok", name: "lombok", version: "${lombokVersion}"
 }
 
@@ -29,7 +27,7 @@ publishing {
   publications {
     maven(MavenPublication) {
 
-      artifactId = "exatask-migration"
+      artifactId = "exatask-dto"
       from components.java
     }
   }

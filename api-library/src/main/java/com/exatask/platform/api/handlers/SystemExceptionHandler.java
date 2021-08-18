@@ -7,7 +7,7 @@ import com.exatask.platform.api.utilities.HttpResponseUtility;
 import com.exatask.platform.logging.AppLogManager;
 import com.exatask.platform.logging.AppLogMessage;
 import com.exatask.platform.logging.AppLogger;
-import com.exatask.platform.service.responses.HttpErrorResponse;
+import com.exatask.platform.dto.responses.HttpErrorResponse;
 import io.swagger.v3.oas.annotations.Hidden;
 import org.springframework.core.Ordered;
 import org.springframework.core.annotation.Order;

@@ -1,7 +1,7 @@
 package com.exatask.platform.api.requests;
 
-import com.exatask.platform.service.requests.AppRequest;
-import com.exatask.platform.service.requests.HttpRequestOperators;
+import com.exatask.platform.dto.requests.AppRequest;
+import com.exatask.platform.dto.requests.HttpRequestOperators;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.databind.PropertyNamingStrategy;
 import com.fasterxml.jackson.databind.annotation.JsonNaming;

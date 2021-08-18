@@ -1,6 +1,6 @@
 package com.exatask.platform.api.services.healthcheck.responses;
 
-import com.exatask.platform.service.responses.AppResponse;
+import com.exatask.platform.dto.responses.AppResponse;
 import com.exatask.platform.utilities.healthcheck.ServiceHealthCheckData;
 import com.fasterxml.jackson.databind.PropertyNamingStrategy;
 import com.fasterxml.jackson.databind.annotation.JsonNaming;

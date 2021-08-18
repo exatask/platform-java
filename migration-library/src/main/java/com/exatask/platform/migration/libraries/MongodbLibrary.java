@@ -1,6 +1,5 @@
 package com.exatask.platform.migration.libraries;
 
-import com.exatask.platform.service.libraries.AppLibrary;
 import com.mongodb.client.MongoCollection;
 import com.mongodb.client.model.IndexOptions;
 import org.bson.BsonDocument;

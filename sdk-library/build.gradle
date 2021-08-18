@@ -22,7 +22,7 @@ dependencies {
   implementation project(":utilities-library")
   implementation project(":logging-library")
   implementation project(":crypto-library")
-  implementation project(":service-library")
+  implementation project(":dto-library")
 
   compileOnly group: "org.projectlombok", name: "lombok", version: "${lombokVersion}"
   annotationProcessor group: "org.projectlombok", name: "lombok", version: "${lombokVersion}"
