@@ -7,9 +7,4 @@ public interface AppSdkAuthenticator {
   ServiceAuth getAuthentication();
 
   String generate();
-
-  interface Credentials {
-
-    ServiceAuth getAuthentication();
-  }
 }

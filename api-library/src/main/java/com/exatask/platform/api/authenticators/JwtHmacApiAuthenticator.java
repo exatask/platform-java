@@ -1,10 +1,10 @@
 package com.exatask.platform.api.authenticators;
 
+import com.exatask.platform.crypto.signers.JwtHmac;
+import com.exatask.platform.utilities.credentials.AppCredentials;
+import com.exatask.platform.utilities.credentials.JwtHmacCredentials;
 import com.exatask.platform.utilities.services.ServiceAuth;
 import com.exatask.platform.utilities.services.ServiceAuthData;
-import com.exatask.platform.crypto.signers.JwtHmac;
-import lombok.Data;
-import lombok.experimental.Accessors;
 import org.apache.commons.lang3.ObjectUtils;
 import org.springframework.util.CollectionUtils;
 
@@ -17,7 +17,7 @@ public class JwtHmacApiAuthenticator implements AppApiAuthenticator {
 
   private final JwtHmacCredentials credentials;
 
-  public JwtHmacApiAuthenticator(Credentials credentials) {
+  public JwtHmacApiAuthenticator(AppCredentials credentials) {
 
     JwtHmacCredentials jwtCredentials = (JwtHmacCredentials) credentials;
     Map<String, String> signerKeys = Collections.singletonMap("secret", jwtCredentials.getSecret());
@@ -44,14 +44,5 @@ public class JwtHmacApiAuthenticator implements AppApiAuthenticator {
 
     return (ObjectUtils.defaultIfNull(audience, "").toString().compareTo(credentials.getAudience()) == 0) &&
         (ObjectUtils.defaultIfNull(subject, "").toString().compareTo(ServiceAuthData.AUTH_SUBJECT) == 0);
-  }
-
-  @Data
-  @Accessors(chain = true)
-  public static class JwtHmacCredentials implements Credentials {
-
-    private String secret;
-
-    private String audience;
   }
 }

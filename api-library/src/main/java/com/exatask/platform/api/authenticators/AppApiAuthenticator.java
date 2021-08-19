@@ -7,7 +7,4 @@ public interface AppApiAuthenticator {
   ServiceAuth getAuthentication();
 
   Boolean authenticate(String token);
-
-  interface Credentials {
-  }
 }

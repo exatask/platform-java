@@ -1,5 +1,6 @@
 package com.exatask.platform.sdk.interceptors;
 
+import com.exatask.platform.utilities.credentials.AppCredentials;
 import com.exatask.platform.utilities.services.ServiceAuthData;
 import com.exatask.platform.sdk.authenticators.AppSdkAuthenticator;
 import com.exatask.platform.sdk.authenticators.HttpBasicSdkAuthenticator;
@@ -13,11 +14,11 @@ public class ServiceAuthenticationInterceptor implements RequestInterceptor {
 
   private final AppSdkAuthenticator sdkAuthenticator;
 
-  public ServiceAuthenticationInterceptor(AppSdkAuthenticator.Credentials credentials) {
+  public ServiceAuthenticationInterceptor(AppCredentials credentials) {
     this.sdkAuthenticator = getAuthenticator(credentials);
   }
 
-  private AppSdkAuthenticator getAuthenticator(AppSdkAuthenticator.Credentials credentials) {
+  private AppSdkAuthenticator getAuthenticator(AppCredentials credentials) {
 
     switch (credentials.getAuthentication()) {
 

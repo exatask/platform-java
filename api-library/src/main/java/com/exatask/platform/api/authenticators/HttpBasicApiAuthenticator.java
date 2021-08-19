@@ -1,18 +1,18 @@
 package com.exatask.platform.api.authenticators;
 
-import com.exatask.platform.utilities.services.ServiceAuth;
 import com.exatask.platform.crypto.encoders.AppEncoder;
 import com.exatask.platform.crypto.encoders.AppEncoderAlgorithm;
 import com.exatask.platform.crypto.encoders.AppEncoderFactory;
-import lombok.Data;
-import lombok.experimental.Accessors;
+import com.exatask.platform.utilities.credentials.AppCredentials;
+import com.exatask.platform.utilities.credentials.HttpBasicCredentials;
+import com.exatask.platform.utilities.services.ServiceAuth;
 import org.apache.commons.lang3.StringUtils;
 
 public class HttpBasicApiAuthenticator implements AppApiAuthenticator {
 
   private final String authenticationToken;
 
-  public HttpBasicApiAuthenticator(Credentials credentials) {
+  public HttpBasicApiAuthenticator(AppCredentials credentials) {
 
     HttpBasicCredentials httpBasicCredentials = (HttpBasicCredentials) credentials;
 
@@ -36,14 +36,5 @@ public class HttpBasicApiAuthenticator implements AppApiAuthenticator {
     }
 
     return authenticationToken.compareTo(token) == 0;
-  }
-
-  @Data
-  @Accessors(chain = true)
-  public static class HttpBasicCredentials implements Credentials {
-
-    private String username;
-
-    private String password;
   }
 }

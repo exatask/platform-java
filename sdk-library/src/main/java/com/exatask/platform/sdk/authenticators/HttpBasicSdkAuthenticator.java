@@ -1,17 +1,17 @@
 package com.exatask.platform.sdk.authenticators;
 
-import com.exatask.platform.utilities.services.ServiceAuth;
 import com.exatask.platform.crypto.encoders.AppEncoder;
 import com.exatask.platform.crypto.encoders.AppEncoderAlgorithm;
 import com.exatask.platform.crypto.encoders.AppEncoderFactory;
-import lombok.Data;
-import lombok.experimental.Accessors;
+import com.exatask.platform.utilities.credentials.AppCredentials;
+import com.exatask.platform.utilities.credentials.HttpBasicCredentials;
+import com.exatask.platform.utilities.services.ServiceAuth;
 
 public class HttpBasicSdkAuthenticator implements AppSdkAuthenticator {
 
   private final String authenticationToken;
 
-  public HttpBasicSdkAuthenticator(Credentials credentials) {
+  public HttpBasicSdkAuthenticator(AppCredentials credentials) {
 
     HttpBasicCredentials httpBasicCredentials = (HttpBasicCredentials) credentials;
 
@@ -30,19 +30,5 @@ public class HttpBasicSdkAuthenticator implements AppSdkAuthenticator {
   @Override
   public String generate() {
     return authenticationToken;
-  }
-
-  @Data
-  @Accessors(chain = true)
-  public static class HttpBasicCredentials implements Credentials {
-
-    private String username;
-
-    private String password;
-
-    @Override
-    public ServiceAuth getAuthentication() {
-      return ServiceAuth.HTTP_BASIC;
-    }
   }
 }

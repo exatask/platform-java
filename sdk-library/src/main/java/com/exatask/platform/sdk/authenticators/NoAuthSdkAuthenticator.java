@@ -13,12 +13,4 @@ public class NoAuthSdkAuthenticator implements AppSdkAuthenticator {
   public String generate() {
     return null;
   }
-
-  public static class NoAuthCredentials implements Credentials {
-
-    @Override
-    public ServiceAuth getAuthentication() {
-      return ServiceAuth.NO_AUTH;
-    }
-  }
 }

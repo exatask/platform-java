@@ -1,10 +1,10 @@
 package com.exatask.platform.sdk.authenticators;
 
+import com.exatask.platform.crypto.signers.JwtHmac;
+import com.exatask.platform.utilities.credentials.AppCredentials;
+import com.exatask.platform.utilities.credentials.JwtHmacCredentials;
 import com.exatask.platform.utilities.services.ServiceAuth;
 import com.exatask.platform.utilities.services.ServiceAuthData;
-import com.exatask.platform.crypto.signers.JwtHmac;
-import lombok.Data;
-import lombok.experimental.Accessors;
 import org.springframework.util.ObjectUtils;
 
 import java.util.Collections;
@@ -18,7 +18,7 @@ public class JwtHmacSdkAuthenticator implements AppSdkAuthenticator {
 
   private final JwtHmacCredentials credentials;
 
-  public JwtHmacSdkAuthenticator(Credentials credentials) {
+  public JwtHmacSdkAuthenticator(AppCredentials credentials) {
 
     JwtHmacCredentials jwtCredentials = (JwtHmacCredentials) credentials;
     Map<String, String> signerKeys = Collections.singletonMap("secret", jwtCredentials.getSecret());
@@ -47,23 +47,5 @@ public class JwtHmacSdkAuthenticator implements AppSdkAuthenticator {
     signData.put(ServiceAuthData.AUTH_JWT_EXPIRY_LABEL, new Date(System.currentTimeMillis() + (expiry * 1000)));
 
     return this.signer.sign(signData);
-  }
-
-  @Data
-  @Accessors(chain = true)
-  public static class JwtHmacCredentials implements Credentials {
-
-    private String secret;
-
-    private String issuer;
-
-    private String audience;
-
-    private Integer expiry;
-
-    @Override
-    public ServiceAuth getAuthentication() {
-      return ServiceAuth.JWT_HMAC;
-    }
   }
 }
