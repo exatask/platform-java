@@ -1,4 +1,4 @@
-package com.exatask.platform.constants.services;
+package com.exatask.platform.utilities.services;
 
 public enum ServiceAuth {
 

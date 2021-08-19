@@ -1,4 +1,4 @@
-package com.exatask.platform.constants.entities;
+package com.exatask.platform.dto.constants;
 
 import com.exatask.platform.i18n.AppTranslator;
 import com.exatask.platform.utilities.constants.AppConstant;
@@ -11,6 +11,6 @@ public enum EmailType implements AppConstant {
 
   @Override
   public String toLocale() {
-    return AppTranslator.toLocale( "entities.email-type." + this);
+    return AppTranslator.toLocale( "email-type." + this);
   }
 }

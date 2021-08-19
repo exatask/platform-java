@@ -1,6 +1,6 @@
 package com.exatask.platform.dto.entities;
 
-import com.exatask.platform.constants.entities.Geolocation;
+import com.exatask.platform.dto.constants.Geolocation;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.databind.PropertyNamingStrategy;
 import com.fasterxml.jackson.databind.annotation.JsonNaming;

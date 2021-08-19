@@ -1,4 +1,4 @@
-package com.exatask.platform.constants.entities;
+package com.exatask.platform.dto.constants;
 
 import com.exatask.platform.i18n.AppTranslator;
 import com.exatask.platform.utilities.constants.AppConstant;
@@ -13,6 +13,6 @@ public enum ContactType implements AppConstant {
 
   @Override
   public String toLocale() {
-    return AppTranslator.toLocale( "entities.contact-type." + this);
+    return AppTranslator.toLocale( "contact-type." + this);
   }
 }

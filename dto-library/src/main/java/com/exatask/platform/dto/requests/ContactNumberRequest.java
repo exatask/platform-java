@@ -1,6 +1,6 @@
 package com.exatask.platform.dto.requests;
 
-import com.exatask.platform.constants.entities.ContactType;
+import com.exatask.platform.dto.constants.ContactType;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.databind.PropertyNamingStrategy;
 import com.fasterxml.jackson.databind.annotation.JsonNaming;

@@ -2,8 +2,8 @@ package com.exatask.platform.api.interceptors;
 
 import com.exatask.platform.api.authenticators.AppApiAuthenticator;
 import com.exatask.platform.api.exceptions.ProxyAuthenticationException;
-import com.exatask.platform.constants.services.ServiceAuth;
-import com.exatask.platform.constants.services.ServiceAuthData;
+import com.exatask.platform.utilities.services.ServiceAuth;
+import com.exatask.platform.utilities.services.ServiceAuthData;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;

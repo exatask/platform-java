@@ -1,6 +1,6 @@
 package com.exatask.platform.api.utilities;
 
-import com.exatask.platform.constants.services.ServiceEnvironment;
+import com.exatask.platform.utilities.services.ServiceEnvironment;
 import com.exatask.platform.logging.AppLogManager;
 import com.exatask.platform.logging.AppLogger;
 import com.exatask.platform.utilities.ServiceUtility;

@@ -15,8 +15,10 @@ jar {
 
 dependencies {
 
+  implementation group: "org.springframework", name: "spring-context"
   implementation group: "com.fasterxml.jackson.core", name: "jackson-databind", version: "${fasterxmlJacksonVersion}"
-  implementation project(":constants-library")
+  implementation project(":i18n-library")
+  implementation project(":utilities-library")
 
   compileOnly group: "org.hibernate.validator", name: "hibernate-validator"
   compileOnly group: "org.projectlombok", name: "lombok", version: "${lombokVersion}"

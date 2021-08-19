@@ -1,6 +1,6 @@
 package com.exatask.platform.sdk.interceptors;
 
-import com.exatask.platform.constants.services.ServiceAuthData;
+import com.exatask.platform.utilities.services.ServiceAuthData;
 import com.exatask.platform.sdk.authenticators.AppSdkAuthenticator;
 import com.exatask.platform.sdk.authenticators.HttpBasicSdkAuthenticator;
 import com.exatask.platform.sdk.authenticators.JwtHmacSdkAuthenticator;

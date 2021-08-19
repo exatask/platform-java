@@ -1,7 +1,7 @@
 package com.exatask.platform.api.utilities;
 
 import com.exatask.platform.api.exceptions.HttpException;
-import com.exatask.platform.constants.services.ServiceEnvironment;
+import com.exatask.platform.utilities.services.ServiceEnvironment;
 import com.exatask.platform.dto.responses.HttpErrorResponse;
 import com.exatask.platform.dto.responses.messages.MessageType;
 import com.exatask.platform.dto.responses.messages.ResponseMessage;

@@ -1,6 +1,6 @@
 package com.exatask.platform.api.authenticators;
 
-import com.exatask.platform.constants.services.ServiceAuth;
+import com.exatask.platform.utilities.services.ServiceAuth;
 import com.exatask.platform.crypto.encoders.AppEncoder;
 import com.exatask.platform.crypto.encoders.AppEncoderAlgorithm;
 import com.exatask.platform.crypto.encoders.AppEncoderFactory;

@@ -1,6 +1,6 @@
 package com.exatask.platform.mongodb.schemas;
 
-import com.exatask.platform.constants.entities.ContactType;
+import com.exatask.platform.dto.constants.ContactType;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.experimental.SuperBuilder;

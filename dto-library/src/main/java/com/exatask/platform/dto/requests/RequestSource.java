@@ -1,4 +1,4 @@
-package com.exatask.platform.constants.requests;
+package com.exatask.platform.dto.requests;
 
 public enum RequestSource {
 
