@@ -37,6 +37,7 @@ public class AppRedisTemplate {
 
     RedisStandaloneConfiguration redisStandaloneConfiguration = new RedisStandaloneConfiguration(redisProperties.getHost(), redisProperties.getPort());
     redisStandaloneConfiguration.setDatabase(redisProperties.getDatabase());
+    Optional.ofNullable(redisProperties.getUsername()).ifPresent(redisStandaloneConfiguration::setUsername);
     Optional.ofNullable(redisProperties.getPassword()).ifPresent(redisStandaloneConfiguration::setPassword);
 
     return new JedisConnectionFactory(redisStandaloneConfiguration);
