@@ -1,6 +1,7 @@
 package com.exatask.platform.mailer.templates;
 
 import com.exatask.platform.mailer.constants.TemplateVariables;
+import com.exatask.platform.utilities.contexts.RequestContextProvider;
 import com.exatask.platform.utilities.templates.AppEmailTemplate;
 import com.exatask.platform.utilities.ServiceUtility;
 import org.springframework.util.MimeType;
@@ -41,7 +42,7 @@ public class AppTemplateEngine {
     defaultVariables.put("now", Collections.singletonMap("year", now.get(Calendar.YEAR)));
 
     Map<String, Object> contactVariables = new HashMap<>();
-    contactVariables.put("email_id", ServiceUtility.getServiceProperty(TemplateVariables.TEMPLATE_VARIABLE_PREFIX + TemplateVariables.CONTACT_EMAIL_ID));
+    contactVariables.put("emailId", ServiceUtility.getServiceProperty(TemplateVariables.TEMPLATE_VARIABLE_PREFIX + TemplateVariables.CONTACT_EMAIL_ID));
 
     Map<String, Object> domainVariables = new HashMap<>();
     domainVariables.put("app", ServiceUtility.getServiceProperty(TemplateVariables.TEMPLATE_VARIABLE_PREFIX + TemplateVariables.DOMAIN_APP));
@@ -81,6 +82,14 @@ public class AppTemplateEngine {
 
     Map<String, Object> variables = new HashMap<>(templateVariables);
     variables.putAll(defaultVariables);
+
+    if (!templateVariables.containsKey(TemplateVariables.ORGANIZATION_NAME)) {
+      variables.put(TemplateVariables.ORGANIZATION_NAME, RequestContextProvider.getOrganizationName());
+    }
+
+    if (!templateVariables.containsKey(TemplateVariables.EMPLOYEE_NAME)) {
+      variables.put(TemplateVariables.EMPLOYEE_NAME, RequestContextProvider.getEmployeeName());
+    }
 
     Context templateContext = new Context();
     templateContext.setVariables(variables);
