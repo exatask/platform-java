@@ -193,12 +193,12 @@ public class AppMongoRepositoryImpl<T, ID extends Serializable> extends SimpleMo
 
   @Override
   public List<T> find(Map<String, Object> filters, List<String> projection, Map<String, Integer> sort, Integer skip, Integer limit) {
-    return find(prepareAppFilters(filters), prepareAppProjection(projection), sort, Defaults.DEFAULT_SKIP, Defaults.DEFAULT_LIMIT);
+    return find(prepareAppFilters(filters), prepareAppProjection(projection), sort, skip, limit);
   }
 
   @Override
   public List<T> find(Map<String, Object> filters, Map<String, Boolean> projection, Map<String, Integer> sort, Integer skip, Integer limit) {
-    return find(prepareAppFilters(filters), projection, sort, Defaults.DEFAULT_SKIP, Defaults.DEFAULT_LIMIT);
+    return find(prepareAppFilters(filters), projection, sort, skip, limit);
   }
 
   @Override
