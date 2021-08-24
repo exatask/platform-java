@@ -15,4 +15,6 @@ public class RequestContextHeader {
   public static final String EMPLOYEE_ID = "x-employee-id";
   public static final String EMPLOYEE_NAME = "x-employee-name";
   public static final String EMPLOYEE_EMAIL_ID = "x-employee-email-id";
+
+  public static final String SECURITY_OTP = "x-security-otp";
 }

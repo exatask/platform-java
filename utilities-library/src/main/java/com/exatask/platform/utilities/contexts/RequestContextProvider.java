@@ -56,6 +56,12 @@ public class RequestContextProvider {
     return ObjectUtils.isNotEmpty(requestContext) ? requestContext.getSessionId() : null;
   }
 
+  public static String getSecurityOtp() {
+
+    RequestContext requestContext = getContext();
+    return ObjectUtils.isNotEmpty(requestContext) ? requestContext.getSecurityOtp() : null;
+  }
+
   public static String getEmployeeId() {
 
     RequestContext requestContext = getContext();

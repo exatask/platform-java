@@ -28,4 +28,6 @@ public class RequestContext {
   private final String employeeName;
 
   private final String employeeEmailId;
+
+  private final String securityOtp;
 }
