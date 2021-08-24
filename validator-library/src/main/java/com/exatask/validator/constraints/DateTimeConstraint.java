@@ -1,5 +1,6 @@
 package com.exatask.validator.constraints;
 
+import com.exatask.platform.utilities.constants.DateTime;
 import com.exatask.validator.validators.DateTimeValidator;
 
 import javax.validation.Constraint;
@@ -22,12 +23,5 @@ public @interface DateTimeConstraint {
 
   Class<? extends Payload>[] payload() default { };
 
-  Format value();
-
-  enum Format {
-
-    DATE,
-    TIME,
-    DATE_TIME
-  }
+  DateTime.Format value();
 }
