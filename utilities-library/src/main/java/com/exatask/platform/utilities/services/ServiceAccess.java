@@ -7,11 +7,23 @@ import lombok.Getter;
 @AllArgsConstructor
 public enum ServiceAccess {
 
-  PUBLIC("/public"),
-  AUTHENTICATED("/authenticated"),
-  AUTHORIZED("/authorized"),
-  RESTRICTED("/restricted"),
-  INTERNAL("/internal");
+  // Accessible to all, even without session (user, admin)
+  PUBLIC(ServiceEndpoints.ACCESS_PUBLIC),
+
+  // Accessible to all, with valid session (user, admin)
+  AUTHENTICATED(ServiceEndpoints.ACCESS_AUTHENTICATED),
+
+  // Accessible to whoever has authorization for action (user, admin)
+  AUTHORIZED(ServiceEndpoints.ACCESS_AUTHORIZED),
+
+  // Accessible to admin having authorization for action after 2nd factor authentication (admin)
+  SECURED(ServiceEndpoints.ACCESS_SECURED),
+
+  // Accessible to admin having authorization for action after 2nd factor authentication from client (admin)
+  RESTRICTED(ServiceEndpoints.ACCESS_RESTRICTED),
+
+  // Only accessible between services
+  INTERNAL(ServiceEndpoints.ACCESS_INTERNAL);
 
   private final String uri;
 }

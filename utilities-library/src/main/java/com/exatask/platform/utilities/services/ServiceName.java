@@ -7,16 +7,18 @@ import lombok.Getter;
 @AllArgsConstructor
 public enum ServiceName {
 
+  PLATFORM,
   GATEWAY,
-  CONFIGURATION("/configuration"),
-  METADATA("/metadata", true, false),
-  ORGANIZATION("/organization", true, false),
-  EMPLOYEE("/employee", true, false),
-  IDENTITY("/identity", true, false),
-  ACCESS_CONTROL("/access-control"),
-  NOTIFICATION("/notification"),
-  AUDIT("/audit"),
-  SUBSCRIPTION("/subscription");
+  CONFIGURATION(ServiceEndpoints.SERVICE_CONFIGURATION),
+  METADATA(ServiceEndpoints.SERVICE_METADATA, true, false),
+  ORGANIZATION(ServiceEndpoints.SERVICE_ORGANIZATION, true, false),
+  EMPLOYEE(ServiceEndpoints.SERVICE_EMPLOYEE, true, false),
+  IDENTITY(ServiceEndpoints.SERVICE_IDENTITY, true, false),
+  ACCESS_CONTROL(ServiceEndpoints.SERVICE_ACCESS_CONTROL),
+  NOTIFICATION(ServiceEndpoints.SERVICE_NOTIFICATION),
+  AUDIT(ServiceEndpoints.SERVICE_AUDIT),
+  SUBSCRIPTION(ServiceEndpoints.SERVICE_SUBSCRIPTION),
+  ATTENDANCE(ServiceEndpoints.SERVICE_ATTENDANCE);
 
   private final String uri;
 

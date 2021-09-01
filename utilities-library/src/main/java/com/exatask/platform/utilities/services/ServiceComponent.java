@@ -7,8 +7,8 @@ import lombok.Getter;
 @AllArgsConstructor
 public enum ServiceComponent {
 
-  USER("/user"),
-  ADMIN("/admin");
+  USER(ServiceEndpoints.COMPONENT_USER),
+  ADMIN(ServiceEndpoints.COMPONENT_ADMIN);
 
   private final String uri;
 }

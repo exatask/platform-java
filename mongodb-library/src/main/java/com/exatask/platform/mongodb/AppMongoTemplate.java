@@ -2,7 +2,6 @@ package com.exatask.platform.mongodb;
 
 import com.mongodb.ConnectionString;
 import com.mongodb.MongoClientSettings;
-import com.mongodb.client.MongoClient;
 import com.mongodb.client.MongoClients;
 import lombok.experimental.UtilityClass;
 import org.apache.commons.lang3.StringUtils;
@@ -23,6 +22,9 @@ import java.util.Optional;
 public class AppMongoTemplate {
 
   private static final String MONGODB_PREFIX = "mongodb://";
+
+  private static final String DEFAULT_HOST = "localhost";
+  private static final int DEFAULT_PORT = 27017;
 
   public static MongoTemplate getTemplate(MongoDatabaseFactory connectionFactory) {
 
@@ -45,33 +47,28 @@ public class AppMongoTemplate {
         .uuidRepresentation(UuidRepresentation.STANDARD)
         .applyConnectionString(connectionString)
         .build();
-    MongoClient mongoClient = MongoClients.create(clientSettings);
 
-    return new SimpleMongoClientDatabaseFactory(mongoClient, connectionString.getDatabase());
+    return new SimpleMongoClientDatabaseFactory(MongoClients.create(clientSettings), connectionString.getDatabase());
   }
 
   private static String prepareMongoUri(MongoProperties mongoProperties) {
 
     StringBuilder mongoUriBuilder = new StringBuilder(MONGODB_PREFIX);
 
-    Optional.ofNullable(mongoProperties.getUsername()).ifPresent(username -> {
-      mongoUriBuilder.append(username)
-          .append(":")
-          .append(String.valueOf(mongoProperties.getPassword()))
-          .append("@");
-    });
-
-    mongoUriBuilder.append(mongoProperties.getHost())
+    Optional.ofNullable(mongoProperties.getUsername()).ifPresent(username -> mongoUriBuilder.append(username)
         .append(":")
-        .append(mongoProperties.getPort())
+        .append(mongoProperties.getPassword())
+        .append("@"));
+
+    mongoUriBuilder.append(Optional.ofNullable(mongoProperties.getHost()).orElse(DEFAULT_HOST))
+        .append(":")
+        .append(Optional.ofNullable(mongoProperties.getPort()).orElse(DEFAULT_PORT))
         .append("/")
         .append(mongoProperties.getDatabase());
 
-    Optional.ofNullable(mongoProperties.getAuthenticationDatabase()).ifPresent(database -> {
-      mongoUriBuilder.append("?")
-          .append("authSource=")
-          .append(database);
-    });
+    Optional.ofNullable(mongoProperties.getAuthenticationDatabase()).ifPresent(database -> mongoUriBuilder.append("?")
+        .append("authSource=")
+        .append(database));
 
     return mongoUriBuilder.toString();
   }

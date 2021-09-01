@@ -5,5 +5,5 @@ import lombok.experimental.UtilityClass;
 @UtilityClass
 public class ExataskProperties {
 
-  public static final String EXATASK_ORGANIZATION_ID = "exatask.organization.id";
+  public static final String ORGANIZATION_ID = "organization.id";
 }
