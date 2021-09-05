@@ -3,8 +3,10 @@ package com.exatask.platform.utilities.properties;
 import com.exatask.platform.utilities.ServiceUtility;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
+import lombok.Data;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import lombok.experimental.Accessors;
 import org.apache.commons.lang3.ObjectUtils;
 import org.apache.commons.lang3.StringUtils;
 import software.amazon.awssdk.auth.credentials.AwsBasicCredentials;
@@ -37,19 +39,29 @@ public class AwsProperties {
   @Getter
   private Map<String, S3Properties> s3;
 
-  @Getter
-  @Builder
+  @Data
+  @Accessors(chain = true)
   public static class S3Properties {
 
     private String storageKey;
 
     private String bucket;
 
-    @Builder.Default
     private ObjectCannedACL acl = ObjectCannedACL.PRIVATE;
 
-    @Builder.Default
     private StorageClass storageClass = StorageClass.STANDARD;
+
+    public S3Properties setAcl(String acl) {
+
+      this.acl = ObjectCannedACL.fromValue(acl);
+      return this;
+    }
+
+    public S3Properties setStorageClass(String storageClass) {
+
+      this.storageClass = StorageClass.fromValue(storageClass);
+      return this;
+    }
   }
 
   public Region getRegion() {

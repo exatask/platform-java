@@ -11,8 +11,8 @@ import java.util.Map;
 public abstract class AppTransport {
 
   protected static final AppLogger LOGGER = AppLogManager.getLogger();
-  protected static final String COMPONENT_SEPARATOR = ":";
 
+  public static final String PATH_SEPARATOR = "/";
   public static final String DOWNLOAD_NAME_KEY = "download.name";
 
   public abstract String upload(Path inputPath, String uploadPath, Map<String, String> properties);

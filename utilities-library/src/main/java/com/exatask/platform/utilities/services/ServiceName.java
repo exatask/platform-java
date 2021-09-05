@@ -14,8 +14,10 @@ public enum ServiceName {
   ORGANIZATION(ServiceEndpoints.SERVICE_ORGANIZATION, true, false),
   EMPLOYEE(ServiceEndpoints.SERVICE_EMPLOYEE, true, false),
   IDENTITY(ServiceEndpoints.SERVICE_IDENTITY, true, false),
-  ACCESS_CONTROL(ServiceEndpoints.SERVICE_ACCESS_CONTROL),
+  ACCESS_CONTROL(ServiceEndpoints.SERVICE_ACCESS_CONTROL, true, false),
   NOTIFICATION(ServiceEndpoints.SERVICE_NOTIFICATION),
+  DOCUMENT(ServiceEndpoints.SERVICE_DOCUMENT, true, false),
+  OTP(ServiceEndpoints.SERVICE_OTP, true, false),
   AUDIT(ServiceEndpoints.SERVICE_AUDIT),
   SUBSCRIPTION(ServiceEndpoints.SERVICE_SUBSCRIPTION),
   ATTENDANCE(ServiceEndpoints.SERVICE_ATTENDANCE);

@@ -55,7 +55,7 @@ public class SftpTransport extends AppTransport {
       sftpChannel.connect();
       sftpChannel.put(inputStream, uploadPath);
       sftpChannel.exit();
-      return AppTransportType.SFTP.getPathPrefix() + COMPONENT_SEPARATOR + uploadPath;
+      return AppTransportType.SFTP.getPathPrefix() + uploadPath;
 
     } catch (JSchException | SftpException | FileNotFoundException exception) {
 
@@ -91,7 +91,7 @@ public class SftpTransport extends AppTransport {
       sftpChannel.connect();
       sftpChannel.rename(sourcePath, destinationPath);
       sftpChannel.exit();
-      return AppTransportType.SFTP.getPathPrefix() + COMPONENT_SEPARATOR + destinationPath;
+      return AppTransportType.SFTP.getPathPrefix() + destinationPath;
 
     } catch (JSchException | SftpException exception) {
 

@@ -22,7 +22,9 @@ public class ServiceEndpoints {
   public static final String SERVICE_IDENTITY = "/identity";
   public static final String SERVICE_ACCESS_CONTROL = "/access-control";
   public static final String SERVICE_NOTIFICATION = "/notification";
+  public static final String SERVICE_DOCUMENT = "/document";
   public static final String SERVICE_AUDIT = "/audit";
+  public static final String SERVICE_OTP = "/otp";
   public static final String SERVICE_SUBSCRIPTION = "/subscription";
   public static final String SERVICE_ATTENDANCE = "/attendance";
 }
