@@ -3,6 +3,7 @@ package com.exatask.platform.utilities.properties;
 import com.exatask.platform.utilities.ServiceUtility;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
+import lombok.Getter;
 import lombok.NoArgsConstructor;
 import org.apache.commons.lang3.ObjectUtils;
 import org.apache.commons.lang3.StringUtils;
@@ -11,6 +12,10 @@ import software.amazon.awssdk.auth.credentials.AwsCredentialsProvider;
 import software.amazon.awssdk.auth.credentials.DefaultCredentialsProvider;
 import software.amazon.awssdk.auth.credentials.StaticCredentialsProvider;
 import software.amazon.awssdk.regions.Region;
+import software.amazon.awssdk.services.s3.model.ObjectCannedACL;
+import software.amazon.awssdk.services.s3.model.StorageClass;
+
+import java.util.Map;
 
 @Builder
 @AllArgsConstructor
@@ -29,17 +34,31 @@ public class AwsProperties {
 
   private String secretKey;
 
+  @Getter
+  private Map<String, S3Properties> s3;
+
+  @Getter
+  @Builder
+  public static class S3Properties {
+
+    private String storageKey;
+
+    private String bucket;
+
+    @Builder.Default
+    private ObjectCannedACL acl = ObjectCannedACL.PRIVATE;
+
+    @Builder.Default
+    private StorageClass storageClass = StorageClass.STANDARD;
+  }
+
   public Region getRegion() {
 
     if (StringUtils.isEmpty(this.region)) {
-      region = ServiceUtility.getServiceProperty(AWS_REGION);
+      this.region = ServiceUtility.getServiceProperty(AWS_REGION, DEFAULT_REGION.id());
     }
 
-    if (StringUtils.isNotEmpty(region)) {
-      return ObjectUtils.defaultIfNull(Region.of(region), DEFAULT_REGION);
-    } else {
-      return DEFAULT_REGION;
-    }
+    return ObjectUtils.defaultIfNull(Region.of(this.region), DEFAULT_REGION);
   }
 
   public AwsCredentialsProvider getCredentialsProvider() {

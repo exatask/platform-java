@@ -3,7 +3,7 @@ package com.exatask.platform.mailer.transports;
 import com.exatask.platform.mailer.exceptions.InvalidMailerException;
 import com.exatask.platform.mailer.templates.AppTemplateEngine;
 import com.exatask.platform.utilities.properties.AwsProperties;
-import com.exatask.platform.utilities.properties.SmtpProperties;
+import com.exatask.platform.utilities.properties.SshProperties;
 import lombok.experimental.UtilityClass;
 
 import java.util.HashMap;
@@ -28,7 +28,7 @@ public class AppTransportFactory {
     switch (transportType) {
 
       case SMTP:
-        appTransport = new SmtpTransport((SmtpProperties) properties, templateEngine);
+        appTransport = new SmtpTransport((SshProperties) properties, templateEngine);
         break;
 
       case AWS:

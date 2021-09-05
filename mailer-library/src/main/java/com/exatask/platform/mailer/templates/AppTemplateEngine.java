@@ -42,14 +42,14 @@ public class AppTemplateEngine {
     defaultVariables.put("now", Collections.singletonMap("year", now.get(Calendar.YEAR)));
 
     Map<String, Object> contactVariables = new HashMap<>();
-    contactVariables.put("emailId", ServiceUtility.getServiceProperty(TemplateVariables.TEMPLATE_VARIABLE_PREFIX + TemplateVariables.CONTACT_EMAIL_ID));
+    contactVariables.put("emailId", ServiceUtility.getServiceProperty(TemplateVariables.CONTACT_EMAIL_ID, TemplateVariables.DEFAULT_CONTACT_EMAIL_ID));
 
     Map<String, Object> domainVariables = new HashMap<>();
-    domainVariables.put("app", ServiceUtility.getServiceProperty(TemplateVariables.TEMPLATE_VARIABLE_PREFIX + TemplateVariables.DOMAIN_APP));
-    domainVariables.put("static", ServiceUtility.getServiceProperty(TemplateVariables.TEMPLATE_VARIABLE_PREFIX + TemplateVariables.DOMAIN_STATIC));
+    domainVariables.put("app", ServiceUtility.getServiceProperty(TemplateVariables.DOMAIN_APP, TemplateVariables.DEFAULT_DOMAIN_APP));
+    domainVariables.put("static", ServiceUtility.getServiceProperty(TemplateVariables.DOMAIN_STATIC, TemplateVariables.DEFAULT_DOMAIN_STATIC));
 
     Map<String, Object> exataskVariables = new HashMap<>();
-    exataskVariables.put("name", ServiceUtility.getServiceProperty(TemplateVariables.TEMPLATE_VARIABLE_PREFIX + TemplateVariables.NAME));
+    exataskVariables.put("name", ServiceUtility.getServiceProperty(TemplateVariables.NAME, TemplateVariables.DEFAULT_NAME));
     exataskVariables.put("contact", contactVariables);
     exataskVariables.put("domain", domainVariables);
 

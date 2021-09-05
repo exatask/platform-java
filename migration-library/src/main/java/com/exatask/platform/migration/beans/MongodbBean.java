@@ -11,12 +11,13 @@ public class MongodbBean {
 
   private static final String CHANGELOG_COLLECTION = "changelogs";
   private static final String CHANGELOG_LOCK_COLLECTION = "changelog_locks";
+  private static final String DEFAULT_MONGODB_URI = "mongodb://localhost:27017";
 
   @Bean
   @ConditionalOnProperty(name = "mongodb.enabled", havingValue = "true")
   public Mongobee mongobee() {
 
-    Mongobee runner = new Mongobee(ServiceUtility.getServiceProperty("mongodb.uri"));
+    Mongobee runner = new Mongobee(ServiceUtility.getServiceProperty("mongodb.uri", DEFAULT_MONGODB_URI));
     runner.setDbName(ServiceUtility.getServiceProperty("mongodb.database"));
     runner.setChangelogCollectionName(CHANGELOG_COLLECTION);
     runner.setLockCollectionName(CHANGELOG_LOCK_COLLECTION);

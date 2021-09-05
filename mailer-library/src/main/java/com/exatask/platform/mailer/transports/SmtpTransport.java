@@ -5,7 +5,7 @@ import com.exatask.platform.logging.AppLogger;
 import com.exatask.platform.mailer.email.EmailMessage;
 import com.exatask.platform.mailer.email.EmailResponse;
 import com.exatask.platform.mailer.templates.AppTemplateEngine;
-import com.exatask.platform.utilities.properties.SmtpProperties;
+import com.exatask.platform.utilities.properties.SshProperties;
 
 import javax.mail.Authenticator;
 import javax.mail.MessagingException;
@@ -26,16 +26,16 @@ public class SmtpTransport extends AppTransport {
 
   private final Authenticator authenticator;
 
-  public SmtpTransport(SmtpProperties smtpProperties, AppTemplateEngine templateEngine) {
+  public SmtpTransport(SshProperties sshProperties, AppTemplateEngine templateEngine) {
 
     super(templateEngine);
 
     this.properties = new Properties();
     this.properties.put("mail.smtp.auth", true);
-    this.properties.put("mail.smtp.starttls.enable", smtpProperties.getTls());
-    this.properties.put("mail.smtp.host", smtpProperties.getHost());
-    this.properties.put("mail.smtp.port", smtpProperties.getPort());
-    this.properties.put("mail.smtp.ssl.trust", smtpProperties.getHost());
+    this.properties.put("mail.smtp.starttls.enable", sshProperties.getTls());
+    this.properties.put("mail.smtp.host", sshProperties.getHost());
+    this.properties.put("mail.smtp.port", sshProperties.getPort());
+    this.properties.put("mail.smtp.ssl.trust", sshProperties.getHost());
 
     try {
 
@@ -46,7 +46,7 @@ public class SmtpTransport extends AppTransport {
       LOGGER.error(exception);
     }
 
-    this.authenticator = smtpProperties.getAuthenticator();
+    this.authenticator = sshProperties.getSmtpAuthenticator();
   }
 
   @Override

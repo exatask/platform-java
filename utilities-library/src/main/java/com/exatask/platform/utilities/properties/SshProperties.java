@@ -9,7 +9,7 @@ import javax.mail.PasswordAuthentication;
 
 @Getter
 @Builder
-public class SmtpProperties {
+public class SshProperties {
 
   private final String host;
 
@@ -22,7 +22,7 @@ public class SmtpProperties {
 
   private final String password;
 
-  public SmtpAuthenticator getAuthenticator() {
+  public SmtpAuthenticator getSmtpAuthenticator() {
     return new SmtpAuthenticator(username, password);
   }
 

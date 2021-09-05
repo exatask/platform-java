@@ -11,6 +11,10 @@ import javax.validation.constraints.NotEmpty;
 public class UploadDocument {
 
   @NotEmpty
+  @Field("config")
+  private String config;
+
+  @NotEmpty
   @Field("file")
   private String file;
 
