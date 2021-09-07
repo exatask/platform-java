@@ -12,7 +12,6 @@ public abstract class AppTransport {
 
   protected static final AppLogger LOGGER = AppLogManager.getLogger();
 
-  public static final String PATH_SEPARATOR = "/";
   public static final String DOWNLOAD_NAME_KEY = "download.name";
 
   public abstract String upload(Path inputPath, String uploadPath, Map<String, String> properties);

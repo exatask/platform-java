@@ -8,7 +8,7 @@ import javax.validation.constraints.NotEmpty;
 
 @Data
 @Builder
-public class UploadDocument {
+public class StorageDocument {
 
   @NotEmpty
   @Field("config")

@@ -1,8 +1,8 @@
-package com.exatask.validator.validators;
+package com.exatask.platform.validator.validators;
 
 import com.exatask.platform.utilities.DateTimeUtility;
 import com.exatask.platform.utilities.constants.DateTime;
-import com.exatask.validator.constraints.DateTimeConstraint;
+import com.exatask.platform.validator.constraints.DateTimeConstraint;
 
 import javax.validation.ConstraintValidator;
 import javax.validation.ConstraintValidatorContext;

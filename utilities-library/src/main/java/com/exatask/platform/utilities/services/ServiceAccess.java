@@ -16,10 +16,10 @@ public enum ServiceAccess {
   // Accessible to whoever has authorization for action (user, admin)
   AUTHORIZED(ServiceEndpoints.ACCESS_AUTHORIZED),
 
-  // Accessible to admin having authorization for action after 2nd factor authentication (admin)
+  // Accessible to whoever has authorization for action after 2nd factor authentication (user, admin)
   SECURED(ServiceEndpoints.ACCESS_SECURED),
 
-  // Accessible to admin having authorization for action after 2nd factor authentication from client (admin)
+  // Accessible to only admin having authorization for action after 2nd factor authentication from client (admin)
   RESTRICTED(ServiceEndpoints.ACCESS_RESTRICTED),
 
   // Only accessible between services

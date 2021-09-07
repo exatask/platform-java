@@ -11,6 +11,7 @@ import software.amazon.awssdk.services.s3.model.GetObjectResponse;
 import software.amazon.awssdk.services.s3.model.PutObjectRequest;
 
 import java.io.BufferedInputStream;
+import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
@@ -35,7 +36,7 @@ public class AwsTransport extends AppTransport {
   @Override
   public String upload(Path inputPath, String uploadPath, Map<String, String> properties) {
 
-    String[] uploadPathParts = uploadPath.split(PATH_SEPARATOR, 2);
+    String[] uploadPathParts = uploadPath.split(File.separator, 2);
     if (!buckets.containsKey(uploadPathParts[0])) {
       throw new InvalidPathException(uploadPath);
     }
@@ -64,7 +65,7 @@ public class AwsTransport extends AppTransport {
   @Override
   public Path download(String downloadPath) {
 
-    String[] downloadPathParts = downloadPath.split(PATH_SEPARATOR, 2);
+    String[] downloadPathParts = downloadPath.split(File.separator, 2);
     if (!buckets.containsKey(downloadPathParts[0])) {
       throw new InvalidPathException(downloadPath);
     }
@@ -93,8 +94,8 @@ public class AwsTransport extends AppTransport {
   @Override
   public String copy(String sourcePath, String destinationPath, Map<String, String> properties) {
 
-    String[] sourcePathParts = sourcePath.split(PATH_SEPARATOR, 2);
-    String[] destinationPathParts = destinationPath.split(PATH_SEPARATOR, 2);
+    String[] sourcePathParts = sourcePath.split(File.separator, 2);
+    String[] destinationPathParts = destinationPath.split(File.separator, 2);
 
     if (!buckets.containsKey(sourcePathParts[0])) {
       throw new InvalidPathException(sourcePath);

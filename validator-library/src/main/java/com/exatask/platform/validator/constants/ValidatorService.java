@@ -1,4 +1,4 @@
-package com.exatask.validator.constants;
+package com.exatask.platform.validator.constants;
 
 import lombok.experimental.UtilityClass;
 
