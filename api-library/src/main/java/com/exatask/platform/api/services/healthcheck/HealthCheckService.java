@@ -4,6 +4,7 @@ import com.exatask.platform.api.configurations.ApiServiceConfig;
 import com.exatask.platform.api.services.AppService;
 import com.exatask.platform.api.services.healthcheck.responses.HealthCheckResponse;
 import com.exatask.platform.dto.requests.AppRequest;
+import com.exatask.platform.utilities.CollectionUtility;
 import com.exatask.platform.utilities.healthcheck.ServiceHealthCheck;
 import com.exatask.platform.utilities.healthcheck.ServiceHealthCheckData;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -19,7 +20,7 @@ public class HealthCheckService extends AppService<AppRequest, HealthCheckRespon
   @Autowired
   private ApiServiceConfig apiServiceConfig;
 
-  @Autowired
+  @Autowired(required = false)
   private Set<ServiceHealthCheck> platformHealthChecks;
 
   @Override
@@ -34,7 +35,7 @@ public class HealthCheckService extends AppService<AppRequest, HealthCheckRespon
     healthCheckResponse.setLicense(apiServiceConfig.getLicense());
     healthCheckResponse.setVersion(apiServiceConfig.getVersion());
 
-    for (ServiceHealthCheck healthCheck : platformHealthChecks) {
+    for (ServiceHealthCheck healthCheck : CollectionUtility.nullSafe(platformHealthChecks)) {
       serviceHealthCheckData.put(healthCheck.getName(), healthCheck.healthCheck());
     }
     healthCheckResponse.setServices(serviceHealthCheckData);

@@ -31,9 +31,10 @@ public class SmtpTransport extends AppTransport {
     super(templateEngine);
 
     this.properties = new Properties();
+    this.properties.put("mail.host", sshProperties.getHost());
+    this.properties.put("mail.from", DEFAULT_SOURCE_ADDRESS);
     this.properties.put("mail.smtp.auth", true);
-    this.properties.put("mail.smtp.starttls.enable", sshProperties.getTls());
-    this.properties.put("mail.smtp.host", sshProperties.getHost());
+    this.properties.put("mail.smtp.starttls.enable", sshProperties.getSecured());
     this.properties.put("mail.smtp.port", sshProperties.getPort());
     this.properties.put("mail.smtp.ssl.trust", sshProperties.getHost());
 

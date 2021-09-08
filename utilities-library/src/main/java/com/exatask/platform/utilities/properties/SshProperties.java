@@ -16,7 +16,7 @@ public class SshProperties {
   private final Integer port;
 
   @Builder.Default
-  private final Boolean tls = false;
+  private final Boolean secured = false;
 
   private final String username;
 

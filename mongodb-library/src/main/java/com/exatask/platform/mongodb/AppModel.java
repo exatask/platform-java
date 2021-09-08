@@ -1,9 +1,7 @@
 package com.exatask.platform.mongodb;
 
-import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
-import lombok.Setter;
 import org.bson.types.ObjectId;
 import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.annotation.Id;
@@ -18,7 +16,6 @@ import java.util.Date;
 public abstract class AppModel {
 
   @Id
-  @Setter(value = AccessLevel.NONE)
   @Field("_id")
   protected ObjectId id;
 

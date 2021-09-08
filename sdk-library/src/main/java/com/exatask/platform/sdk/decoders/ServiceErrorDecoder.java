@@ -2,9 +2,7 @@ package com.exatask.platform.sdk.decoders;
 
 import com.exatask.platform.logging.AppLogManager;
 import com.exatask.platform.logging.AppLogger;
-import com.exatask.platform.sdk.exceptions.SdkException;
-import com.exatask.platform.dto.responses.HttpErrorResponse;
-import com.fasterxml.jackson.databind.ObjectMapper;
+import com.exatask.platform.utilities.exceptions.SdkException;
 import feign.FeignException;
 import feign.Request;
 import feign.Response;
@@ -20,8 +18,6 @@ public class ServiceErrorDecoder implements ErrorDecoder {
 
   private static final AppLogger LOGGER = AppLogManager.getLogger();
 
-  private static final ObjectMapper MAPPER = new ObjectMapper();
-
   @Override
   public Exception decode(String methodKey, Response response) {
 
@@ -30,15 +26,12 @@ public class ServiceErrorDecoder implements ErrorDecoder {
     try {
 
       String content = Util.toString(response.body().asReader(StandardCharsets.UTF_8));
-      HttpErrorResponse errorResponse = MAPPER.readValue(content, HttpErrorResponse.class);
-
       return SdkException.builder()
           .methodKey(methodKey)
           .url(request.url())
-          .method(request.httpMethod())
+          .method(request.httpMethod().toString())
           .statusCode(response.status())
-          .originalResponse(content)
-          .errorResponse(errorResponse)
+          .errorResponse(content)
           .build();
 
     } catch (IOException exception) {

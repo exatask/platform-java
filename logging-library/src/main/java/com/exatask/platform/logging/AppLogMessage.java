@@ -45,10 +45,13 @@ public class AppLogMessage {
   @Setter(AccessLevel.PACKAGE)
   private String serviceName;
 
+  @Setter(AccessLevel.PACKAGE)
   private String traceId;
 
+  @Setter(AccessLevel.PACKAGE)
   private String parentId;
 
+  @Setter(AccessLevel.PACKAGE)
   private String spanId;
 
   private String message;
@@ -79,7 +82,6 @@ public class AppLogMessage {
   public static AppLogMessage buildLogMessage(String message, Exception exception) {
 
     AppLogMessage logMessage = new AppLogMessage();
-    Optional.ofNullable(message).ifPresent(logMessage::setMessage);
 
     Optional.ofNullable(exception).ifPresent((ex) -> {
 
@@ -92,6 +94,8 @@ public class AppLogMessage {
         logMessage.setExceptionCause(new AppExceptionCause(cause.getMessage(), parseStackTrace(elements)));
       });
     });
+
+    Optional.ofNullable(message).ifPresent(logMessage::setMessage);
 
     return logMessage;
   }

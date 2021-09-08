@@ -5,14 +5,12 @@ import lombok.experimental.UtilityClass;
 @UtilityClass
 public class TemplateVariables {
 
-  public static final String TEMPLATE_PREFIX = "template.";
+  public static final String NAME = "exatask.name";
 
-  public static final String NAME = TemplateVariables.TEMPLATE_PREFIX + "exatask.name";
+  public static final String CONTACT_EMAIL_ID = "exatask.contact.emailId";
 
-  public static final String CONTACT_EMAIL_ID = TemplateVariables.TEMPLATE_PREFIX + "exatask.contact.emailId";
-
-  public static final String DOMAIN_APP = TemplateVariables.TEMPLATE_PREFIX + "exatask.domain.app";
-  public static final String DOMAIN_STATIC = TemplateVariables.TEMPLATE_PREFIX + "exatask.domain.static";
+  public static final String DOMAIN_APP = "exatask.domain.app";
+  public static final String DOMAIN_STATIC = "exatask.domain.static";
 
   public static final String ORGANIZATION_NAME = "organization.name";
   public static final String ORGANIZATION_WEBSITE = "organization.website";

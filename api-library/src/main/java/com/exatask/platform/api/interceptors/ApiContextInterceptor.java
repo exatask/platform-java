@@ -3,6 +3,7 @@ package com.exatask.platform.api.interceptors;
 import com.exatask.platform.utilities.constants.RequestContextHeader;
 import com.exatask.platform.utilities.contexts.RequestContext;
 import com.exatask.platform.utilities.contexts.RequestContextProvider;
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.stereotype.Service;
 
 import javax.servlet.http.HttpServletRequest;
@@ -17,10 +18,12 @@ public class ApiContextInterceptor extends AppInterceptor {
   @Override
   public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler) throws Exception {
 
+    String traceId = StringUtils.defaultIfEmpty(request.getHeader(RequestContextHeader.TRACE_ID), UUID.randomUUID().toString());
+
     RequestContext.RequestContextBuilder requestContextBuilder = RequestContext.builder()
         .startTime(new Date())
-        .traceId(request.getHeader(RequestContextHeader.TRACE_ID))
-        .parentId(request.getHeader(RequestContextHeader.PARENT_ID))
+        .traceId(traceId)
+        .parentId(StringUtils.defaultIfEmpty(request.getHeader(RequestContextHeader.PARENT_ID), traceId))
         .spanId(UUID.randomUUID().toString());
 
     Optional.ofNullable(request.getHeader(RequestContextHeader.SESSION_ID)).ifPresent(requestContextBuilder::sessionId);

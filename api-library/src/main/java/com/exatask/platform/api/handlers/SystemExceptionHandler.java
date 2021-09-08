@@ -34,7 +34,7 @@ import java.util.Set;
 
 @Hidden
 @ControllerAdvice
-@Order(Ordered.HIGHEST_PRECEDENCE)
+@Order(Ordered.HIGHEST_PRECEDENCE + 1)
 public class SystemExceptionHandler {
 
   private static final AppLogger LOGGER = AppLogManager.getLogger();

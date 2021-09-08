@@ -1,11 +1,12 @@
 package com.exatask.platform.api.handlers;
 
 import com.exatask.platform.api.utilities.HttpResponseUtility;
+import com.exatask.platform.dto.responses.HttpErrorResponse;
 import com.exatask.platform.logging.AppLogManager;
 import com.exatask.platform.logging.AppLogMessage;
 import com.exatask.platform.logging.AppLogger;
-import com.exatask.platform.dto.responses.HttpErrorResponse;
 import io.swagger.v3.oas.annotations.Hidden;
+import org.springframework.core.annotation.Order;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.ControllerAdvice;
@@ -15,6 +16,7 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import javax.servlet.http.HttpServletRequest;
 
 @Hidden
+@Order
 @ControllerAdvice
 public class GlobalExceptionHandler {
 

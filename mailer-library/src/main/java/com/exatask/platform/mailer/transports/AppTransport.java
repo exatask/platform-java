@@ -7,6 +7,7 @@ import com.exatask.platform.mailer.email.EmailMessage;
 import com.exatask.platform.mailer.email.EmailOptions;
 import com.exatask.platform.mailer.email.EmailResponse;
 import com.exatask.platform.mailer.templates.AppTemplateEngine;
+import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
 import org.apache.commons.lang3.ArrayUtils;
 import org.apache.commons.lang3.ObjectUtils;
@@ -41,6 +42,7 @@ public abstract class AppTransport {
   private static final String MIME_SUBTYPE_ALTERNATE = "alternate";
   private static final String MIME_SUBTYPE_MIXED = "mixed";
 
+  @NonNull
   private final AppTemplateEngine templateEngine;
 
   public abstract EmailResponse send(EmailMessage message) throws MessagingException, IOException;

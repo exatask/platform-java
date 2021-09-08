@@ -154,19 +154,10 @@ public class AppLogger {
 
     logMessage.setLevel(level.toString().toLowerCase())
         .setServiceName(serviceName)
-        .setTimestamp(new Date());
-
-    if (StringUtils.isEmpty(logMessage.getTraceId())) {
-      logMessage.setTraceId(RequestContextProvider.getTraceId());
-    }
-
-    if (StringUtils.isEmpty(logMessage.getParentId())) {
-      logMessage.setParentId(RequestContextProvider.getParentId());
-    }
-
-    if (StringUtils.isEmpty(logMessage.getSpanId())) {
-      logMessage.setSpanId(RequestContextProvider.getSpanId());
-    }
+        .setTimestamp(new Date())
+        .setTraceId(RequestContextProvider.getTraceId())
+        .setParentId(RequestContextProvider.getParentId())
+        .setSpanId(RequestContextProvider.getSpanId());
 
     log4jLogger.log(level, serializer.serialize(logMessage));
   }
