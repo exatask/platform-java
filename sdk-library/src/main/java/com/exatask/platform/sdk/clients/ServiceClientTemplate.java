@@ -1,11 +1,15 @@
 package com.exatask.platform.sdk.clients;
 
+import com.exatask.platform.logging.AppLogManager;
+import com.exatask.platform.logging.AppLogger;
 import com.exatask.platform.sdk.decoders.ServiceErrorDecoder;
 import com.exatask.platform.sdk.interceptors.ServiceAuthenticationInterceptor;
 import com.exatask.platform.sdk.interceptors.ServiceContextInterceptor;
 import com.exatask.platform.sdk.loggers.ServiceLogger;
+import com.exatask.platform.utilities.ServiceUtility;
 import com.exatask.platform.utilities.credentials.AppCredentials;
 import com.exatask.platform.utilities.credentials.NoAuthCredentials;
+import com.exatask.platform.utilities.exceptions.RuntimePropertyNotFoundException;
 import feign.Client;
 import feign.Contract;
 import feign.Feign;
@@ -23,6 +27,10 @@ import java.util.List;
 
 @Service
 public class ServiceClientTemplate {
+
+  private static final AppLogger LOGGER = AppLogManager.getLogger();
+
+  private static final String LOG_LEVEL_PROPERTY = "service.sdk.log-level";
 
   @Autowired
   private Contract contract;
@@ -55,6 +63,16 @@ public class ServiceClientTemplate {
 
   public <T extends AppServiceClient> T getServiceClient(Class<T> clazz, String baseUrl, AppCredentials credentials, List<RequestInterceptor> interceptors) {
 
+    Logger.Level logLevel = Logger.Level.BASIC;
+    try {
+
+      String logLevelProperty = ServiceUtility.getServiceProperty(LOG_LEVEL_PROPERTY);
+      logLevel = Logger.Level.valueOf(logLevelProperty);
+
+    } catch (RuntimePropertyNotFoundException | IllegalArgumentException exception) {
+      LOGGER.error(exception);
+    }
+
     List<RequestInterceptor> interceptorList = new ArrayList<>();
     interceptorList.add(serviceContextInterceptor);
     interceptorList.add(new ServiceAuthenticationInterceptor(credentials));
@@ -69,7 +87,7 @@ public class ServiceClientTemplate {
         .encoder(encoder)
         .decoder(decoder)
         .logger(logger)
-        .logLevel(Logger.Level.BASIC)
+        .logLevel(logLevel)
         .retryer(Retryer.NEVER_RETRY)
         .errorDecoder(errorDecoder)
         .requestInterceptors(interceptorList)

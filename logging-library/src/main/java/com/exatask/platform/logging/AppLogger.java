@@ -32,7 +32,7 @@ public class AppLogger {
     if (StringUtils.isEmpty(style)) {
       style = AppLogSerializerType.LINE.toString();
     }
-    serializer = AppLogSerializerFactory.getLogSerializer(style.toUpperCase());
+    serializer = AppLogSerializerFactory.getLogSerializer(style);
   }
 
   public void trace(String message) {

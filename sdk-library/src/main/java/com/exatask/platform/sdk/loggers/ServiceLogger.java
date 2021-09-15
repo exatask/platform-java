@@ -81,6 +81,7 @@ public class ServiceLogger extends Logger {
 
         byte[] body = Util.toByteArray(response.body().asInputStream());
         extraParams.put("body", new String(body, StandardCharsets.UTF_8));
+        response = response.toBuilder().body(body).build();
       }
 
       logMessage.setExtraParams(extraParams);
@@ -100,7 +101,7 @@ public class ServiceLogger extends Logger {
       logMessage.setStackTrace(null);
     }
 
-    LOGGER.debug(logMessage);
+    LOGGER.error(logMessage);
     return exception;
   }
 }

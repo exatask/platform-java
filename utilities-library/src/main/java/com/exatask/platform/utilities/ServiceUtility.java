@@ -18,6 +18,7 @@ import java.util.Properties;
 public class ServiceUtility {
 
   private static final String APPLICATION_PROPERTIES_FILE = "application.properties";
+  private static final String APPLICATION_PROPERTIES_FILE_NAME = "application";
 
   private static final String SPRING_APPLICATION_NAME_KEY = "spring.application.name";
   private static final String SPRING_PROFILE_ENV_KEY = "spring_profiles_active";
@@ -51,6 +52,10 @@ public class ServiceUtility {
 
     try (InputStream propertiesStream = Thread.currentThread().getContextClassLoader().getResourceAsStream(filePath)) {
 
+      if (propertiesStream == null) {
+        return;
+      }
+
       applicationProperties.load(propertiesStream);
       loadedPropertyFiles.add(filePath);
 
@@ -64,6 +69,14 @@ public class ServiceUtility {
   private static String getApplicationProperty(String key) {
 
     loadClasspathProperties(APPLICATION_PROPERTIES_FILE);
+
+    String activeProfile = applicationProperties.getProperty(SPRING_PROFILE_KEY);
+    if (StringUtils.isNotEmpty(activeProfile)) {
+
+      String applicationProfilePropertiesFile = APPLICATION_PROPERTIES_FILE.replace(APPLICATION_PROPERTIES_FILE_NAME, APPLICATION_PROPERTIES_FILE_NAME + "-" + activeProfile);
+      loadClasspathProperties(applicationProfilePropertiesFile);
+    }
+
     return applicationProperties.getProperty(key);
   }
 

@@ -1,9 +1,9 @@
 package com.exatask.platform.mailer.templates;
 
 import com.exatask.platform.mailer.constants.TemplateVariables;
+import com.exatask.platform.utilities.ServiceUtility;
 import com.exatask.platform.utilities.contexts.RequestContextProvider;
 import com.exatask.platform.utilities.templates.AppEmailTemplate;
-import com.exatask.platform.utilities.ServiceUtility;
 import org.springframework.util.MimeType;
 import org.springframework.util.MimeTypeUtils;
 import org.thymeleaf.ITemplateEngine;
@@ -16,7 +16,6 @@ import javax.mail.MessagingException;
 import javax.mail.internet.MimeBodyPart;
 import java.nio.charset.StandardCharsets;
 import java.util.Calendar;
-import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -38,22 +37,18 @@ public class AppTemplateEngine {
 
     this.templateEngine = engine;
 
+    String applicationNameKey = TemplateVariables.APPLICATION_NAME.replace(TemplateVariables.TEMPLATE_SEPARATOR, TemplateVariables.PROPERTY_SEPARATOR);
+    String contactEmailIdKey = TemplateVariables.CONTACT_EMAIL_ID.replace(TemplateVariables.TEMPLATE_SEPARATOR, TemplateVariables.PROPERTY_SEPARATOR);
+    String domainAppKey = TemplateVariables.DOMAIN_APP.replace(TemplateVariables.TEMPLATE_SEPARATOR, TemplateVariables.PROPERTY_SEPARATOR);
+    String domainStaticKey = TemplateVariables.DOMAIN_STATIC.replace(TemplateVariables.TEMPLATE_SEPARATOR, TemplateVariables.PROPERTY_SEPARATOR);
+
     Calendar now = Calendar.getInstance();
-    defaultVariables.put("now", Collections.singletonMap("year", now.get(Calendar.YEAR)));
+    defaultVariables.put(TemplateVariables.TIMESTAMP_YEAR, now.get(Calendar.YEAR));
 
-    Map<String, Object> contactVariables = new HashMap<>();
-    contactVariables.put("emailId", ServiceUtility.getServiceProperty(TemplateVariables.CONTACT_EMAIL_ID, TemplateVariables.DEFAULT_CONTACT_EMAIL_ID));
-
-    Map<String, Object> domainVariables = new HashMap<>();
-    domainVariables.put("app", ServiceUtility.getServiceProperty(TemplateVariables.DOMAIN_APP, TemplateVariables.DEFAULT_DOMAIN_APP));
-    domainVariables.put("static", ServiceUtility.getServiceProperty(TemplateVariables.DOMAIN_STATIC, TemplateVariables.DEFAULT_DOMAIN_STATIC));
-
-    Map<String, Object> exataskVariables = new HashMap<>();
-    exataskVariables.put("name", ServiceUtility.getServiceProperty(TemplateVariables.NAME, TemplateVariables.DEFAULT_NAME));
-    exataskVariables.put("contact", contactVariables);
-    exataskVariables.put("domain", domainVariables);
-
-    defaultVariables.put("exatask", exataskVariables);
+    defaultVariables.put(TemplateVariables.APPLICATION_NAME, ServiceUtility.getServiceProperty(applicationNameKey, TemplateVariables.DEFAULT_APPLICATION_NAME));
+    defaultVariables.put(TemplateVariables.CONTACT_EMAIL_ID, ServiceUtility.getServiceProperty(contactEmailIdKey, TemplateVariables.DEFAULT_CONTACT_EMAIL_ID));
+    defaultVariables.put(TemplateVariables.DOMAIN_APP, ServiceUtility.getServiceProperty(domainAppKey, TemplateVariables.DEFAULT_DOMAIN_APP));
+    defaultVariables.put(TemplateVariables.DOMAIN_STATIC, ServiceUtility.getServiceProperty(domainStaticKey, TemplateVariables.DEFAULT_DOMAIN_STATIC));
   }
 
   public MimeBodyPart renderText(AppEmailTemplate template, Map<String, Object> templateVariables) throws MessagingException {
