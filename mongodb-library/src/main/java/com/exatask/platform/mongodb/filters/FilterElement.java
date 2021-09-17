@@ -3,6 +3,7 @@ package com.exatask.platform.mongodb.filters;
 import lombok.AllArgsConstructor;
 import org.springframework.data.mongodb.core.query.Criteria;
 
+import java.util.Arrays;
 import java.util.List;
 
 @AllArgsConstructor
@@ -22,7 +23,9 @@ public class FilterElement {
 
       case EQUAL:
         if (value instanceof List) {
-          criteria.in(value);
+          criteria.in((List<?>) value);
+        } else if (value.getClass().isArray()) {
+          criteria.in(Arrays.asList((Object[]) value));
         } else {
           criteria.is(value);
         }
@@ -30,7 +33,9 @@ public class FilterElement {
 
       case NOT_EQUAL:
         if (value instanceof List) {
-          criteria.nin(value);
+          criteria.nin((List<?>) value);
+        } else if (value.getClass().isArray()) {
+          criteria.nin(Arrays.asList((Object[]) value));
         } else {
           criteria.ne(value);
         }

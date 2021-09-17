@@ -1,6 +1,7 @@
 package com.exatask.platform.utilities.properties;
 
 import com.exatask.platform.utilities.ServiceUtility;
+import com.exatask.platform.utilities.constants.AwsConstants;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -14,10 +15,6 @@ import software.amazon.awssdk.auth.credentials.AwsCredentialsProvider;
 import software.amazon.awssdk.auth.credentials.DefaultCredentialsProvider;
 import software.amazon.awssdk.auth.credentials.StaticCredentialsProvider;
 import software.amazon.awssdk.regions.Region;
-import software.amazon.awssdk.services.s3.model.ObjectCannedACL;
-import software.amazon.awssdk.services.s3.model.StorageClass;
-
-import java.util.Map;
 
 @Builder
 @AllArgsConstructor
@@ -37,31 +34,17 @@ public class AwsProperties {
   private String secretKey;
 
   @Getter
-  private Map<String, S3Properties> s3;
+  private S3Properties s3;
 
   @Data
   @Accessors(chain = true)
   public static class S3Properties {
 
-    private String storageKey;
-
     private String bucket;
 
-    private ObjectCannedACL acl = ObjectCannedACL.PRIVATE;
+    private AwsConstants.S3Acl acl = AwsConstants.S3Acl.PRIVATE;
 
-    private StorageClass storageClass = StorageClass.STANDARD;
-
-    public S3Properties setAcl(String acl) {
-
-      this.acl = ObjectCannedACL.fromValue(acl);
-      return this;
-    }
-
-    public S3Properties setStorageClass(String storageClass) {
-
-      this.storageClass = StorageClass.fromValue(storageClass);
-      return this;
-    }
+    private AwsConstants.S3Storage storageClass = AwsConstants.S3Storage.STANDARD;
   }
 
   public Region getRegion() {

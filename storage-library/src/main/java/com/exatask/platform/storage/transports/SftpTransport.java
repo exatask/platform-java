@@ -1,5 +1,6 @@
 package com.exatask.platform.storage.transports;
 
+import com.exatask.platform.storage.constants.UploadProperties;
 import com.exatask.platform.storage.exceptions.CopyFailedException;
 import com.exatask.platform.storage.exceptions.DownloadFailedException;
 import com.exatask.platform.storage.exceptions.UploadFailedException;
@@ -23,12 +24,11 @@ public class SftpTransport extends AppTransport {
 
   private static final String CHANNEL_TYPE = "sftp";
 
-  private final JSch sftpClient;
   private ChannelSftp sftpChannel = null;
 
   public SftpTransport(SshProperties sshProperties) {
 
-    sftpClient = new JSch();
+    JSch sftpClient = new JSch();
     Properties sftProperties = new Properties();
     sftProperties.setProperty("StrictHostKeyChecking", "no");
 
@@ -46,7 +46,7 @@ public class SftpTransport extends AppTransport {
   }
 
   @Override
-  public String upload(Path inputPath, String uploadPath, Map<String, String> properties) {
+  public String upload(Path inputPath, String uploadPath, Map<UploadProperties, String> properties) {
 
     try {
 
@@ -69,7 +69,8 @@ public class SftpTransport extends AppTransport {
 
     try {
 
-      Path outputFile = Files.createTempFile(AppTransportType.SFTP.getPathPrefix(), "");
+      AppTransportType transportType = AppTransportType.SFTP;
+      Path outputFile = Files.createTempFile(transportType.getPathPrefix(), transportType.getFileSuffix());
 
       sftpChannel.connect();
       sftpChannel.get(downloadPath, outputFile.toFile().getAbsolutePath());
@@ -84,7 +85,7 @@ public class SftpTransport extends AppTransport {
   }
 
   @Override
-  public String copy(String sourcePath, String destinationPath, Map<String, String> properties) {
+  public String copy(String sourcePath, String destinationPath, Map<UploadProperties, String> properties) {
 
     try {
 

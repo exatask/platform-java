@@ -7,8 +7,12 @@ import lombok.Getter;
 @AllArgsConstructor
 public enum AppTransportType {
 
-  SFTP("file://"),
-  AWS("aws://");
+  SFTP("file://", "file-", ""),
+  AWS("aws://", "aws-", "");
 
   private final String pathPrefix;
+
+  private final String filePrefix;
+
+  private final String fileSuffix;
 }

@@ -1,17 +1,18 @@
 package com.exatask.platform.storage.transports;
 
+import com.exatask.platform.storage.constants.UploadProperties;
 import com.exatask.platform.storage.exceptions.DownloadFailedException;
-import com.exatask.platform.storage.exceptions.InvalidPathException;
 import com.exatask.platform.utilities.properties.AwsProperties;
 import software.amazon.awssdk.core.ResponseInputStream;
 import software.amazon.awssdk.services.s3.S3Client;
 import software.amazon.awssdk.services.s3.model.CopyObjectRequest;
 import software.amazon.awssdk.services.s3.model.GetObjectRequest;
 import software.amazon.awssdk.services.s3.model.GetObjectResponse;
+import software.amazon.awssdk.services.s3.model.ObjectCannedACL;
 import software.amazon.awssdk.services.s3.model.PutObjectRequest;
+import software.amazon.awssdk.services.s3.model.StorageClass;
 
 import java.io.BufferedInputStream;
-import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
@@ -21,7 +22,7 @@ public class AwsTransport extends AppTransport {
 
   private final S3Client s3Client;
 
-  private final Map<String, AwsProperties.S3Properties> buckets;
+  private final AwsProperties.S3Properties bucketProperties;
 
   public AwsTransport(AwsProperties awsProperties) {
 
@@ -30,26 +31,21 @@ public class AwsTransport extends AppTransport {
         .credentialsProvider(awsProperties.getCredentialsProvider())
         .build();
 
-    buckets = awsProperties.getS3();
+    bucketProperties = awsProperties.getS3();
   }
 
   @Override
-  public String upload(Path inputPath, String uploadPath, Map<String, String> properties) {
+  public String upload(Path inputPath, String uploadPath, Map<UploadProperties, String> properties) {
 
-    String[] uploadPathParts = uploadPath.split(File.separator, 2);
-    if (!buckets.containsKey(uploadPathParts[0])) {
-      throw new InvalidPathException(uploadPath);
-    }
-
-    AwsProperties.S3Properties bucketProperties = buckets.get(uploadPathParts[0]);
     PutObjectRequest.Builder putObjectRequestBuilder = PutObjectRequest.builder()
         .bucket(bucketProperties.getBucket())
-        .key(uploadPathParts[1])
-        .acl(bucketProperties.getAcl())
-        .storageClass(bucketProperties.getStorageClass());
+        .key(uploadPath)
+        .acl(ObjectCannedACL.fromValue(bucketProperties.getAcl().toString()))
+        .storageClass(StorageClass.fromValue(bucketProperties.getStorageClass().toString()))
+        .metadata(prepareMetadata(inputPath));
 
-    if (properties.containsKey(DOWNLOAD_NAME_KEY)) {
-      putObjectRequestBuilder.contentDisposition(String.format("attachment; filename=\"%s\"", properties.get(DOWNLOAD_NAME_KEY)));
+    if (properties.containsKey(UploadProperties.DOWNLOAD_NAME)) {
+      putObjectRequestBuilder.contentDisposition(String.format("attachment; filename=\"%s\"", properties.get(UploadProperties.DOWNLOAD_NAME)));
     }
 
     try {
@@ -65,22 +61,17 @@ public class AwsTransport extends AppTransport {
   @Override
   public Path download(String downloadPath) {
 
-    String[] downloadPathParts = downloadPath.split(File.separator, 2);
-    if (!buckets.containsKey(downloadPathParts[0])) {
-      throw new InvalidPathException(downloadPath);
-    }
-
-    AwsProperties.S3Properties bucketProperties = buckets.get(downloadPathParts[0]);
     GetObjectRequest getObjectRequest = GetObjectRequest.builder()
         .bucket(bucketProperties.getBucket())
-        .key(downloadPathParts[1])
+        .key(downloadPath)
         .build();
 
     ResponseInputStream<GetObjectResponse> response = s3Client.getObject(getObjectRequest);
 
     try {
 
-      Path outputFile = Files.createTempFile(AppTransportType.AWS.getPathPrefix(), "");
+      AppTransportType transportType = AppTransportType.AWS;
+      Path outputFile = Files.createTempFile(transportType.getFilePrefix(), transportType.getFileSuffix());
       Files.copy(new BufferedInputStream(response), outputFile);
       return outputFile;
 
@@ -92,29 +83,17 @@ public class AwsTransport extends AppTransport {
   }
 
   @Override
-  public String copy(String sourcePath, String destinationPath, Map<String, String> properties) {
-
-    String[] sourcePathParts = sourcePath.split(File.separator, 2);
-    String[] destinationPathParts = destinationPath.split(File.separator, 2);
-
-    if (!buckets.containsKey(sourcePathParts[0])) {
-      throw new InvalidPathException(sourcePath);
-    } else if (!buckets.containsKey(destinationPathParts[0])) {
-      throw new InvalidPathException((destinationPath));
-    }
-
-    AwsProperties.S3Properties sourceBucketProperties = buckets.get(sourcePathParts[0]);
-    AwsProperties.S3Properties destinationBucketProperties = buckets.get(destinationPathParts[0]);
+  public String copy(String sourcePath, String destinationPath, Map<UploadProperties, String> properties) {
 
     CopyObjectRequest.Builder copyObjectRequestBuilder = CopyObjectRequest.builder()
-        .copySource(sourceBucketProperties.getBucket() + "/" + sourcePathParts[1])
-        .destinationBucket(destinationBucketProperties.getBucket())
-        .destinationKey(destinationPathParts[1])
-        .acl(destinationBucketProperties.getAcl())
-        .storageClass(destinationBucketProperties.getStorageClass());
+        .copySource(sourcePath)
+        .destinationBucket(bucketProperties.getBucket())
+        .destinationKey(destinationPath)
+        .acl(ObjectCannedACL.fromValue(bucketProperties.getAcl().toString()))
+        .storageClass(StorageClass.fromValue(bucketProperties.getStorageClass().toString()));
 
-    if (properties.containsKey(DOWNLOAD_NAME_KEY)) {
-      copyObjectRequestBuilder.contentDisposition(String.format("attachment; filename=\"%s\"", properties.get(DOWNLOAD_NAME_KEY)));
+    if (properties.containsKey(UploadProperties.DOWNLOAD_NAME)) {
+      copyObjectRequestBuilder.contentDisposition(String.format("attachment; filename=\"%s\"", properties.get(UploadProperties.DOWNLOAD_NAME)));
     }
 
     s3Client.copyObject(copyObjectRequestBuilder.build());
