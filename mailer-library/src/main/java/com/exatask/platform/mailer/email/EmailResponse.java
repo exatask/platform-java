@@ -14,6 +14,8 @@ public class EmailResponse {
 
   private final String subject;
 
+  private final String htmlBody;
+
   private final String textBody;
 
   @Singular("accepted")

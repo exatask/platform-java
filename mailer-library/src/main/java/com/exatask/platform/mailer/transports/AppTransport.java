@@ -94,15 +94,15 @@ public abstract class AppTransport {
       subjectVariables = emailMessage.getSubjectVariables().toArray(new String[]{});
     }
 
-    String subject = emailMessage.getTemplate().subject(subjectVariables);
+    String subject = String.format(emailMessage.getSubject(), (Object[]) subjectVariables);
     message.setSubject(subject, CHARSET_UTF8);
     return subject;
   }
 
   protected String prepareContent(MimeMessage message, EmailMessage emailMessage) throws MessagingException, IOException {
 
-    MimeBodyPart htmlBody = templateEngine.renderHtml(emailMessage.getTemplate(), emailMessage.getTemplateVariables());
-    MimeBodyPart textBody = templateEngine.renderText(emailMessage.getTemplate(), emailMessage.getTemplateVariables());
+    MimeBodyPart htmlBody = templateEngine.renderHtml(emailMessage.getLayout(), emailMessage.getTemplate(), emailMessage.getLocale(), emailMessage.getTemplateVariables());
+    MimeBodyPart textBody = templateEngine.renderText(emailMessage.getTemplate(), emailMessage.getLocale(), emailMessage.getTemplateVariables());
 
     MimeMultipart messageBody = new MimeMultipart(MIME_SUBTYPE_ALTERNATE);
     messageBody.addBodyPart(htmlBody);

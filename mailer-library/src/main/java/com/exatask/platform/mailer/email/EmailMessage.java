@@ -1,6 +1,5 @@
 package com.exatask.platform.mailer.email;
 
-import com.exatask.platform.utilities.templates.AppEmailTemplate;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.Singular;
@@ -23,13 +22,19 @@ public class EmailMessage {
   @Singular("bcc")
   private final List<String> bcc;
 
-  private final AppEmailTemplate template;
+  private final String subject;
+
+  private final String layout;
+
+  private final String template;
+
+  private final String locale;
 
   @Singular
   private final List<String> subjectVariables;
 
   @Singular
-  private final Map<String, Object> templateVariables;
+  private final Map<String, String> templateVariables;
 
   @Singular
   private final List<EmailAttachment> attachments;
