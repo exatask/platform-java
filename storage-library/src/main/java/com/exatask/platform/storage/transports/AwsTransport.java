@@ -1,6 +1,6 @@
 package com.exatask.platform.storage.transports;
 
-import com.exatask.platform.storage.constants.UploadProperties;
+import com.exatask.platform.storage.constants.MetadataProperties;
 import com.exatask.platform.storage.exceptions.DownloadFailedException;
 import com.exatask.platform.utilities.properties.AwsProperties;
 import software.amazon.awssdk.core.ResponseInputStream;
@@ -35,17 +35,17 @@ public class AwsTransport extends AppTransport {
   }
 
   @Override
-  public String upload(Path inputPath, String uploadPath, Map<UploadProperties, String> properties) {
+  public String upload(Path inputPath, String uploadPath, Map<MetadataProperties, String> properties) {
 
     PutObjectRequest.Builder putObjectRequestBuilder = PutObjectRequest.builder()
         .bucket(bucketProperties.getBucket())
         .key(uploadPath)
         .acl(ObjectCannedACL.fromValue(bucketProperties.getAcl().toString()))
         .storageClass(StorageClass.fromValue(bucketProperties.getStorageClass().toString()))
-        .metadata(prepareMetadata(inputPath));
+        .metadata(prepareMetadata(properties));
 
-    if (properties.containsKey(UploadProperties.DOWNLOAD_NAME)) {
-      putObjectRequestBuilder.contentDisposition(String.format("attachment; filename=\"%s\"", properties.get(UploadProperties.DOWNLOAD_NAME)));
+    if (properties.containsKey(MetadataProperties.DOWNLOAD_FILENAME)) {
+      putObjectRequestBuilder.contentDisposition(String.format("attachment; filename=\"%s\"", properties.get(MetadataProperties.DOWNLOAD_FILENAME)));
     }
 
     try {
@@ -83,7 +83,7 @@ public class AwsTransport extends AppTransport {
   }
 
   @Override
-  public String copy(String sourcePath, String destinationPath, Map<UploadProperties, String> properties) {
+  public String copy(String sourcePath, String destinationPath, Map<MetadataProperties, String> properties) {
 
     CopyObjectRequest.Builder copyObjectRequestBuilder = CopyObjectRequest.builder()
         .copySource(sourcePath)
@@ -92,8 +92,8 @@ public class AwsTransport extends AppTransport {
         .acl(ObjectCannedACL.fromValue(bucketProperties.getAcl().toString()))
         .storageClass(StorageClass.fromValue(bucketProperties.getStorageClass().toString()));
 
-    if (properties.containsKey(UploadProperties.DOWNLOAD_NAME)) {
-      copyObjectRequestBuilder.contentDisposition(String.format("attachment; filename=\"%s\"", properties.get(UploadProperties.DOWNLOAD_NAME)));
+    if (properties.containsKey(MetadataProperties.DOWNLOAD_FILENAME)) {
+      copyObjectRequestBuilder.contentDisposition(String.format("attachment; filename=\"%s\"", properties.get(MetadataProperties.DOWNLOAD_FILENAME)));
     }
 
     s3Client.copyObject(copyObjectRequestBuilder.build());

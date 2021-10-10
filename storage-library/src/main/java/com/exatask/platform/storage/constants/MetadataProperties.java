@@ -7,7 +7,8 @@ import lombok.Getter;
 @AllArgsConstructor
 public enum MetadataProperties {
 
-  ORIGINAL_FILENAME("x-original-filename");
+  ORIGINAL_FILENAME("x-original-filename"),
+  DOWNLOAD_FILENAME("x-download-filename");
 
   private final String key;
 }
