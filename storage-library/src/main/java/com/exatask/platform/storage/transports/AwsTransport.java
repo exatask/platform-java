@@ -40,8 +40,8 @@ public class AwsTransport extends AppTransport {
     PutObjectRequest.Builder putObjectRequestBuilder = PutObjectRequest.builder()
         .bucket(bucketProperties.getBucket())
         .key(uploadPath)
-        .acl(ObjectCannedACL.fromValue(bucketProperties.getAcl().toString()))
-        .storageClass(StorageClass.fromValue(bucketProperties.getStorageClass().toString()))
+        .acl(ObjectCannedACL.valueOf(bucketProperties.getAcl().toString()))
+        .storageClass(StorageClass.valueOf(bucketProperties.getStorageClass().toString()))
         .metadata(prepareMetadata(properties));
 
     if (properties.containsKey(MetadataProperties.DOWNLOAD_FILENAME)) {
@@ -89,8 +89,8 @@ public class AwsTransport extends AppTransport {
         .copySource(sourcePath)
         .destinationBucket(bucketProperties.getBucket())
         .destinationKey(destinationPath)
-        .acl(ObjectCannedACL.fromValue(bucketProperties.getAcl().toString()))
-        .storageClass(StorageClass.fromValue(bucketProperties.getStorageClass().toString()));
+        .acl(ObjectCannedACL.valueOf(bucketProperties.getAcl().toString()))
+        .storageClass(StorageClass.valueOf(bucketProperties.getStorageClass().toString()));
 
     if (properties.containsKey(MetadataProperties.DOWNLOAD_FILENAME)) {
       copyObjectRequestBuilder.contentDisposition(String.format("attachment; filename=\"%s\"", properties.get(MetadataProperties.DOWNLOAD_FILENAME)));

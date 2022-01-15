@@ -3,6 +3,7 @@ package com.exatask.platform.sdk.clients;
 import com.exatask.platform.logging.AppLogManager;
 import com.exatask.platform.logging.AppLogger;
 import com.exatask.platform.sdk.decoders.ServiceErrorDecoder;
+import com.exatask.platform.sdk.interceptors.RequestContextInterceptor;
 import com.exatask.platform.sdk.interceptors.ServiceAuthenticationInterceptor;
 import com.exatask.platform.sdk.interceptors.ServiceContextInterceptor;
 import com.exatask.platform.sdk.loggers.ServiceLogger;
@@ -53,6 +54,9 @@ public class ServiceClientTemplate {
   @Autowired
   private ServiceContextInterceptor serviceContextInterceptor;
 
+  @Autowired
+  private RequestContextInterceptor requestContextInterceptor;
+
   public <T extends AppServiceClient> T getServiceClient(Class<T> clazz, String baseUrl) {
     return getServiceClient(clazz, baseUrl, new NoAuthCredentials(), null);
   }
@@ -74,6 +78,7 @@ public class ServiceClientTemplate {
     }
 
     List<RequestInterceptor> interceptorList = new ArrayList<>();
+    interceptorList.add(requestContextInterceptor);
     interceptorList.add(serviceContextInterceptor);
     interceptorList.add(new ServiceAuthenticationInterceptor(credentials));
 
