@@ -9,5 +9,6 @@ public enum FilterOperation {
   LESSER,
   LESSER_EQUAL,
   REGEX,
-  NOT_REGEX
+  NOT_REGEX,
+  EXISTS
 }

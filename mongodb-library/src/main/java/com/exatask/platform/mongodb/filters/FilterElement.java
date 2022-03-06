@@ -64,6 +64,10 @@ public class FilterElement {
       case NOT_REGEX:
         criteria.not().regex(value.toString());
         break;
+
+      case EXISTS:
+        criteria.exists(Boolean.parseBoolean(value.toString()));
+        break;
     }
 
     return criteria;
