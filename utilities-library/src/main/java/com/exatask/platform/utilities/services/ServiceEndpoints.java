@@ -27,4 +27,5 @@ public class ServiceEndpoints {
   public static final String SERVICE_OTP = "/otp";
   public static final String SERVICE_SUBSCRIPTION = "/subscription";
   public static final String SERVICE_ATTENDANCE = "/attendance";
+  public static final String SERVICE_SCHEDULER = "/scheduler";
 }

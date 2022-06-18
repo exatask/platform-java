@@ -19,8 +19,9 @@ public enum ServiceName {
   DOCUMENT(ServiceEndpoints.SERVICE_DOCUMENT, true, false),
   OTP(ServiceEndpoints.SERVICE_OTP, true, false),
   AUDIT(ServiceEndpoints.SERVICE_AUDIT),
-  SUBSCRIPTION(ServiceEndpoints.SERVICE_SUBSCRIPTION),
-  ATTENDANCE(ServiceEndpoints.SERVICE_ATTENDANCE);
+  SUBSCRIPTION(ServiceEndpoints.SERVICE_SUBSCRIPTION, true, false),
+  ATTENDANCE(ServiceEndpoints.SERVICE_ATTENDANCE, true, false),
+  SCHEDULER(ServiceEndpoints.SERVICE_SCHEDULER);
 
   private final String uri;
 
