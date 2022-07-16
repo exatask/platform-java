@@ -19,6 +19,8 @@ public class RequestContext {
 
   private final String sessionToken;
 
+  private final String sessionId;
+
   private final String organizationId;
 
   private final String organizationName;

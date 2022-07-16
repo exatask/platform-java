@@ -19,6 +19,7 @@ public class ServiceContextInterceptor implements RequestInterceptor {
 
     Optional.ofNullable(RequestContextProvider.getSessionToken()).ifPresent(sessionToken ->
         template.header(RequestContextHeader.SESSION_TOKEN, sessionToken)
+            .header(RequestContextHeader.SESSION_ID, RequestContextProvider.getSessionId())
     );
 
     Optional.ofNullable(RequestContextProvider.getOrganizationId()).ifPresent(organizationId ->

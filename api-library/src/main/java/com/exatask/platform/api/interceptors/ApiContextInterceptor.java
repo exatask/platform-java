@@ -26,7 +26,9 @@ public class ApiContextInterceptor extends AppInterceptor {
         .parentId(StringUtils.defaultIfEmpty(request.getHeader(RequestContextHeader.PARENT_ID), traceId))
         .spanId(UUID.randomUUID().toString());
 
-    Optional.ofNullable(request.getHeader(RequestContextHeader.SESSION_TOKEN)).ifPresent(requestContextBuilder::sessionToken);
+    Optional.ofNullable(request.getHeader(RequestContextHeader.SESSION_TOKEN)).ifPresent((sessionToken) ->
+        requestContextBuilder.sessionToken(sessionToken)
+            .sessionId(request.getHeader(RequestContextHeader.SESSION_ID)));
 
     Optional.ofNullable(request.getHeader(RequestContextHeader.ORGANIZATION_ID)).ifPresent((organizationId) ->
         requestContextBuilder
