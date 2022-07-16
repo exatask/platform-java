@@ -17,8 +17,8 @@ public class ServiceContextInterceptor implements RequestInterceptor {
     template.header(RequestContextHeader.TRACE_ID, RequestContextProvider.getTraceId())
         .header(RequestContextHeader.PARENT_ID, RequestContextProvider.getSpanId());
 
-    Optional.ofNullable(RequestContextProvider.getSessionId()).ifPresent(sessionId ->
-        template.header(RequestContextHeader.SESSION_ID, sessionId)
+    Optional.ofNullable(RequestContextProvider.getSessionToken()).ifPresent(sessionToken ->
+        template.header(RequestContextHeader.SESSION_TOKEN, sessionToken)
     );
 
     Optional.ofNullable(RequestContextProvider.getOrganizationId()).ifPresent(organizationId ->

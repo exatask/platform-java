@@ -50,10 +50,10 @@ public class RequestContextProvider {
     return ObjectUtils.isNotEmpty(requestContext) ? requestContext.getSpanId() : null;
   }
 
-  public static String getSessionId() {
+  public static String getSessionToken() {
 
     RequestContext requestContext = getContext();
-    return ObjectUtils.isNotEmpty(requestContext) ? requestContext.getSessionId() : null;
+    return ObjectUtils.isNotEmpty(requestContext) ? requestContext.getSessionToken() : null;
   }
 
   public static String getSecurityTarget() {
