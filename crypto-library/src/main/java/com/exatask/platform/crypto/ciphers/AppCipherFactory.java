@@ -30,7 +30,7 @@ public class AppCipherFactory {
 
     switch (algorithm) {
 
-      case RSA_CBC:
+      case RSA_ECB:
         return new Rsa(algorithm, encoder, cipherKeys);
 
       case AES_CBC:

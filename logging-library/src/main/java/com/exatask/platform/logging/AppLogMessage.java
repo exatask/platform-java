@@ -54,6 +54,9 @@ public class AppLogMessage {
   @Setter(AccessLevel.PACKAGE)
   private String spanId;
 
+  @Setter(AccessLevel.PACKAGE)
+  private String sessionId;
+
   private String message;
 
   private Integer httpCode;

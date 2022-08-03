@@ -157,7 +157,8 @@ public class AppLogger {
         .setTimestamp(new Date())
         .setTraceId(RequestContextProvider.getTraceId())
         .setParentId(RequestContextProvider.getParentId())
-        .setSpanId(RequestContextProvider.getSpanId());
+        .setSpanId(RequestContextProvider.getSpanId())
+        .setSessionId(RequestContextProvider.getSessionId());
 
     log4jLogger.log(level, serializer.serialize(logMessage));
   }

@@ -28,6 +28,8 @@ public class LineLogSerializer implements AppLogSerializer {
         .append(logMessage.getParentId())
         .append(", ")
         .append(logMessage.getSpanId())
+        .append(", ")
+        .append(logMessage.getSessionId())
         .append("] ")
         .append(logMessage.getLevel().toUpperCase())
         .append(": ")
