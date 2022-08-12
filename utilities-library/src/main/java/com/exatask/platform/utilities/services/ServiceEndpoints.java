@@ -28,4 +28,5 @@ public class ServiceEndpoints {
   public static final String SERVICE_SUBSCRIPTION = "/subscription";
   public static final String SERVICE_ATTENDANCE = "/attendance";
   public static final String SERVICE_SCHEDULER = "/scheduler";
+  public static final String SERVICE_MIGRATE = "/migrate";
 }

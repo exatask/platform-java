@@ -21,7 +21,8 @@ public enum ServiceName {
   AUDIT(ServiceEndpoints.SERVICE_AUDIT),
   SUBSCRIPTION(ServiceEndpoints.SERVICE_SUBSCRIPTION, true, false),
   ATTENDANCE(ServiceEndpoints.SERVICE_ATTENDANCE, true, false),
-  SCHEDULER(ServiceEndpoints.SERVICE_SCHEDULER);
+  SCHEDULER(ServiceEndpoints.SERVICE_SCHEDULER),
+  MIGRATE(ServiceEndpoints.SERVICE_MIGRATE);
 
   private final String uri;
 
