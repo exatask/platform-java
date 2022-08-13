@@ -61,6 +61,7 @@ public class MongodbLibrary extends AppLibrary {
     runner.setChangelogCollectionName(CHANGELOG_COLLECTION);
     runner.setLockCollectionName(CHANGELOG_LOCK_COLLECTION);
     runner.setChangeLogsScanPackage(ServiceUtility.getServiceProperty("mongodb.changelogs.package"));
+    runner.setSpringEnvironment(ServiceUtility.getEnvironment());
     return runner;
   }
 
