@@ -62,10 +62,10 @@ public class RequestContextProvider {
     return ObjectUtils.isNotEmpty(requestContext) ? requestContext.getSessionId() : null;
   }
 
-  public static String getTenantId() {
+  public static String getTenant() {
 
     RequestContext requestContext = getContext();
-    return ObjectUtils.isNotEmpty(requestContext) ? requestContext.getTenantId() : null;
+    return ObjectUtils.isNotEmpty(requestContext) ? requestContext.getTenant() : null;
   }
 
   public static String getSecurityTarget() {

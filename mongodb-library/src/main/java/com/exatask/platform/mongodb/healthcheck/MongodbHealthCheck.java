@@ -26,10 +26,21 @@ public class MongodbHealthCheck implements ServiceHealthCheck {
     }
 
     Document serverStatus = new Document("serverStatus", 1);
-    serverStatus.append("asserts", 0).append("extra_info", 0).append("globalLock", 0).append("locks", 0)
-        .append("logicalSessionRecordCache", 0).append("metrics", 0).append("network", 0).append("opcounters", 0)
-        .append("opcountersRepl", 0).append("opLatencies", 0).append("opReadConcernCounters", 0).append("repl", 0)
-        .append("tcmalloc", 0).append("transactions", 0).append("wiredTiger", 0);
+    serverStatus.append("asserts", 0)
+        .append("extra_info", 0)
+        .append("globalLock", 0)
+        .append("locks", 0)
+        .append("logicalSessionRecordCache", 0)
+        .append("metrics", 0)
+        .append("network", 0)
+        .append("opcounters", 0)
+        .append("opcountersRepl", 0)
+        .append("opLatencies", 0)
+        .append("opReadConcernCounters", 0)
+        .append("repl", 0)
+        .append("tcmalloc", 0)
+        .append("transactions", 0)
+        .append("wiredTiger", 0);
 
     for (MongoTemplate template : mongoTemplates) {
 

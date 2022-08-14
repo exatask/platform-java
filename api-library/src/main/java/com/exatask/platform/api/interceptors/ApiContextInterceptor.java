@@ -5,6 +5,7 @@ import com.exatask.platform.utilities.contexts.RequestContext;
 import com.exatask.platform.utilities.contexts.RequestContextProvider;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.stereotype.Service;
+import org.springframework.web.servlet.ModelAndView;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -30,6 +31,8 @@ public class ApiContextInterceptor extends AppInterceptor {
         requestContextBuilder.sessionToken(sessionToken)
             .sessionId(request.getHeader(RequestContextHeader.SESSION_ID)));
 
+    Optional.ofNullable(request.getHeader(RequestContextHeader.TENANT)).ifPresent(requestContextBuilder::tenant);
+
     Optional.ofNullable(request.getHeader(RequestContextHeader.ORGANIZATION_ID)).ifPresent((organizationId) ->
         requestContextBuilder
           .organizationId(organizationId)
@@ -48,5 +51,10 @@ public class ApiContextInterceptor extends AppInterceptor {
 
     RequestContextProvider.setContext(requestContextBuilder.build());
     return true;
+  }
+
+  @Override
+  public void postHandle(HttpServletRequest request, HttpServletResponse response, Object handler, ModelAndView modelAndView) throws Exception {
+    RequestContextProvider.unsetContext();
   }
 }

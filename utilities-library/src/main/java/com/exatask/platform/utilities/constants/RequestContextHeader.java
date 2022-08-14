@@ -12,7 +12,7 @@ public class RequestContextHeader {
   public static final String SESSION_TOKEN = "x-session-token";
   public static final String SESSION_ID = "x-session-id";
 
-  public static final String TENANT_ID = "x-tenant-id";
+  public static final String TENANT = "x-tenant";
 
   public static final String ORGANIZATION_ID = "x-organization-id";
   public static final String ORGANIZATION_NAME = "x-organization-name";
