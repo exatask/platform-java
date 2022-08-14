@@ -1,7 +1,11 @@
-package com.exatask.platform.mongodb;
+package com.exatask.platform.mongodb.utilities;
 
+import com.exatask.platform.mongodb.AppMongoTenantClientDatabaseFactory;
+import com.exatask.platform.mongodb.tenants.MongoTenantClients;
+import com.exatask.platform.mongodb.tenants.ServiceTenant;
 import com.mongodb.ConnectionString;
 import com.mongodb.MongoClientSettings;
+import com.mongodb.client.MongoClient;
 import com.mongodb.client.MongoClients;
 import lombok.experimental.UtilityClass;
 import org.apache.commons.lang3.StringUtils;
@@ -19,12 +23,13 @@ import org.springframework.data.mongodb.core.mapping.MongoMappingContext;
 import java.util.Optional;
 
 @UtilityClass
-public class AppMongoTemplate {
+public class TemplateUtility {
 
   private static final String MONGODB_PREFIX = "mongodb://";
 
   private static final String DEFAULT_HOST = "localhost";
   private static final int DEFAULT_PORT = 27017;
+  private static final String DEFAULT_DATABASE = "admin";
 
   public static MongoTemplate getTemplate(MongoDatabaseFactory connectionFactory) {
 
@@ -37,18 +42,40 @@ public class AppMongoTemplate {
 
   public static MongoDatabaseFactory getDatabaseFactory(MongoProperties mongoProperties) {
 
-    String mongoUri = mongoProperties.getUri();
-    if (StringUtils.isEmpty(mongoUri)) {
-      mongoUri = prepareMongoUri(mongoProperties);
-    }
+    ConnectionString connectionString = prepareConnectionString(mongoProperties);
+    return new SimpleMongoClientDatabaseFactory(getClient(connectionString), Optional.ofNullable(connectionString.getDatabase()).orElse(DEFAULT_DATABASE));
+  }
 
-    ConnectionString connectionString = new ConnectionString(mongoUri);
+  public static MongoDatabaseFactory getDatabaseFactory(ServiceTenant serviceTenant) {
+
+    MongoTenantClients mongoTenantClients = new MongoTenantClients(serviceTenant);
+    return new AppMongoTenantClientDatabaseFactory(mongoTenantClients);
+  }
+
+  public static MongoClient getClient(MongoProperties mongoProperties) {
+
+    ConnectionString connectionString = prepareConnectionString(mongoProperties);
+    return getClient(connectionString);
+  }
+
+  public static MongoClient getClient(ConnectionString connectionString) {
+
     MongoClientSettings clientSettings = MongoClientSettings.builder()
         .uuidRepresentation(UuidRepresentation.STANDARD)
         .applyConnectionString(connectionString)
         .build();
 
-    return new SimpleMongoClientDatabaseFactory(MongoClients.create(clientSettings), connectionString.getDatabase());
+    return MongoClients.create(clientSettings);
+  }
+
+  private static ConnectionString prepareConnectionString(MongoProperties mongoProperties) {
+
+    String mongoUri = mongoProperties.getUri();
+    if (StringUtils.isEmpty(mongoUri)) {
+      mongoUri = prepareMongoUri(mongoProperties);
+    }
+
+    return new ConnectionString(mongoUri);
   }
 
   private static String prepareMongoUri(MongoProperties mongoProperties) {
