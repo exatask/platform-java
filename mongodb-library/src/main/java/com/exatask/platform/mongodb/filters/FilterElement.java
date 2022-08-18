@@ -26,6 +26,8 @@ public class FilterElement {
           criteria.in((List<?>) value);
         } else if (value.getClass().isArray()) {
           criteria.in(Arrays.asList((Object[]) value));
+        } else if (value.getClass().isEnum()) {
+          criteria.is(value.toString());
         } else {
           criteria.is(value);
         }
@@ -36,6 +38,8 @@ public class FilterElement {
           criteria.nin((List<?>) value);
         } else if (value.getClass().isArray()) {
           criteria.nin(Arrays.asList((Object[]) value));
+        } else if (value.getClass().isEnum()) {
+          criteria.ne(value.toString());
         } else {
           criteria.ne(value);
         }
