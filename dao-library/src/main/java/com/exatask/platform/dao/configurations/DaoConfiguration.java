@@ -1,11 +1,11 @@
-package com.exatask.platform.migration.configurations;
+package com.exatask.platform.dao.configurations;
 
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.support.ResourceBundleMessageSource;
 
 @Configuration
-public class MigrationConfiguration {
+public class DaoConfiguration {
 
   @Bean
   public ResourceBundleMessageSource getResourceBundleMessageSource() {

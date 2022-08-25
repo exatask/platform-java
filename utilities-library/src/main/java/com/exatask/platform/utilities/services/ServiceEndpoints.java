@@ -20,6 +20,7 @@ public class ServiceEndpoints {
   public static final String SERVICE_ORGANIZATION = "/organization";
   public static final String SERVICE_EMPLOYEE = "/employee";
   public static final String SERVICE_IDENTITY = "/identity";
+  public static final String SERVICE_ACCESS = "/access";
   public static final String SERVICE_ACCESS_CONTROL = "/access-control";
   public static final String SERVICE_NOTIFICATION = "/notification";
   public static final String SERVICE_DOCUMENT = "/document";

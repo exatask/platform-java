@@ -29,7 +29,7 @@ publishing {
   publications {
     maven(MavenPublication) {
 
-      artifactId = "exatask-migration"
+      artifactId = "exatask-dao"
       from components.java
     }
   }
