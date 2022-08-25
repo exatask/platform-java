@@ -1,4 +1,4 @@
-package com.exatask.platform.migration.libraries;
+package com.exatask.platform.dao.libraries;
 
 import com.exatask.platform.logging.AppLogManager;
 import com.exatask.platform.logging.AppLogger;

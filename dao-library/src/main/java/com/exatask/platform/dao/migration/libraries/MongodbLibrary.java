@@ -1,5 +1,6 @@
-package com.exatask.platform.migration.libraries;
+package com.exatask.platform.dao.migration.libraries;
 
+import com.exatask.platform.dao.libraries.AppLibrary;
 import com.exatask.platform.utilities.ServiceUtility;
 import com.github.mongobee.Mongobee;
 import com.mongodb.client.MongoCollection;
