@@ -1,8 +1,8 @@
 package com.exatask.platform.dao;
 
-import org.springframework.context.event.ContextStartedEvent;
+import org.springframework.context.event.ContextRefreshedEvent;
 
 public interface DaoApplication {
 
-  void migrateMongodb(ContextStartedEvent event);
+  void migrateMongodb(ContextRefreshedEvent event);
 }
