@@ -19,7 +19,8 @@ dependencies {
   implementation project(":utilities-library")
 
   compileOnly group: "org.springframework.boot", name: "spring-boot-starter-data-mongodb"
-  compileOnly group: "com.github.mongobee", name: "mongobee", version: "${mongobeeVersion}"
+  compileOnly group: "io.mongock", name: "mongock-springboot"
+  compileOnly group: "io.mongock", name: "mongodb-springdata-v3-driver"
   compileOnly group: "org.projectlombok", name: "lombok", version: "${lombokVersion}"
 
   annotationProcessor group: "org.projectlombok", name: "lombok", version: "${lombokVersion}"
