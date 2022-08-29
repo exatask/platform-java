@@ -1,6 +1,7 @@
 package com.exatask.platform.dao.migration.libraries;
 
 import com.exatask.platform.dao.libraries.AppLibrary;
+import com.exatask.platform.utilities.ApplicationContextUtility;
 import com.exatask.platform.utilities.ServiceUtility;
 import com.mongodb.ConnectionString;
 import com.mongodb.MongoClientSettings;
@@ -20,7 +21,7 @@ import org.bson.BsonDocument;
 import org.bson.BsonInt32;
 import org.bson.UuidRepresentation;
 import org.springframework.boot.autoconfigure.mongo.MongoProperties;
-import org.springframework.context.ApplicationContext;
+import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.data.mongodb.MongoDatabaseFactory;
 import org.springframework.data.mongodb.core.MongoTemplate;
 import org.springframework.data.mongodb.core.SimpleMongoClientDatabaseFactory;
@@ -44,13 +45,13 @@ public class MongodbLibrary extends AppLibrary {
   private static final String CHANGELOG_COLLECTION = "changelogs";
   private static final String CHANGELOG_LOCK_COLLECTION = "changelog_locks";
 
-  public MongockRunner createRunner(MongoProperties mongoProperties, ApplicationContext context) {
+  public MongockRunner createRunner(MongoProperties mongoProperties) {
 
     MongoTemplate mongoTemplate = prepareMongoTemplate(mongoProperties);
-    return createRunner(mongoTemplate, context);
+    return createRunner(mongoTemplate);
   }
 
-  public MongockRunner createRunner(MongoTemplate mongoTemplate, ApplicationContext context) {
+  public MongockRunner createRunner(MongoTemplate mongoTemplate) {
 
     MongockConfiguration configuration = new MongockConfiguration();
     configuration.setMigrationRepositoryName(CHANGELOG_COLLECTION);
@@ -67,7 +68,8 @@ public class MongodbLibrary extends AppLibrary {
         .setDriver(driver)
         .setConfig(configuration)
         .addMigrationScanPackage(ServiceUtility.getServiceProperty("mongodb.changelogs.package"))
-        .setSpringContext(context)
+        .setSpringContext(ApplicationContextUtility.getApplicationContext())
+        .setEventPublisher(ApplicationContextUtility.getBean(ApplicationEventPublisher.class))
         .buildRunner();
   }
 
