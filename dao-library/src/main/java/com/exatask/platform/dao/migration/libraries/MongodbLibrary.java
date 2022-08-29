@@ -2,12 +2,33 @@ package com.exatask.platform.dao.migration.libraries;
 
 import com.exatask.platform.dao.libraries.AppLibrary;
 import com.exatask.platform.utilities.ServiceUtility;
-import com.github.mongobee.Mongobee;
+import com.mongodb.ConnectionString;
+import com.mongodb.MongoClientSettings;
+import com.mongodb.ReadConcern;
+import com.mongodb.ReadPreference;
+import com.mongodb.WriteConcern;
+import com.mongodb.client.MongoClient;
+import com.mongodb.client.MongoClients;
 import com.mongodb.client.MongoCollection;
 import com.mongodb.client.model.IndexOptions;
+import io.mongock.api.config.MongockConfiguration;
+import io.mongock.driver.mongodb.springdata.v3.SpringDataMongoV3Driver;
+import io.mongock.runner.core.executor.MongockRunner;
+import io.mongock.runner.springboot.MongockSpringboot;
+import org.apache.commons.lang3.StringUtils;
 import org.bson.BsonDocument;
 import org.bson.BsonInt32;
+import org.bson.UuidRepresentation;
 import org.springframework.boot.autoconfigure.mongo.MongoProperties;
+import org.springframework.context.ApplicationContext;
+import org.springframework.data.mongodb.MongoDatabaseFactory;
+import org.springframework.data.mongodb.core.MongoTemplate;
+import org.springframework.data.mongodb.core.SimpleMongoClientDatabaseFactory;
+import org.springframework.data.mongodb.core.convert.DbRefResolver;
+import org.springframework.data.mongodb.core.convert.DefaultDbRefResolver;
+import org.springframework.data.mongodb.core.convert.DefaultMongoTypeMapper;
+import org.springframework.data.mongodb.core.convert.MappingMongoConverter;
+import org.springframework.data.mongodb.core.mapping.MongoMappingContext;
 
 import java.util.List;
 import java.util.Optional;
@@ -18,23 +39,36 @@ public class MongodbLibrary extends AppLibrary {
 
   private static final String DEFAULT_HOST = "localhost";
   private static final int DEFAULT_PORT = 27017;
+  private static final String DEFAULT_DATABASE = "admin";
 
   private static final String CHANGELOG_COLLECTION = "changelogs";
   private static final String CHANGELOG_LOCK_COLLECTION = "changelog_locks";
-  private static final String DEFAULT_MONGODB_URI = "mongodb://localhost:27017";
 
-  public Mongobee createRunner() {
+  public MongockRunner createRunner(MongoProperties mongoProperties, ApplicationContext context) {
 
-    String uri = ServiceUtility.getServiceProperty("mongodb.uri", DEFAULT_MONGODB_URI);
-    String database = ServiceUtility.getServiceProperty("mongodb.database");
-    return createRunner(uri, database);
+    MongoTemplate mongoTemplate = prepareMongoTemplate(mongoProperties);
+    return createRunner(mongoTemplate, context);
   }
 
-  public Mongobee createRunner(MongoProperties mongoProperties) {
+  public MongockRunner createRunner(MongoTemplate mongoTemplate, ApplicationContext context) {
 
-    String uri = prepareMongoUri(mongoProperties);
-    String database = mongoProperties.getDatabase();
-    return createRunner(uri, database);
+    MongockConfiguration configuration = new MongockConfiguration();
+    configuration.setMigrationRepositoryName(CHANGELOG_COLLECTION);
+    configuration.setLockRepositoryName(CHANGELOG_LOCK_COLLECTION);
+    configuration.setDefaultMigrationAuthor("rohit.aggarwal@exatask.com");
+
+    SpringDataMongoV3Driver driver = SpringDataMongoV3Driver.withDefaultLock(mongoTemplate);
+    driver.setWriteConcern(WriteConcern.MAJORITY.withJournal(true));
+    driver.setReadConcern(ReadConcern.MAJORITY);
+    driver.setReadPreference(ReadPreference.primary());
+    driver.disableTransaction();
+
+    return MongockSpringboot.builder()
+        .setDriver(driver)
+        .setConfig(configuration)
+        .addMigrationScanPackage(ServiceUtility.getServiceProperty("mongodb.changelogs.package"))
+        .setSpringContext(context)
+        .buildRunner();
   }
 
   public void createIndex(MongoCollection collection, List<String> fields, String name) {
@@ -55,15 +89,32 @@ public class MongodbLibrary extends AppLibrary {
     collection.createIndex(index, indexOptions);
   }
 
-  private Mongobee createRunner(String uri, String database) {
+  public void dropIndex(MongoCollection collection, String name) {
+    collection.dropIndex(name);
+  }
 
-    Mongobee runner = new Mongobee(uri);
-    runner.setDbName(database);
-    runner.setChangelogCollectionName(CHANGELOG_COLLECTION);
-    runner.setLockCollectionName(CHANGELOG_LOCK_COLLECTION);
-    runner.setChangeLogsScanPackage(ServiceUtility.getServiceProperty("mongodb.changelogs.package"));
-    runner.setSpringEnvironment(ServiceUtility.getEnvironment());
-    return runner;
+  private static MongoTemplate prepareMongoTemplate(MongoProperties mongoProperties) {
+
+    String mongoUri = mongoProperties.getUri();
+    if (StringUtils.isEmpty(mongoUri)) {
+      mongoUri = prepareMongoUri(mongoProperties);
+    }
+
+    ConnectionString connectionString = new ConnectionString(mongoUri);
+
+    MongoClientSettings clientSettings = MongoClientSettings.builder()
+        .uuidRepresentation(UuidRepresentation.STANDARD)
+        .applyConnectionString(connectionString)
+        .build();
+
+    MongoClient mongoClient = MongoClients.create(clientSettings);
+    MongoDatabaseFactory connectionFactory = new SimpleMongoClientDatabaseFactory(mongoClient, Optional.ofNullable(connectionString.getDatabase()).orElse(DEFAULT_DATABASE));
+
+    DbRefResolver refResolver = new DefaultDbRefResolver(connectionFactory);
+    MappingMongoConverter mongoConverter = new MappingMongoConverter(refResolver, new MongoMappingContext());
+    mongoConverter.setTypeMapper(new DefaultMongoTypeMapper(null));
+
+    return new MongoTemplate(connectionFactory, mongoConverter);
   }
 
   private static String prepareMongoUri(MongoProperties mongoProperties) {
