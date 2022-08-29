@@ -21,7 +21,6 @@ import org.bson.BsonDocument;
 import org.bson.BsonInt32;
 import org.bson.UuidRepresentation;
 import org.springframework.boot.autoconfigure.mongo.MongoProperties;
-import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.data.mongodb.MongoDatabaseFactory;
 import org.springframework.data.mongodb.core.MongoTemplate;
 import org.springframework.data.mongodb.core.SimpleMongoClientDatabaseFactory;
@@ -69,7 +68,7 @@ public class MongodbLibrary extends AppLibrary {
         .setConfig(configuration)
         .addMigrationScanPackage(ServiceUtility.getServiceProperty("mongodb.changelogs.package"))
         .setSpringContext(ApplicationContextUtility.getApplicationContext())
-        .setEventPublisher(ApplicationContextUtility.getBean(ApplicationEventPublisher.class))
+        .setEventPublisher(ApplicationContextUtility.getApplicationContext())
         .buildRunner();
   }
 
