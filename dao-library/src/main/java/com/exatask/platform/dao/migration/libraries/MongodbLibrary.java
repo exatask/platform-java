@@ -68,7 +68,6 @@ public class MongodbLibrary extends AppLibrary {
         .setConfig(configuration)
         .addMigrationScanPackage(ServiceUtility.getServiceProperty("mongodb.changelogs.package"))
         .setSpringContext(ApplicationContextUtility.getApplicationContext())
-        .setEventPublisher(ApplicationContextUtility.getApplicationContext())
         .buildRunner();
   }
 
