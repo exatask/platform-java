@@ -1,8 +1,8 @@
-package com.exatask.platform.sdk.authenticators;
+package com.exatask.platform.crypto.authenticators;
 
 import com.exatask.platform.utilities.services.ServiceAuth;
 
-public class NoAuthSdkAuthenticator implements AppSdkAuthenticator {
+public class NoAuthAuthenticator implements AppAuthenticator {
 
   @Override
   public ServiceAuth getAuthentication() {
@@ -12,5 +12,10 @@ public class NoAuthSdkAuthenticator implements AppSdkAuthenticator {
   @Override
   public String generate() {
     return null;
+  }
+
+  @Override
+  public Boolean authenticate(String token) {
+    return true;
   }
 }

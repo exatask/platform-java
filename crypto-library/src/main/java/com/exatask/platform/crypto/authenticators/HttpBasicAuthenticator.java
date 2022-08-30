@@ -1,4 +1,4 @@
-package com.exatask.platform.api.authenticators;
+package com.exatask.platform.crypto.authenticators;
 
 import com.exatask.platform.crypto.encoders.AppEncoder;
 import com.exatask.platform.crypto.encoders.AppEncoderAlgorithm;
@@ -6,13 +6,13 @@ import com.exatask.platform.crypto.encoders.AppEncoderFactory;
 import com.exatask.platform.utilities.credentials.AppCredentials;
 import com.exatask.platform.utilities.credentials.HttpBasicCredentials;
 import com.exatask.platform.utilities.services.ServiceAuth;
-import org.apache.commons.lang3.StringUtils;
+import org.springframework.util.StringUtils;
 
-public class HttpBasicApiAuthenticator implements AppApiAuthenticator {
+public class HttpBasicAuthenticator implements AppAuthenticator {
 
   private final String authenticationToken;
 
-  public HttpBasicApiAuthenticator(AppCredentials credentials) {
+  public HttpBasicAuthenticator(AppCredentials credentials) {
 
     HttpBasicCredentials httpBasicCredentials = (HttpBasicCredentials) credentials;
 
@@ -29,9 +29,14 @@ public class HttpBasicApiAuthenticator implements AppApiAuthenticator {
   }
 
   @Override
+  public String generate() {
+    return authenticationToken;
+  }
+
+  @Override
   public Boolean authenticate(String token) {
 
-    if (StringUtils.isEmpty(token)) {
+    if (!StringUtils.hasLength(token)) {
       return false;
     }
 

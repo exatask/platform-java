@@ -1,38 +1,18 @@
 package com.exatask.platform.sdk.interceptors;
 
+import com.exatask.platform.crypto.authenticators.AppAuthenticator;
+import com.exatask.platform.crypto.authenticators.AppAuthenticatorFactory;
 import com.exatask.platform.utilities.credentials.AppCredentials;
 import com.exatask.platform.utilities.services.ServiceAuthData;
-import com.exatask.platform.sdk.authenticators.AppSdkAuthenticator;
-import com.exatask.platform.sdk.authenticators.HttpBasicSdkAuthenticator;
-import com.exatask.platform.sdk.authenticators.JwtHmacSdkAuthenticator;
-import com.exatask.platform.sdk.authenticators.NoAuthSdkAuthenticator;
-import com.exatask.platform.sdk.exceptions.InvalidAuthenticatorException;
 import feign.RequestInterceptor;
 import feign.RequestTemplate;
 
 public class ServiceAuthenticationInterceptor implements RequestInterceptor {
 
-  private final AppSdkAuthenticator sdkAuthenticator;
+  private final AppAuthenticator sdkAuthenticator;
 
   public ServiceAuthenticationInterceptor(AppCredentials credentials) {
-    this.sdkAuthenticator = getAuthenticator(credentials);
-  }
-
-  private AppSdkAuthenticator getAuthenticator(AppCredentials credentials) {
-
-    switch (credentials.getAuthentication()) {
-
-      case HTTP_BASIC:
-        return new HttpBasicSdkAuthenticator(credentials);
-
-      case JWT_HMAC:
-        return new JwtHmacSdkAuthenticator(credentials);
-
-      case NO_AUTH:
-        return new NoAuthSdkAuthenticator();
-    }
-
-    throw new InvalidAuthenticatorException(credentials.getAuthentication().toString());
+    this.sdkAuthenticator = AppAuthenticatorFactory.getAuthenticator(credentials);
   }
 
   @Override

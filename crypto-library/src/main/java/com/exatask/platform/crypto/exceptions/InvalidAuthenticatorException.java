@@ -1,4 +1,4 @@
-package com.exatask.platform.api.exceptions;
+package com.exatask.platform.crypto.exceptions;
 
 import lombok.Getter;
 
