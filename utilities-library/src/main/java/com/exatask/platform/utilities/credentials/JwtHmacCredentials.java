@@ -14,6 +14,8 @@ public class JwtHmacCredentials implements AppCredentials {
 
   private String audience;
 
+  private String subject;
+
   private Integer expiry;
 
   @Override

@@ -1,7 +1,7 @@
 package com.exatask.platform.utilities.properties;
 
 import com.exatask.platform.utilities.ServiceUtility;
-import com.exatask.platform.utilities.constants.AwsConstants;
+import com.exatask.platform.utilities.constants.AwsConstant;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -42,9 +42,9 @@ public class AwsProperties {
 
     private String bucket;
 
-    private AwsConstants.S3Acl acl = AwsConstants.S3Acl.PRIVATE;
+    private AwsConstant.S3Acl acl = AwsConstant.S3Acl.PRIVATE;
 
-    private AwsConstants.S3Storage storageClass = AwsConstants.S3Storage.STANDARD;
+    private AwsConstant.S3Storage storageClass = AwsConstant.S3Storage.STANDARD;
   }
 
   public Region getRegion() {
