@@ -1,6 +1,6 @@
 package com.exatask.platform.utilities.constants;
 
-public interface AwsConstants {
+public interface AwsConstant {
 
   enum S3Acl {
 
