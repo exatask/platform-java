@@ -13,11 +13,11 @@ import lombok.NoArgsConstructor;
 @EqualsAndHashCode(callSuper = true)
 @JsonInclude(JsonInclude.Include.NON_NULL)
 @JsonNaming(PropertyNamingStrategy.SnakeCaseStrategy.class)
-public class HttpGenericResponse<T> extends HttpSuccessResponse {
+public class HttpSuccessEntityResponse<T> extends HttpSuccessResponse {
 
   private T data;
 
-  public HttpGenericResponse(T data, AppResponseMessage responseMessage) {
+  public HttpSuccessEntityResponse(T data, AppResponseMessage responseMessage) {
 
     super(responseMessage);
     this.data = data;

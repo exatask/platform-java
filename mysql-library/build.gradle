@@ -18,22 +18,15 @@ dependencies {
   implementation project(":logging-library")
   implementation project(":utilities-library")
 
-  compileOnly group: "org.springframework.boot", name: "spring-boot-starter-data-mongodb"
-  compileOnly group: "org.springframework.boot", name: "spring-boot-starter-validation"
-  compileOnly group: "io.mongock", name: "mongock-springboot"
-  compileOnly group: "io.mongock", name: "mongodb-springdata-v3-driver"
   compileOnly group: "org.projectlombok", name: "lombok", version: "${lombokVersion}"
-  compileOnly group: "org.mapstruct", name: "mapstruct", version: "${mapstructVersion}"
-
   annotationProcessor group: "org.projectlombok", name: "lombok", version: "${lombokVersion}"
-  annotationProcessor group: "org.mapstruct", name: "mapstruct-processor", version: "${mapstructVersion}"
 }
 
 publishing {
   publications {
     maven(MavenPublication) {
 
-      artifactId = "exatask-dao"
+      artifactId = "exatask-mysql"
       from components.java
     }
   }
