@@ -17,7 +17,7 @@ import java.lang.annotation.Target;
 @Retention(RetentionPolicy.RUNTIME)
 public @interface DateTimeConstraint {
 
-  String message() default "{com.exatask.validator.constraints.DateTimeConstraint.message}";
+  String message() default "{com.exatask.platform.validator.constraints.DateTimeConstraint.message}";
 
   Class<?>[] groups() default { };
 
