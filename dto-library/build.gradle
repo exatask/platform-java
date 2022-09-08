@@ -16,6 +16,7 @@ jar {
 dependencies {
 
   implementation group: "org.springframework", name: "spring-context"
+  implementation group: "org.springframework.hateoas", name: "spring-hateoas"
   implementation group: "com.fasterxml.jackson.core", name: "jackson-databind", version: "${fasterxmlJacksonVersion}"
   implementation project(":i18n-library")
   implementation project(":utilities-library")
