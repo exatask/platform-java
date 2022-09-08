@@ -1,6 +1,6 @@
 package com.exatask.platform.utilities;
 
-import com.exatask.platform.utilities.constants.DateTime;
+import com.exatask.platform.utilities.constants.DateTimeConstant;
 import lombok.experimental.UtilityClass;
 
 import java.text.ParseException;
@@ -12,15 +12,15 @@ import java.util.Map;
 @UtilityClass
 public class DateTimeUtility {
 
-  private static final Map<DateTime.Format, SimpleDateFormat> dateTimeFormats = new HashMap<>();
+  private static final Map<DateTimeConstant.Format, SimpleDateFormat> dateTimeFormats = new HashMap<>();
 
   static {
-    dateTimeFormats.put(DateTime.Format.SIMPLE_DATE, new SimpleDateFormat("yyyy-MM-dd"));
-    dateTimeFormats.put(DateTime.Format.SIMPLE_TIME, new SimpleDateFormat("HH:mm:ss"));
-    dateTimeFormats.put(DateTime.Format.SIMPLE_DATE_TIME, new SimpleDateFormat("yyyy-MM-dd HH:mm:ss"));
+    dateTimeFormats.put(DateTimeConstant.Format.SIMPLE_DATE, new SimpleDateFormat("yyyy-MM-dd"));
+    dateTimeFormats.put(DateTimeConstant.Format.SIMPLE_TIME, new SimpleDateFormat("HH:mm:ss"));
+    dateTimeFormats.put(DateTimeConstant.Format.SIMPLE_DATE_TIME, new SimpleDateFormat("yyyy-MM-dd HH:mm:ss"));
   }
 
-  public static String toString(Date date, DateTime.Format format) {
+  public static String toString(Date date, DateTimeConstant.Format format) {
 
     SimpleDateFormat dateTimeFormat = dateTimeFormats.get(format);
     if (dateTimeFormat == null) {
@@ -30,7 +30,7 @@ public class DateTimeUtility {
     return dateTimeFormat.format(date);
   }
 
-  public static Date toDate(String date, DateTime.Format format) throws ParseException {
+  public static Date toDate(String date, DateTimeConstant.Format format) throws ParseException {
 
     SimpleDateFormat dateTimeFormat = dateTimeFormats.get(format);
     if (dateTimeFormat == null) {

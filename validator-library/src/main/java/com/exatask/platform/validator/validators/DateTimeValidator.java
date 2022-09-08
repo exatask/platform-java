@@ -1,7 +1,7 @@
 package com.exatask.platform.validator.validators;
 
 import com.exatask.platform.utilities.DateTimeUtility;
-import com.exatask.platform.utilities.constants.DateTime;
+import com.exatask.platform.utilities.constants.DateTimeConstant;
 import com.exatask.platform.validator.constraints.DateTimeConstraint;
 
 import javax.validation.ConstraintValidator;
@@ -11,7 +11,7 @@ import java.util.Date;
 
 public class DateTimeValidator extends AppValidator implements ConstraintValidator<DateTimeConstraint, String> {
 
-  private DateTime.Format format;
+  private DateTimeConstant.Format format;
 
   @Override
   public void initialize(DateTimeConstraint constraintAnnotation) {

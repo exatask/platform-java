@@ -1,6 +1,6 @@
 package com.exatask.platform.validator.constraints;
 
-import com.exatask.platform.utilities.constants.DateTime;
+import com.exatask.platform.utilities.constants.DateTimeConstant;
 import com.exatask.platform.validator.validators.DateTimeValidator;
 
 import javax.validation.Constraint;
@@ -23,5 +23,5 @@ public @interface DateTimeConstraint {
 
   Class<? extends Payload>[] payload() default { };
 
-  DateTime.Format value();
+  DateTimeConstant.Format value();
 }

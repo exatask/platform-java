@@ -9,6 +9,10 @@ import com.fasterxml.jackson.databind.annotation.JsonNaming;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
+import org.springframework.hateoas.Link;
+import org.springframework.util.ObjectUtils;
+
+import java.util.List;
 
 @Data
 @NoArgsConstructor
@@ -20,9 +24,17 @@ public class HttpSuccessResponse extends AppResponse {
   private ResponseMessage message;
 
   public HttpSuccessResponse(AppResponseMessage responseMessage) {
+    this(responseMessage, null);
+  }
+
+  public HttpSuccessResponse(AppResponseMessage responseMessage, List<Link> links) {
 
     message = new ResponseMessage();
     message.setType(MessageType.SUCCESS)
         .setText(responseMessage.toLocale());
+
+    if (!ObjectUtils.isEmpty(links)) {
+      this.add(links);
+    }
   }
 }

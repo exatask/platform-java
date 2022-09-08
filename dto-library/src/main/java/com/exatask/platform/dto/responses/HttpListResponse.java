@@ -6,6 +6,8 @@ import com.fasterxml.jackson.databind.annotation.JsonNaming;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
+import org.springframework.hateoas.Link;
+import org.springframework.util.ObjectUtils;
 
 import java.util.List;
 
@@ -21,7 +23,16 @@ public class HttpListResponse<T> extends AppResponse {
   private List<T> data;
 
   public HttpListResponse(Long count, List<T> data) {
+    this(count, data, null);
+  }
+
+  public HttpListResponse(Long count, List<T> data, List<Link> links) {
+
     this.count = count;
     this.data = data;
+
+    if (!ObjectUtils.isEmpty(links)) {
+      this.add(links);
+    }
   }
 }

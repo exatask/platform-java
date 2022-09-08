@@ -7,6 +7,9 @@ import com.fasterxml.jackson.databind.annotation.JsonNaming;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
+import org.springframework.hateoas.Link;
+
+import java.util.List;
 
 @Data
 @NoArgsConstructor
@@ -15,11 +18,15 @@ import lombok.NoArgsConstructor;
 @JsonNaming(PropertyNamingStrategy.SnakeCaseStrategy.class)
 public class HttpEntityResponse<T> extends HttpSuccessResponse {
 
-  private T id;
+  private T data;
 
-  public HttpEntityResponse(T id, AppResponseMessage responseMessage) {
+  public HttpEntityResponse(T data, AppResponseMessage responseMessage) {
+    this(data, responseMessage, null);
+  }
 
-    super(responseMessage);
-    this.id = id;
+  public HttpEntityResponse(T data, AppResponseMessage responseMessage, List<Link> links) {
+
+    super(responseMessage, links);
+    this.data = data;
   }
 }

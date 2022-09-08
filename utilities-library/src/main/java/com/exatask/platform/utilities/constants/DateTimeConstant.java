@@ -1,6 +1,6 @@
 package com.exatask.platform.utilities.constants;
 
-public interface DateTime {
+public interface DateTimeConstant {
 
   enum Format {
     SIMPLE_DATE,
