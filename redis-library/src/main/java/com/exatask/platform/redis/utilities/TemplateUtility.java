@@ -1,4 +1,4 @@
-package com.exatask.platform.redis;
+package com.exatask.platform.redis.utilities;
 
 import lombok.experimental.UtilityClass;
 import org.springframework.boot.autoconfigure.data.redis.RedisProperties;
@@ -12,12 +12,12 @@ import org.springframework.data.redis.serializer.StringRedisSerializer;
 import java.util.Optional;
 
 @UtilityClass
-public class AppRedisTemplate {
+public class TemplateUtility {
 
   public static StringRedisTemplate getTemplate(RedisConnectionFactory connectionFactory) {
 
-    StringRedisSerializer stringSerializer = getStringRedisSerializer();
-    Jackson2JsonRedisSerializer<String> jsonSerializer = getJsonRedisSerializer();
+    StringRedisSerializer stringSerializer = new StringRedisSerializer();
+    Jackson2JsonRedisSerializer<String> jsonSerializer = new Jackson2JsonRedisSerializer<>(String.class);
 
     StringRedisTemplate redisTemplate = new StringRedisTemplate();
     redisTemplate.setConnectionFactory(connectionFactory);
@@ -41,13 +41,5 @@ public class AppRedisTemplate {
     Optional.ofNullable(redisProperties.getPassword()).ifPresent(redisStandaloneConfiguration::setPassword);
 
     return new JedisConnectionFactory(redisStandaloneConfiguration);
-  }
-
-  private static StringRedisSerializer getStringRedisSerializer() {
-    return new StringRedisSerializer();
-  }
-
-  private static Jackson2JsonRedisSerializer<String> getJsonRedisSerializer() {
-    return new Jackson2JsonRedisSerializer<>(String.class);
   }
 }

@@ -15,15 +15,16 @@ jar {
 
 dependencies {
 
-  implementation group: "org.springframework.boot", name: "spring-boot"
+  api group: "javax.mail", name: "mail", version: "${javaxMailVersion}"
+
   implementation group: "org.springframework.boot", name: "spring-boot-starter-thymeleaf"
   implementation group: "org.apache.commons", name: "commons-lang3", version: "${apacheCommonsVersion}"
-  implementation group: "javax.mail", name: "mail", version: "${javaxMailVersion}"
   implementation project(":logging-library")
   implementation project(":utilities-library")
 
   compileOnly group: "software.amazon.awssdk", name: "ses"
   compileOnly group: "org.projectlombok", name: "lombok", version: "${lombokVersion}"
+
   annotationProcessor group: "org.projectlombok", name: "lombok", version: "${lombokVersion}"
 }
 
