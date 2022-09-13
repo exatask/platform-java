@@ -21,6 +21,7 @@ dependencies {
   compileOnly group: "software.amazon.awssdk", name: "s3"
   compileOnly group: "com.jcraft", name: "jsch", version: "${jschVersion}"
   compileOnly group: "org.projectlombok", name: "lombok", version: "${lombokVersion}"
+
   annotationProcessor group: "org.projectlombok", name: "lombok", version: "${lombokVersion}"
 }
 
