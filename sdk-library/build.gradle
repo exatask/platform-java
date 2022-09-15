@@ -15,16 +15,16 @@ jar {
 
 dependencies {
 
+  api group: "org.springframework.cloud", name: "spring-cloud-starter-openfeign"
+  api project(":utilities-library")
+
   implementation group: "org.springframework.boot", name: "spring-boot-starter-web"
-  implementation group: "org.springframework.cloud", name: "spring-cloud-starter-openfeign"
   implementation group: "io.github.openfeign", name: "feign-okhttp", version: "${feignOkhttpVersion}"
   implementation group: "io.github.openfeign", name: "feign-jackson", version: "${feignOkhttpVersion}"
-  implementation project(":utilities-library")
   implementation project(":logging-library")
   implementation project(":crypto-library")
 
   compileOnly group: "org.projectlombok", name: "lombok", version: "${lombokVersion}"
-
   annotationProcessor group: "org.projectlombok", name: "lombok", version: "${lombokVersion}"
 }
 

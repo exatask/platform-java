@@ -15,19 +15,17 @@ jar {
 
 dependencies {
 
-  implementation group: "org.springframework.boot", name: "spring-boot-starter-data-mongodb"
-  implementation group: "org.springframework.boot", name: "spring-boot-starter-validation"
-  implementation group: "org.mongodb", name: "mongodb-driver-sync"
-  implementation group: "com.fasterxml.jackson.core", name: "jackson-databind", version: "${fasterxmlJacksonVersion}"
+  api group: "org.springframework.boot", name: "spring-boot-starter-data-mongodb"
+
   implementation group: "org.apache.commons", name: "commons-lang3", version: "${apacheCommonsVersion}"
   implementation project(":logging-library")
   implementation project(":dto-library")
   implementation project(":utilities-library")
 
   compileOnly group: "org.projectlombok", name: "lombok", version: "${lombokVersion}"
-  compileOnly group: "org.mapstruct", name: "mapstruct", version: "${mapstructVersion}"
-
   annotationProcessor group: "org.projectlombok", name: "lombok", version: "${lombokVersion}"
+
+  compileOnly group: "org.mapstruct", name: "mapstruct", version: "${mapstructVersion}"
   annotationProcessor group: "org.mapstruct", name: "mapstruct-processor", version: "${mapstructVersion}"
 }
 
