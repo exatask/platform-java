@@ -15,7 +15,7 @@ jar {
 
 dependencies {
 
-  implementation group: "org.springframework", name: "spring-context"
+  implementation group: "org.springframework", name: "spring-context", version: "${springVersion}"
 
   compileOnly group: "org.projectlombok", name: "lombok", version: "${lombokVersion}"
   annotationProcessor group: "org.projectlombok", name: "lombok", version: "${lombokVersion}"
