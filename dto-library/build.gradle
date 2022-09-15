@@ -15,16 +15,15 @@ jar {
 
 dependencies {
 
+  api group: "org.springframework", name: "spring-context"
   api group: "org.springframework.hateoas", name: "spring-hateoas"
+  api group: "org.hibernate.validator", name: "hibernate-validator"
+  api group: "com.fasterxml.jackson.core", name: "jackson-databind", version: "${fasterxmlJacksonVersion}"
+  api project(":i18n-library")
 
-  implementation group: "org.springframework", name: "spring-context"
-  implementation group: "com.fasterxml.jackson.core", name: "jackson-databind", version: "${fasterxmlJacksonVersion}"
-  implementation project(":i18n-library")
   implementation project(":utilities-library")
 
-  compileOnly group: "org.hibernate.validator", name: "hibernate-validator"
   compileOnly group: "org.projectlombok", name: "lombok", version: "${lombokVersion}"
-
   annotationProcessor group: "org.projectlombok", name: "lombok", version: "${lombokVersion}"
 }
 

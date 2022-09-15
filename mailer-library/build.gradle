@@ -23,8 +23,8 @@ dependencies {
   implementation project(":utilities-library")
 
   compileOnly group: "software.amazon.awssdk", name: "ses"
-  compileOnly group: "org.projectlombok", name: "lombok", version: "${lombokVersion}"
 
+  compileOnly group: "org.projectlombok", name: "lombok", version: "${lombokVersion}"
   annotationProcessor group: "org.projectlombok", name: "lombok", version: "${lombokVersion}"
 }
 
