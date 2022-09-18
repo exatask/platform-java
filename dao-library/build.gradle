@@ -20,8 +20,10 @@ dependencies {
   implementation project(":utilities-library")
 
   compileOnly group: "org.springframework.boot", name: "spring-boot-starter-data-mongodb"
+  compileOnly group: "org.springframework.boot", name: "spring-boot-starter-data-jpa"
   compileOnly group: "io.mongock", name: "mongock-springboot"
   compileOnly group: "io.mongock", name: "mongodb-springdata-v3-driver"
+  compileOnly group: "org.flywaydb", name: "flyway-core", version: "${flywayVersion}"
 
   compileOnly group: "org.projectlombok", name: "lombok", version: "${lombokVersion}"
   annotationProcessor group: "org.projectlombok", name: "lombok", version: "${lombokVersion}"
