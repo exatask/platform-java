@@ -41,9 +41,9 @@ public class AppMongoRepositoryListener extends AbstractMongoEventListener<AppMo
 
           AppConverter<?, ?> converter = AppConverterFactory.getConverter(annotation.annotationType());
           if (operation == Operation.READ) {
-            value = converter.read(value, annotation, fieldInfo.getField());
+            value = converter.convertToEntityAttribute(value, annotation);
           } else {
-            value = converter.write(value, annotation, fieldInfo.getField());
+            value = converter.convertToDatabaseColumn(value, annotation);
           }
         }
 

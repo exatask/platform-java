@@ -4,7 +4,6 @@ import com.exatask.platform.mongodb.annotations.Precision;
 import org.springframework.stereotype.Service;
 
 import java.lang.annotation.Annotation;
-import java.lang.reflect.Field;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
 
@@ -16,7 +15,7 @@ public class PrecisionConverter implements AppConverter<Double, Double> {
     return Precision.class;
   }
 
-  private Double convert(Object data, Annotation annotation, Field field) {
+  private Double convert(Object data, Annotation annotation) {
 
     Precision precision = (Precision) annotation;
     if (precision.value() < 0) {
@@ -29,12 +28,12 @@ public class PrecisionConverter implements AppConverter<Double, Double> {
   }
 
   @Override
-  public Double write(Object data, Annotation annotation, Field field) {
-    return convert(data, annotation, field);
+  public Double convertToDatabaseColumn(Object data, Annotation annotation) {
+    return convert(data, annotation);
   }
 
   @Override
-  public Double read(Object data, Annotation annotation, Field field) {
-    return convert(data, annotation, field);
+  public Double convertToEntityAttribute(Object data, Annotation annotation) {
+    return convert(data, annotation);
   }
 }

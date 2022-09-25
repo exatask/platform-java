@@ -1,6 +1,6 @@
 package com.exatask.platform.mongodb.annotations;
 
-import com.exatask.platform.mongodb.ciphers.MongoCipher;
+import com.exatask.platform.mongodb.converters.EncryptedConverter;
 
 import java.lang.annotation.Documented;
 import java.lang.annotation.ElementType;
@@ -13,5 +13,5 @@ import java.lang.annotation.Target;
 @Retention(RetentionPolicy.RUNTIME)
 public @interface Encrypted {
 
-  Class<? extends MongoCipher> value();
+  Class<? extends EncryptedConverter> value();
 }

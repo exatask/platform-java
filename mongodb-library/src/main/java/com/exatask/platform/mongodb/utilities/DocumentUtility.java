@@ -33,7 +33,9 @@ public class DocumentUtility {
         Map<String, FieldAnnotations> nestedConverterAnnotations = processConverterAnnotation(field.getType());
         if (!nestedConverterAnnotations.isEmpty()) {
 
-          FieldAnnotations fieldInfo = FieldAnnotations.builder().field(field).nestedFields(nestedConverterAnnotations).build();
+          FieldAnnotations fieldInfo = FieldAnnotations.builder()
+              .nestedFields(nestedConverterAnnotations)
+              .build();
           fieldAnnotationList.put(annotatedField.value(), fieldInfo);
         }
 
@@ -50,7 +52,9 @@ public class DocumentUtility {
 
         if (converterAnnotationList.size() > 0) {
 
-          FieldAnnotations fieldInfo = FieldAnnotations.builder().field(field).annotations(converterAnnotationList).build();
+          FieldAnnotations fieldInfo = FieldAnnotations.builder()
+              .annotations(converterAnnotationList)
+              .build();
           fieldAnnotationList.put(annotatedField.value(), fieldInfo);
         }
       }
