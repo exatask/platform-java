@@ -1,29 +1,22 @@
 package com.exatask.platform.mysql.converters;
 
-import com.exatask.platform.mysql.ciphers.MysqlCipher;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.context.ApplicationContext;
-
 import javax.persistence.AttributeConverter;
-import javax.persistence.Converter;
+import javax.persistence.Convert;
 
-@Converter
-public class EncryptedConverter implements AttributeConverter<String, String> {
+public abstract class EncryptedConverter implements AttributeConverter<String, String> {
 
-  @Autowired
-  private ApplicationContext applicationContext;
+  public abstract String encrypt(String data);
+
+  public abstract String decrypt(String data);
 
   @Override
   public String convertToDatabaseColumn(String data) {
-
-    MysqlCipher cipher = applicationContext.getBean(MysqlCipher.class);
-    return cipher.encrypt(data);
+    return encrypt(data);
   }
 
   @Override
+  @Convert
   public String convertToEntityAttribute(String data) {
-
-    MysqlCipher cipher = applicationContext.getBean(MysqlCipher.class);
-    return cipher.decrypt(data);
+    return decrypt(data);
   }
 }
