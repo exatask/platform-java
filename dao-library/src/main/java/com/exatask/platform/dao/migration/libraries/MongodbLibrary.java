@@ -43,14 +43,25 @@ public class MongodbLibrary extends AppLibrary {
 
   private static final String CHANGELOG_COLLECTION = "changelogs";
   private static final String CHANGELOG_LOCK_COLLECTION = "changelog_locks";
+  private static final String CHANGELOG_PACKAGE = "mongodb.changelogs.package";
 
   public MongockRunner createRunner(MongoProperties mongoProperties) {
 
     MongoTemplate mongoTemplate = prepareMongoTemplate(mongoProperties);
-    return createRunner(mongoTemplate);
+    return createRunner(mongoTemplate, ServiceUtility.getServiceProperty(CHANGELOG_PACKAGE));
+  }
+
+  public MongockRunner createRunner(MongoProperties mongoProperties, String scanPackage) {
+
+    MongoTemplate mongoTemplate = prepareMongoTemplate(mongoProperties);
+    return createRunner(mongoTemplate, scanPackage);
   }
 
   public MongockRunner createRunner(MongoTemplate mongoTemplate) {
+    return createRunner(mongoTemplate, ServiceUtility.getServiceProperty(CHANGELOG_PACKAGE));
+  }
+
+  public MongockRunner createRunner(MongoTemplate mongoTemplate, String scanPackage) {
 
     MongockConfiguration configuration = new MongockConfiguration();
     configuration.setMigrationRepositoryName(CHANGELOG_COLLECTION);
@@ -66,7 +77,7 @@ public class MongodbLibrary extends AppLibrary {
     return MongockSpringboot.builder()
         .setDriver(driver)
         .setConfig(configuration)
-        .addMigrationScanPackage(ServiceUtility.getServiceProperty("mongodb.changelogs.package"))
+        .addMigrationScanPackage(scanPackage)
         .setSpringContext(ApplicationContextUtility.getApplicationContext())
         .buildRunner();
   }

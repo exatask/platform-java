@@ -13,18 +13,29 @@ public class MysqlLibrary extends AppLibrary {
   private static final String MYSQL_DRIVER = "com.mysql.cj.jdbc.Driver";
 
   private static final String CHANGELOG_TABLE = "changelogs";
+  private static final String CHANGELOG_PACKAGE = "mysql.changelogs.package";
 
   public Flyway createRunner(DataSourceProperties dataSourceProperties) {
 
     DataSource dataSource = prepareMysqlDataSource(dataSourceProperties);
-    return createRunner(dataSource);
+    return createRunner(dataSource, ServiceUtility.getServiceProperty(CHANGELOG_PACKAGE));
+  }
+
+  public Flyway createRunner(DataSourceProperties dataSourceProperties, String scanPackage) {
+
+    DataSource dataSource = prepareMysqlDataSource(dataSourceProperties);
+    return createRunner(dataSource, scanPackage);
   }
 
   public Flyway createRunner(DataSource dataSource) {
+    return createRunner(dataSource, ServiceUtility.getServiceProperty(CHANGELOG_PACKAGE));
+  }
+
+  public Flyway createRunner(DataSource dataSource, String scanPackage) {
 
     return Flyway.configure()
         .table(CHANGELOG_TABLE)
-        .locations("classpath:" + ServiceUtility.getServiceProperty("mysql.changelogs.package"))
+        .locations("classpath:" + scanPackage)
         .failOnMissingLocations(true)
         .sqlMigrationSuffixes(".java")
         .validateMigrationNaming(true)
