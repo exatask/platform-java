@@ -28,6 +28,6 @@ public class AppI18nUtility {
   }
 
   public static java.util.Locale defaultLocale() {
-    return new java.util.Locale(Locale.DEFAULT_LANGUAGE, Locale.DEFAULT_COUNTRY);
+    return new java.util.Locale(Locale.DEFAULT_LANGUAGE, Locale.DEFAULT_COUNTRY_CODE);
   }
 }

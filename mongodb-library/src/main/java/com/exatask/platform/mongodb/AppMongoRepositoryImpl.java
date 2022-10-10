@@ -9,11 +9,11 @@ import com.exatask.platform.mongodb.filters.FilterElement;
 import com.exatask.platform.mongodb.updates.AppUpdate;
 import com.exatask.platform.mongodb.updates.UpdateElement;
 import com.mongodb.client.result.UpdateResult;
+import javafx.util.Pair;
 import org.bson.types.ObjectId;
 import org.springframework.data.domain.Sort;
 import org.springframework.data.mongodb.core.FindAndModifyOptions;
 import org.springframework.data.mongodb.core.MongoOperations;
-import org.springframework.data.mongodb.core.query.Criteria;
 import org.springframework.data.mongodb.core.query.Field;
 import org.springframework.data.mongodb.core.query.Query;
 import org.springframework.data.mongodb.core.query.SerializationUtils;
@@ -28,8 +28,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 
-public class AppMongoRepositoryImpl<T, ID extends Serializable> extends SimpleMongoRepository<T, ID> implements
-                                                                                                     AppMongoRepository<T, ID> {
+public class AppMongoRepositoryImpl<T, ID extends Serializable> extends SimpleMongoRepository<T, ID> implements AppMongoRepository<T, ID> {
 
   private static final AppLogger LOGGER = AppLogManager.getLogger();
 
@@ -169,6 +168,22 @@ public class AppMongoRepositoryImpl<T, ID extends Serializable> extends SimpleMo
     for (UpdateElement updateElement : updates.getUpdates()) {
       updateElement.setUpdate(update);
     }
+  }
+
+  /**
+   * @param filters
+   * @param updates
+   */
+  private Pair<Query, Update> prepareUpdateQuery(AppFilter filters, AppUpdate updates) {
+
+    Query query = new Query();
+    prepareFilters(query, filters);
+
+    Update update = new Update();
+    prepareUpdates(update, updates);
+    update.set("updated_at", new Date());
+
+    return new Pair<>(query, update);
   }
 
   @Override
@@ -400,20 +415,15 @@ public class AppMongoRepositoryImpl<T, ID extends Serializable> extends SimpleMo
   @Override
   public boolean updateOne(AppFilter filters, AppUpdate updates) {
 
-    Query query = new Query();
-    prepareFilters(query, filters);
-
-    Update update = new Update();
-    prepareUpdates(update, updates);
-    update.set("updated_at", new Date());
+    Pair<Query, Update> update = prepareUpdateQuery(filters, updates);
 
     this.lastQuery = String.format("%s.updateOne(%s, %s)",
         mongoEntityInformation.getCollectionName(),
-        SerializationUtils.serializeToJsonSafely(query.getQueryObject()),
-        update);
+        SerializationUtils.serializeToJsonSafely(update.getKey().getQueryObject()),
+        update.getValue());
     LOGGER.trace(this.lastQuery);
 
-    UpdateResult result = mongoOperations.updateFirst(query, update, mongoEntityInformation.getJavaType(), mongoEntityInformation.getCollectionName());
+    UpdateResult result = mongoOperations.updateFirst(update.getKey(), update.getValue(), mongoEntityInformation.getJavaType(), mongoEntityInformation.getCollectionName());
     return result.wasAcknowledged();
   }
 
@@ -435,20 +445,15 @@ public class AppMongoRepositoryImpl<T, ID extends Serializable> extends SimpleMo
   @Override
   public boolean updateAll(AppFilter filters, AppUpdate updates) {
 
-    Query query = new Query();
-    prepareFilters(query, filters);
-
-    Update update = new Update();
-    prepareUpdates(update, updates);
-    update.set("updated_at", new Date());
+    Pair<Query, Update> update = prepareUpdateQuery(filters, updates);
 
     this.lastQuery = String.format("%s.updateMany(%s, %s)",
         mongoEntityInformation.getCollectionName(),
-        SerializationUtils.serializeToJsonSafely(query.getQueryObject()),
-        update);
+        SerializationUtils.serializeToJsonSafely(update.getKey().getQueryObject()),
+        update.getValue());
     LOGGER.trace(this.lastQuery);
 
-    UpdateResult result = mongoOperations.updateMulti(query, update, mongoEntityInformation.getJavaType(), mongoEntityInformation.getCollectionName());
+    UpdateResult result = mongoOperations.updateMulti(update.getKey(), update.getValue(), mongoEntityInformation.getJavaType(), mongoEntityInformation.getCollectionName());
     return result.wasAcknowledged();
   }
 
@@ -460,23 +465,18 @@ public class AppMongoRepositoryImpl<T, ID extends Serializable> extends SimpleMo
   @Override
   public boolean updateById(ID id, AppUpdate updates) {
 
-    Criteria criteria = new Criteria("_id");
-    criteria.is(prepareObjectId(id));
+    AppFilter filters = new AppFilter();
+    filters.addFilter("_id", prepareObjectId(id));
 
-    Query query = new Query();
-    query.addCriteria(criteria);
-
-    Update update = new Update();
-    prepareUpdates(update, updates);
-    update.set("updated_at", new Date());
+    Pair<Query, Update> update = prepareUpdateQuery(filters, updates);
 
     this.lastQuery = String.format("%s.updateOne(%s, %s)",
         mongoEntityInformation.getCollectionName(),
-        SerializationUtils.serializeToJsonSafely(query.getQueryObject()),
-        update);
+        SerializationUtils.serializeToJsonSafely(update.getKey().getQueryObject()),
+        update.getValue());
     LOGGER.trace(this.lastQuery);
 
-    UpdateResult result = mongoOperations.updateFirst(query, update, mongoEntityInformation.getJavaType(), mongoEntityInformation.getCollectionName());
+    UpdateResult result = mongoOperations.updateFirst(update.getKey(), update.getValue(), mongoEntityInformation.getJavaType(), mongoEntityInformation.getCollectionName());
     return result.wasAcknowledged();
   }
 
@@ -498,21 +498,16 @@ public class AppMongoRepositoryImpl<T, ID extends Serializable> extends SimpleMo
   @Override
   public ID upsert(AppFilter filters, AppUpdate updates) {
 
-    Query query = new Query();
-    prepareFilters(query, filters);
-
-    Update update = new Update();
-    prepareUpdates(update, updates);
-    update.setOnInsert("created_at", new Date());
-    update.set("updated_at", new Date());
+    Pair<Query, Update> update = prepareUpdateQuery(filters, updates);
+    update.getValue().setOnInsert("created_at", new Date());
 
     this.lastQuery = String.format("%s.upsert(%s, %s)",
         mongoEntityInformation.getCollectionName(),
-        SerializationUtils.serializeToJsonSafely(query.getQueryObject()),
-        update);
+        SerializationUtils.serializeToJsonSafely(update.getKey().getQueryObject()),
+        update.getValue());
     LOGGER.trace(this.lastQuery);
 
-    UpdateResult result = mongoOperations.updateMulti(query, update, mongoEntityInformation.getJavaType(), mongoEntityInformation.getCollectionName());
+    UpdateResult result = mongoOperations.upsert(update.getKey(), update.getValue(), mongoEntityInformation.getJavaType(), mongoEntityInformation.getCollectionName());
     if (result.wasAcknowledged()) {
       return (ID) result.getUpsertedId();
     }
