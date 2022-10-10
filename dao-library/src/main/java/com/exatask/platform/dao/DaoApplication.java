@@ -6,5 +6,7 @@ public interface DaoApplication {
 
   void migrateMongodb(ContextRefreshedEvent event);
 
+  void migrateMysql(ContextRefreshedEvent event);
+
   void migrateService(ContextRefreshedEvent event);
 }

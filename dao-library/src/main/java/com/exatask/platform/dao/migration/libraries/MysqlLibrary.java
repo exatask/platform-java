@@ -37,7 +37,7 @@ public class MysqlLibrary extends AppLibrary {
         .table(CHANGELOG_TABLE)
         .locations("classpath:" + scanPackage)
         .failOnMissingLocations(true)
-        .sqlMigrationSuffixes(".java")
+        .sqlMigrationSuffixes(".sql,.java")
         .validateMigrationNaming(true)
         .installedBy("rohit.aggarwal@exatask.com")
         .dataSource(dataSource)
