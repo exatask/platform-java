@@ -48,7 +48,7 @@ public class AppMongoRepositoryFactoryBean<R extends MongoRepository<T, ID>, T, 
 
     @Override
     protected Class<?> getRepositoryBaseClass(RepositoryMetadata metadata) {
-      return AppMongoRepositoryImpl.class;
+      return AppMongoRepository.class;
     }
   }
 }

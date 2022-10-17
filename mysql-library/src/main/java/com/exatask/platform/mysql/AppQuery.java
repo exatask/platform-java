@@ -10,7 +10,9 @@ import lombok.Getter;
 import lombok.Singular;
 
 import javax.persistence.criteria.JoinType;
+import java.util.ArrayList;
 import java.util.Collections;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -41,11 +43,19 @@ public class AppQuery {
 
     public AppQueryBuilder filter(FilterElement element) {
 
+      if (this.filters == null) {
+        this.filters = new ArrayList<>();
+      }
+
       this.filters.add(element);
       return this;
     }
 
     public AppQueryBuilder projection(List<String> keys) {
+
+      if (this.projections == null) {
+        this.projections = new HashMap<>();
+      }
 
       for (String key : keys) {
         this.projections.put(key, true);
@@ -63,6 +73,10 @@ public class AppQuery {
 
     public AppQueryBuilder join(JoinElement element) {
 
+      if (this.joins == null) {
+        this.joins = new ArrayList<>();
+      }
+
       this.joins.add(element);
       return this;
     }
@@ -72,6 +86,10 @@ public class AppQuery {
     }
 
     public AppQueryBuilder update(UpdateElement element) {
+
+      if (this.updates == null) {
+        this.updates = new ArrayList<>();
+      }
 
       this.updates.add(element);
       return this;

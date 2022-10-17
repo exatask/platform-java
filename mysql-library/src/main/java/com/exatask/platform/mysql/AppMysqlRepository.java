@@ -2,10 +2,11 @@ package com.exatask.platform.mysql;
 
 import org.springframework.data.jpa.repository.JpaRepository;
 
+import java.io.Serializable;
 import java.util.List;
 import java.util.Optional;
 
-public interface AppMysqlRepository<T, ID> extends JpaRepository<T, ID> {
+public interface AppMysqlRepository<T, ID extends Serializable> extends JpaRepository<T, ID> {
 
   List<T> find(AppQuery query);
 

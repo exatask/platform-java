@@ -8,6 +8,8 @@ import lombok.Builder;
 import lombok.Getter;
 import lombok.Singular;
 
+import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -39,11 +41,19 @@ public class AppQuery {
 
     public AppQueryBuilder filter(FilterElement element) {
 
+      if (this.filters == null) {
+        this.filters = new ArrayList<>();
+      }
+
       this.filters.add(element);
       return this;
     }
 
     public AppQueryBuilder projection(List<String> keys) {
+
+      if (this.projections == null) {
+        this.projections = new HashMap<>();
+      }
 
       for (String key : keys) {
         this.projections.put(key, true);
@@ -56,6 +66,10 @@ public class AppQuery {
     }
 
     public AppQueryBuilder update(UpdateElement element) {
+
+      if (this.updates == null) {
+        this.updates = new ArrayList<>();
+      }
 
       this.updates.add(element);
       return this;

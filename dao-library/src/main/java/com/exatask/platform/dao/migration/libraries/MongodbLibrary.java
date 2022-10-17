@@ -48,23 +48,23 @@ public class MongodbLibrary extends AppLibrary {
   public MongockRunner createRunner(MongoProperties mongoProperties) {
 
     MongoTemplate mongoTemplate = prepareMongoTemplate(mongoProperties);
-    return createRunner(mongoTemplate, ServiceUtility.getServiceProperty(CHANGELOG_PACKAGE));
+    return createRunner(mongoTemplate, ServiceUtility.getServiceProperty(CHANGELOG_PACKAGE), CHANGELOG_COLLECTION);
   }
 
-  public MongockRunner createRunner(MongoProperties mongoProperties, String scanPackage) {
+  public MongockRunner createRunner(MongoProperties mongoProperties, String scanPackage, String collection) {
 
     MongoTemplate mongoTemplate = prepareMongoTemplate(mongoProperties);
-    return createRunner(mongoTemplate, scanPackage);
+    return createRunner(mongoTemplate, scanPackage, collection);
   }
 
   public MongockRunner createRunner(MongoTemplate mongoTemplate) {
-    return createRunner(mongoTemplate, ServiceUtility.getServiceProperty(CHANGELOG_PACKAGE));
+    return createRunner(mongoTemplate, ServiceUtility.getServiceProperty(CHANGELOG_PACKAGE), CHANGELOG_COLLECTION);
   }
 
-  public MongockRunner createRunner(MongoTemplate mongoTemplate, String scanPackage) {
+  public MongockRunner createRunner(MongoTemplate mongoTemplate, String scanPackage, String collection) {
 
     MongockConfiguration configuration = new MongockConfiguration();
-    configuration.setMigrationRepositoryName(CHANGELOG_COLLECTION);
+    configuration.setMigrationRepositoryName(collection);
     configuration.setLockRepositoryName(CHANGELOG_LOCK_COLLECTION);
     configuration.setDefaultMigrationAuthor("rohit.aggarwal@exatask.com");
 

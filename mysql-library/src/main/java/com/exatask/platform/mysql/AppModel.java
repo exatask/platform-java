@@ -2,31 +2,33 @@ package com.exatask.platform.mysql;
 
 import lombok.Getter;
 import lombok.NoArgsConstructor;
-import org.springframework.data.annotation.CreatedDate;
-import org.springframework.data.annotation.LastModifiedDate;
+import org.hibernate.annotations.CreationTimestamp;
+import org.hibernate.annotations.UpdateTimestamp;
 import org.springframework.format.annotation.DateTimeFormat;
 
 import javax.persistence.Column;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.MappedSuperclass;
 import java.util.Date;
 
 @Getter
 @NoArgsConstructor
+@MappedSuperclass
 public class AppModel {
 
   @Id
-  @GeneratedValue(strategy = GenerationType.AUTO)
+  @GeneratedValue(strategy = GenerationType.IDENTITY)
   @Column(name = "id")
   protected Integer id;
 
-  @CreatedDate
+  @CreationTimestamp
   @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME)
   @Column(name = "created_at")
   protected Date createdAt;
 
-  @LastModifiedDate
+  @UpdateTimestamp
   @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME)
   @Column(name = "updated_at")
   protected Date updatedAt;

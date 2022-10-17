@@ -26,19 +26,19 @@ public class FilterElement {
     switch (operation) {
 
       case EQUAL:
-        if (value instanceof List || value.getClass().isArray()) {
+        if (value == null) {
+          return criteriaBuilder.isNull(path);
+        } else if (value instanceof List || value.getClass().isArray()) {
           return path.in(value);
-        } else if (value.getClass().isEnum()) {
-          return criteriaBuilder.equal(path, value.toString());
         } else {
           return criteriaBuilder.equal(path, value);
         }
 
       case NOT_EQUAL:
-        if (value instanceof List || value.getClass().isArray()) {
+        if (value == null) {
+          return criteriaBuilder.isNotNull(path);
+        } else if (value instanceof List || value.getClass().isArray()) {
           return path.in(value).not();
-        } else if (value.getClass().isEnum()) {
-          return criteriaBuilder.equal(path, value.toString()).not();
         } else {
           return criteriaBuilder.equal(path, value).not();
         }
