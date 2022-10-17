@@ -4,9 +4,8 @@ import com.exatask.platform.logging.AppLogManager;
 import com.exatask.platform.logging.AppLogger;
 import com.exatask.platform.mysql.constants.Defaults;
 import com.exatask.platform.mysql.exceptions.InvalidOperationException;
-import com.exatask.platform.mysql.filters.AppFilter;
 import com.exatask.platform.mysql.filters.FilterElement;
-import com.exatask.platform.mysql.updates.AppUpdate;
+import com.exatask.platform.mysql.joins.JoinElement;
 import com.exatask.platform.mysql.updates.UpdateElement;
 import org.hibernate.query.Query;
 import org.springframework.data.jpa.repository.support.JpaEntityInformation;
@@ -23,7 +22,6 @@ import javax.persistence.criteria.Root;
 import javax.persistence.criteria.Selection;
 import java.util.ArrayList;
 import java.util.Date;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
@@ -44,41 +42,20 @@ public class AppMysqlRepositoryImpl<T, ID> extends SimpleJpaRepository<T, ID> im
     this.entityManager = entityManager;
   }
 
-  private Integer prepareId(ID id) {
-    return Integer.parseInt(id.toString());
-  }
-
-  /**
-   * @param filters
-   * @return AppFilter
-   */
-  private AppFilter prepareAppFilters(Map<String, Object> filters) {
-
-    AppFilter appFilter = new AppFilter();
-    if (filters == null) {
-      return appFilter;
-    }
-
-    for (Map.Entry<String, Object> entry : filters.entrySet()) {
-      appFilter.addFilter(entry.getKey(), entry.getValue());
-    }
-    return appFilter;
-  }
-
   /**
    * @param criteriaBuilder
    * @param criteriaQuery
    * @param from
    * @param filters
    */
-  private CriteriaQuery<T> prepareFilters(CriteriaBuilder criteriaBuilder, CriteriaQuery<T> criteriaQuery, Root<T> from, AppFilter filters) {
+  private CriteriaQuery<T> prepareFilters(CriteriaBuilder criteriaBuilder, CriteriaQuery<T> criteriaQuery, Root<T> from, List<FilterElement> filters) {
 
     if (filters == null) {
       return criteriaQuery;
     }
 
     List<Predicate> predicates = new ArrayList<>();
-    for (FilterElement filterElement : filters.getFilters()) {
+    for (FilterElement filterElement : filters) {
       predicates.add(filterElement.getPredicate(criteriaBuilder, from));
     }
     return criteriaQuery.where(predicates.toArray(new Predicate[]{}));
@@ -90,34 +67,17 @@ public class AppMysqlRepositoryImpl<T, ID> extends SimpleJpaRepository<T, ID> im
    * @param from
    * @param filters
    */
-  private CriteriaUpdate<T> prepareFilters(CriteriaBuilder criteriaBuilder, CriteriaUpdate<T> criteriaUpdate, Root<T> from, AppFilter filters) {
+  private CriteriaUpdate<T> prepareFilters(CriteriaBuilder criteriaBuilder, CriteriaUpdate<T> criteriaUpdate, Root<T> from, List<FilterElement> filters) {
 
     if (filters == null) {
       return criteriaUpdate;
     }
 
     List<Predicate> predicates = new ArrayList<>();
-    for (FilterElement filterElement : filters.getFilters()) {
+    for (FilterElement filterElement : filters) {
       predicates.add(filterElement.getPredicate(criteriaBuilder, from));
     }
     return criteriaUpdate.where(predicates.toArray(new Predicate[]{}));
-  }
-
-  /**
-   * @param projection
-   * @return Map<String, Boolean>
-   */
-  private Map<String, Boolean> prepareAppProjection(List<String> projection) {
-
-    Map<String, Boolean> appProjection = new HashMap<>();
-    if (projection == null) {
-      return appProjection;
-    }
-
-    for (String field : projection) {
-      appProjection.put(field, true);
-    }
-    return appProjection;
   }
 
   /**
@@ -149,7 +109,7 @@ public class AppMysqlRepositoryImpl<T, ID> extends SimpleJpaRepository<T, ID> im
   private CriteriaQuery<T> prepareSort(CriteriaBuilder criteriaBuilder, CriteriaQuery<T> criteriaQuery, Root<T> from, Map<String, Integer> sort) {
 
     if (sort == null) {
-      sort = new HashMap<>();
+      return criteriaQuery;
     }
 
     List<Order> orderBy = new ArrayList<>();
@@ -164,20 +124,19 @@ public class AppMysqlRepositoryImpl<T, ID> extends SimpleJpaRepository<T, ID> im
   }
 
   /**
-   * @param updates
-   * @return AppUpdate
+   * @param criteriaBuilder
+   * @param from
+   * @param joins
    */
-  private AppUpdate prepareAppUpdates(Map<String, Object> updates) {
+  private void prepareJoin(CriteriaBuilder criteriaBuilder, Root<T> from, List<JoinElement> joins) {
 
-    AppUpdate appUpdate = new AppUpdate();
-    if (updates == null) {
-      return appUpdate;
+    if (joins == null) {
+      return;
     }
 
-    for (Map.Entry<String, Object> entry : updates.entrySet()) {
-      appUpdate.addUpdate(entry.getKey(), entry.getValue());
+    for (JoinElement join : joins) {
+      join.getJoin(criteriaBuilder, from);
     }
-    return appUpdate;
   }
 
   /**
@@ -186,104 +145,42 @@ public class AppMysqlRepositoryImpl<T, ID> extends SimpleJpaRepository<T, ID> im
    * @param from
    * @param updates
    */
-  private CriteriaUpdate<T> prepareUpdates(CriteriaBuilder criteriaBuilder, CriteriaUpdate<T> criteriaUpdate, Root<T> from, AppUpdate updates) {
+  private CriteriaUpdate<T> prepareUpdates(CriteriaBuilder criteriaBuilder, CriteriaUpdate<T> criteriaUpdate, Root<T> from, List<UpdateElement> updates) {
 
     if (updates == null) {
       return criteriaUpdate;
     }
 
-    for (UpdateElement updateElement : updates.getUpdates()) {
+    for (UpdateElement updateElement : updates) {
       criteriaUpdate = updateElement.setUpdate(criteriaBuilder, criteriaUpdate, from);
     }
 
     return criteriaUpdate;
   }
 
-  /**
-   * @param filters
-   * @param updates
-   */
-  private javax.persistence.Query prepareUpdateQuery(AppFilter filters, AppUpdate updates) {
-
-    CriteriaBuilder criteriaBuilder = entityManager.getCriteriaBuilder();
-    CriteriaUpdate<T> criteriaUpdate = criteriaBuilder.createCriteriaUpdate(entityInformation.getJavaType());
-    Root<T> from = criteriaUpdate.from(entityInformation.getJavaType());
-
-    criteriaUpdate = prepareFilters(criteriaBuilder, criteriaUpdate, from, filters);
-    criteriaUpdate = prepareUpdates(criteriaBuilder, criteriaUpdate, from, updates);
-    criteriaUpdate.set(from.get("updated_at"), new Date());
-
-    return entityManager.createQuery(criteriaUpdate);
-  }
-
   @Override
-  public List<T> find(Map<String, Object> filters, List<String> projection) {
-    return find(prepareAppFilters(filters), prepareAppProjection(projection), Defaults.DEFAULT_SORT, Defaults.DEFAULT_SKIP, Defaults.DEFAULT_LIMIT);
-  }
+  public List<T> find(AppQuery query) {
 
-  @Override
-  public List<T> find(Map<String, Object> filters, Map<String, Boolean> projection) {
-    return find(prepareAppFilters(filters), projection, Defaults.DEFAULT_SORT, Defaults.DEFAULT_SKIP, Defaults.DEFAULT_LIMIT);
-  }
+    Integer skip = Optional.ofNullable(query.getSkip()).orElse(Defaults.DEFAULT_SKIP);
+    if (skip < Defaults.MINIMUM_SKIP) {
+      skip = Defaults.MINIMUM_SKIP;
+    }
 
-  @Override
-  public List<T> find(Map<String, Object> filters, List<String> projection, Map<String, Integer> sort) {
-    return find(prepareAppFilters(filters), prepareAppProjection(projection), sort, Defaults.DEFAULT_SKIP, Defaults.DEFAULT_LIMIT);
-  }
-
-  @Override
-  public List<T> find(Map<String, Object> filters, Map<String, Boolean> projection, Map<String, Integer> sort) {
-    return find(prepareAppFilters(filters), projection, sort, Defaults.DEFAULT_SKIP, Defaults.DEFAULT_LIMIT);
-  }
-
-  @Override
-  public List<T> find(Map<String, Object> filters, List<String> projection, Map<String, Integer> sort, Integer skip, Integer limit) {
-    return find(prepareAppFilters(filters), prepareAppProjection(projection), sort, skip, limit);
-  }
-
-  @Override
-  public List<T> find(Map<String, Object> filters, Map<String, Boolean> projection, Map<String, Integer> sort, Integer skip, Integer limit) {
-    return find(prepareAppFilters(filters), projection, sort, skip, limit);
-  }
-
-  @Override
-  public List<T> find(AppFilter filters, List<String> projection) {
-    return find(filters, prepareAppProjection(projection), Defaults.DEFAULT_SORT, Defaults.DEFAULT_SKIP, Defaults.DEFAULT_LIMIT);
-  }
-
-  @Override
-  public List<T> find(AppFilter filters, Map<String, Boolean> projection) {
-    return find(filters, projection, Defaults.DEFAULT_SORT, Defaults.DEFAULT_SKIP, Defaults.DEFAULT_LIMIT);
-  }
-
-  @Override
-  public List<T> find(AppFilter filters, List<String> projection, Map<String, Integer> sort) {
-    return find(filters, prepareAppProjection(projection), sort, Defaults.DEFAULT_SKIP, Defaults.DEFAULT_LIMIT);
-  }
-
-  @Override
-  public List<T> find(AppFilter filters, Map<String, Boolean> projection, Map<String, Integer> sort) {
-    return find(filters, projection, sort, Defaults.DEFAULT_SKIP, Defaults.DEFAULT_LIMIT);
-  }
-
-  @Override
-  public List<T> find(AppFilter filters, List<String> projection, Map<String, Integer> sort, Integer skip, Integer limit) {
-    return find(filters, prepareAppProjection(projection), sort, skip, limit);
-  }
-
-  @Override
-  public List<T> find(AppFilter filters, Map<String, Boolean> projection, Map<String, Integer> sort, Integer skip, Integer limit) {
-
-    skip = skip == null ? Defaults.DEFAULT_SKIP : skip;
-    limit = limit == null ? Defaults.DEFAULT_LIMIT : limit;
+    Integer limit = Optional.ofNullable(query.getLimit()).orElse(Defaults.DEFAULT_LIMIT);
+    if (limit < Defaults.MINIMUM_LIMIT) {
+      limit = Defaults.MINIMUM_LIMIT;
+    } else if (limit > Defaults.MAXIMUM_LIMIT) {
+      limit = Defaults.MAXIMUM_LIMIT;
+    }
 
     CriteriaBuilder criteriaBuilder = entityManager.getCriteriaBuilder();
     CriteriaQuery<T> criteriaQuery = criteriaBuilder.createQuery(entityInformation.getJavaType());
     Root<T> from = criteriaQuery.from(entityInformation.getJavaType());
 
-    criteriaQuery = prepareFilters(criteriaBuilder, criteriaQuery, from, filters);
-    criteriaQuery = prepareProjection(criteriaQuery, from, projection);
-    criteriaQuery = prepareSort(criteriaBuilder, criteriaQuery, from, sort);
+    criteriaQuery = prepareFilters(criteriaBuilder, criteriaQuery, from, query.getFilters());
+    criteriaQuery = prepareProjection(criteriaQuery, from, query.getProjections());
+    criteriaQuery = prepareSort(criteriaBuilder, criteriaQuery, from, query.getSorts());
+    prepareJoin(criteriaBuilder, from, query.getJoins());
 
     TypedQuery<T> typedQuery = entityManager.createQuery(criteriaQuery)
         .setFirstResult(skip)
@@ -296,50 +193,16 @@ public class AppMysqlRepositoryImpl<T, ID> extends SimpleJpaRepository<T, ID> im
   }
 
   @Override
-  public Optional<T> findOne(Map<String, Object> filters, List<String> projection) {
-    return findOne(prepareAppFilters(filters), prepareAppProjection(projection), Defaults.DEFAULT_SORT);
-  }
-
-  @Override
-  public Optional<T> findOne(Map<String, Object> filters, Map<String, Boolean> projection) {
-    return findOne(prepareAppFilters(filters), projection, Defaults.DEFAULT_SORT);
-  }
-
-  @Override
-  public Optional<T> findOne(Map<String, Object> filters, List<String> projection, Map<String, Integer> sort) {
-    return findOne(prepareAppFilters(filters), prepareAppProjection(projection), sort);
-  }
-
-  @Override
-  public Optional<T> findOne(Map<String, Object> filters, Map<String, Boolean> projection, Map<String, Integer> sort) {
-    return findOne(prepareAppFilters(filters), projection, sort);
-  }
-
-  @Override
-  public Optional<T> findOne(AppFilter filters, List<String> projection) {
-    return findOne(filters, prepareAppProjection(projection), Defaults.DEFAULT_SORT);
-  }
-
-  @Override
-  public Optional<T> findOne(AppFilter filters, Map<String, Boolean> projection) {
-    return findOne(filters, projection, Defaults.DEFAULT_SORT);
-  }
-
-  @Override
-  public Optional<T> findOne(AppFilter filters, List<String> projection, Map<String, Integer> sort) {
-    return findOne(filters, prepareAppProjection(projection), sort);
-  }
-
-  @Override
-  public Optional<T> findOne(AppFilter filters, Map<String, Boolean> projection, Map<String, Integer> sort) {
+  public Optional<T> findOne(AppQuery query) {
 
     CriteriaBuilder criteriaBuilder = entityManager.getCriteriaBuilder();
     CriteriaQuery<T> criteriaQuery = criteriaBuilder.createQuery(entityInformation.getJavaType());
     Root<T> from = criteriaQuery.from(entityInformation.getJavaType());
 
-    criteriaQuery = prepareFilters(criteriaBuilder, criteriaQuery, from, filters);
-    criteriaQuery = prepareProjection(criteriaQuery, from, projection);
-    criteriaQuery = prepareSort(criteriaBuilder, criteriaQuery, from, sort);
+    criteriaQuery = prepareFilters(criteriaBuilder, criteriaQuery, from, query.getFilters());
+    criteriaQuery = prepareProjection(criteriaQuery, from, query.getProjections());
+    criteriaQuery = prepareSort(criteriaBuilder, criteriaQuery, from, query.getSorts());
+    prepareJoin(criteriaBuilder, from, query.getJoins());
 
     TypedQuery<T> typedQuery = entityManager.createQuery(criteriaQuery)
         .setMaxResults(1);
@@ -351,19 +214,15 @@ public class AppMysqlRepositoryImpl<T, ID> extends SimpleJpaRepository<T, ID> im
   }
 
   @Override
-  public long count(Map<String, Object> filters) {
-    return count(prepareAppFilters(filters));
-  }
-
-  @Override
-  public long count(AppFilter filters) {
+  public long count(AppQuery query) {
 
     CriteriaBuilder criteriaBuilder = entityManager.getCriteriaBuilder();
     CriteriaQuery<Long> criteriaQuery = criteriaBuilder.createQuery(Long.class);
     Root<T> from = criteriaQuery.from(entityInformation.getJavaType());
 
     criteriaQuery = criteriaQuery.select(criteriaBuilder.count(from));
-    criteriaQuery = (CriteriaQuery<Long>) prepareFilters(criteriaBuilder, (CriteriaQuery<T>) criteriaQuery, from, filters);
+    criteriaQuery = (CriteriaQuery<Long>) prepareFilters(criteriaBuilder, (CriteriaQuery<T>) criteriaQuery, from, query.getFilters());
+    prepareJoin(criteriaBuilder, from, query.getJoins());
 
     TypedQuery<Long> typedQuery = entityManager.createQuery(criteriaQuery);
 
@@ -374,76 +233,42 @@ public class AppMysqlRepositoryImpl<T, ID> extends SimpleJpaRepository<T, ID> im
   }
 
   @Override
-  public int updateOne(Map<String, Object> filters, Map<String, Object> updates) {
-    return updateOne(prepareAppFilters(filters), prepareAppUpdates(updates));
-  }
+  public int updateOne(AppQuery query) {
 
-  @Override
-  public int updateOne(Map<String, Object> filters, AppUpdate updates) {
-    return updateOne(prepareAppFilters(filters), updates);
-  }
+    CriteriaBuilder criteriaBuilder = entityManager.getCriteriaBuilder();
+    CriteriaUpdate<T> criteriaUpdate = criteriaBuilder.createCriteriaUpdate(entityInformation.getJavaType());
+    Root<T> from = criteriaUpdate.from(entityInformation.getJavaType());
 
-  @Override
-  public int updateOne(AppFilter filters, Map<String, Object> updates) {
-    return updateOne(filters, prepareAppUpdates(updates));
-  }
+    criteriaUpdate = prepareFilters(criteriaBuilder, criteriaUpdate, from, query.getFilters());
+    criteriaUpdate = prepareUpdates(criteriaBuilder, criteriaUpdate, from, query.getUpdates());
+    criteriaUpdate.set(from.get("updated_at"), new Date());
 
-  @Override
-  public int updateOne(AppFilter filters, AppUpdate updates) {
+    javax.persistence.Query updateQuery = entityManager.createQuery(criteriaUpdate)
+        .setMaxResults(1);
 
-    javax.persistence.Query query = prepareUpdateQuery(filters, updates);
-    query.setMaxResults(1);
-
-    this.lastQuery = query.unwrap(Query.class).getQueryString();
+    this.lastQuery = updateQuery.unwrap(Query.class).getQueryString();
     LOGGER.trace(this.lastQuery);
 
-    return query.executeUpdate();
+    return updateQuery.executeUpdate();
   }
 
   @Override
-  public int updateAll(Map<String, Object> filters, Map<String, Object> updates) {
-    return updateAll(prepareAppFilters(filters), prepareAppUpdates(updates));
-  }
+  public int updateAll(AppQuery query) {
 
-  @Override
-  public int updateAll(Map<String, Object> filters, AppUpdate updates) {
-    return updateAll(prepareAppFilters(filters), updates);
-  }
+    CriteriaBuilder criteriaBuilder = entityManager.getCriteriaBuilder();
+    CriteriaUpdate<T> criteriaUpdate = criteriaBuilder.createCriteriaUpdate(entityInformation.getJavaType());
+    Root<T> from = criteriaUpdate.from(entityInformation.getJavaType());
 
-  @Override
-  public int updateAll(AppFilter filters, Map<String, Object> updates) {
-    return updateAll(filters, prepareAppUpdates(updates));
-  }
+    criteriaUpdate = prepareFilters(criteriaBuilder, criteriaUpdate, from, query.getFilters());
+    criteriaUpdate = prepareUpdates(criteriaBuilder, criteriaUpdate, from, query.getUpdates());
+    criteriaUpdate.set(from.get("updated_at"), new Date());
 
-  @Override
-  public int updateAll(AppFilter filters, AppUpdate updates) {
+    javax.persistence.Query updateQuery = entityManager.createQuery(criteriaUpdate);
 
-    javax.persistence.Query query = prepareUpdateQuery(filters, updates);
-
-    this.lastQuery = query.unwrap(Query.class).getQueryString();
+    this.lastQuery = updateQuery.unwrap(Query.class).getQueryString();
     LOGGER.trace(this.lastQuery);
 
-    return query.executeUpdate();
-  }
-
-  @Override
-  public int updateById(ID id, Map<String, Object> updates) {
-    return updateById(id, prepareAppUpdates(updates));
-  }
-
-  @Override
-  public int updateById(ID id, AppUpdate updates) {
-
-    AppFilter filters = new AppFilter();
-    filters.addFilter("id", prepareId(id));
-
-    javax.persistence.Query query = prepareUpdateQuery(filters, updates);
-    query.setMaxResults(1);
-
-    this.lastQuery = query.unwrap(Query.class).getQueryString();
-    LOGGER.trace(this.lastQuery);
-
-    return query.executeUpdate();
+    return updateQuery.executeUpdate();
   }
 
   @Override
