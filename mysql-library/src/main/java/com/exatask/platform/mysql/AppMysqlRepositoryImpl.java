@@ -8,7 +8,6 @@ import com.exatask.platform.mysql.filters.FilterElement;
 import com.exatask.platform.mysql.joins.JoinElement;
 import com.exatask.platform.mysql.updates.UpdateElement;
 import org.hibernate.query.Query;
-import org.springframework.data.jpa.repository.support.JpaEntityInformation;
 import org.springframework.data.jpa.repository.support.SimpleJpaRepository;
 
 import javax.persistence.EntityManager;
@@ -20,26 +19,27 @@ import javax.persistence.criteria.Order;
 import javax.persistence.criteria.Predicate;
 import javax.persistence.criteria.Root;
 import javax.persistence.criteria.Selection;
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 
-public class AppMysqlRepositoryImpl<T, ID> extends SimpleJpaRepository<T, ID> implements AppMysqlRepository<T, ID> {
+public class AppMysqlRepositoryImpl<T, ID extends Serializable> extends SimpleJpaRepository<T, ID> implements AppMysqlRepository<T, ID> {
 
   private static final AppLogger LOGGER = AppLogManager.getLogger();
 
   private final EntityManager entityManager;
-  private final JpaEntityInformation<T, ID> entityInformation;
+  private final Class<T> domainClass;
 
   private String lastQuery = null;
 
-  public AppMysqlRepositoryImpl(JpaEntityInformation<T, ID> entityInformation, EntityManager entityManager) {
+  public AppMysqlRepositoryImpl(Class<T> domainClass, EntityManager entityManager) {
 
-    super(entityInformation, entityManager);
-    this.entityInformation = entityInformation;
+    super(domainClass, entityManager);
     this.entityManager = entityManager;
+    this.domainClass = domainClass;
   }
 
   /**
@@ -173,9 +173,9 @@ public class AppMysqlRepositoryImpl<T, ID> extends SimpleJpaRepository<T, ID> im
       limit = Defaults.MAXIMUM_LIMIT;
     }
 
-    CriteriaBuilder criteriaBuilder = entityManager.getCriteriaBuilder();
-    CriteriaQuery<T> criteriaQuery = criteriaBuilder.createQuery(entityInformation.getJavaType());
-    Root<T> from = criteriaQuery.from(entityInformation.getJavaType());
+    CriteriaBuilder criteriaBuilder = this.entityManager.getCriteriaBuilder();
+    CriteriaQuery<T> criteriaQuery = criteriaBuilder.createQuery(this.domainClass);
+    Root<T> from = criteriaQuery.from(this.domainClass);
 
     criteriaQuery = prepareFilters(criteriaBuilder, criteriaQuery, from, query.getFilters());
     criteriaQuery = prepareProjection(criteriaQuery, from, query.getProjections());
@@ -196,8 +196,8 @@ public class AppMysqlRepositoryImpl<T, ID> extends SimpleJpaRepository<T, ID> im
   public Optional<T> findOne(AppQuery query) {
 
     CriteriaBuilder criteriaBuilder = entityManager.getCriteriaBuilder();
-    CriteriaQuery<T> criteriaQuery = criteriaBuilder.createQuery(entityInformation.getJavaType());
-    Root<T> from = criteriaQuery.from(entityInformation.getJavaType());
+    CriteriaQuery<T> criteriaQuery = criteriaBuilder.createQuery(this.domainClass);
+    Root<T> from = criteriaQuery.from(this.domainClass);
 
     criteriaQuery = prepareFilters(criteriaBuilder, criteriaQuery, from, query.getFilters());
     criteriaQuery = prepareProjection(criteriaQuery, from, query.getProjections());
@@ -218,7 +218,7 @@ public class AppMysqlRepositoryImpl<T, ID> extends SimpleJpaRepository<T, ID> im
 
     CriteriaBuilder criteriaBuilder = entityManager.getCriteriaBuilder();
     CriteriaQuery<Long> criteriaQuery = criteriaBuilder.createQuery(Long.class);
-    Root<T> from = criteriaQuery.from(entityInformation.getJavaType());
+    Root<T> from = criteriaQuery.from(this.domainClass);
 
     criteriaQuery = criteriaQuery.select(criteriaBuilder.count(from));
     criteriaQuery = (CriteriaQuery<Long>) prepareFilters(criteriaBuilder, (CriteriaQuery<T>) criteriaQuery, from, query.getFilters());
@@ -236,8 +236,8 @@ public class AppMysqlRepositoryImpl<T, ID> extends SimpleJpaRepository<T, ID> im
   public int updateOne(AppQuery query) {
 
     CriteriaBuilder criteriaBuilder = entityManager.getCriteriaBuilder();
-    CriteriaUpdate<T> criteriaUpdate = criteriaBuilder.createCriteriaUpdate(entityInformation.getJavaType());
-    Root<T> from = criteriaUpdate.from(entityInformation.getJavaType());
+    CriteriaUpdate<T> criteriaUpdate = criteriaBuilder.createCriteriaUpdate(this.domainClass);
+    Root<T> from = criteriaUpdate.from(this.domainClass);
 
     criteriaUpdate = prepareFilters(criteriaBuilder, criteriaUpdate, from, query.getFilters());
     criteriaUpdate = prepareUpdates(criteriaBuilder, criteriaUpdate, from, query.getUpdates());
@@ -256,8 +256,8 @@ public class AppMysqlRepositoryImpl<T, ID> extends SimpleJpaRepository<T, ID> im
   public int updateAll(AppQuery query) {
 
     CriteriaBuilder criteriaBuilder = entityManager.getCriteriaBuilder();
-    CriteriaUpdate<T> criteriaUpdate = criteriaBuilder.createCriteriaUpdate(entityInformation.getJavaType());
-    Root<T> from = criteriaUpdate.from(entityInformation.getJavaType());
+    CriteriaUpdate<T> criteriaUpdate = criteriaBuilder.createCriteriaUpdate(this.domainClass);
+    Root<T> from = criteriaUpdate.from(this.domainClass);
 
     criteriaUpdate = prepareFilters(criteriaBuilder, criteriaUpdate, from, query.getFilters());
     criteriaUpdate = prepareUpdates(criteriaBuilder, criteriaUpdate, from, query.getUpdates());

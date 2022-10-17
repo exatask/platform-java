@@ -7,4 +7,9 @@ import org.flywaydb.core.api.migration.BaseJavaMigration;
 public abstract class MysqlChangelog extends BaseJavaMigration {
 
   protected static final AppLogger LOGGER = AppLogManager.getLogger();
+
+  @Override
+  public Integer getChecksum() {
+    return this.hashCode();
+  }
 }

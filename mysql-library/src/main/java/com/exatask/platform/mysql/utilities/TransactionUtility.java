@@ -8,13 +8,13 @@ import com.zaxxer.hikari.HikariDataSource;
 import lombok.experimental.UtilityClass;
 import org.hibernate.MultiTenancyStrategy;
 import org.hibernate.cfg.Environment;
-import org.hibernate.dialect.MySQL5Dialect;
+import org.hibernate.dialect.MySQL8Dialect;
 import org.hibernate.tool.schema.Action;
 import org.springframework.boot.autoconfigure.jdbc.DataSourceProperties;
 import org.springframework.orm.jpa.JpaTransactionManager;
 import org.springframework.orm.jpa.LocalContainerEntityManagerFactoryBean;
 import org.springframework.orm.jpa.vendor.HibernateJpaVendorAdapter;
-import org.springframework.transaction.TransactionManager;
+import org.springframework.transaction.PlatformTransactionManager;
 
 import javax.persistence.EntityManagerFactory;
 import javax.sql.DataSource;
@@ -24,7 +24,7 @@ import java.util.Map;
 @UtilityClass
 public class TransactionUtility {
 
-  public static TransactionManager getTransactionManager(EntityManagerFactory entityManagerFactory) {
+  public static PlatformTransactionManager getTransactionManager(EntityManagerFactory entityManagerFactory) {
 
     JpaTransactionManager transactionManager = new JpaTransactionManager();
     transactionManager.setEntityManagerFactory(entityManagerFactory);
@@ -80,8 +80,8 @@ public class TransactionUtility {
   private static Map<String, Object> prepareJpaProperties() {
 
     Map<String, Object> jpaProperties = new HashMap<>();
-    jpaProperties.put(Environment.HBM2DDL_AUTO, Action.NONE);
-    jpaProperties.put(Environment.DIALECT, MySQL5Dialect.class);
+    jpaProperties.put(Environment.HBM2DDL_AUTO, Action.NONE.name().toLowerCase());
+    jpaProperties.put(Environment.DIALECT, MySQL8Dialect.class);
 
     return jpaProperties;
   }
