@@ -16,7 +16,7 @@ import java.util.Date;
 @Getter
 @NoArgsConstructor
 @MappedSuperclass
-public class AppModel {
+public abstract class AppModel {
 
   @Id
   @GeneratedValue(strategy = GenerationType.IDENTITY)

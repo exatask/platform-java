@@ -2,7 +2,9 @@ package com.exatask.platform.mysql;
 
 import com.exatask.platform.mysql.filters.FilterElement;
 import com.exatask.platform.mysql.filters.FilterOperation;
+import com.exatask.platform.mysql.joins.ConditionElement;
 import com.exatask.platform.mysql.joins.JoinElement;
+import com.exatask.platform.mysql.sorts.SortElement;
 import com.exatask.platform.mysql.updates.UpdateElement;
 import com.exatask.platform.mysql.updates.UpdateOperation;
 import lombok.Builder;
@@ -11,7 +13,6 @@ import lombok.Singular;
 
 import javax.persistence.criteria.JoinType;
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -22,10 +23,10 @@ public class AppQuery {
 
   private List<FilterElement> filters;
 
-  private Map<String, Boolean> projections;
+  private Map<Class<? extends AppModel>, String> projections;
 
   @Singular
-  private Map<String, Integer> sorts;
+  private List<SortElement> sorts;
 
   private Integer skip;
 
@@ -37,8 +38,8 @@ public class AppQuery {
 
   public static class AppQueryBuilder {
 
-    public AppQueryBuilder filter(String key, Object value) {
-      return this.filter(new FilterElement(key, FilterOperation.EQUAL, value));
+    public AppQueryBuilder filter(Class<? extends AppModel> model, String key, Object value) {
+      return this.filter(new FilterElement(model, key, FilterOperation.EQUAL, value));
     }
 
     public AppQueryBuilder filter(FilterElement element) {
@@ -51,38 +52,36 @@ public class AppQuery {
       return this;
     }
 
-    public AppQueryBuilder projection(List<String> keys) {
+    public AppQueryBuilder projection(Class<? extends AppModel> model, List<String> fields) {
 
       if (this.projections == null) {
         this.projections = new HashMap<>();
       }
 
-      for (String key : keys) {
-        this.projections.put(key, true);
-      }
+      fields.forEach(field -> this.projections.put(model, field));
       return this;
     }
 
-    public AppQueryBuilder join(String key, JoinType type, List<FilterElement> conditions) {
-      return this.join(new JoinElement(key, type, conditions));
+    public AppQueryBuilder join(String attribute, JoinType type) {
+      return this.join(new JoinElement(attribute, type));
     }
 
-    public AppQueryBuilder join(String key, JoinType type, FilterElement condition) {
-      return this.join(new JoinElement(key, type, Collections.singletonList(condition)));
+    public AppQueryBuilder join(Class<? extends AppModel> model, JoinType type, List<ConditionElement> conditions) {
+      return this.join(new JoinElement(model, type, conditions));
     }
 
-    public AppQueryBuilder join(JoinElement element) {
+    public AppQueryBuilder join(JoinElement joinElement) {
 
       if (this.joins == null) {
         this.joins = new ArrayList<>();
       }
 
-      this.joins.add(element);
+      this.joins.add(joinElement);
       return this;
     }
 
-    public AppQueryBuilder update(String key, Object value) {
-      return this.update(new UpdateElement(key, UpdateOperation.SET, value));
+    public AppQueryBuilder update(Class<? extends AppModel> model, String key, Object value) {
+      return this.update(new UpdateElement(model, key, UpdateOperation.SET, value));
     }
 
     public AppQueryBuilder update(UpdateElement element) {

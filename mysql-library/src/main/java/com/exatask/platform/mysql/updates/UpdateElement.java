@@ -1,14 +1,16 @@
 package com.exatask.platform.mysql.updates;
 
+import com.exatask.platform.mysql.AppModel;
 import lombok.AllArgsConstructor;
 
 import javax.persistence.criteria.CriteriaBuilder;
 import javax.persistence.criteria.CriteriaUpdate;
-import javax.persistence.criteria.From;
 import javax.persistence.criteria.Path;
 
 @AllArgsConstructor
 public class UpdateElement {
+
+  private final Class<? extends AppModel> model;
 
   private final String key;
 
@@ -16,9 +18,9 @@ public class UpdateElement {
 
   private final Object value;
 
-  public CriteriaUpdate setUpdate(CriteriaBuilder criteriaBuilder, CriteriaUpdate criteriaUpdate, From from) {
+  public CriteriaUpdate setUpdate(CriteriaBuilder criteriaBuilder, CriteriaUpdate criteriaUpdate) {
 
-    Path path = from.get(key);
+    Path path = criteriaUpdate.from(model).get(key);
 
     switch (mongoOperation) {
 
