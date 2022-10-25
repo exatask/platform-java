@@ -11,7 +11,9 @@ import javax.persistence.criteria.CriteriaQuery;
 import javax.persistence.criteria.CriteriaUpdate;
 import javax.persistence.criteria.Path;
 import javax.persistence.criteria.Predicate;
+import javax.persistence.criteria.Root;
 import java.util.List;
+import java.util.Set;
 
 @AllArgsConstructor
 public class FilterElement {
@@ -26,13 +28,31 @@ public class FilterElement {
 
   public Predicate getPredicate(CriteriaBuilder criteriaBuilder, CriteriaQuery criteriaQuery) {
 
-    Path path = criteriaQuery.from(model).get(key);
+    Root from = null;
+    Set<Root> roots = criteriaQuery.getRoots();
+    for (Root root : roots) {
+      if (root.getModel().getJavaType() == model) {
+        from = root;
+        break;
+      }
+    }
+
+    if (from == null) {
+      from = criteriaQuery.from(model);
+    }
+
+    Path path = from.get(key);
     return getPredicate(criteriaBuilder, path);
   }
 
   public Predicate getPredicate(CriteriaBuilder criteriaBuilder, CriteriaUpdate criteriaUpdate) {
 
-    Path path = criteriaUpdate.from(model).get(key);
+    Root from = criteriaUpdate.getRoot();
+    if (from.getModel().getJavaType() != model) {
+      from = criteriaUpdate.from(model);
+    }
+
+    Path path = from.get(key);
     return getPredicate(criteriaBuilder, path);
   }
 
