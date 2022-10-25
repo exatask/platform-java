@@ -66,6 +66,10 @@ public class AppQuery {
       return this.join(new JoinElement(attribute, type));
     }
 
+    public AppQueryBuilder join(String attribute, JoinType type, List<JoinElement> nestedJoins) {
+      return this.join(new JoinElement(attribute, type, nestedJoins));
+    }
+
     public AppQueryBuilder join(Class<? extends AppModel> model, JoinType type, List<ConditionElement> conditions) {
       return this.join(new JoinElement(model, type, conditions));
     }

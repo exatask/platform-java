@@ -11,6 +11,7 @@ import com.exatask.platform.mysql.updates.UpdateElement;
 import com.exatask.platform.mysql.utilities.QueryUtility;
 import org.hibernate.query.Query;
 import org.springframework.data.jpa.repository.support.SimpleJpaRepository;
+import org.springframework.util.CollectionUtils;
 
 import javax.persistence.EntityManager;
 import javax.persistence.EntityTransaction;
@@ -19,6 +20,8 @@ import javax.persistence.TypedQuery;
 import javax.persistence.criteria.CriteriaBuilder;
 import javax.persistence.criteria.CriteriaQuery;
 import javax.persistence.criteria.CriteriaUpdate;
+import javax.persistence.criteria.Fetch;
+import javax.persistence.criteria.FetchParent;
 import javax.persistence.criteria.Order;
 import javax.persistence.criteria.Predicate;
 import javax.persistence.criteria.Root;
@@ -169,14 +172,18 @@ public class AppMysqlRepositoryImpl<T, ID extends Serializable> extends SimpleJp
    * @param from
    * @param joins
    */
-  private void prepareJoins(Root<T> from, List<JoinElement> joins) {
+  private void prepareJoins(FetchParent from, List<JoinElement> joins) {
 
     if (joins == null) {
       return;
     }
 
     for (JoinElement join : joins) {
-      from.join(join.getAttribute(), join.getType());
+
+      Fetch fetched = from.fetch(join.getAttribute(), join.getType());
+      if (!CollectionUtils.isEmpty(join.getJoins())) {
+        prepareJoins(fetched, join.getJoins());
+      }
     }
   }
 
@@ -277,8 +284,7 @@ public class AppMysqlRepositoryImpl<T, ID extends Serializable> extends SimpleJp
     criteriaQuery = prepareFilters(criteriaBuilder, criteriaQuery, query.getFilters());
     criteriaQuery = prepareSort(criteriaBuilder, criteriaQuery, query.getSorts());
 
-    TypedQuery<T> typedQuery = entityManager.createQuery(criteriaQuery)
-        .setMaxResults(1);
+    TypedQuery<T> typedQuery = entityManager.createQuery(criteriaQuery);
 
     this.lastQuery = typedQuery.unwrap(Query.class).getQueryString();
     LOGGER.trace(this.lastQuery);
