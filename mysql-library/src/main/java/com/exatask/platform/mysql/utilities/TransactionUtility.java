@@ -82,8 +82,6 @@ public class TransactionUtility {
     Map<String, Object> jpaProperties = new HashMap<>();
     jpaProperties.put(Environment.HBM2DDL_AUTO, Action.NONE.name().toLowerCase());
     jpaProperties.put(Environment.DIALECT, MySQL8Dialect.class);
-    jpaProperties.put(Environment.SHOW_SQL, true);
-
     return jpaProperties;
   }
 }
