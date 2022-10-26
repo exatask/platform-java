@@ -57,7 +57,11 @@ public class JoinElement {
       joinConditions.add(condition.getCondition(model));
     }
 
-    return type.name() + " JOIN " + model.getSimpleName() + " AS " + QueryUtility.getClassAlias(model)
-        + " ON " + String.join(" AND ", joinConditions);
+    return String.format(" %s JOIN %s AS %s ON %s ",
+        type.name(),
+        QueryUtility.getTableName(model),
+        QueryUtility.getClassAlias(model),
+        String.join(" AND ", joinConditions)
+    );
   }
 }

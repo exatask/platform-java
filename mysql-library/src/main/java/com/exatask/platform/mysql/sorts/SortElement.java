@@ -27,6 +27,6 @@ public class SortElement {
   public String getOrder() {
 
     String direction = sort == 1 ? "ASC" : "DESC";
-    return QueryUtility.getClassAlias(model) + "." + key + " " + direction;
+    return String.format(" %s.%s %s ", QueryUtility.getClassAlias(model), key, direction);
   }
 }
