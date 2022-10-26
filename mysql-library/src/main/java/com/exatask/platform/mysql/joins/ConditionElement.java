@@ -7,19 +7,18 @@ import lombok.AllArgsConstructor;
 @AllArgsConstructor
 public class ConditionElement {
 
-  private final Class<? extends AppModel> model;
-
-  private final String baseKey;
+  private final String key;
 
   private final ConditionOperation operation;
 
+  private final Class<? extends AppModel> targetModel;
+
   private final Object targetKey;
 
-  public String getCondition(Class<? extends AppModel> baseModel) {
+  public String getCondition(Class<? extends AppModel> model) {
 
-    String basePath = QueryUtility.getClassAlias(baseModel) + "." + baseKey;
-    String targetPath = QueryUtility.getClassAlias(model) + "." + targetKey;
-
-    return basePath + operation.getOperation() + targetPath;
+    String basePath = QueryUtility.getClassAlias(model) + "." + key;
+    String targetPath = QueryUtility.getClassAlias(targetModel) + "." + targetKey;
+    return String.format(" %s %s %s ", basePath, operation.getOperation(), targetPath);
   }
 }

@@ -16,6 +16,7 @@ import org.springframework.util.CollectionUtils;
 import javax.persistence.EntityManager;
 import javax.persistence.EntityTransaction;
 import javax.persistence.Tuple;
+import javax.persistence.TupleElement;
 import javax.persistence.TypedQuery;
 import javax.persistence.criteria.CriteriaBuilder;
 import javax.persistence.criteria.CriteriaQuery;
@@ -29,6 +30,7 @@ import javax.persistence.criteria.Selection;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
@@ -56,7 +58,7 @@ public class AppMysqlRepositoryImpl<T, ID extends Serializable> extends SimpleJp
    */
   private CriteriaQuery<T> prepareFilters(CriteriaBuilder criteriaBuilder, CriteriaQuery<T> criteriaQuery, List<FilterElement> filters) {
 
-    if (filters == null) {
+    if (CollectionUtils.isEmpty(filters)) {
       return criteriaQuery;
     }
 
@@ -72,15 +74,15 @@ public class AppMysqlRepositoryImpl<T, ID extends Serializable> extends SimpleJp
    */
   private String prepareFilters(List<FilterElement> filters) {
 
-    if (filters == null) {
-      return "";
+    if (CollectionUtils.isEmpty(filters)) {
+      return " 1=1 ";
     }
 
     List<String> filterList = new ArrayList<>();
     for (FilterElement filter : filters) {
       filterList.add(filter.getPredicate());
     }
-    return " WHERE " + String.join(" AND ", filterList);
+    return String.join(" AND ", filterList);
   }
 
   /**
@@ -90,7 +92,7 @@ public class AppMysqlRepositoryImpl<T, ID extends Serializable> extends SimpleJp
    */
   private CriteriaUpdate<T> prepareFilters(CriteriaBuilder criteriaBuilder, CriteriaUpdate<T> criteriaUpdate, List<FilterElement> filters) {
 
-    if (filters == null) {
+    if (CollectionUtils.isEmpty(filters)) {
       return criteriaUpdate;
     }
 
@@ -107,7 +109,7 @@ public class AppMysqlRepositoryImpl<T, ID extends Serializable> extends SimpleJp
    */
   private CriteriaQuery<T> prepareProjection(CriteriaQuery<T> criteriaQuery, Map<Class<? extends AppModel>, String> projections) {
 
-    if (projections == null) {
+    if (CollectionUtils.isEmpty(projections)) {
       return criteriaQuery;
     }
 
@@ -123,7 +125,7 @@ public class AppMysqlRepositoryImpl<T, ID extends Serializable> extends SimpleJp
    */
   private String prepareProjection(Map<Class<? extends AppModel>, String> projections) {
 
-    if (projections == null) {
+    if (CollectionUtils.isEmpty(projections)) {
       return "*";
     }
 
@@ -141,7 +143,7 @@ public class AppMysqlRepositoryImpl<T, ID extends Serializable> extends SimpleJp
    */
   private CriteriaQuery<T> prepareSort(CriteriaBuilder criteriaBuilder, CriteriaQuery<T> criteriaQuery, List<SortElement> sorts) {
 
-    if (sorts == null) {
+    if (CollectionUtils.isEmpty(sorts)) {
       return criteriaQuery;
     }
 
@@ -157,7 +159,7 @@ public class AppMysqlRepositoryImpl<T, ID extends Serializable> extends SimpleJp
    */
   private String prepareSort(List<SortElement> sorts) {
 
-    if (sorts == null) {
+    if (CollectionUtils.isEmpty(sorts)) {
       return "";
     }
 
@@ -165,7 +167,7 @@ public class AppMysqlRepositoryImpl<T, ID extends Serializable> extends SimpleJp
     for (SortElement sort : sorts) {
       orderBy.add(sort.getOrder());
     }
-    return " ORDER BY " + String.join(", ", orderBy);
+    return String.format(" ORDER BY %s ", String.join(", ", orderBy));
   }
 
   /**
@@ -174,7 +176,7 @@ public class AppMysqlRepositoryImpl<T, ID extends Serializable> extends SimpleJp
    */
   private void prepareJoins(FetchParent from, List<JoinElement> joins) {
 
-    if (joins == null) {
+    if (CollectionUtils.isEmpty(joins)) {
       return;
     }
 
@@ -192,7 +194,7 @@ public class AppMysqlRepositoryImpl<T, ID extends Serializable> extends SimpleJp
    */
   private String prepareJoins(List<JoinElement> joins) {
 
-    if (joins == null) {
+    if (CollectionUtils.isEmpty(joins)) {
       return "";
     }
 
@@ -221,6 +223,31 @@ public class AppMysqlRepositoryImpl<T, ID extends Serializable> extends SimpleJp
     return criteriaUpdate;
   }
 
+  /**
+   * @param elements
+   */
+  private Map<String, Class<?>> prepareTupleMapping(List<TupleElement<?>> elements) {
+
+    Map<String, Class<?>> tupleMapping = new HashMap<>();
+    for (TupleElement<?> element : elements) {
+      tupleMapping.put(element.getAlias(), element.getJavaType());
+    }
+    return tupleMapping;
+  }
+
+  /**
+   * @param tuple
+   * @param tupleMapping
+   */
+  private Map<String, Object> prepareTupleRow(Tuple tuple, Map<String, Class<?>> tupleMapping) {
+
+    Map<String, Object> row = new HashMap<>();
+    for (Map.Entry<String, Class<?>> tupleEntry : tupleMapping.entrySet()) {
+      row.put(tupleEntry.getKey(), tuple.get(tupleEntry.getKey(), tupleEntry.getValue()));
+    }
+    return row;
+  }
+
   @Override
   public List<T> find(AppQuery query) {
 
@@ -242,7 +269,7 @@ public class AppMysqlRepositoryImpl<T, ID extends Serializable> extends SimpleJp
   }
 
   @Override
-  public List<Tuple> findNative(AppQuery query) {
+  public List<Map<String, Object>> findNative(AppQuery query) {
 
     Integer skip = Optional.ofNullable(query.getSkip()).orElse(Defaults.DEFAULT_SKIP);
     if (skip < Defaults.MINIMUM_SKIP) {
@@ -256,20 +283,32 @@ public class AppMysqlRepositoryImpl<T, ID extends Serializable> extends SimpleJp
       limit = Defaults.MAXIMUM_LIMIT;
     }
 
-    String nativeSql = "SELECT ";
-    nativeSql += prepareProjection(query.getProjections());
-    nativeSql += " FROM " + this.domainClass.getSimpleName() + " AS " + QueryUtility.getClassAlias(this.domainClass);
-    nativeSql += prepareJoins(query.getJoins());
-    nativeSql += prepareFilters(query.getFilters());
-    nativeSql += prepareSort(query.getSorts());
-    nativeSql += " LIMIT " + skip + ", " + limit;
-    nativeSql += ";";
+    String nativeSql = String.format("SELECT %s FROM %s AS %s %s WHERE %s %s LIMIT %d, %d;",
+        prepareProjection(query.getProjections()),
+        QueryUtility.getTableName(this.domainClass),
+        QueryUtility.getClassAlias(this.domainClass),
+        prepareJoins(query.getJoins()),
+        prepareFilters(query.getFilters()),
+        prepareSort(query.getSorts()),
+        skip,
+        limit
+    );
 
     this.lastQuery = nativeSql;
     LOGGER.trace(this.lastQuery);
 
     javax.persistence.Query nativeQuery = this.entityManager.createNativeQuery(nativeSql, Tuple.class);
-    return nativeQuery.getResultList();
+    List<Tuple> results = nativeQuery.getResultList();
+    if (CollectionUtils.isEmpty(results)) {
+      return null;
+    }
+
+    Map<String, Class<?>> tupleMapping = prepareTupleMapping(results.get(0).getElements());
+    List<Map<String, Object>> resultSet = new ArrayList<>();
+    for (Tuple row : results) {
+      resultSet.add(prepareTupleRow(row, tupleMapping));
+    }
+    return resultSet;
   }
 
   @Override
@@ -293,21 +332,29 @@ public class AppMysqlRepositoryImpl<T, ID extends Serializable> extends SimpleJp
   }
 
   @Override
-  public Optional<Tuple> findOneNative(AppQuery query) {
+  public Optional<Map<String, Object>> findOneNative(AppQuery query) {
 
-    String nativeSql = "SELECT ";
-    nativeSql += prepareProjection(query.getProjections());
-    nativeSql += " FROM " + this.domainClass.getSimpleName() + " AS " + QueryUtility.getClassAlias(this.domainClass);
-    nativeSql += prepareJoins(query.getJoins());
-    nativeSql += prepareFilters(query.getFilters());
-    nativeSql += prepareSort(query.getSorts());
-    nativeSql += " LIMIT 1;";
+    String nativeSql = String.format("SELECT %s FROM %s AS %s %s WHERE %s %s LIMIT 1;",
+        prepareProjection(query.getProjections()),
+        QueryUtility.getTableName(this.domainClass),
+        QueryUtility.getClassAlias(this.domainClass),
+        prepareJoins(query.getJoins()),
+        prepareFilters(query.getFilters()),
+        prepareSort(query.getSorts())
+    );
 
     this.lastQuery = nativeSql;
     LOGGER.trace(this.lastQuery);
 
     javax.persistence.Query nativeQuery = this.entityManager.createNativeQuery(nativeSql, Tuple.class);
-    return nativeQuery.getResultStream().findFirst();
+    Optional<Tuple> result = nativeQuery.getResultStream().findFirst();
+    if (!result.isPresent()) {
+      return Optional.empty();
+    }
+
+    Map<String, Class<?>> tupleMapping = prepareTupleMapping(result.get().getElements());
+    Map<String, Object> row = prepareTupleRow(result.get(), tupleMapping);
+    return Optional.of(row);
   }
 
   @Override
@@ -332,11 +379,12 @@ public class AppMysqlRepositoryImpl<T, ID extends Serializable> extends SimpleJp
   @Override
   public long countNative(AppQuery query) {
 
-    String nativeSql = "SELECT COUNT(1) ";
-    nativeSql += " FROM " + this.domainClass.getSimpleName() + " AS " + QueryUtility.getClassAlias(this.domainClass);
-    nativeSql += prepareJoins(query.getJoins());
-    nativeSql += prepareFilters(query.getFilters());
-    nativeSql += ";";
+    String nativeSql = String.format("SELECT COUNT(1) FROM %s AS %s %s WHERE %s;",
+        QueryUtility.getTableName(this.domainClass),
+        QueryUtility.getClassAlias(this.domainClass),
+        prepareJoins(query.getJoins()),
+        prepareFilters(query.getFilters())
+    );
 
     this.lastQuery = nativeSql;
     LOGGER.trace(this.lastQuery);

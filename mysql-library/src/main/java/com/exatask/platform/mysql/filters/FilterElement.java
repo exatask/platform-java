@@ -64,55 +64,55 @@ public class FilterElement {
 
       case EQUAL:
         if (value == null) {
-          return path + " IS NULL ";
+          return String.format(" %s IS NULL ", path);
         } else if (value instanceof List || value.getClass().isArray()) {
-          return path + " IN (" + String.join(",", (List) value) + ")";
+          return String.format(" %s IN ('%s') ", path, String.join("','", (List) value));
         } else {
-          return path + " = " + value;
+          return String.format(" %s = '%s' ", path, value);
         }
 
       case NOT_EQUAL:
         if (value == null) {
-          return path + " IS NOT NULL ";
+          return String.format(" %s IS NOT NULL ", path);
         } else if (value instanceof List || value.getClass().isArray()) {
-          return path + " NOT IN (" + String.join(",", (List) value) + ")";
+          return String.format(" %s NOT IN ('%s') ", path, String.join("','", (List) value));
         } else {
-          return path + " != " + value;
+          return String.format(" %s != '%s' ", path, value);
         }
 
       case GREATER:
         if (NumberUtils.isCreatable(value.toString())) {
-          return path + " > " + NumberUtils.createNumber(value.toString());
+          return String.format(" %s > %s ", path, NumberUtils.createNumber(value.toString()));
         } else {
-          return path + " > " + value;
+          return String.format(" %s > '%s' ", path, value);
         }
 
       case GREATER_EQUAL:
         if (NumberUtils.isCreatable(value.toString())) {
-          return path + " >= " + NumberUtils.createNumber(value.toString());
+          return String.format(" %s >= %s ", path, NumberUtils.createNumber(value.toString()));
         } else {
-          return path + " >= " + value;
+          return String.format(" %s >= '%s' ", path, value);
         }
 
       case LESSER:
         if (NumberUtils.isCreatable(value.toString())) {
-          return path + " < " + NumberUtils.createNumber(value.toString());
+          return String.format(" %s < %s ", path, NumberUtils.createNumber(value.toString()));
         } else {
-          return path + " < " + value;
+          return String.format(" %s < '%s' ", path, value);
         }
 
       case LESSER_EQUAL:
         if (NumberUtils.isCreatable(value.toString())) {
-          return path + " <= " + NumberUtils.createNumber(value.toString());
+          return String.format(" %s <= %s ", path, NumberUtils.createNumber(value.toString()));
         } else {
-          return path + " <= " + value;
+          return String.format(" %s <= '%s' ", path, value);
         }
 
       case REGEX:
-        return path + " LIKE " + value.toString();
+        return String.format(" %s LIKE '%s' ", path, value.toString());
 
       case NOT_REGEX:
-        return path + " NOT LIKE " + value.toString();
+        return String.format(" %s NOT LIKE '%s' ", path, value.toString());
 
       default:
         throw new InvalidFilterException(operation.toString());
