@@ -68,6 +68,7 @@ public class TransactionUtility {
     hikariDataSource.setJdbcUrl(properties.getUrl());
     hikariDataSource.setUsername(properties.getUsername());
     hikariDataSource.setPassword(properties.getPassword());
+    hikariDataSource.addDataSourceProperty("createDatabaseIfNotExist", true);
 
     return hikariDataSource;
   }
@@ -82,6 +83,7 @@ public class TransactionUtility {
     Map<String, Object> jpaProperties = new HashMap<>();
     jpaProperties.put(Environment.HBM2DDL_AUTO, Action.NONE.name().toLowerCase());
     jpaProperties.put(Environment.DIALECT, MySQL8Dialect.class);
+    jpaProperties.put(Environment.JDBC_TIME_ZONE, "UTC");
     return jpaProperties;
   }
 }
