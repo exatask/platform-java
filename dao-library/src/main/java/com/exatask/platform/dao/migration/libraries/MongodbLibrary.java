@@ -43,7 +43,7 @@ public class MongodbLibrary extends AppLibrary {
 
   private static final String CHANGELOG_COLLECTION = "changelogs";
   private static final String CHANGELOG_LOCK_COLLECTION = "changelog_locks";
-  private static final String CHANGELOG_PACKAGE = "mongodb.changelogs.package";
+  private static final String CHANGELOG_PACKAGE = "datastores.mongodb.changelogs.package";
 
   public MongockRunner createRunner(MongoProperties mongoProperties) {
 

@@ -15,7 +15,7 @@ import javax.sql.DataSource;
 public class ServiceLibrary extends AppLibrary {
 
   private static final String CHANGELOG_COLLECTION = "service_changelogs";
-  private static final String CHANGELOG_PACKAGE = "service.changelogs.package";
+  private static final String CHANGELOG_PACKAGE = "datastores.service.changelogs.package";
 
   private final MongodbLibrary mongodbLibrary = new MongodbLibrary();
   private final MysqlLibrary mysqlLibrary = new MysqlLibrary();
