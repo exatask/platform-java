@@ -4,14 +4,13 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.UpdateTimestamp;
-import org.springframework.format.annotation.DateTimeFormat;
 
 import javax.persistence.Column;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.MappedSuperclass;
-import java.time.LocalDate;
+import java.time.LocalDateTime;
 
 @Getter
 @NoArgsConstructor
@@ -24,12 +23,10 @@ public abstract class AppModel {
   protected Integer id;
 
   @CreationTimestamp
-  @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME)
   @Column(name = "created_at")
-  protected LocalDate createdAt;
+  protected LocalDateTime createdAt;
 
   @UpdateTimestamp
-  @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME)
   @Column(name = "updated_at")
-  protected LocalDate updatedAt;
+  protected LocalDateTime updatedAt;
 }
