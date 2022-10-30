@@ -28,12 +28,13 @@ import javax.persistence.criteria.Predicate;
 import javax.persistence.criteria.Root;
 import javax.persistence.criteria.Selection;
 import java.io.Serializable;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 public class AppMysqlRepositoryImpl<T, ID extends Serializable> extends SimpleJpaRepository<T, ID> implements AppMysqlRepository<T, ID> {
 
@@ -107,15 +108,18 @@ public class AppMysqlRepositoryImpl<T, ID extends Serializable> extends SimpleJp
    * @param criteriaQuery
    * @param projections
    */
-  private CriteriaQuery<T> prepareProjection(CriteriaQuery<T> criteriaQuery, Map<Class<? extends AppModel>, String> projections) {
+  private CriteriaQuery<T> prepareProjection(CriteriaQuery<T> criteriaQuery, Map<Class<? extends AppModel>, List<String>> projections) {
 
     if (CollectionUtils.isEmpty(projections)) {
       return criteriaQuery;
     }
 
     List<Selection<?>> selections = new ArrayList<>();
-    for (Map.Entry<Class<? extends AppModel>, String> projection : projections.entrySet()) {
-      selections.add(criteriaQuery.from(projection.getKey()).get(projection.getValue()));
+    for (Map.Entry<Class<? extends AppModel>, List<String>> projection : projections.entrySet()) {
+
+      Root from = criteriaQuery.from(projection.getKey());
+      projection.getValue()
+          .forEach(field -> selections.add(from.get(field)));
     }
     return criteriaQuery.multiselect(selections);
   }
@@ -123,15 +127,20 @@ public class AppMysqlRepositoryImpl<T, ID extends Serializable> extends SimpleJp
   /**
    * @param projections
    */
-  private String prepareProjection(Map<Class<? extends AppModel>, String> projections) {
+  private String prepareProjection(Map<Class<? extends AppModel>, List<String>> projections) {
 
     if (CollectionUtils.isEmpty(projections)) {
       return "*";
     }
 
     List<String> projectionList = new ArrayList<>();
-    for (Map.Entry<Class<? extends AppModel>, String> projection : projections.entrySet()) {
-      projectionList.add(QueryUtility.getClassAlias(projection.getKey()) + "." + projection.getValue());
+    for (Map.Entry<Class<? extends AppModel>, List<String>> projection : projections.entrySet()) {
+
+      String from = QueryUtility.getClassAlias(projection.getKey());
+      projectionList.addAll(
+          projection.getValue().stream()
+              .map(field -> String.format("%s.%s", from, field))
+              .collect(Collectors.toList()));
     }
     return String.join(", ", projectionList);
   }
@@ -402,7 +411,7 @@ public class AppMysqlRepositoryImpl<T, ID extends Serializable> extends SimpleJp
 
     criteriaUpdate = prepareFilters(criteriaBuilder, criteriaUpdate, query.getFilters());
     criteriaUpdate = prepareUpdates(criteriaBuilder, criteriaUpdate, query.getUpdates());
-    criteriaUpdate.set(from.get("updated_at"), new Date());
+    criteriaUpdate.set(from.get("updated_at"), LocalDateTime.now());
 
     javax.persistence.Query updateQuery = entityManager.createQuery(criteriaUpdate)
         .setMaxResults(1);
@@ -422,7 +431,7 @@ public class AppMysqlRepositoryImpl<T, ID extends Serializable> extends SimpleJp
 
     criteriaUpdate = prepareFilters(criteriaBuilder, criteriaUpdate, query.getFilters());
     criteriaUpdate = prepareUpdates(criteriaBuilder, criteriaUpdate, query.getUpdates());
-    criteriaUpdate.set(from.get("updated_at"), new Date());
+    criteriaUpdate.set(from.get("updated_at"), LocalDateTime.now());
 
     javax.persistence.Query updateQuery = entityManager.createQuery(criteriaUpdate);
 

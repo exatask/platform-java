@@ -10,7 +10,7 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.apache.logging.log4j.core.LoggerContext;
 
-import java.util.Date;
+import java.time.LocalDateTime;
 import java.util.Map;
 
 public class AppLogger {
@@ -154,7 +154,7 @@ public class AppLogger {
 
     logMessage.setLevel(level.toString().toLowerCase())
         .setServiceName(serviceName)
-        .setTimestamp(new Date())
+        .setTimestamp(LocalDateTime.now())
         .setTraceId(RequestContextProvider.getTraceId())
         .setParentId(RequestContextProvider.getParentId())
         .setSpanId(RequestContextProvider.getSpanId())

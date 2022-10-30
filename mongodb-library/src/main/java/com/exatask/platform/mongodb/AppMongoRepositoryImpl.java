@@ -18,7 +18,7 @@ import org.springframework.data.mongodb.repository.query.MongoEntityInformation;
 import org.springframework.data.mongodb.repository.support.SimpleMongoRepository;
 
 import java.io.Serializable;
-import java.util.Date;
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
@@ -146,7 +146,7 @@ public class AppMongoRepositoryImpl<T, ID extends Serializable> extends SimpleMo
 
     Update updateQuery = new Update();
     prepareUpdates(updateQuery, query.getUpdates());
-    updateQuery.set("updated_at", new Date());
+    updateQuery.set("updated_at", LocalDateTime.now());
 
     FindAndModifyOptions options = new FindAndModifyOptions();
     options.returnNew(true)
@@ -203,7 +203,7 @@ public class AppMongoRepositoryImpl<T, ID extends Serializable> extends SimpleMo
 
     Update updateQuery = new Update();
     prepareUpdates(updateQuery, query.getUpdates());
-    updateQuery.set("updated_at", new Date());
+    updateQuery.set("updated_at", LocalDateTime.now());
 
     this.lastQuery = String.format("%s.updateOne(%s, %s)",
         mongoEntityInformation.getCollectionName(),
@@ -223,7 +223,7 @@ public class AppMongoRepositoryImpl<T, ID extends Serializable> extends SimpleMo
 
     Update updateQuery = new Update();
     prepareUpdates(updateQuery, query.getUpdates());
-    updateQuery.set("updated_at", new Date());
+    updateQuery.set("updated_at", LocalDateTime.now());
 
     this.lastQuery = String.format("%s.updateMany(%s, %s)",
         mongoEntityInformation.getCollectionName(),
@@ -243,8 +243,8 @@ public class AppMongoRepositoryImpl<T, ID extends Serializable> extends SimpleMo
 
     Update updateQuery = new Update();
     prepareUpdates(updateQuery, query.getUpdates());
-    updateQuery.set("updated_at", new Date());
-    updateQuery.setOnInsert("created_at", new Date());
+    updateQuery.set("updated_at", LocalDateTime.now());
+    updateQuery.setOnInsert("created_at", LocalDateTime.now());
 
     this.lastQuery = String.format("%s.upsert(%s, %s)",
         mongoEntityInformation.getCollectionName(),

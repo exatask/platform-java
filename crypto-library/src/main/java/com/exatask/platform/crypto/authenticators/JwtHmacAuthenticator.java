@@ -9,8 +9,9 @@ import org.springframework.util.CollectionUtils;
 import org.springframework.util.ObjectUtils;
 import org.springframework.util.StringUtils;
 
+import java.time.LocalDateTime;
+import java.time.temporal.ChronoUnit;
 import java.util.Collections;
-import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -46,7 +47,7 @@ public class JwtHmacAuthenticator implements AppAuthenticator {
   @Override
   public String generate() {
 
-    Date expiry = new Date(System.currentTimeMillis() + (credentials.getExpiry() * 1000));
+    LocalDateTime expiry = LocalDateTime.now().plus(credentials.getExpiry(), ChronoUnit.SECONDS);
 
     Map<String, Object> signData = new HashMap<>();
     signData.put(ServiceAuthData.AUTH_JWT_SUBJECT_LABEL, credentials.getSubject());

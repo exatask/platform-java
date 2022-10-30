@@ -9,7 +9,7 @@ import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
 
-import java.util.Date;
+import java.time.LocalDateTime;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Set;
@@ -31,7 +31,7 @@ public class HealthCheckResponse extends AppResponse {
 
   private String version;
 
-  private final Date time = new Date();
+  private final LocalDateTime time = LocalDateTime.now();
 
   private Map<String, Set<ServiceHealthCheckData>> services = new HashMap<>();
 }

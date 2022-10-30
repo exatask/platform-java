@@ -11,7 +11,7 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.MappedSuperclass;
-import java.util.Date;
+import java.time.LocalDate;
 
 @Getter
 @NoArgsConstructor
@@ -26,10 +26,10 @@ public abstract class AppModel {
   @CreationTimestamp
   @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME)
   @Column(name = "created_at")
-  protected Date createdAt;
+  protected LocalDate createdAt;
 
   @UpdateTimestamp
   @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME)
   @Column(name = "updated_at")
-  protected Date updatedAt;
+  protected LocalDate updatedAt;
 }

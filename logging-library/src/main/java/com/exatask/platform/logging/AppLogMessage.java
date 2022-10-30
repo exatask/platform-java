@@ -11,14 +11,13 @@ import lombok.Data;
 import lombok.Setter;
 import lombok.experimental.Accessors;
 
-import java.text.SimpleDateFormat;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Date;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
-import java.util.TimeZone;
 import java.util.regex.Pattern;
 
 @Data
@@ -27,17 +26,11 @@ import java.util.regex.Pattern;
 @JsonNaming(PropertyNamingStrategy.SnakeCaseStrategy.class)
 public class AppLogMessage {
 
-  private final static SimpleDateFormat DATE_FORMATTER;
-
+  private final static DateTimeFormatter DATE_TIME_FORMATTER = DateTimeFormatter.ISO_OFFSET_DATE_TIME;
   private final static Pattern PACKAGES = Pattern.compile("^com\\.exatask\\.(.+)$");
 
-  static {
-    DATE_FORMATTER = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSSXXX");
-    DATE_FORMATTER.setTimeZone(TimeZone.getTimeZone("UTC"));
-  }
-
   @Setter(AccessLevel.PACKAGE)
-  private Date timestamp;
+  private LocalDateTime timestamp;
 
   @Setter(AccessLevel.PACKAGE)
   private String level;
@@ -78,7 +71,7 @@ public class AppLogMessage {
   private AppExceptionCause exceptionCause;
 
   public String getTimestamp() {
-    return DATE_FORMATTER.format(timestamp);
+    return timestamp.format(DATE_TIME_FORMATTER);
   }
 
   @Builder

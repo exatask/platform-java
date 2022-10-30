@@ -3,7 +3,7 @@ package com.exatask.platform.utilities.contexts;
 import lombok.experimental.UtilityClass;
 import org.apache.commons.lang3.ObjectUtils;
 
-import java.util.Date;
+import java.time.LocalDateTime;
 
 @UtilityClass
 public class RequestContextProvider {
@@ -26,7 +26,7 @@ public class RequestContextProvider {
     context.remove();
   }
 
-  public static Date getStartTime() {
+  public static LocalDateTime getStartTime() {
 
     RequestContext requestContext = getContext();
     return ObjectUtils.isNotEmpty(requestContext) ? requestContext.getStartTime() : null;
