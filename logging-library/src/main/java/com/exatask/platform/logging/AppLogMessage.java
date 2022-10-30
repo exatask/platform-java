@@ -12,6 +12,7 @@ import lombok.Setter;
 import lombok.experimental.Accessors;
 
 import java.time.LocalDateTime;
+import java.time.ZoneId;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -71,7 +72,10 @@ public class AppLogMessage {
   private AppExceptionCause exceptionCause;
 
   public String getTimestamp() {
-    return timestamp.format(DATE_TIME_FORMATTER);
+
+    return timestamp.atZone(ZoneId.systemDefault())
+        .withZoneSameInstant(ZoneId.of("UTC"))
+        .format(DATE_TIME_FORMATTER);
   }
 
   @Builder

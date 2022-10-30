@@ -2,7 +2,6 @@ package com.exatask.platform.mysql;
 
 import org.springframework.data.jpa.repository.JpaRepository;
 
-import javax.persistence.EntityTransaction;
 import java.io.Serializable;
 import java.util.List;
 import java.util.Map;
@@ -25,8 +24,6 @@ public interface AppMysqlRepository<T, ID extends Serializable> extends JpaRepos
   int updateOne(AppQuery query);
 
   int updateAll(AppQuery query);
-
-  EntityTransaction transaction();
 
   String lastQuery();
 }

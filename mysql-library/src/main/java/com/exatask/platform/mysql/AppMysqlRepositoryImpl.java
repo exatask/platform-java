@@ -8,13 +8,13 @@ import com.exatask.platform.mysql.filters.FilterElement;
 import com.exatask.platform.mysql.joins.JoinElement;
 import com.exatask.platform.mysql.sorts.SortElement;
 import com.exatask.platform.mysql.updates.UpdateElement;
+import com.exatask.platform.mysql.updates.UpdateOperation;
 import com.exatask.platform.mysql.utilities.QueryUtility;
 import org.hibernate.query.Query;
 import org.springframework.data.jpa.repository.support.SimpleJpaRepository;
 import org.springframework.util.CollectionUtils;
 
 import javax.persistence.EntityManager;
-import javax.persistence.EntityTransaction;
 import javax.persistence.Tuple;
 import javax.persistence.TupleElement;
 import javax.persistence.TypedQuery;
@@ -27,6 +27,7 @@ import javax.persistence.criteria.Order;
 import javax.persistence.criteria.Predicate;
 import javax.persistence.criteria.Root;
 import javax.persistence.criteria.Selection;
+import javax.transaction.Transactional;
 import java.io.Serializable;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
@@ -229,6 +230,9 @@ public class AppMysqlRepositoryImpl<T, ID extends Serializable> extends SimpleJp
       criteriaUpdate = updateElement.setUpdate(criteriaBuilder, criteriaUpdate);
     }
 
+    UpdateElement updatedAt = new UpdateElement((Class<? extends AppModel>) this.domainClass, "updatedAt", UpdateOperation.SET, LocalDateTime.now());
+    updatedAt.setUpdate(criteriaBuilder, criteriaUpdate);
+
     return criteriaUpdate;
   }
 
@@ -402,16 +406,16 @@ public class AppMysqlRepositoryImpl<T, ID extends Serializable> extends SimpleJp
     return ((Number) nativeQuery.getSingleResult()).longValue();
   }
 
+  @Transactional
   @Override
   public int updateOne(AppQuery query) {
 
     CriteriaBuilder criteriaBuilder = entityManager.getCriteriaBuilder();
     CriteriaUpdate<T> criteriaUpdate = criteriaBuilder.createCriteriaUpdate(this.domainClass);
-    Root<T> from = criteriaUpdate.from(this.domainClass);
 
+    criteriaUpdate.from(this.domainClass);
     criteriaUpdate = prepareFilters(criteriaBuilder, criteriaUpdate, query.getFilters());
     criteriaUpdate = prepareUpdates(criteriaBuilder, criteriaUpdate, query.getUpdates());
-    criteriaUpdate.set(from.get("updated_at"), LocalDateTime.now());
 
     javax.persistence.Query updateQuery = entityManager.createQuery(criteriaUpdate)
         .setMaxResults(1);
@@ -422,16 +426,16 @@ public class AppMysqlRepositoryImpl<T, ID extends Serializable> extends SimpleJp
     return updateQuery.executeUpdate();
   }
 
+  @Transactional
   @Override
   public int updateAll(AppQuery query) {
 
     CriteriaBuilder criteriaBuilder = entityManager.getCriteriaBuilder();
     CriteriaUpdate<T> criteriaUpdate = criteriaBuilder.createCriteriaUpdate(this.domainClass);
-    Root<T> from = criteriaUpdate.from(this.domainClass);
 
+    criteriaUpdate.from(this.domainClass);
     criteriaUpdate = prepareFilters(criteriaBuilder, criteriaUpdate, query.getFilters());
     criteriaUpdate = prepareUpdates(criteriaBuilder, criteriaUpdate, query.getUpdates());
-    criteriaUpdate.set(from.get("updated_at"), LocalDateTime.now());
 
     javax.persistence.Query updateQuery = entityManager.createQuery(criteriaUpdate);
 
@@ -439,11 +443,6 @@ public class AppMysqlRepositoryImpl<T, ID extends Serializable> extends SimpleJp
     LOGGER.trace(this.lastQuery);
 
     return updateQuery.executeUpdate();
-  }
-
-  @Override
-  public EntityTransaction transaction() {
-    return this.entityManager.getTransaction();
   }
 
   @Override

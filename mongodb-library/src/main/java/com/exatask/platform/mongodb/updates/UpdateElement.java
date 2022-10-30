@@ -8,13 +8,13 @@ public class UpdateElement {
 
   private final String key;
 
-  private final UpdateOperation mongoOperation;
+  private final UpdateOperation operation;
 
   private final Object value;
 
   public void setUpdate(Update update) {
 
-    switch (mongoOperation) {
+    switch (operation) {
 
       case SET:
         update.set(key, value);

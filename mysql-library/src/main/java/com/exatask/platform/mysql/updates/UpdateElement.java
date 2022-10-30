@@ -6,6 +6,7 @@ import lombok.AllArgsConstructor;
 import javax.persistence.criteria.CriteriaBuilder;
 import javax.persistence.criteria.CriteriaUpdate;
 import javax.persistence.criteria.Path;
+import javax.persistence.criteria.Root;
 
 @AllArgsConstructor
 public class UpdateElement {
@@ -14,15 +15,19 @@ public class UpdateElement {
 
   private final String key;
 
-  private final UpdateOperation mongoOperation;
+  private final UpdateOperation operation;
 
   private final Object value;
 
   public CriteriaUpdate setUpdate(CriteriaBuilder criteriaBuilder, CriteriaUpdate criteriaUpdate) {
 
-    Path path = criteriaUpdate.from(model).get(key);
+    Root from = criteriaUpdate.getRoot();
+    if (from.getModel().getJavaType() != model) {
+      from = criteriaUpdate.from(model);
+    }
 
-    switch (mongoOperation) {
+    Path path = from.get(key);
+    switch (operation) {
 
       case SET:
         criteriaUpdate = criteriaUpdate.set(path, value);
