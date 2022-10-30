@@ -14,6 +14,8 @@ import io.jsonwebtoken.security.SignatureException;
 
 import javax.crypto.SecretKey;
 import java.nio.charset.StandardCharsets;
+import java.time.LocalDateTime;
+import java.time.ZoneOffset;
 import java.util.Date;
 import java.util.Map;
 import java.util.stream.Collectors;
@@ -33,7 +35,7 @@ public class JwtHmac implements AppSigner {
   public String sign(Map<String, Object> data) {
 
     JwtBuilder jwtBuilder = Jwts.builder()
-        .setIssuedAt(new Date());
+        .setIssuedAt(Date.from(LocalDateTime.now().toInstant(ZoneOffset.UTC)));
 
     if (data != null && !data.isEmpty()) {
       jwtBuilder.addClaims(data);

@@ -3,13 +3,13 @@ package com.exatask.platform.utilities.contexts;
 import lombok.Builder;
 import lombok.Getter;
 
-import java.util.Date;
+import java.time.LocalDateTime;
 
 @Getter
 @Builder(toBuilder = true)
 public class RequestContext {
 
-  private final Date startTime;
+  private final LocalDateTime startTime;
 
   private final String traceId;
 

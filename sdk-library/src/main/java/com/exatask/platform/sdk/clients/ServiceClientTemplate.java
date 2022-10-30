@@ -11,6 +11,7 @@ import com.exatask.platform.utilities.ServiceUtility;
 import com.exatask.platform.utilities.credentials.AppCredentials;
 import com.exatask.platform.utilities.credentials.NoAuthCredentials;
 import com.exatask.platform.utilities.exceptions.RuntimePropertyNotFoundException;
+import feign.AsyncFeign;
 import feign.Client;
 import feign.Contract;
 import feign.Feign;
@@ -58,14 +59,30 @@ public class ServiceClientTemplate {
   private RequestContextInterceptor requestContextInterceptor;
 
   public <T extends AppServiceClient> T getServiceClient(Class<T> clazz, String baseUrl) {
-    return getServiceClient(clazz, baseUrl, new NoAuthCredentials(), null);
+    return getServiceClient(clazz, baseUrl, new NoAuthCredentials(), null, false);
   }
 
   public <T extends AppServiceClient> T getServiceClient(Class<T> clazz, String baseUrl, AppCredentials credentials) {
-    return getServiceClient(clazz, baseUrl, credentials, null);
+    return getServiceClient(clazz, baseUrl, credentials, null, false);
   }
 
   public <T extends AppServiceClient> T getServiceClient(Class<T> clazz, String baseUrl, AppCredentials credentials, List<RequestInterceptor> interceptors) {
+    return getServiceClient(clazz, baseUrl, credentials, interceptors, false);
+  }
+
+  public <T extends AppServiceClient> T getAsyncServiceClient(Class<T> clazz, String baseUrl) {
+    return getServiceClient(clazz, baseUrl, new NoAuthCredentials(), null, true);
+  }
+
+  public <T extends AppServiceClient> T getAsyncServiceClient(Class<T> clazz, String baseUrl, AppCredentials credentials) {
+    return getServiceClient(clazz, baseUrl, credentials, null, true);
+  }
+
+  public <T extends AppServiceClient> T getAsyncServiceClient(Class<T> clazz, String baseUrl, AppCredentials credentials, List<RequestInterceptor> interceptors) {
+    return getServiceClient(clazz, baseUrl, credentials, interceptors, true);
+  }
+
+  private <T extends AppServiceClient> T getServiceClient(Class<T> clazz, String baseUrl, AppCredentials credentials, List<RequestInterceptor> interceptors, boolean async) {
 
     Logger.Level logLevel = Logger.Level.BASIC;
     try {
@@ -86,16 +103,31 @@ public class ServiceClientTemplate {
       interceptorList.addAll(interceptors);
     }
 
-    return Feign.builder()
-        .contract(contract)
-        .client(client)
-        .encoder(encoder)
-        .decoder(decoder)
-        .logger(logger)
-        .logLevel(logLevel)
-        .retryer(Retryer.NEVER_RETRY)
-        .errorDecoder(errorDecoder)
-        .requestInterceptors(interceptorList)
-        .target(clazz, baseUrl);
+    if (async) {
+
+      return AsyncFeign.asyncBuilder()
+          .contract(contract)
+          .encoder(encoder)
+          .decoder(decoder)
+          .logger(logger)
+          .logLevel(logLevel)
+          .errorDecoder(errorDecoder)
+          .requestInterceptors(interceptorList)
+          .target(clazz, baseUrl);
+
+    } else {
+
+      return Feign.builder()
+          .contract(contract)
+          .client(client)
+          .encoder(encoder)
+          .decoder(decoder)
+          .logger(logger)
+          .logLevel(logLevel)
+          .retryer(Retryer.NEVER_RETRY)
+          .errorDecoder(errorDecoder)
+          .requestInterceptors(interceptorList)
+          .target(clazz, baseUrl);
+    }
   }
 }

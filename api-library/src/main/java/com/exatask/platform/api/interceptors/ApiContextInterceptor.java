@@ -9,7 +9,7 @@ import org.springframework.web.servlet.ModelAndView;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import java.util.Date;
+import java.time.LocalDateTime;
 import java.util.Optional;
 import java.util.UUID;
 
@@ -22,7 +22,7 @@ public class ApiContextInterceptor extends AppInterceptor {
     String traceId = StringUtils.defaultIfEmpty(request.getHeader(RequestContextHeader.TRACE_ID), UUID.randomUUID().toString());
 
     RequestContext.RequestContextBuilder requestContextBuilder = RequestContext.builder()
-        .startTime(new Date())
+        .startTime(LocalDateTime.now())
         .traceId(traceId)
         .parentId(StringUtils.defaultIfEmpty(request.getHeader(RequestContextHeader.PARENT_ID), traceId))
         .spanId(UUID.randomUUID().toString());

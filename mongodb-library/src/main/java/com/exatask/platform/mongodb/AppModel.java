@@ -9,7 +9,7 @@ import org.springframework.data.annotation.LastModifiedDate;
 import org.springframework.data.mongodb.core.mapping.Field;
 import org.springframework.format.annotation.DateTimeFormat;
 
-import java.util.Date;
+import java.time.LocalDateTime;
 
 @Getter
 @NoArgsConstructor
@@ -22,10 +22,10 @@ public abstract class AppModel {
   @CreatedDate
   @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME)
   @Field("created_at")
-  protected Date createdAt;
+  protected LocalDateTime createdAt;
 
   @LastModifiedDate
   @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME)
   @Field("updated_at")
-  protected Date updatedAt;
+  protected LocalDateTime updatedAt;
 }
