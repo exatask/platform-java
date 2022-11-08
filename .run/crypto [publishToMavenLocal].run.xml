@@ -1,5 +1,5 @@
 <component name="ProjectRunConfigurationManager">
-  <configuration default="false" name="crypto [publishToMavenLocal]" type="GradleRunConfiguration" factoryName="Gradle">
+  <configuration default="false" name="crypto [publishToMavenLocal]" type="GradleRunConfiguration" factoryName="Gradle" folderName="local">
     <ExternalSystemSettings>
       <option name="executionName" />
       <option name="externalProjectPath" value="$PROJECT_DIR$/crypto-library" />

@@ -9,6 +9,7 @@ import lombok.AccessLevel;
 import lombok.Builder;
 import lombok.Data;
 import lombok.Setter;
+import lombok.Singular;
 import lombok.experimental.Accessors;
 
 import java.time.LocalDateTime;
@@ -79,7 +80,7 @@ public class AppLogMessage {
   }
 
   @Builder
-  public static AppLogMessage buildLogMessage(String message, Exception exception) {
+  public static AppLogMessage buildLogMessage(String message, Exception exception, @Singular Map<String, Object> extraParams, @Singular Map<String, String> invalidAttributes) {
 
     AppLogMessage logMessage = new AppLogMessage();
 
@@ -96,6 +97,8 @@ public class AppLogMessage {
     });
 
     Optional.ofNullable(message).ifPresent(logMessage::setMessage);
+    Optional.ofNullable(extraParams).ifPresent(logMessage::setExtraParams);
+    Optional.ofNullable(invalidAttributes).ifPresent(logMessage::setInvalidAttributes);
 
     return logMessage;
   }
