@@ -1,0 +1,41 @@
+plugins {
+  id "platform.java-conventions"
+  id "org.springframework.boot"
+}
+
+version = "1.0.0-SNAPSHOT"
+
+bootJar {
+  enabled = false
+}
+
+jar {
+  enabled = true
+}
+
+dependencies {
+
+  api group: "org.springframework.boot", name: "spring-boot-starter-data-jpa"
+  api group: "com.vladmihalcea", name: "hibernate-types-52", version: "${hibernateTypeVersion}"
+
+  implementation group: "org.apache.commons", name: "commons-lang3", version: "${apacheCommonsVersion}"
+  implementation project(":logging-library")
+  implementation project(":dto-library")
+  implementation project(":utilities-library")
+
+  compileOnly group: "org.projectlombok", name: "lombok", version: "${lombokVersion}"
+  annotationProcessor group: "org.projectlombok", name: "lombok", version: "${lombokVersion}"
+
+  compileOnly group: "org.mapstruct", name: "mapstruct", version: "${mapstructVersion}"
+  annotationProcessor group: "org.mapstruct", name: "mapstruct-processor", version: "${mapstructVersion}"
+}
+
+publishing {
+  publications {
+    maven(MavenPublication) {
+
+      artifactId = "exatask-postgresql"
+      from components.java
+    }
+  }
+}
