@@ -3,7 +3,6 @@ package com.exatask.platform.rabbitmq.utilities;
 import com.exatask.platform.rabbitmq.AppListener;
 import lombok.experimental.UtilityClass;
 import org.springframework.amqp.core.AcknowledgeMode;
-import org.springframework.amqp.core.Binding;
 import org.springframework.amqp.core.Queue;
 import org.springframework.amqp.rabbit.connection.CachingConnectionFactory;
 import org.springframework.amqp.rabbit.connection.ConnectionFactory;
@@ -28,15 +27,13 @@ public class TemplateUtility {
     return messageListenerContainer;
   }
 
-  public static RabbitTemplate getTemplate(ConnectionFactory connectionFactory, Binding binding) {
+  public static RabbitTemplate getTemplate(ConnectionFactory connectionFactory) {
 
     Jackson2JsonMessageConverter jsonConverter = new Jackson2JsonMessageConverter();
 
     RabbitTemplate rabbitTemplate = new RabbitTemplate();
     rabbitTemplate.setConnectionFactory(connectionFactory);
     rabbitTemplate.setMessageConverter(jsonConverter);
-    rabbitTemplate.setExchange(binding.getExchange());
-    rabbitTemplate.setRoutingKey(binding.getRoutingKey());
 
     return rabbitTemplate;
   }
