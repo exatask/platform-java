@@ -9,10 +9,7 @@ import org.springframework.util.CollectionUtils;
 
 import javax.persistence.EntityManager;
 import javax.persistence.Query;
-import java.util.HashMap;
 import java.util.HashSet;
-import java.util.List;
-import java.util.Map;
 import java.util.Set;
 
 @Component
@@ -30,21 +27,12 @@ public class PostgresqlHealthCheck implements ServiceHealthCheck {
 
     for (EntityManager entityManager : postgresqlEntityManagers) {
 
-      Query serverQuery = entityManager.createNativeQuery("SELECT CURRENT_DATABASE(), VERSION();");
+      Query serverQuery = entityManager.createNativeQuery("SELECT VERSION();");
       String[] serverProperties = (String[]) serverQuery.getSingleResult();
 
-      Query statusQuery = entityManager.createNativeQuery("SELECT DATE_TRUNC('second', CURRENT_TIMESTAMP - PG_POSTMASTER_START_TIME()) AS uptime;");
-      List<Object[]> statusPropertiesResult = statusQuery.getResultList();
-      Map<String, String> statusProperties = new HashMap<>();
-      for (Object[] statusPropertiesRow : statusPropertiesResult) {
-        statusProperties.put((String) statusPropertiesRow[0], (String) statusPropertiesRow[1]);
-      }
-
-      postgresqlHealthCheckData.add(PostgresqlHealthCheckData.builder()
+      postgresqlHealthCheckData.add(ServiceHealthCheckData.builder()
           .status(true)
           .version(serverProperties[1])
-          .uptime(statusProperties.get("uptime"))
-          .database(serverProperties[0])
           .build());
     }
 

@@ -40,10 +40,10 @@ public class AppRedisRepositoryFactoryBean<R extends SimpleKeyValueRepository<T,
     protected Object getTargetRepository(RepositoryInformation repositoryInformation) {
 
       TypeInformation<T> information = ClassTypeInformation.from((Class<T>) repositoryInformation.getDomainType());
-      RedisPersistentEntity<T> entity = (RedisPersistentEntity<T>) keyValueOperations.getMappingContext().getRequiredPersistentEntity(information);
-      EntityInformation<T, I> entityInformation = new MappingRedisEntityInformation<>(entity);
+      RedisPersistentEntity<T> persistentEntity = (RedisPersistentEntity<T>) keyValueOperations.getMappingContext().getRequiredPersistentEntity(information);
+      EntityInformation<T, I> entityInformation = new MappingRedisEntityInformation<>(persistentEntity);
 
-      return new AppRedisRepositoryImpl<T, I>(entityInformation, keyValueOperations);
+      return new AppRedisRepositoryImpl<>(entityInformation, this.keyValueOperations);
     }
 
     @Override

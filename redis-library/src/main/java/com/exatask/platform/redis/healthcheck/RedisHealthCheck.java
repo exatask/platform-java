@@ -35,7 +35,6 @@ public class RedisHealthCheck implements ServiceHealthCheck {
       redisHealthCheckData.add(ServiceHealthCheckData.builder()
           .status(true)
           .version(redisProperties.getProperty("redis_version"))
-          .uptime(redisProperties.getProperty("uptime_in_seconds"))
           .build());
     }
 

@@ -40,10 +40,10 @@ public class AppMongoRepositoryFactoryBean<R extends MongoRepository<T, ID>, T, 
     protected Object getTargetRepository(RepositoryInformation metadata) {
 
       TypeInformation<T> information = ClassTypeInformation.from((Class<T>) metadata.getDomainType());
-      MongoPersistentEntity<T> pe = new BasicMongoPersistentEntity<>(information);
-      MongoEntityInformation<T, I> mongoEntityInformation = new MappingMongoEntityInformation<>(pe);
+      MongoPersistentEntity<T> persistentEntity = new BasicMongoPersistentEntity<>(information);
+      MongoEntityInformation<T, I> mongoEntityInformation = new MappingMongoEntityInformation<>(persistentEntity);
 
-      return new AppMongoRepositoryImpl<>(mongoEntityInformation, mongoOperations);
+      return new AppMongoRepositoryImpl<>(mongoEntityInformation, this.mongoOperations);
     }
 
     @Override
