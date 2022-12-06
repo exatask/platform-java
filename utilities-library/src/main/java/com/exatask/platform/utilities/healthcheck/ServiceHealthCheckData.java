@@ -15,6 +15,4 @@ public class ServiceHealthCheckData {
   private final Boolean status;
 
   private final String version;
-
-  private final String uptime;
 }
