@@ -1,7 +1,6 @@
 package com.exatask.platform.mysql.converters;
 
 import javax.persistence.AttributeConverter;
-import javax.persistence.Convert;
 
 public abstract class EncryptedConverter implements AttributeConverter<String, String> {
 
@@ -15,7 +14,6 @@ public abstract class EncryptedConverter implements AttributeConverter<String, S
   }
 
   @Override
-  @Convert
   public String convertToEntityAttribute(String data) {
     return decrypt(data);
   }
