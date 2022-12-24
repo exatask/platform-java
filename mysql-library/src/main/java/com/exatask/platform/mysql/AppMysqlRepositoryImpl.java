@@ -21,7 +21,6 @@ import javax.persistence.TypedQuery;
 import javax.persistence.criteria.CriteriaBuilder;
 import javax.persistence.criteria.CriteriaQuery;
 import javax.persistence.criteria.CriteriaUpdate;
-import javax.persistence.criteria.Fetch;
 import javax.persistence.criteria.FetchParent;
 import javax.persistence.criteria.Order;
 import javax.persistence.criteria.Predicate;
@@ -191,11 +190,7 @@ public class AppMysqlRepositoryImpl<T, ID extends Serializable> extends SimpleJp
     }
 
     for (JoinElement join : joins) {
-
-      Fetch fetched = from.fetch(join.getAttribute(), join.getType());
-      if (!CollectionUtils.isEmpty(join.getJoins())) {
-        prepareJoins(fetched, join.getJoins());
-      }
+      from.fetch(join.getAttribute(), join.getType());
     }
   }
 

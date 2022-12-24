@@ -20,25 +20,12 @@ public class JoinElement {
 
   private final List<ConditionElement> conditions;
 
-  @Getter
-  private final List<JoinElement> joins;
-
   public JoinElement(String attribute, JoinType type) {
 
     this.attribute = attribute;
     this.type = type;
     this.model = null;
     this.conditions = null;
-    this.joins = null;
-  }
-
-  public JoinElement(String attribute, JoinType type, List<JoinElement> joins) {
-
-    this.attribute = attribute;
-    this.type = type;
-    this.model = null;
-    this.conditions = null;
-    this.joins = joins;
   }
 
   public JoinElement(Class<? extends AppModel> model, JoinType type, List<ConditionElement> conditions) {
@@ -47,7 +34,6 @@ public class JoinElement {
     this.type = type;
     this.conditions = conditions;
     this.attribute = null;
-    this.joins = null;
   }
 
   public String getJoin() {

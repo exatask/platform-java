@@ -17,22 +17,19 @@ public class ServiceLibrary extends AppLibrary {
   private static final String CHANGELOG_COLLECTION = "service_changelogs";
   private static final String CHANGELOG_PACKAGE = "datastores.service.changelogs.package";
 
-  private final MongodbLibrary mongodbLibrary = new MongodbLibrary();
-  private final MysqlLibrary mysqlLibrary = new MysqlLibrary();
-
-  public MongockRunner createRunner(MongoProperties mongoProperties) {
+  public MongockRunner createRunner(MongodbLibrary mongodbLibrary, MongoProperties mongoProperties) {
     return mongodbLibrary.createRunner(mongoProperties, ServiceUtility.getServiceProperty(CHANGELOG_PACKAGE), CHANGELOG_COLLECTION);
   }
 
-  public MongockRunner createRunner(MongoTemplate mongoTemplate) {
+  public MongockRunner createRunner(MongodbLibrary mongodbLibrary, MongoTemplate mongoTemplate) {
     return mongodbLibrary.createRunner(mongoTemplate, ServiceUtility.getServiceProperty(CHANGELOG_PACKAGE), CHANGELOG_COLLECTION);
   }
 
-  public Flyway createRunner(DataSourceProperties dataSourceProperties) {
+  public Flyway createRunner(MysqlLibrary mysqlLibrary, DataSourceProperties dataSourceProperties) {
     return mysqlLibrary.createRunner(dataSourceProperties, ServiceUtility.getServiceProperty(CHANGELOG_PACKAGE), CHANGELOG_COLLECTION);
   }
 
-  public Flyway createRunner(DataSource dataSource) {
+  public Flyway createRunner(MysqlLibrary mysqlLibrary, DataSource dataSource) {
     return mysqlLibrary.createRunner(dataSource, ServiceUtility.getServiceProperty(CHANGELOG_PACKAGE), CHANGELOG_COLLECTION);
   }
 
