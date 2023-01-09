@@ -9,6 +9,7 @@ import feign.Response;
 import feign.Util;
 import feign.codec.ErrorDecoder;
 import org.springframework.stereotype.Service;
+import org.springframework.util.ObjectUtils;
 
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
@@ -25,7 +26,13 @@ public class ServiceErrorDecoder implements ErrorDecoder {
 
     try {
 
-      String content = Util.toString(response.body().asReader(StandardCharsets.UTF_8));
+      String content;
+      if (ObjectUtils.isEmpty(response.body())) {
+        content = response.status() + " : " + response.reason();
+      } else {
+        content = Util.toString(response.body().asReader(StandardCharsets.UTF_8));
+      }
+
       return SdkException.builder()
           .methodKey(methodKey)
           .url(request.url())

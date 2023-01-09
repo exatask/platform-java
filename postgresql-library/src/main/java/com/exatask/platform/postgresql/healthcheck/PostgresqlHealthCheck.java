@@ -27,12 +27,11 @@ public class PostgresqlHealthCheck implements ServiceHealthCheck {
 
     for (EntityManager entityManager : postgresqlEntityManagers) {
 
-      Query serverQuery = entityManager.createNativeQuery("SELECT VERSION();");
-      String[] serverProperties = (String[]) serverQuery.getSingleResult();
+      Query versionQuery = entityManager.createNativeQuery("SELECT VERSION();");
 
       postgresqlHealthCheckData.add(ServiceHealthCheckData.builder()
           .status(true)
-          .version(serverProperties[1])
+          .version(versionQuery.getSingleResult().toString())
           .build());
     }
 

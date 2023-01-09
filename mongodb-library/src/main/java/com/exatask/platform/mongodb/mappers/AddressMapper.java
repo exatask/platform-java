@@ -6,6 +6,7 @@ import org.mapstruct.Mapper;
 
 @Mapper(
     componentModel = "spring",
+    implementationName = "AddressMongodbMapper",
     uses = {AddressMapper.LocationMapper.class}
 )
 public interface AddressMapper {
