@@ -5,7 +5,6 @@ import com.exatask.platform.utilities.healthcheck.ServiceHealthCheck;
 import com.exatask.platform.utilities.healthcheck.ServiceHealthCheckData;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.redis.connection.RedisConnection;
-import org.springframework.data.redis.core.RedisConnectionUtils;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.stereotype.Component;
 import org.springframework.util.CollectionUtils;
@@ -29,13 +28,15 @@ public class RedisHealthCheck implements ServiceHealthCheck {
 
     for (RedisTemplate<String, String> template : redisTemplates) {
 
-      RedisConnection redisConnection = RedisConnectionUtils.getConnection(template.getConnectionFactory());
+      RedisConnection redisConnection = template.getConnectionFactory().getConnection();
       Properties redisProperties = redisConnection.info();
 
       redisHealthCheckData.add(ServiceHealthCheckData.builder()
           .status(true)
           .version(redisProperties.getProperty("redis_version"))
           .build());
+
+      redisConnection.close();
     }
 
     return redisHealthCheckData;

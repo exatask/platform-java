@@ -4,7 +4,7 @@ import com.exatask.platform.dto.entities.AddressEntity;
 import com.exatask.platform.postgresql.schemas.Address;
 import org.mapstruct.Mapper;
 
-@Mapper(componentModel = "spring")
+@Mapper(componentModel = "spring", implementationName = "AddressPostgresqlMapper")
 public interface AddressMapper {
 
   AddressEntity toEntity(Address address);
