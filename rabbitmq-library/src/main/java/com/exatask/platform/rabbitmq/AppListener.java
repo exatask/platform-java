@@ -77,7 +77,8 @@ public abstract class AppListener<T extends AppMessage> implements ChannelAwareM
         requestContextBuilder
             .employeeId(employeeId.toString())
             .employeeName(headers.get(RequestContextHeader.EMPLOYEE_NAME).toString())
-            .employeeEmailId(headers.get(RequestContextHeader.EMPLOYEE_EMAIL_ID).toString()));
+            .employeeEmailId(headers.get(RequestContextHeader.EMPLOYEE_EMAIL_ID).toString())
+            .employeeMobileNumber(headers.get(RequestContextHeader.EMPLOYEE_MOBILE_NUMBER).toString()));
 
     Optional.ofNullable(headers.get(RequestContextHeader.SECURITY_TARGET)).ifPresent((securityTarget) ->
         requestContextBuilder

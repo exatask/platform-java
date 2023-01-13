@@ -20,6 +20,7 @@ public class RequestContextHeader {
   public static final String EMPLOYEE_ID = "x-employee-id";
   public static final String EMPLOYEE_NAME = "x-employee-name";
   public static final String EMPLOYEE_EMAIL_ID = "x-employee-email-id";
+  public static final String EMPLOYEE_MOBILE_NUMBER = "x-employee-mobile-number";
 
   public static final String SECURITY_TARGET = "x-security-target";
   public static final String SECURITY_OTP = "x-security-otp";

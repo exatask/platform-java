@@ -98,6 +98,12 @@ public class RequestContextProvider {
     return ObjectUtils.isNotEmpty(requestContext) ? requestContext.getEmployeeEmailId() : null;
   }
 
+  public static String getEmployeeMobileNumber() {
+
+    RequestContext requestContext = getContext();
+    return ObjectUtils.isNotEmpty(requestContext) ? requestContext.getEmployeeMobileNumber() : null;
+  }
+
   public static String getOrganizationId() {
 
     RequestContext requestContext = getContext();

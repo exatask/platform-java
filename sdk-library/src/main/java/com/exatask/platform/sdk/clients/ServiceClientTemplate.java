@@ -11,6 +11,7 @@ import com.exatask.platform.utilities.ServiceUtility;
 import com.exatask.platform.utilities.credentials.AppCredentials;
 import com.exatask.platform.utilities.credentials.NoAuthCredentials;
 import com.exatask.platform.utilities.exceptions.RuntimePropertyNotFoundException;
+import feign.AsyncClient;
 import feign.AsyncFeign;
 import feign.Client;
 import feign.Contract;
@@ -39,6 +40,9 @@ public class ServiceClientTemplate {
 
   @Autowired
   private Client client;
+
+  @Autowired
+  private AsyncClient asyncClient;
 
   @Autowired
   private Encoder encoder;
@@ -105,8 +109,9 @@ public class ServiceClientTemplate {
 
     if (async) {
 
-      return AsyncFeign.asyncBuilder()
+      return (T) AsyncFeign.asyncBuilder()
           .contract(contract)
+          .client(asyncClient)
           .encoder(encoder)
           .decoder(decoder)
           .logger(logger)

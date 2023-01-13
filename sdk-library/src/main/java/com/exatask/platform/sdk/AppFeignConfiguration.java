@@ -2,19 +2,25 @@ package com.exatask.platform.sdk;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import feign.AsyncClient;
 import feign.Client;
 import feign.Contract;
 import feign.codec.Decoder;
 import feign.codec.Encoder;
 import feign.jackson.JacksonDecoder;
 import feign.jackson.JacksonEncoder;
-import feign.okhttp.OkHttpClient;
+import okhttp3.OkHttpClient;
+import okhttp3.Protocol;
 import org.springframework.cloud.openfeign.EnableFeignClients;
 import org.springframework.cloud.openfeign.FeignClientsConfiguration;
 import org.springframework.cloud.openfeign.support.SpringMvcContract;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Import;
+
+import java.util.Collections;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
 
 @Configuration
 @EnableFeignClients
@@ -28,7 +34,26 @@ public class AppFeignConfiguration {
 
   @Bean
   public Client client() {
-    return new OkHttpClient();
+
+    OkHttpClient okHttpClient = new OkHttpClient.Builder()
+        .followRedirects(false)
+        .protocols(Collections.singletonList(Protocol.H2_PRIOR_KNOWLEDGE))
+        .retryOnConnectionFailure(true)
+        .build();
+
+    return new feign.okhttp.OkHttpClient(okHttpClient);
+  }
+
+  @Bean
+  public AsyncClient asyncClient() {
+
+    ExecutorService instance = Executors.newCachedThreadPool(runnable -> {
+      final Thread result = new Thread(runnable);
+      result.setDaemon(true);
+      return result;
+    });
+
+    return new AsyncClient.Default<>(client(), instance);
   }
 
   @Bean
