@@ -1,5 +1,6 @@
 package com.exatask.platform.api.controllers;
 
+import com.exatask.platform.api.annotations.NewRelicIgnoreTransaction;
 import com.exatask.platform.api.constants.Endpoints;
 import com.exatask.platform.api.services.healthcheck.HealthCheckService;
 import com.exatask.platform.api.services.healthcheck.responses.HealthCheckResponse;
@@ -40,6 +41,7 @@ public class HealthCheckController extends AppController {
       }
   )
   @SecurityRequirements
+  @NewRelicIgnoreTransaction
   public HealthCheckResponse healthCheck() {
     return healthCheckService.process(null);
   }

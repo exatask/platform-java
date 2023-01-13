@@ -61,6 +61,7 @@ public abstract class AppPublisher<T extends AppMessage> {
       messageProperties.setHeader(RequestContextHeader.EMPLOYEE_ID, employeeId);
       messageProperties.setHeader(RequestContextHeader.EMPLOYEE_NAME, RequestContextProvider.getEmployeeName());
       messageProperties.setHeader(RequestContextHeader.EMPLOYEE_EMAIL_ID, RequestContextProvider.getEmployeeEmailId());
+      messageProperties.setHeader(RequestContextHeader.EMPLOYEE_MOBILE_NUMBER, RequestContextProvider.getEmployeeMobileNumber());
     });
 
     Optional.ofNullable(RequestContextProvider.getSecurityTarget()).ifPresent(securityTarget -> {

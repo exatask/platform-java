@@ -35,6 +35,7 @@ public class ServiceContextInterceptor implements RequestInterceptor {
         template.header(RequestContextHeader.EMPLOYEE_ID, employeeId)
             .header(RequestContextHeader.EMPLOYEE_NAME, RequestContextProvider.getEmployeeName())
             .header(RequestContextHeader.EMPLOYEE_EMAIL_ID, RequestContextProvider.getEmployeeEmailId())
+            .header(RequestContextHeader.EMPLOYEE_MOBILE_NUMBER, RequestContextProvider.getEmployeeMobileNumber())
     );
   }
 }
