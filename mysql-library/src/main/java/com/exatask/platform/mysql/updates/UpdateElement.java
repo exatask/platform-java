@@ -35,6 +35,7 @@ public class UpdateElement {
 
       case UNSET:
         criteriaUpdate = criteriaUpdate.set(path, criteriaBuilder.nullLiteral(path.getClass()));
+        break;
 
       case INC:
         criteriaUpdate = criteriaUpdate.set(path, criteriaBuilder.sum(path, Integer.parseInt(value.toString())));

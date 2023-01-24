@@ -24,9 +24,9 @@ import java.util.Map;
 
 public class Aes implements AppCipher {
 
-  private final static AppLogger LOGGER = AppLogManager.getLogger();
+  private static final AppLogger LOGGER = AppLogManager.getLogger();
 
-  private final static String ALGORITHM = "AES";
+  private static final String ALGORITHM = "AES";
 
   private final ObjectMapper mapper = new ObjectMapper();
 

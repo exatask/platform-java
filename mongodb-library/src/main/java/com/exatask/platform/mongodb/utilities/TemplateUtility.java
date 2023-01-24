@@ -11,6 +11,7 @@ import lombok.experimental.UtilityClass;
 import org.apache.commons.lang3.StringUtils;
 import org.bson.UuidRepresentation;
 import org.springframework.boot.autoconfigure.mongo.MongoProperties;
+import org.springframework.data.mapping.context.MappingContext;
 import org.springframework.data.mongodb.MongoDatabaseFactory;
 import org.springframework.data.mongodb.core.MongoTemplate;
 import org.springframework.data.mongodb.core.SimpleMongoClientDatabaseFactory;
@@ -19,6 +20,8 @@ import org.springframework.data.mongodb.core.convert.DefaultDbRefResolver;
 import org.springframework.data.mongodb.core.convert.DefaultMongoTypeMapper;
 import org.springframework.data.mongodb.core.convert.MappingMongoConverter;
 import org.springframework.data.mongodb.core.mapping.MongoMappingContext;
+import org.springframework.data.mongodb.core.mapping.MongoPersistentEntity;
+import org.springframework.data.mongodb.core.mapping.MongoPersistentProperty;
 
 import java.util.Optional;
 
@@ -34,8 +37,11 @@ public class TemplateUtility {
   public static MongoTemplate getTemplate(MongoDatabaseFactory connectionFactory) {
 
     DbRefResolver refResolver = new DefaultDbRefResolver(connectionFactory);
-    MappingMongoConverter mongoConverter = new MappingMongoConverter(refResolver, new MongoMappingContext());
-    mongoConverter.setTypeMapper(new DefaultMongoTypeMapper(null));
+    MappingContext<? extends MongoPersistentEntity<?>, MongoPersistentProperty> mappingContext = new MongoMappingContext();
+
+    MappingMongoConverter mongoConverter = new MappingMongoConverter(refResolver, mappingContext);
+    mongoConverter.setTypeMapper(new DefaultMongoTypeMapper(null, mappingContext));
+    mongoConverter.afterPropertiesSet();
 
     return new MongoTemplate(connectionFactory, mongoConverter);
   }

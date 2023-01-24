@@ -24,6 +24,9 @@ import java.util.List;
 @Configuration
 public class SwaggerConfig {
 
+  private static final String TYPE_STRING = "string";
+  private static final String TYPE_OBJECT = "object";
+
   @Autowired
   private ApiServiceConfig serviceConfig;
 
@@ -37,30 +40,30 @@ public class SwaggerConfig {
         .setDefault(false);
 
     Schema<String> messageTypeSchema = new Schema<>();
-    messageTypeSchema.type("string")
+    messageTypeSchema.type(TYPE_STRING)
         .setDefault("ERROR");
 
     Schema<Object> messageSchema = new Schema<>();
-    messageSchema.type("object")
+    messageSchema.type(TYPE_OBJECT)
         .addProperties("type", messageTypeSchema)
-        .addProperties("text", (new Schema<>()).type("string"))
-        .addProperties("error_code", (new Schema<>()).type("string"));
+        .addProperties("text", (new Schema<>()).type(TYPE_STRING))
+        .addProperties("error_code", (new Schema<>()).type(TYPE_STRING));
 
     Schema<Object> stackTraceSchema = new Schema<>();
-    stackTraceSchema.type("object")
-        .addProperties("file", (new Schema<>()).type("string"))
-        .addProperties("class", (new Schema<>()).type("string"))
-        .addProperties("method", (new Schema<>()).type("string"))
+    stackTraceSchema.type(TYPE_OBJECT)
+        .addProperties("file", (new Schema<>()).type(TYPE_STRING))
+        .addProperties("class", (new Schema<>()).type(TYPE_STRING))
+        .addProperties("method", (new Schema<>()).type(TYPE_STRING))
         .addProperties("line", (new Schema<>()).type("integer"));
 
     Schema<Object> apiFailure = new Schema<>();
-    apiFailure.type("object")
+    apiFailure.type(TYPE_OBJECT)
         .addProperties("status", statusSchema)
         .addProperties("message", messageSchema)
-        .addProperties("invalid_attributes", (new Schema<>()).type("object"))
-        .addProperties("extra_params", (new Schema<>()).type("object"))
+        .addProperties("invalid_attributes", (new Schema<>()).type(TYPE_OBJECT))
+        .addProperties("extra_params", (new Schema<>()).type(TYPE_OBJECT))
         .addProperties("stack_trace", (new ArraySchema()).items(stackTraceSchema))
-        .addProperties("exception_cause", (new Schema<>()).type("string"));
+        .addProperties("exception_cause", (new Schema<>()).type(TYPE_STRING));
 
     Content responseContent = new Content();
     responseContent.addMediaType(org.springframework.http.MediaType.APPLICATION_JSON.toString(), (new MediaType()).schema(apiFailure));

@@ -58,8 +58,8 @@ public class Totp implements AppPassword {
     try {
 
       Map<String, String> cipherKeys = Collections.singletonMap("key", key);
-      AppCipher cipher = AppCipherFactory.getCipher(this.cipher, encoderType, cipherKeys);
-      encryptedMessage = cipher.encrypt(message);
+      AppCipher cipherData = AppCipherFactory.getCipher(this.cipher, encoderType, cipherKeys);
+      encryptedMessage = cipherData.encrypt(message);
 
     } catch (GeneralSecurityException | IOException exception) {
       LOGGER.error(exception);

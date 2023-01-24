@@ -16,7 +16,7 @@ public class ServiceEnabledInterceptor extends AppInterceptor {
   @Override
   public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler) throws Exception {
 
-    if (!serviceEnabled) {
+    if (Boolean.FALSE.equals(serviceEnabled)) {
       this.sendPreHandleErrorResponse(ServiceUnavailableException.builder().build(), request, response);
     }
     return serviceEnabled;

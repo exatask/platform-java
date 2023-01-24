@@ -5,13 +5,13 @@ import com.exatask.platform.utilities.properties.AwsProperties;
 import com.exatask.platform.utilities.properties.SshProperties;
 import lombok.experimental.UtilityClass;
 
-import java.util.HashMap;
+import java.util.EnumMap;
 import java.util.Map;
 
 @UtilityClass
 public class AppTransportFactory {
 
-  private static final Map<AppTransportType, AppTransport> storageList = new HashMap<>();
+  private static final Map<AppTransportType, AppTransport> storageList = new EnumMap<>(AppTransportType.class);
 
   public static AppTransport getInstanceFromPrefix(String pathPrefix) {
 

@@ -22,6 +22,7 @@ public class UpdateElement {
 
       case UNSET:
         update.unset(key);
+        break;
 
       case ADD_TO_SET:
         update.addToSet(key, value);

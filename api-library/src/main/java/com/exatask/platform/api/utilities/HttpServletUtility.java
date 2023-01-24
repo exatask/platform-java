@@ -14,6 +14,7 @@ import org.springframework.web.context.request.ServletRequestAttributes;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
 import java.util.regex.Pattern;
 
@@ -82,7 +83,7 @@ public class HttpServletUtility {
       return addresses.subList(1, addresses.size());
     }
 
-    return null;
+    return Collections.emptyList();
   }
 
   public static RequestSource getRequestSource() {

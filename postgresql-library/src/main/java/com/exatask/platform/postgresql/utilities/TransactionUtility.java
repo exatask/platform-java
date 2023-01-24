@@ -7,7 +7,7 @@ import com.exatask.platform.postgresql.tenants.ServiceTenant;
 import com.zaxxer.hikari.HikariDataSource;
 import lombok.experimental.UtilityClass;
 import org.hibernate.MultiTenancyStrategy;
-import org.hibernate.cfg.Environment;
+import org.hibernate.cfg.AvailableSettings;
 import org.hibernate.dialect.PostgreSQL95Dialect;
 import org.hibernate.tool.schema.Action;
 import org.springframework.boot.autoconfigure.jdbc.DataSourceProperties;
@@ -18,6 +18,7 @@ import org.springframework.transaction.PlatformTransactionManager;
 
 import javax.persistence.EntityManagerFactory;
 import javax.sql.DataSource;
+import java.time.ZoneOffset;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -49,9 +50,9 @@ public class TransactionUtility {
     AppPostgresqlTenantConnectionProvider postgresqlTenantConnectionProvider = new AppPostgresqlTenantConnectionProvider(postgresqlTenantConnections);
 
     Map<String, Object> jpaProperties = prepareJpaProperties();
-    jpaProperties.put(Environment.MULTI_TENANT, MultiTenancyStrategy.DATABASE.toString());
-    jpaProperties.put(Environment.MULTI_TENANT_CONNECTION_PROVIDER, postgresqlTenantConnectionProvider);
-    jpaProperties.put(Environment.MULTI_TENANT_IDENTIFIER_RESOLVER, postgresqlTenantResolver);
+    jpaProperties.put(AvailableSettings.MULTI_TENANT, MultiTenancyStrategy.DATABASE.toString());
+    jpaProperties.put(AvailableSettings.MULTI_TENANT_CONNECTION_PROVIDER, postgresqlTenantConnectionProvider);
+    jpaProperties.put(AvailableSettings.MULTI_TENANT_IDENTIFIER_RESOLVER, postgresqlTenantResolver);
 
     LocalContainerEntityManagerFactoryBean entityManager = new LocalContainerEntityManagerFactoryBean();
     entityManager.setDataSource(postgresqlTenantConnections.getTenantDataSource());
@@ -81,9 +82,9 @@ public class TransactionUtility {
   private static Map<String, Object> prepareJpaProperties() {
 
     Map<String, Object> jpaProperties = new HashMap<>();
-    jpaProperties.put(Environment.HBM2DDL_AUTO, Action.NONE.name().toLowerCase());
-    jpaProperties.put(Environment.DIALECT, PostgreSQL95Dialect.class);
-    jpaProperties.put(Environment.JDBC_TIME_ZONE, "UTC");
+    jpaProperties.put(AvailableSettings.HBM2DDL_AUTO, Action.NONE.name().toLowerCase());
+    jpaProperties.put(AvailableSettings.DIALECT, PostgreSQL95Dialect.class);
+    jpaProperties.put(AvailableSettings.JDBC_TIME_ZONE, ZoneOffset.UTC.toString());
     return jpaProperties;
   }
 }

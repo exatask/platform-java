@@ -62,25 +62,25 @@ public abstract class AppListener<T extends AppMessage> implements ChannelAwareM
         .parentId(headers.getOrDefault(RequestContextHeader.PARENT_ID, traceId).toString())
         .spanId(UUID.randomUUID().toString());
 
-    Optional.ofNullable(headers.get(RequestContextHeader.SESSION_TOKEN)).ifPresent((sessionToken) ->
+    Optional.ofNullable(headers.get(RequestContextHeader.SESSION_TOKEN)).ifPresent(sessionToken ->
         requestContextBuilder.sessionToken(sessionToken.toString())
             .sessionId(headers.get(RequestContextHeader.SESSION_ID).toString()));
 
     Optional.ofNullable(headers.get(RequestContextHeader.TENANT)).ifPresent(tenant -> requestContextBuilder.tenant(tenant.toString()));
 
-    Optional.ofNullable(headers.get(RequestContextHeader.ORGANIZATION_ID)).ifPresent((organizationId) ->
+    Optional.ofNullable(headers.get(RequestContextHeader.ORGANIZATION_ID)).ifPresent(organizationId ->
         requestContextBuilder
             .organizationId(organizationId.toString())
             .organizationName(headers.get(RequestContextHeader.ORGANIZATION_NAME).toString()));
 
-    Optional.ofNullable(headers.get(RequestContextHeader.EMPLOYEE_ID)).ifPresent((employeeId) ->
+    Optional.ofNullable(headers.get(RequestContextHeader.EMPLOYEE_ID)).ifPresent(employeeId ->
         requestContextBuilder
             .employeeId(employeeId.toString())
             .employeeName(headers.get(RequestContextHeader.EMPLOYEE_NAME).toString())
             .employeeEmailId(headers.get(RequestContextHeader.EMPLOYEE_EMAIL_ID).toString())
             .employeeMobileNumber(headers.get(RequestContextHeader.EMPLOYEE_MOBILE_NUMBER).toString()));
 
-    Optional.ofNullable(headers.get(RequestContextHeader.SECURITY_TARGET)).ifPresent((securityTarget) ->
+    Optional.ofNullable(headers.get(RequestContextHeader.SECURITY_TARGET)).ifPresent(securityTarget ->
         requestContextBuilder
             .securityTarget(securityTarget.toString())
             .securityOtp(headers.get(RequestContextHeader.SECURITY_OTP).toString()));

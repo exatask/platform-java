@@ -2,13 +2,13 @@ package com.exatask.platform.logging.serializers;
 
 import lombok.experimental.UtilityClass;
 
-import java.util.HashMap;
+import java.util.EnumMap;
 import java.util.Map;
 
 @UtilityClass
 public class AppLogSerializerFactory {
 
-  private static final Map<AppLogSerializerType, AppLogSerializer> serializerList = new HashMap<>();
+  private static final Map<AppLogSerializerType, AppLogSerializer> serializerList = new EnumMap<>(AppLogSerializerType.class);
 
   private static final AppLogSerializer defaultSerializer = initializeLogSerializer(AppLogSerializerType.LINE);
 

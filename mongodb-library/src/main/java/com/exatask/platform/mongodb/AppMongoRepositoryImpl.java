@@ -27,6 +27,9 @@ public class AppMongoRepositoryImpl<T, ID extends Serializable> extends SimpleMo
 
   private static final AppLogger LOGGER = AppLogManager.getLogger();
 
+  private static final String CREATED_AT = "created_at";
+  private static final String UPDATED_AT = "updated_at";
+
   private final MongoOperations mongoOperations;
   private final MongoEntityInformation<T, ID> mongoEntityInformation;
 
@@ -66,7 +69,7 @@ public class AppMongoRepositoryImpl<T, ID extends Serializable> extends SimpleMo
 
     Field fields = query.fields();
     for (Map.Entry<String, Boolean> field : projection.entrySet()) {
-      if (field.getValue()) {
+      if (Boolean.TRUE.equals(field.getValue())) {
         fields.include(field.getKey());
       } else {
         fields.exclude(field.getKey());
@@ -146,7 +149,7 @@ public class AppMongoRepositoryImpl<T, ID extends Serializable> extends SimpleMo
 
     Update updateQuery = new Update();
     prepareUpdates(updateQuery, query.getUpdates());
-    updateQuery.set("updated_at", LocalDateTime.now());
+    updateQuery.set(UPDATED_AT, LocalDateTime.now());
 
     FindAndModifyOptions options = new FindAndModifyOptions();
     options.returnNew(true)
@@ -203,7 +206,7 @@ public class AppMongoRepositoryImpl<T, ID extends Serializable> extends SimpleMo
 
     Update updateQuery = new Update();
     prepareUpdates(updateQuery, query.getUpdates());
-    updateQuery.set("updated_at", LocalDateTime.now());
+    updateQuery.set(UPDATED_AT, LocalDateTime.now());
 
     this.lastQuery = String.format("%s.updateOne(%s, %s)",
         mongoEntityInformation.getCollectionName(),
@@ -223,7 +226,7 @@ public class AppMongoRepositoryImpl<T, ID extends Serializable> extends SimpleMo
 
     Update updateQuery = new Update();
     prepareUpdates(updateQuery, query.getUpdates());
-    updateQuery.set("updated_at", LocalDateTime.now());
+    updateQuery.set(UPDATED_AT, LocalDateTime.now());
 
     this.lastQuery = String.format("%s.updateMany(%s, %s)",
         mongoEntityInformation.getCollectionName(),
@@ -243,8 +246,8 @@ public class AppMongoRepositoryImpl<T, ID extends Serializable> extends SimpleMo
 
     Update updateQuery = new Update();
     prepareUpdates(updateQuery, query.getUpdates());
-    updateQuery.set("updated_at", LocalDateTime.now());
-    updateQuery.setOnInsert("created_at", LocalDateTime.now());
+    updateQuery.set(UPDATED_AT, LocalDateTime.now());
+    updateQuery.setOnInsert(CREATED_AT, LocalDateTime.now());
 
     this.lastQuery = String.format("%s.upsert(%s, %s)",
         mongoEntityInformation.getCollectionName(),
