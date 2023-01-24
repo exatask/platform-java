@@ -27,9 +27,9 @@ import java.util.Map;
 
 public class Rsa implements AppCipher {
 
-  private final static AppLogger LOGGER = AppLogManager.getLogger();
+  private static final AppLogger LOGGER = AppLogManager.getLogger();
 
-  private final static String ALGORITHM = "RSA";
+  private static final String ALGORITHM = "RSA";
 
   private final Cipher cipher;
 
@@ -60,19 +60,19 @@ public class Rsa implements AppCipher {
 
     InputStream privateKeyStream = new ClassPathResource(privateKeyFile).getInputStream();
     PemReader privateKeyReader = new PemReader(new InputStreamReader(privateKeyStream));
-    byte[] privateKey = privateKeyReader.readPemObject().getContent();
+    byte[] privateKeyData = privateKeyReader.readPemObject().getContent();
     PKCS8EncodedKeySpec privateKeySpec;
 
     if (passphrase != null && passphrase.length() > 0) {
 
-      EncryptedPrivateKeyInfo privateKeyInfo = new EncryptedPrivateKeyInfo(privateKey);
+      EncryptedPrivateKeyInfo privateKeyInfo = new EncryptedPrivateKeyInfo(privateKeyData);
       PBEKeySpec passphraseSpec = new PBEKeySpec(passphrase.toCharArray());
       SecretKeyFactory passphraseFactory = SecretKeyFactory.getInstance(privateKeyInfo.getAlgName());
       privateKeySpec = privateKeyInfo.getKeySpec(passphraseFactory.generateSecret(passphraseSpec));
 
     } else {
 
-      privateKeySpec = new PKCS8EncodedKeySpec(privateKey);
+      privateKeySpec = new PKCS8EncodedKeySpec(privateKeyData);
     }
 
     return keyFactory.generatePrivate(privateKeySpec);
@@ -83,8 +83,8 @@ public class Rsa implements AppCipher {
 
     InputStream publicKeyStream = new ClassPathResource(publicKeyFile).getInputStream();
     PemReader publicKeyReader = new PemReader(new InputStreamReader(publicKeyStream));
-    byte[] publicKey = publicKeyReader.readPemObject().getContent();
-    return keyFactory.generatePublic(new X509EncodedKeySpec(publicKey));
+    byte[] publicKeyData = publicKeyReader.readPemObject().getContent();
+    return keyFactory.generatePublic(new X509EncodedKeySpec(publicKeyData));
   }
 
   @Override

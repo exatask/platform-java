@@ -6,7 +6,6 @@ import com.exatask.platform.validator.constraints.DateTimeConstraint;
 
 import javax.validation.ConstraintValidator;
 import javax.validation.ConstraintValidatorContext;
-import java.text.ParseException;
 import java.time.LocalDateTime;
 
 public class DateTimeValidator extends AppValidator implements ConstraintValidator<DateTimeConstraint, String> {
@@ -21,17 +20,7 @@ public class DateTimeValidator extends AppValidator implements ConstraintValidat
   @Override
   public boolean isValid(String value, ConstraintValidatorContext context) {
 
-    try {
-
-      LocalDateTime dateTime = DateTimeUtility.toDate(value, format);
-      if (value.equals(DateTimeUtility.toString(dateTime, format))) {
-        return true;
-      }
-
-    } catch (ParseException exception) {
-      LOGGER.error(exception);
-    }
-
-    return false;
+    LocalDateTime dateTime = DateTimeUtility.toDate(value, format);
+    return value.equals(DateTimeUtility.toString(dateTime, format));
   }
 }

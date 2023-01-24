@@ -13,15 +13,15 @@ import java.util.Set;
 public class CollectionUtility {
 
   public static <T> Set<T> nullSafe(Set<T> set) {
-    return Optional.ofNullable(set).orElse(Collections.EMPTY_SET);
+    return Optional.ofNullable(set).orElse(Collections.emptySet());
   }
 
   public static <T> List<T> nullSafe(List<T> list) {
-    return Optional.ofNullable(list).orElse(Collections.EMPTY_LIST);
+    return Optional.ofNullable(list).orElse(Collections.emptyList());
   }
 
   public static <K, V> Map<K, V> nullSafe(Map<K, V> map) {
-    return Optional.ofNullable(map).orElse(Collections.EMPTY_MAP);
+    return Optional.ofNullable(map).orElse(Collections.emptyMap());
   }
 
   public static <T> Set<T> defaultIfNull(Set<T> set, Set<T> defaultSet) {

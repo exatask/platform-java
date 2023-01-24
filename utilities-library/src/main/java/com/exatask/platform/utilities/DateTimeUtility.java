@@ -3,16 +3,15 @@ package com.exatask.platform.utilities;
 import com.exatask.platform.utilities.constants.DateTimeConstant;
 import lombok.experimental.UtilityClass;
 
-import java.text.ParseException;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
-import java.util.HashMap;
+import java.util.EnumMap;
 import java.util.Map;
 
 @UtilityClass
 public class DateTimeUtility {
 
-  private static final Map<DateTimeConstant.Format, DateTimeFormatter> DATE_TIME_FORMATS = new HashMap<>();
+  private static final Map<DateTimeConstant.Format, DateTimeFormatter> DATE_TIME_FORMATS = new EnumMap<>(DateTimeConstant.Format.class);
 
   static {
     DATE_TIME_FORMATS.put(DateTimeConstant.Format.SIMPLE_DATE, DateTimeFormatter.ofPattern("yyyy-MM-dd"));
@@ -27,7 +26,7 @@ public class DateTimeUtility {
     return date.format(DATE_TIME_FORMATS.get(format));
   }
 
-  public static LocalDateTime toDate(String date, DateTimeConstant.Format format) throws ParseException {
+  public static LocalDateTime toDate(String date, DateTimeConstant.Format format) {
     return LocalDateTime.from(DATE_TIME_FORMATS.get(format).parse(date));
   }
 }

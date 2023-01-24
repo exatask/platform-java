@@ -15,7 +15,8 @@ import io.jsonwebtoken.security.SignatureException;
 import javax.crypto.SecretKey;
 import java.nio.charset.StandardCharsets;
 import java.time.LocalDateTime;
-import java.time.ZoneOffset;
+import java.time.ZoneId;
+import java.util.Collections;
 import java.util.Date;
 import java.util.Map;
 import java.util.stream.Collectors;
@@ -35,7 +36,9 @@ public class JwtHmac implements AppSigner {
   public String sign(Map<String, Object> data) {
 
     JwtBuilder jwtBuilder = Jwts.builder()
-        .setIssuedAt(Date.from(LocalDateTime.now().toInstant(ZoneOffset.UTC)));
+        .setIssuedAt(Date.from(LocalDateTime.now()
+            .atZone(ZoneId.systemDefault())
+            .toInstant()));
 
     if (data != null && !data.isEmpty()) {
       jwtBuilder.addClaims(data);
@@ -57,7 +60,7 @@ public class JwtHmac implements AppSigner {
     } catch (ExpiredJwtException | UnsupportedJwtException | MalformedJwtException | SignatureException | IllegalArgumentException exception) {
 
       LOGGER.error(exception);
-      return null;
+      return Collections.emptyMap();
     }
   }
 }

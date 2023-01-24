@@ -6,13 +6,13 @@ import com.exatask.platform.utilities.properties.AwsProperties;
 import com.exatask.platform.utilities.properties.SshProperties;
 import lombok.experimental.UtilityClass;
 
-import java.util.HashMap;
+import java.util.EnumMap;
 import java.util.Map;
 
 @UtilityClass
 public class AppTransportFactory {
 
-  private static final Map<AppTransportType, AppTransport> mailerList = new HashMap<>();
+  private static final Map<AppTransportType, AppTransport> mailerList = new EnumMap<>(AppTransportType.class);
 
   public static AppTransport getInstance(AppTransportType transportType, Object properties, AppTemplateEngine templateEngine) {
 

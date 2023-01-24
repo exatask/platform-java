@@ -50,7 +50,7 @@ public class DocumentUtility {
           }
         }
 
-        if (converterAnnotationList.size() > 0) {
+        if (!converterAnnotationList.isEmpty()) {
 
           FieldAnnotations fieldInfo = FieldAnnotations.builder()
               .annotations(converterAnnotationList)

@@ -26,7 +26,6 @@ import javax.persistence.criteria.FetchParent;
 import javax.persistence.criteria.Order;
 import javax.persistence.criteria.Predicate;
 import javax.persistence.criteria.Root;
-import javax.persistence.criteria.Selection;
 import javax.transaction.Transactional;
 import java.io.Serializable;
 import java.time.LocalDateTime;
@@ -106,26 +105,6 @@ public class AppPostgresqlRepositoryImpl<T, ID extends Serializable> extends Sim
   }
 
   /**
-   * @param criteriaQuery
-   * @param projections
-   */
-  private CriteriaQuery<T> prepareProjection(CriteriaQuery<T> criteriaQuery, Map<Class<? extends AppModel>, List<String>> projections) {
-
-    if (CollectionUtils.isEmpty(projections)) {
-      return criteriaQuery;
-    }
-
-    List<Selection<?>> selections = new ArrayList<>();
-    for (Map.Entry<Class<? extends AppModel>, List<String>> projection : projections.entrySet()) {
-
-      Root from = criteriaQuery.from(projection.getKey());
-      projection.getValue()
-          .forEach(field -> selections.add(from.get(field)));
-    }
-    return criteriaQuery.multiselect(selections);
-  }
-
-  /**
    * @param projections
    */
   private String prepareProjection(Map<Class<? extends AppModel>, List<String>> projections) {
@@ -136,6 +115,10 @@ public class AppPostgresqlRepositoryImpl<T, ID extends Serializable> extends Sim
 
     List<String> projectionList = new ArrayList<>();
     for (Map.Entry<Class<? extends AppModel>, List<String>> projection : projections.entrySet()) {
+
+      if (CollectionUtils.isEmpty(projection.getValue())) {
+        continue;
+      }
 
       String from = QueryUtility.getClassAlias(projection.getKey());
       projectionList.addAll(
@@ -178,6 +161,34 @@ public class AppPostgresqlRepositoryImpl<T, ID extends Serializable> extends Sim
       orderBy.add(sort.getOrder());
     }
     return String.format(" ORDER BY %s ", String.join(", ", orderBy));
+  }
+
+  /**
+   * @param typedQuery
+   * @param skip
+   */
+  private TypedQuery<T> prepareSkip(TypedQuery<T> typedQuery, Integer skip) {
+
+    if (skip == null || skip < Defaults.MINIMUM_SKIP) {
+      return typedQuery;
+    }
+
+    return typedQuery.setFirstResult(skip);
+  }
+
+  /**
+   * @param typedQuery
+   * @param limit
+   */
+  private TypedQuery<T> prepareLimit(TypedQuery<T> typedQuery, Integer limit) {
+
+    if (limit == null || limit < Defaults.MINIMUM_LIMIT) {
+      return typedQuery;
+    } else if (limit > Defaults.MAXIMUM_LIMIT) {
+      limit = Defaults.MAXIMUM_LIMIT;
+    }
+
+    return typedQuery.setMaxResults(limit);
   }
 
   /**
@@ -268,12 +279,13 @@ public class AppPostgresqlRepositoryImpl<T, ID extends Serializable> extends Sim
     CriteriaQuery<T> criteriaQuery = criteriaBuilder.createQuery(this.domainClass);
     Root<T> from = criteriaQuery.from(this.domainClass);
 
-    criteriaQuery = prepareProjection(criteriaQuery, query.getProjections());
     prepareJoins(from, query.getJoins());
     criteriaQuery = prepareFilters(criteriaBuilder, criteriaQuery, query.getFilters());
     criteriaQuery = prepareSort(criteriaBuilder, criteriaQuery, query.getSorts());
 
     TypedQuery<T> typedQuery = entityManager.createQuery(criteriaQuery);
+    typedQuery = prepareSkip(typedQuery, query.getSkip());
+    typedQuery = prepareLimit(typedQuery, query.getLimit());
 
     this.lastQuery = typedQuery.unwrap(Query.class).getQueryString();
     LOGGER.trace(this.lastQuery);
@@ -331,7 +343,6 @@ public class AppPostgresqlRepositoryImpl<T, ID extends Serializable> extends Sim
     CriteriaQuery<T> criteriaQuery = criteriaBuilder.createQuery(this.domainClass);
     Root<T> from = criteriaQuery.from(this.domainClass);
 
-    criteriaQuery = prepareProjection(criteriaQuery, query.getProjections());
     prepareJoins(from, query.getJoins());
     criteriaQuery = prepareFilters(criteriaBuilder, criteriaQuery, query.getFilters());
     criteriaQuery = prepareSort(criteriaBuilder, criteriaQuery, query.getSorts());

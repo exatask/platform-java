@@ -48,9 +48,7 @@ public abstract class AppPublisher<T extends AppMessage> {
       messageProperties.setHeader(RequestContextHeader.SESSION_ID, RequestContextProvider.getSessionId());
     });
 
-    Optional.ofNullable(RequestContextProvider.getTenant()).ifPresent(tenant -> {
-      messageProperties.setHeader(RequestContextHeader.TENANT, tenant);
-    });
+    Optional.ofNullable(RequestContextProvider.getTenant()).ifPresent(tenant -> messageProperties.setHeader(RequestContextHeader.TENANT, tenant));
 
     Optional.ofNullable(RequestContextProvider.getOrganizationId()).ifPresent(organizationId -> {
       messageProperties.setHeader(RequestContextHeader.ORGANIZATION_ID, organizationId);

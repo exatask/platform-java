@@ -40,7 +40,7 @@ public class AuthenticationInterceptor extends AppInterceptor {
     }
 
     Boolean tokenValid = apiAuthenticator.authenticate(request.getHeader(ServiceAuthData.AUTH_TOKEN_HEADER));
-    if (!tokenValid) {
+    if (Boolean.FALSE.equals(tokenValid)) {
       this.sendPreHandleErrorResponse(ProxyAuthenticationException.builder().build(), request, response);
     }
     return tokenValid;

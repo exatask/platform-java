@@ -147,7 +147,7 @@ public abstract class AppTransport {
   private InternetAddress[] prepareAddresses(List<String> addresses) {
 
     if (CollectionUtils.isEmpty(addresses)) {
-      return null;
+      return new InternetAddress[0];
     }
 
     return addresses.stream().map(this::getAddress)

@@ -28,8 +28,8 @@ import java.util.regex.Pattern;
 @JsonNaming(PropertyNamingStrategy.SnakeCaseStrategy.class)
 public class AppLogMessage {
 
-  private final static DateTimeFormatter DATE_TIME_FORMATTER = DateTimeFormatter.ISO_OFFSET_DATE_TIME;
-  private final static Pattern PACKAGES = Pattern.compile("^com\\.exatask\\.(.+)$");
+  private static final DateTimeFormatter DATE_TIME_FORMATTER = DateTimeFormatter.ISO_OFFSET_DATE_TIME;
+  private static final Pattern PACKAGES = Pattern.compile("^com\\.exatask\\.(.+)$");
 
   @Setter(AccessLevel.PACKAGE)
   private LocalDateTime timestamp;
@@ -84,12 +84,12 @@ public class AppLogMessage {
 
     AppLogMessage logMessage = new AppLogMessage();
 
-    Optional.ofNullable(exception).ifPresent((ex) -> {
+    Optional.ofNullable(exception).ifPresent(ex -> {
 
       logMessage.setMessage(ex.getMessage());
       logMessage.setStackTrace(parseStackTrace(Arrays.asList(ex.getStackTrace())));
 
-      Optional.ofNullable(ex.getCause()).ifPresent((cause) -> {
+      Optional.ofNullable(ex.getCause()).ifPresent(cause -> {
 
         List<StackTraceElement> elements = Arrays.asList(cause.getStackTrace());
         logMessage.setExceptionCause(new AppExceptionCause(cause.getMessage(), parseStackTrace(elements)));

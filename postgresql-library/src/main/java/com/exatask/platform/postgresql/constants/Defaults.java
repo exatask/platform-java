@@ -1,8 +1,11 @@
 package com.exatask.platform.postgresql.constants;
 
+import lombok.experimental.UtilityClass;
+
 import java.util.Collections;
 import java.util.Map;
 
+@UtilityClass
 public class Defaults {
 
   public static final Integer DEFAULT_PAGE = 1;

@@ -3,14 +3,14 @@ package com.exatask.platform.crypto.encoders;
 import com.exatask.platform.crypto.exceptions.InvalidEncoderException;
 import lombok.experimental.UtilityClass;
 
-import java.util.HashMap;
+import java.util.EnumMap;
 import java.util.Map;
 import java.util.Objects;
 
 @UtilityClass
 public class AppEncoderFactory {
 
-  private static final Map<AppEncoderAlgorithm, AppEncoder> encoderList = new HashMap<>();
+  private static final Map<AppEncoderAlgorithm, AppEncoder> encoderList = new EnumMap<>(AppEncoderAlgorithm.class);
 
   public static AppEncoder getEncoder(String type) {
 

@@ -35,9 +35,9 @@ public class ServiceUtility {
   @Getter
   private static Environment environment;
 
-  private final static Properties applicationProperties = new Properties();
+  private static final Properties applicationProperties = new Properties();
 
-  private final static List<String> loadedPropertyFiles = new ArrayList<>();
+  private static final List<String> loadedPropertyFiles = new ArrayList<>();
 
   @Autowired
   public ServiceUtility(Environment environment) {

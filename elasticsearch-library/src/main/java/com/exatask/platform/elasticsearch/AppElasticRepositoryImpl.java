@@ -8,6 +8,7 @@ import org.springframework.data.elasticsearch.repository.support.ElasticsearchEn
 import org.springframework.data.elasticsearch.repository.support.SimpleElasticsearchRepository;
 
 import java.io.Serializable;
+import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 
@@ -29,7 +30,7 @@ public class AppElasticRepositoryImpl<T, ID extends Serializable> extends Simple
 
   @Override
   public List<T> find(AppQuery query) {
-    return null;
+    return Collections.emptyList();
   }
 
   @Override

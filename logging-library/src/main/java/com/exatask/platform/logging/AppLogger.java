@@ -160,6 +160,6 @@ public class AppLogger {
         .setSpanId(RequestContextProvider.getSpanId())
         .setSessionId(RequestContextProvider.getSessionId());
 
-    log4jLogger.log(level, serializer.serialize(logMessage));
+    log4jLogger.log(level, () -> serializer.serialize(logMessage));
   }
 }
