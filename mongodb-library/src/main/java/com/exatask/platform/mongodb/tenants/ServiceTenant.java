@@ -1,10 +1,10 @@
 package com.exatask.platform.mongodb.tenants;
 
-import org.springframework.boot.autoconfigure.mongo.MongoProperties;
+import com.exatask.platform.utilities.properties.MongodbProperties;
 
 public interface ServiceTenant {
 
   String getServiceKey();
 
-  MongoProperties getMongoProperties();
+  MongodbProperties getMongoProperties();
 }

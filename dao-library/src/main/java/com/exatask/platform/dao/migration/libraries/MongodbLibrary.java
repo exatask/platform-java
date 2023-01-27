@@ -30,6 +30,7 @@ import org.springframework.data.mongodb.core.convert.DefaultMongoTypeMapper;
 import org.springframework.data.mongodb.core.convert.MappingMongoConverter;
 import org.springframework.data.mongodb.core.mapping.MongoMappingContext;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
@@ -141,11 +142,15 @@ public class MongodbLibrary extends AppLibrary {
         .append(":")
         .append(Optional.ofNullable(mongoProperties.getPort()).orElse(DEFAULT_PORT))
         .append("/")
-        .append(mongoProperties.getDatabase());
+        .append(mongoProperties.getDatabase())
+        .append("?");
 
-    Optional.ofNullable(mongoProperties.getAuthenticationDatabase()).ifPresent(database -> mongoUriBuilder.append("?")
-        .append("authSource=")
-        .append(database));
+    List<String> properties = new ArrayList<>();
+
+    Optional.ofNullable(mongoProperties.getAuthenticationDatabase())
+        .ifPresent(database -> properties.add("authSource=" + database));
+
+    mongoUriBuilder.append(String.join("&", properties));
 
     return mongoUriBuilder.toString();
   }

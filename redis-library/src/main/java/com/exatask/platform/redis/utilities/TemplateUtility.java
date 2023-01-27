@@ -4,10 +4,12 @@ import lombok.experimental.UtilityClass;
 import org.springframework.boot.autoconfigure.data.redis.RedisProperties;
 import org.springframework.data.redis.connection.RedisConnectionFactory;
 import org.springframework.data.redis.connection.RedisStandaloneConfiguration;
+import org.springframework.data.redis.connection.jedis.JedisClientConfiguration;
 import org.springframework.data.redis.connection.jedis.JedisConnectionFactory;
 import org.springframework.data.redis.core.StringRedisTemplate;
 import org.springframework.data.redis.serializer.Jackson2JsonRedisSerializer;
 import org.springframework.data.redis.serializer.StringRedisSerializer;
+import redis.clients.jedis.JedisPoolConfig;
 
 import java.util.Optional;
 
@@ -40,6 +42,16 @@ public class TemplateUtility {
     Optional.ofNullable(redisProperties.getUsername()).ifPresent(redisStandaloneConfiguration::setUsername);
     Optional.ofNullable(redisProperties.getPassword()).ifPresent(redisStandaloneConfiguration::setPassword);
 
-    return new JedisConnectionFactory(redisStandaloneConfiguration);
+    RedisProperties.Pool redisPool = redisProperties.getJedis().getPool();
+    JedisPoolConfig jedisPoolConfig = new JedisPoolConfig();
+    jedisPoolConfig.setMinIdle(redisPool.getMinIdle());
+    jedisPoolConfig.setMaxTotal(redisPool.getMaxActive());
+
+    JedisClientConfiguration.JedisClientConfigurationBuilder jedisClientConfigurationBuilder = JedisClientConfiguration.builder();
+    jedisClientConfigurationBuilder.connectTimeout(redisProperties.getConnectTimeout())
+            .usePooling()
+            .poolConfig(jedisPoolConfig);
+
+    return new JedisConnectionFactory(redisStandaloneConfiguration, jedisClientConfigurationBuilder.build());
   }
 }

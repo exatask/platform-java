@@ -2,7 +2,7 @@ package com.exatask.platform.mysql.tenants;
 
 import com.exatask.platform.mysql.utilities.TenantUtility;
 import com.exatask.platform.utilities.contexts.RequestContextProvider;
-import org.springframework.boot.autoconfigure.jdbc.DataSourceProperties;
+import com.exatask.platform.utilities.properties.DataSourceSqlProperties;
 
 import javax.sql.DataSource;
 import java.util.HashMap;
@@ -35,7 +35,7 @@ public class MysqlTenantConnections {
 
   private void loadTenantDataSource(String tenantKey) {
 
-    DataSourceProperties dataSourceProperties = serviceTenant.getMysqlProperties();
+    DataSourceSqlProperties dataSourceProperties = serviceTenant.getMysqlProperties();
     TenantDataSource tenantDataSource = new TenantDataSource(dataSourceProperties);
     tenantDataSources.put(tenantKey, tenantDataSource);
   }

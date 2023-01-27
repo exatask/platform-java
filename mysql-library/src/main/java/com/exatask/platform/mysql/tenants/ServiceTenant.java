@@ -1,10 +1,10 @@
 package com.exatask.platform.mysql.tenants;
 
-import org.springframework.boot.autoconfigure.jdbc.DataSourceProperties;
+import com.exatask.platform.utilities.properties.DataSourceSqlProperties;
 
 public interface ServiceTenant {
 
   String getServiceKey();
 
-  DataSourceProperties getMysqlProperties();
+  DataSourceSqlProperties getMysqlProperties();
 }

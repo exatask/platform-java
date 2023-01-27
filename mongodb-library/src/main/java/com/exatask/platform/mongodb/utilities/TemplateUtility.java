@@ -3,6 +3,7 @@ package com.exatask.platform.mongodb.utilities;
 import com.exatask.platform.mongodb.AppMongoTenantClientDatabaseFactory;
 import com.exatask.platform.mongodb.tenants.MongoTenantClients;
 import com.exatask.platform.mongodb.tenants.ServiceTenant;
+import com.exatask.platform.utilities.properties.MongodbProperties;
 import com.mongodb.ConnectionString;
 import com.mongodb.MongoClientSettings;
 import com.mongodb.client.MongoClient;
@@ -10,7 +11,6 @@ import com.mongodb.client.MongoClients;
 import lombok.experimental.UtilityClass;
 import org.apache.commons.lang3.StringUtils;
 import org.bson.UuidRepresentation;
-import org.springframework.boot.autoconfigure.mongo.MongoProperties;
 import org.springframework.data.mapping.context.MappingContext;
 import org.springframework.data.mongodb.MongoDatabaseFactory;
 import org.springframework.data.mongodb.core.MongoTemplate;
@@ -23,6 +23,8 @@ import org.springframework.data.mongodb.core.mapping.MongoMappingContext;
 import org.springframework.data.mongodb.core.mapping.MongoPersistentEntity;
 import org.springframework.data.mongodb.core.mapping.MongoPersistentProperty;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Optional;
 
 @UtilityClass
@@ -46,7 +48,7 @@ public class TemplateUtility {
     return new MongoTemplate(connectionFactory, mongoConverter);
   }
 
-  public static MongoDatabaseFactory getDatabaseFactory(MongoProperties mongoProperties) {
+  public static MongoDatabaseFactory getDatabaseFactory(MongodbProperties mongoProperties) {
 
     ConnectionString connectionString = prepareConnectionString(mongoProperties);
     return new SimpleMongoClientDatabaseFactory(getClient(connectionString), Optional.ofNullable(connectionString.getDatabase()).orElse(DEFAULT_DATABASE));
@@ -58,7 +60,7 @@ public class TemplateUtility {
     return new AppMongoTenantClientDatabaseFactory(mongoTenantClients);
   }
 
-  public static MongoClient getClient(MongoProperties mongoProperties) {
+  public static MongoClient getClient(MongodbProperties mongoProperties) {
 
     ConnectionString connectionString = prepareConnectionString(mongoProperties);
     return getClient(connectionString);
@@ -74,7 +76,7 @@ public class TemplateUtility {
     return MongoClients.create(clientSettings);
   }
 
-  private static ConnectionString prepareConnectionString(MongoProperties mongoProperties) {
+  private static ConnectionString prepareConnectionString(MongodbProperties mongoProperties) {
 
     String mongoUri = mongoProperties.getUri();
     if (StringUtils.isEmpty(mongoUri)) {
@@ -84,7 +86,7 @@ public class TemplateUtility {
     return new ConnectionString(mongoUri);
   }
 
-  private static String prepareMongoUri(MongoProperties mongoProperties) {
+  private static String prepareMongoUri(MongodbProperties mongoProperties) {
 
     StringBuilder mongoUriBuilder = new StringBuilder(MONGODB_PREFIX);
 
@@ -97,11 +99,27 @@ public class TemplateUtility {
         .append(":")
         .append(Optional.ofNullable(mongoProperties.getPort()).orElse(DEFAULT_PORT))
         .append("/")
-        .append(mongoProperties.getDatabase());
+        .append(mongoProperties.getDatabase())
+        .append("?");
 
-    Optional.ofNullable(mongoProperties.getAuthenticationDatabase()).ifPresent(database -> mongoUriBuilder.append("?")
-        .append("authSource=")
-        .append(database));
+    List<String> properties = new ArrayList<>();
+
+    Optional.ofNullable(mongoProperties.getAuthenticationDatabase())
+        .ifPresent(database -> properties.add("authSource=" + database));
+
+    Optional.ofNullable(mongoProperties.getMinimum())
+        .ifPresent(minimum -> properties.add("minPoolSize=" + minimum));
+
+    Optional.ofNullable(mongoProperties.getMaximum())
+        .ifPresent(maximum -> properties.add("maxPoolSize=" + maximum));
+
+    Optional.ofNullable(mongoProperties.getTimeout())
+        .ifPresent(timeout -> properties.add("connectTimeoutMS=" + timeout));
+
+    Optional.ofNullable(mongoProperties.getIdleTimeout())
+        .ifPresent(idleTimeout -> properties.add("maxIdleTimeMS=" + idleTimeout));
+
+    mongoUriBuilder.append(String.join("&", properties));
 
     return mongoUriBuilder.toString();
   }
