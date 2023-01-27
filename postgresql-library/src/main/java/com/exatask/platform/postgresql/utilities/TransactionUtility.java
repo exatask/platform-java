@@ -4,13 +4,13 @@ import com.exatask.platform.postgresql.AppPostgresqlTenantConnectionProvider;
 import com.exatask.platform.postgresql.tenants.PostgresqlTenantConnections;
 import com.exatask.platform.postgresql.tenants.PostgresqlTenantResolver;
 import com.exatask.platform.postgresql.tenants.ServiceTenant;
+import com.exatask.platform.utilities.properties.DataSourceSqlProperties;
 import com.zaxxer.hikari.HikariDataSource;
 import lombok.experimental.UtilityClass;
 import org.hibernate.MultiTenancyStrategy;
 import org.hibernate.cfg.AvailableSettings;
 import org.hibernate.dialect.PostgreSQL95Dialect;
 import org.hibernate.tool.schema.Action;
-import org.springframework.boot.autoconfigure.jdbc.DataSourceProperties;
 import org.springframework.orm.jpa.JpaTransactionManager;
 import org.springframework.orm.jpa.LocalContainerEntityManagerFactoryBean;
 import org.springframework.orm.jpa.vendor.HibernateJpaVendorAdapter;
@@ -21,6 +21,7 @@ import javax.sql.DataSource;
 import java.time.ZoneOffset;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Optional;
 
 @UtilityClass
 public class TransactionUtility {
@@ -63,12 +64,18 @@ public class TransactionUtility {
     return entityManager;
   }
 
-  public static DataSource getDataSource(DataSourceProperties properties) {
+  public static DataSource getDataSource(DataSourceSqlProperties dataSourceProperties) {
 
     HikariDataSource hikariDataSource = new HikariDataSource();
-    hikariDataSource.setJdbcUrl(properties.getUrl());
-    hikariDataSource.setUsername(properties.getUsername());
-    hikariDataSource.setPassword(properties.getPassword());
+    hikariDataSource.setJdbcUrl(dataSourceProperties.getUrl());
+    hikariDataSource.setUsername(dataSourceProperties.getUsername());
+    hikariDataSource.setPassword(dataSourceProperties.getPassword());
+
+    Optional.ofNullable(dataSourceProperties.getMinimum()).ifPresent(hikariDataSource::setMinimumIdle);
+    Optional.ofNullable(dataSourceProperties.getMaximum()).ifPresent(hikariDataSource::setMaximumPoolSize);
+    Optional.ofNullable(dataSourceProperties.getTimeout()).ifPresent(hikariDataSource::setConnectionTimeout);
+    Optional.ofNullable(dataSourceProperties.getIdleTimeout()).ifPresent(hikariDataSource::setIdleTimeout);
+
     hikariDataSource.addDataSourceProperty("createDatabaseIfNotExist", true);
 
     return hikariDataSource;

@@ -1,10 +1,10 @@
 package com.exatask.platform.postgresql.tenants;
 
-import org.springframework.boot.autoconfigure.jdbc.DataSourceProperties;
+import com.exatask.platform.utilities.properties.DataSourceSqlProperties;
 
 public interface ServiceTenant {
 
   String getServiceKey();
 
-  DataSourceProperties getPostgresqlProperties();
+  DataSourceSqlProperties getPostgresqlProperties();
 }

@@ -2,7 +2,7 @@ package com.exatask.platform.postgresql.tenants;
 
 import com.exatask.platform.postgresql.utilities.TenantUtility;
 import com.exatask.platform.utilities.contexts.RequestContextProvider;
-import org.springframework.boot.autoconfigure.jdbc.DataSourceProperties;
+import com.exatask.platform.utilities.properties.DataSourceSqlProperties;
 
 import javax.sql.DataSource;
 import java.util.HashMap;
@@ -35,7 +35,7 @@ public class PostgresqlTenantConnections {
 
   private void loadTenantDataSource(String tenantKey) {
 
-    DataSourceProperties dataSourceProperties = serviceTenant.getPostgresqlProperties();
+    DataSourceSqlProperties dataSourceProperties = serviceTenant.getPostgresqlProperties();
     TenantDataSource tenantDataSource = new TenantDataSource(dataSourceProperties);
     tenantDataSources.put(tenantKey, tenantDataSource);
   }

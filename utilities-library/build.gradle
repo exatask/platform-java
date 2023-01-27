@@ -15,7 +15,7 @@ jar {
 
 dependencies {
 
-  implementation group: "org.springframework", name: "spring-context"
+  implementation group: "org.springframework.boot", name: "spring-boot-autoconfigure"
   implementation group: "org.apache.commons", name: "commons-lang3", version: "${apacheCommonsVersion}"
   implementation group: "com.fasterxml.jackson.core", name: "jackson-databind", version: "${fasterxmlJacksonVersion}"
 

@@ -2,8 +2,8 @@ package com.exatask.platform.mongodb.tenants;
 
 import com.exatask.platform.mongodb.utilities.TenantUtility;
 import com.exatask.platform.utilities.contexts.RequestContextProvider;
+import com.exatask.platform.utilities.properties.MongodbProperties;
 import com.mongodb.client.MongoDatabase;
-import org.springframework.boot.autoconfigure.mongo.MongoProperties;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -41,7 +41,7 @@ public class MongoTenantClients {
 
   private void loadTenantClient(String tenantKey) {
 
-    MongoProperties mongoProperties = serviceTenant.getMongoProperties();
+    MongodbProperties mongoProperties = serviceTenant.getMongoProperties();
     TenantClient tenantClient = new TenantClient(mongoProperties);
     tenantClients.put(tenantKey, tenantClient);
   }
