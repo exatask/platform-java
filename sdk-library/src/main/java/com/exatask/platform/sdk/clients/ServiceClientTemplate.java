@@ -8,9 +8,8 @@ import com.exatask.platform.sdk.interceptors.ServiceAuthenticationInterceptor;
 import com.exatask.platform.sdk.interceptors.ServiceContextInterceptor;
 import com.exatask.platform.sdk.loggers.ServiceLogger;
 import com.exatask.platform.utilities.ServiceUtility;
-import com.exatask.platform.utilities.credentials.AppCredentials;
-import com.exatask.platform.utilities.credentials.NoAuthCredentials;
 import com.exatask.platform.utilities.exceptions.RuntimePropertyNotFoundException;
+import com.exatask.platform.utilities.properties.FeignProperties;
 import feign.AsyncClient;
 import feign.AsyncFeign;
 import feign.Client;
@@ -54,7 +53,7 @@ public class ServiceClientTemplate {
   private ServiceErrorDecoder errorDecoder;
 
   @Autowired
-  private ServiceLogger logger;
+  private ServiceLogger serviceLogger;
 
   @Autowired
   private ServiceContextInterceptor serviceContextInterceptor;
@@ -62,31 +61,23 @@ public class ServiceClientTemplate {
   @Autowired
   private RequestContextInterceptor requestContextInterceptor;
 
-  public <T extends AppServiceClient> T getServiceClient(Class<T> clazz, String baseUrl) {
-    return getServiceClient(clazz, baseUrl, new NoAuthCredentials(), null, false);
+  public <T extends AppServiceClient> T getServiceClient(Class<T> clazz, FeignProperties feignProperties) {
+    return getServiceClient(clazz, feignProperties, null, false);
   }
 
-  public <T extends AppServiceClient> T getServiceClient(Class<T> clazz, String baseUrl, AppCredentials credentials) {
-    return getServiceClient(clazz, baseUrl, credentials, null, false);
+  public <T extends AppServiceClient> T getServiceClient(Class<T> clazz, FeignProperties feignProperties, List<RequestInterceptor> interceptors) {
+    return getServiceClient(clazz, feignProperties, interceptors, false);
   }
 
-  public <T extends AppServiceClient> T getServiceClient(Class<T> clazz, String baseUrl, AppCredentials credentials, List<RequestInterceptor> interceptors) {
-    return getServiceClient(clazz, baseUrl, credentials, interceptors, false);
+  public <T extends AppServiceClient> T getAsyncServiceClient(Class<T> clazz, FeignProperties feignProperties) {
+    return getServiceClient(clazz, feignProperties, null, true);
   }
 
-  public <T extends AppServiceClient> T getAsyncServiceClient(Class<T> clazz, String baseUrl) {
-    return getServiceClient(clazz, baseUrl, new NoAuthCredentials(), null, true);
+  public <T extends AppServiceClient> T getAsyncServiceClient(Class<T> clazz, FeignProperties feignProperties, List<RequestInterceptor> interceptors) {
+    return getServiceClient(clazz, feignProperties, interceptors, true);
   }
 
-  public <T extends AppServiceClient> T getAsyncServiceClient(Class<T> clazz, String baseUrl, AppCredentials credentials) {
-    return getServiceClient(clazz, baseUrl, credentials, null, true);
-  }
-
-  public <T extends AppServiceClient> T getAsyncServiceClient(Class<T> clazz, String baseUrl, AppCredentials credentials, List<RequestInterceptor> interceptors) {
-    return getServiceClient(clazz, baseUrl, credentials, interceptors, true);
-  }
-
-  private <T extends AppServiceClient> T getServiceClient(Class<T> clazz, String baseUrl, AppCredentials credentials, List<RequestInterceptor> interceptors, boolean async) {
+  private <T extends AppServiceClient> T getServiceClient(Class<T> clazz, FeignProperties feignProperties, List<RequestInterceptor> interceptors, boolean async) {
 
     Logger.Level logLevel = Logger.Level.BASIC;
     try {
@@ -101,7 +92,7 @@ public class ServiceClientTemplate {
     List<RequestInterceptor> interceptorList = new ArrayList<>();
     interceptorList.add(requestContextInterceptor);
     interceptorList.add(serviceContextInterceptor);
-    interceptorList.add(new ServiceAuthenticationInterceptor(credentials));
+    interceptorList.add(new ServiceAuthenticationInterceptor(feignProperties.credentials()));
 
     if (!CollectionUtils.isEmpty(interceptors)) {
       interceptorList.addAll(interceptors);
@@ -114,11 +105,11 @@ public class ServiceClientTemplate {
           .client(asyncClient)
           .encoder(encoder)
           .decoder(decoder)
-          .logger(logger)
+          .logger(serviceLogger)
           .logLevel(logLevel)
           .errorDecoder(errorDecoder)
           .requestInterceptors(interceptorList)
-          .target(clazz, baseUrl);
+          .target(clazz, feignProperties.httpHost());
 
     } else {
 
@@ -127,12 +118,12 @@ public class ServiceClientTemplate {
           .client(client)
           .encoder(encoder)
           .decoder(decoder)
-          .logger(logger)
+          .logger(serviceLogger)
           .logLevel(logLevel)
           .retryer(Retryer.NEVER_RETRY)
           .errorDecoder(errorDecoder)
           .requestInterceptors(interceptorList)
-          .target(clazz, baseUrl);
+          .target(clazz, feignProperties.httpHost());
     }
   }
 }
