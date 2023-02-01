@@ -4,6 +4,7 @@ import com.exatask.platform.api.services.swagger.SwaggerPasswordEncoder;
 import com.exatask.platform.api.services.swagger.SwaggerUserDetailService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.security.authentication.dao.DaoAuthenticationProvider;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
@@ -44,10 +45,12 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
   }
 
   @Override
-  protected void configure(AuthenticationManagerBuilder authenticationManagerBuilder) throws Exception {
+  protected void configure(AuthenticationManagerBuilder authenticationManagerBuilder) {
 
-    authenticationManagerBuilder
-        .userDetailsService(swaggerUserDetailService)
-        .passwordEncoder(swaggerPasswordEncoder);
+    DaoAuthenticationProvider swaggerAuthenticationProvider = new DaoAuthenticationProvider();
+    swaggerAuthenticationProvider.setUserDetailsService(swaggerUserDetailService);
+    swaggerAuthenticationProvider.setPasswordEncoder(swaggerPasswordEncoder);
+
+    authenticationManagerBuilder.authenticationProvider(swaggerAuthenticationProvider);
   }
 }

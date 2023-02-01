@@ -5,8 +5,7 @@ import lombok.experimental.UtilityClass;
 @UtilityClass
 public class ServiceAuthData {
 
-  public static final String AUTH_TYPE_HEADER = "x-auth-type";
-  public static final String AUTH_TOKEN_HEADER = "x-auth-token";
+  public static final String AUTH_HEADER = "Authorization";
 
   public static final String AUTH_JWT_SUBJECT_LABEL = "sub";
   public static final String AUTH_JWT_ISSUER_LABEL = "iss";

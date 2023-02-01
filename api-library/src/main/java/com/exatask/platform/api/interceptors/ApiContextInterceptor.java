@@ -35,12 +35,12 @@ public class ApiContextInterceptor extends AppInterceptor {
 
     Optional.ofNullable(request.getHeader(RequestContextHeader.ORGANIZATION_ID)).ifPresent(organizationId ->
         requestContextBuilder
-          .organizationId(organizationId)
+          .organizationId(Integer.parseInt(organizationId))
           .organizationName(request.getHeader(RequestContextHeader.ORGANIZATION_NAME)));
 
     Optional.ofNullable(request.getHeader(RequestContextHeader.EMPLOYEE_ID)).ifPresent(employeeId ->
         requestContextBuilder
-          .employeeId(employeeId)
+          .employeeId(Integer.parseInt(employeeId))
           .employeeName(request.getHeader(RequestContextHeader.EMPLOYEE_NAME))
           .employeeEmailId(request.getHeader(RequestContextHeader.EMPLOYEE_EMAIL_ID))
           .employeeMobileNumber(request.getHeader(RequestContextHeader.EMPLOYEE_MOBILE_NUMBER)));

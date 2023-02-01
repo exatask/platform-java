@@ -70,12 +70,12 @@ public abstract class AppListener<T extends AppMessage> implements ChannelAwareM
 
     Optional.ofNullable(headers.get(RequestContextHeader.ORGANIZATION_ID)).ifPresent(organizationId ->
         requestContextBuilder
-            .organizationId(organizationId.toString())
+            .organizationId(Integer.parseInt(organizationId.toString()))
             .organizationName(headers.get(RequestContextHeader.ORGANIZATION_NAME).toString()));
 
     Optional.ofNullable(headers.get(RequestContextHeader.EMPLOYEE_ID)).ifPresent(employeeId ->
         requestContextBuilder
-            .employeeId(employeeId.toString())
+            .employeeId(Integer.parseInt(employeeId.toString()))
             .employeeName(headers.get(RequestContextHeader.EMPLOYEE_NAME).toString())
             .employeeEmailId(headers.get(RequestContextHeader.EMPLOYEE_EMAIL_ID).toString())
             .employeeMobileNumber(headers.get(RequestContextHeader.EMPLOYEE_MOBILE_NUMBER).toString()));

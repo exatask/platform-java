@@ -7,12 +7,11 @@ import org.springframework.web.reactive.function.client.WebClient;
 
 public class ServiceLibrary extends AppLibrary {
 
-  public WebClient createWebClient(String authType, String authToken) {
+  public WebClient createWebClient(String authPrefix, String authToken) {
 
     return WebClient.builder()
         .baseUrl("http://localhost:" + ServiceUtility.getServiceProperty("server.port"))
-        .defaultHeader(ServiceAuthData.AUTH_TYPE_HEADER, authType)
-        .defaultHeader(ServiceAuthData.AUTH_TOKEN_HEADER, authToken)
+        .defaultHeader(ServiceAuthData.AUTH_HEADER, authPrefix + " " + authToken)
         .build();
   }
 }

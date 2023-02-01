@@ -48,9 +48,9 @@ public class TemplateUtility {
     jedisPoolConfig.setMaxTotal(redisPool.getMaxActive());
 
     JedisClientConfiguration.JedisClientConfigurationBuilder jedisClientConfigurationBuilder = JedisClientConfiguration.builder();
-    jedisClientConfigurationBuilder.connectTimeout(redisProperties.getConnectTimeout())
-            .usePooling()
+    jedisClientConfigurationBuilder.usePooling()
             .poolConfig(jedisPoolConfig);
+    Optional.ofNullable(redisProperties.getConnectTimeout()).ifPresent(jedisClientConfigurationBuilder::connectTimeout);
 
     return new JedisConnectionFactory(redisStandaloneConfiguration, jedisClientConfigurationBuilder.build());
   }

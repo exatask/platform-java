@@ -2,7 +2,6 @@ package com.exatask.platform.api.interceptors;
 
 import com.exatask.platform.api.exceptions.ProxyAuthenticationException;
 import com.exatask.platform.crypto.authenticators.AppAuthenticator;
-import com.exatask.platform.utilities.services.ServiceAuth;
 import com.exatask.platform.utilities.services.ServiceAuthData;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -20,26 +19,14 @@ public class AuthenticationInterceptor extends AppInterceptor {
   @Override
   public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler) throws Exception {
 
-    String authTypeString = request.getHeader(ServiceAuthData.AUTH_TYPE_HEADER);
-    if (StringUtils.isEmpty(authTypeString)) {
+    String authHeader = request.getHeader(ServiceAuthData.AUTH_HEADER);
+    String authPrefix = apiAuthenticator.getAuthentication().getPrefix();
+    if (StringUtils.isEmpty(authHeader) || !authHeader.startsWith(authPrefix)) {
       this.sendPreHandleErrorResponse(ProxyAuthenticationException.builder().build(), request, response);
       return false;
     }
 
-    try {
-
-      ServiceAuth authType = ServiceAuth.valueOf(authTypeString);
-      if (authType != apiAuthenticator.getAuthentication()) {
-        this.sendPreHandleErrorResponse(ProxyAuthenticationException.builder().build(), request, response);
-        return false;
-      }
-
-    } catch (IllegalArgumentException exception) {
-      this.sendPreHandleErrorResponse(ProxyAuthenticationException.builder().exception(exception).build(), request, response);
-      return false;
-    }
-
-    Boolean tokenValid = apiAuthenticator.authenticate(request.getHeader(ServiceAuthData.AUTH_TOKEN_HEADER));
+    Boolean tokenValid = apiAuthenticator.authenticate(authHeader.replace(authPrefix, "").trim());
     if (Boolean.FALSE.equals(tokenValid)) {
       this.sendPreHandleErrorResponse(ProxyAuthenticationException.builder().build(), request, response);
     }
