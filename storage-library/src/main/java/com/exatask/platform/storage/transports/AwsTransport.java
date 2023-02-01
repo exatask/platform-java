@@ -63,15 +63,14 @@ public class AwsTransport extends AppTransport {
 
     GetObjectRequest getObjectRequest = GetObjectRequest.builder()
         .bucket(bucketProperties.getBucket())
-        .key(downloadPath)
+        .key(downloadPath.replace(AppTransportType.AWS.getPathPrefix(), ""))
         .build();
 
     ResponseInputStream<GetObjectResponse> response = s3Client.getObject(getObjectRequest);
 
     try {
 
-      AppTransportType transportType = AppTransportType.AWS;
-      Path outputFile = Files.createTempFile(transportType.getFilePrefix(), transportType.getFileSuffix());
+      Path outputFile = createTempFile(AppTransportType.AWS);
       Files.copy(new BufferedInputStream(response), outputFile);
       return outputFile;
 

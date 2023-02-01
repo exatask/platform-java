@@ -46,7 +46,7 @@ public class FeignProperties {
 
     public AppCredentials credentials() {
 
-        if (ObjectUtils.isEmpty(this.host)) {
+        if (ObjectUtils.isEmpty(this.host) && ObjectUtils.isEmpty(this.url)) {
             return null;
         }
 

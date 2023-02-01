@@ -17,8 +17,6 @@ public class ServiceAuthenticationInterceptor implements RequestInterceptor {
 
   @Override
   public void apply(RequestTemplate template) {
-
-    template.header(ServiceAuthData.AUTH_TYPE_HEADER, sdkAuthenticator.getAuthentication().toString())
-        .header(ServiceAuthData.AUTH_TOKEN_HEADER, sdkAuthenticator.generate());
+    template.header(ServiceAuthData.AUTH_HEADER, sdkAuthenticator.getAuthentication().getPrefix() + " " + sdkAuthenticator.generate());
   }
 }

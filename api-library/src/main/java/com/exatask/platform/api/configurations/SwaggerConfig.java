@@ -70,27 +70,21 @@ public class SwaggerConfig {
     return (new ApiResponse()).content(responseContent);
   }
 
-  private SecurityScheme getAuthTypeSecurityScheme() {
+  private SecurityScheme getBasicSecurityScheme() {
 
-    return (new SecurityScheme())
-        .name("x-auth-type")
-        .type(SecurityScheme.Type.APIKEY)
+    return new SecurityScheme()
+        .name("basic-auth")
+        .type(SecurityScheme.Type.HTTP)
+        .scheme("basic")
         .in(SecurityScheme.In.HEADER);
   }
 
-  private SecurityScheme getAuthTokenSecurityScheme() {
+  private SecurityScheme getBearerSecurityScheme() {
 
-    return (new SecurityScheme())
-        .name("x-auth-token")
-        .type(SecurityScheme.Type.APIKEY)
-        .in(SecurityScheme.In.HEADER);
-  }
-
-  private SecurityScheme getSessionTokenSecurityScheme() {
-
-    return (new SecurityScheme())
-        .name("x-session-token")
-        .type(SecurityScheme.Type.APIKEY)
+    return new SecurityScheme()
+        .name("bearer-auth")
+        .type(SecurityScheme.Type.HTTP)
+        .scheme("bearer")
         .in(SecurityScheme.In.HEADER);
   }
 
@@ -102,17 +96,16 @@ public class SwaggerConfig {
     }
 
     return components
-        .addSecuritySchemes("AuthType", getAuthTypeSecurityScheme())
-        .addSecuritySchemes("AuthToken", getAuthTokenSecurityScheme())
-        .addSecuritySchemes("SessionToken", getSessionTokenSecurityScheme())
+        .addSecuritySchemes("BasicAuth", getBasicSecurityScheme())
+        .addSecuritySchemes("BearerAuth", getBearerSecurityScheme())
         .addResponses("ApiFailure", getApiFailureResponse());
   }
 
   private List<SecurityRequirement> getSecurityRequirements() {
 
     List<SecurityRequirement> requirements = new ArrayList<>();
-    requirements.add(new SecurityRequirement().addList("AuthType").addList("AuthToken"));
-    requirements.add(new SecurityRequirement().addList("SessionToken"));
+    requirements.add(new SecurityRequirement().addList("BasicAuth"));
+    requirements.add(new SecurityRequirement().addList("BearerAuth"));
     return requirements;
   }
 

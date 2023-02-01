@@ -16,7 +16,6 @@ import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
-import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.Arrays;
 import java.util.Map;
@@ -36,7 +35,7 @@ public class SftpTransport extends AppTransport {
 
     try {
 
-      Session sftpSession = sftpClient.getSession(sshProperties.getUsername(), sshProperties.getHost());
+      Session sftpSession = sftpClient.getSession(sshProperties.getUsername(), sshProperties.getHost(), sshProperties.getPort());
       sftpSession.setPassword(sshProperties.getPassword());
       sftpSession.setConfig(sftProperties);
       sftpSession.connect();
@@ -53,16 +52,9 @@ public class SftpTransport extends AppTransport {
 
     try {
 
+      validateSftpDirectory(getDirectoryPath(uploadPath));
+
       InputStream inputStream = new FileInputStream(inputPath.toFile());
-      String[] uploadPathParts = uploadPath.split(File.separator);
-      String uploadPathDir = String.join(File.separator, Arrays.copyOfRange(uploadPathParts, 0, uploadPathParts.length - 1));
-
-      try {
-        sftpChannel.stat(uploadPathDir);
-      } catch (SftpException exception) {
-        createSftpDirectory(uploadPathDir);
-      }
-
       sftpChannel.put(inputStream, uploadPath);
       return AppTransportType.SFTP.getPathPrefix() + uploadPath;
 
@@ -78,10 +70,8 @@ public class SftpTransport extends AppTransport {
 
     try {
 
-      AppTransportType transportType = AppTransportType.SFTP;
-      Path outputFile = Files.createTempFile(transportType.getPathPrefix(), transportType.getFileSuffix());
-
-      sftpChannel.get(downloadPath, outputFile.toFile().getAbsolutePath());
+      Path outputFile = createTempFile(AppTransportType.SFTP);
+      sftpChannel.get(downloadPath.replace(AppTransportType.SFTP.getPathPrefix(), ""), outputFile.toFile().getAbsolutePath());
       return outputFile;
 
     } catch (SftpException | IOException exception) {
@@ -94,16 +84,9 @@ public class SftpTransport extends AppTransport {
   @Override
   public String copy(String sourcePath, String destinationPath, Map<MetadataProperties, String> properties) {
 
-    String[] destinationPathParts = destinationPath.split(File.separator);
-    String destinationPathDir = String.join(File.separator, Arrays.copyOfRange(destinationPathParts, 0, destinationPathParts.length - 1));
-
     try {
 
-      try {
-        sftpChannel.stat(destinationPathDir);
-      } catch (SftpException exception) {
-        createSftpDirectory(destinationPathDir);
-      }
+      validateSftpDirectory(getDirectoryPath(destinationPath));
 
       sftpChannel.rename(sourcePath, destinationPath);
       sftpChannel.exit();
@@ -116,19 +99,34 @@ public class SftpTransport extends AppTransport {
     }
   }
 
-  private void createSftpDirectory(String uploadPath) throws SftpException {
+  private String getDirectoryPath(String filePath) {
 
-    String[] uploadPathParts = uploadPath.split(File.separator);
+    String[] filePathParts = filePath.split(File.separator);
+    return String.join(File.separator, Arrays.copyOfRange(filePathParts, 0, filePathParts.length - 1));
+  }
+
+  private void validateSftpDirectory(String directory) throws SftpException {
+
+    try {
+      sftpChannel.stat(directory);
+    } catch (SftpException exception) {
+      createSftpDirectory(directory);
+    }
+  }
+
+  private void createSftpDirectory(String directory) throws SftpException {
+
+    String[] directoryParts = directory.split(File.separator);
     sftpChannel.cd(sftpChannel.getHome());
 
-    for (String path : uploadPathParts) {
+    for (String part : directoryParts) {
 
       try {
-        sftpChannel.stat(path);
+        sftpChannel.stat(part);
       } catch (SftpException exception) {
-        sftpChannel.mkdir(path);
+        sftpChannel.mkdir(part);
       }
-      sftpChannel.cd(path);
+      sftpChannel.cd(part);
     }
 
     sftpChannel.cd(sftpChannel.getHome());

@@ -5,6 +5,8 @@ import com.exatask.platform.logging.AppLogger;
 import com.exatask.platform.storage.constants.MetadataProperties;
 import lombok.RequiredArgsConstructor;
 
+import java.io.IOException;
+import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.Map;
 import java.util.stream.Collectors;
@@ -19,6 +21,11 @@ public abstract class AppTransport {
   public abstract Path download(String downloadPath);
 
   public abstract String copy(String sourcePath, String destinationPath, Map<MetadataProperties, String> properties);
+
+  protected Path createTempFile(AppTransportType transportType) throws IOException {
+
+    return Files.createTempFile(transportType.getPathPrefix(), transportType.getFileSuffix());
+  }
 
   protected Map<String, String> prepareMetadata(Map<MetadataProperties, String> properties) {
 

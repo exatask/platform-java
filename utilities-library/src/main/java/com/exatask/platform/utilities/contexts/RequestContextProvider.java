@@ -80,7 +80,7 @@ public class RequestContextProvider {
     return ObjectUtils.isNotEmpty(requestContext) ? requestContext.getSecurityOtp() : null;
   }
 
-  public static String getEmployeeId() {
+  public static Integer getEmployeeId() {
 
     RequestContext requestContext = getContext();
     return ObjectUtils.isNotEmpty(requestContext) ? requestContext.getEmployeeId() : null;
@@ -104,7 +104,7 @@ public class RequestContextProvider {
     return ObjectUtils.isNotEmpty(requestContext) ? requestContext.getEmployeeMobileNumber() : null;
   }
 
-  public static String getOrganizationId() {
+  public static Integer getOrganizationId() {
 
     RequestContext requestContext = getContext();
     return ObjectUtils.isNotEmpty(requestContext) ? requestContext.getOrganizationId() : null;

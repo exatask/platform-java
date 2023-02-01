@@ -23,11 +23,11 @@ public class RequestContext {
 
   private final String tenant;
 
-  private final String organizationId;
+  private final Integer organizationId;
 
   private final String organizationName;
 
-  private final String employeeId;
+  private final Integer employeeId;
 
   private final String employeeName;
 
