@@ -1,4 +1,4 @@
-package com.exatask.platform.api.services.healthcheck.responses;
+package com.exatask.platform.api.responses;
 
 import com.exatask.platform.dto.responses.AppResponse;
 import com.exatask.platform.utilities.healthcheck.ServiceHealthCheckData;

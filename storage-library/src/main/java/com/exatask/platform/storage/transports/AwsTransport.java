@@ -2,6 +2,7 @@ package com.exatask.platform.storage.transports;
 
 import com.exatask.platform.storage.constants.MetadataProperties;
 import com.exatask.platform.storage.exceptions.DownloadFailedException;
+import com.exatask.platform.storage.exceptions.UploadFailedException;
 import com.exatask.platform.utilities.properties.AwsProperties;
 import software.amazon.awssdk.core.ResponseInputStream;
 import software.amazon.awssdk.services.s3.S3Client;
@@ -11,18 +12,22 @@ import software.amazon.awssdk.services.s3.model.GetObjectResponse;
 import software.amazon.awssdk.services.s3.model.ObjectCannedACL;
 import software.amazon.awssdk.services.s3.model.PutObjectRequest;
 import software.amazon.awssdk.services.s3.model.StorageClass;
+import software.amazon.awssdk.utils.StringUtils;
 
 import java.io.BufferedInputStream;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
+import java.util.Arrays;
 import java.util.Map;
+import java.util.function.Function;
+import java.util.stream.Collectors;
 
 public class AwsTransport extends AppTransport {
 
   private final S3Client s3Client;
 
-  private final AwsProperties.S3Properties bucketProperties;
+  private final Map<String, AwsProperties.S3Properties> bucketProperties;
 
   public AwsTransport(AwsProperties awsProperties) {
 
@@ -31,17 +36,20 @@ public class AwsTransport extends AppTransport {
         .credentialsProvider(awsProperties.getCredentialsProvider())
         .build();
 
-    bucketProperties = awsProperties.getS3();
+    bucketProperties = awsProperties.getS3().stream()
+        .collect(Collectors.toMap(AwsProperties.S3Properties::getBucket, Function.identity()));
   }
 
   @Override
   public String upload(Path inputPath, String uploadPath, Map<MetadataProperties, String> properties) {
 
+    AwsProperties.S3Properties bucketProperty = getBucket(uploadPath);
+
     PutObjectRequest.Builder putObjectRequestBuilder = PutObjectRequest.builder()
-        .bucket(bucketProperties.getBucket())
-        .key(uploadPath)
-        .acl(ObjectCannedACL.valueOf(bucketProperties.getAcl().toString()))
-        .storageClass(StorageClass.valueOf(bucketProperties.getStorageClass().toString()))
+        .bucket(bucketProperty.getBucket())
+        .key(uploadPath.replace(bucketProperty.getBucket() + FILE_SEPARATOR, ""))
+        .acl(ObjectCannedACL.valueOf(bucketProperty.getAcl().toString()))
+        .storageClass(StorageClass.valueOf(bucketProperty.getStorageClass().toString()))
         .metadata(prepareMetadata(properties));
 
     if (properties.containsKey(MetadataProperties.DOWNLOAD_FILENAME)) {
@@ -61,9 +69,11 @@ public class AwsTransport extends AppTransport {
   @Override
   public Path download(String downloadPath) {
 
+    AwsProperties.S3Properties bucketProperty = getBucket(downloadPath);
+
     GetObjectRequest getObjectRequest = GetObjectRequest.builder()
-        .bucket(bucketProperties.getBucket())
-        .key(downloadPath.replace(AppTransportType.AWS.getPathPrefix(), ""))
+        .bucket(bucketProperty.getBucket())
+        .key(downloadPath.replace(AppTransportType.AWS.getPathPrefix() + bucketProperty.getBucket() + FILE_SEPARATOR, ""))
         .build();
 
     ResponseInputStream<GetObjectResponse> response = s3Client.getObject(getObjectRequest);
@@ -84,12 +94,14 @@ public class AwsTransport extends AppTransport {
   @Override
   public String copy(String sourcePath, String destinationPath, Map<MetadataProperties, String> properties) {
 
+    AwsProperties.S3Properties bucketProperty = getBucket(destinationPath);
+
     CopyObjectRequest.Builder copyObjectRequestBuilder = CopyObjectRequest.builder()
         .copySource(sourcePath)
-        .destinationBucket(bucketProperties.getBucket())
-        .destinationKey(destinationPath)
-        .acl(ObjectCannedACL.valueOf(bucketProperties.getAcl().toString()))
-        .storageClass(StorageClass.valueOf(bucketProperties.getStorageClass().toString()));
+        .destinationBucket(bucketProperty.getBucket())
+        .destinationKey(destinationPath.replace(bucketProperty.getBucket() + FILE_SEPARATOR, ""))
+        .acl(ObjectCannedACL.valueOf(bucketProperty.getAcl().toString()))
+        .storageClass(StorageClass.valueOf(bucketProperty.getStorageClass().toString()));
 
     if (properties.containsKey(MetadataProperties.DOWNLOAD_FILENAME)) {
       copyObjectRequestBuilder.contentDisposition(String.format("attachment; filename=\"%s\"", properties.get(MetadataProperties.DOWNLOAD_FILENAME)));
@@ -97,5 +109,15 @@ public class AwsTransport extends AppTransport {
 
     s3Client.copyObject(copyObjectRequestBuilder.build());
     return AppTransportType.AWS.getPathPrefix() + destinationPath;
+  }
+
+  private AwsProperties.S3Properties getBucket(String filePath) {
+
+    String bucket = Arrays.stream(filePath.split(FILE_SEPARATOR)).findFirst().orElse("");
+    if (StringUtils.isEmpty(bucket)) {
+      throw new UploadFailedException(filePath, null);
+    }
+
+    return bucketProperties.get(bucket);
   }
 }

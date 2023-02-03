@@ -3,6 +3,7 @@ package com.exatask.platform.rabbitmq;
 import com.exatask.platform.logging.AppLogManager;
 import com.exatask.platform.logging.AppLogMessage;
 import com.exatask.platform.logging.AppLogger;
+import com.exatask.platform.utilities.ApplicationContextUtility;
 import com.exatask.platform.utilities.constants.RequestContextHeader;
 import com.exatask.platform.utilities.contexts.RequestContextProvider;
 import org.springframework.amqp.core.Message;
@@ -17,20 +18,23 @@ public abstract class AppPublisher<T extends AppMessage> {
   protected static final AppLogger LOGGER = AppLogManager.getLogger();
 
   private final RabbitTemplate rabbitTemplate;
-
   private final Jackson2JsonMessageConverter jsonMessageConverter = new Jackson2JsonMessageConverter();
 
-  public AppPublisher(RabbitTemplate rabbitTemplate) {
-    this.rabbitTemplate = rabbitTemplate;
+  protected AppPublisher() {
+    this.rabbitTemplate = ApplicationContextUtility.getBean(RabbitTemplate.class);
   }
+
+  public abstract String getExchange();
 
   public void send(T appMessage) {
 
     MessageProperties messageProperties = new MessageProperties();
     prepareRequestContext(messageProperties);
 
+    messageProperties.setDeliveryMode(appMessage.deliveryMode());
+
     Message message = jsonMessageConverter.toMessage(appMessage, messageProperties);
-    rabbitTemplate.convertAndSend(appMessage.exchange(), appMessage.queue(), message);
+    rabbitTemplate.convertAndSend(getExchange(), appMessage.getRoutingKey(), message);
 
     LOGGER.debug(AppLogMessage.builder()
         .message("Message published successfully")

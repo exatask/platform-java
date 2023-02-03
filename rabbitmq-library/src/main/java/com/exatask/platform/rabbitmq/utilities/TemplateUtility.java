@@ -1,30 +1,43 @@
 package com.exatask.platform.rabbitmq.utilities;
 
-import com.exatask.platform.rabbitmq.AppListener;
+import com.exatask.platform.rabbitmq.exceptions.InvalidExchangeTypeException;
+import com.exatask.platform.utilities.ApplicationContextUtility;
+import com.exatask.platform.utilities.properties.RabbitmqProperties;
 import lombok.experimental.UtilityClass;
 import org.springframework.amqp.core.AcknowledgeMode;
+import org.springframework.amqp.core.BindingBuilder;
+import org.springframework.amqp.core.Declarable;
+import org.springframework.amqp.core.Declarables;
+import org.springframework.amqp.core.DirectExchange;
+import org.springframework.amqp.core.Exchange;
+import org.springframework.amqp.core.FanoutExchange;
+import org.springframework.amqp.core.HeadersExchange;
 import org.springframework.amqp.core.Queue;
+import org.springframework.amqp.core.TopicExchange;
+import org.springframework.amqp.rabbit.config.SimpleRabbitListenerContainerFactory;
 import org.springframework.amqp.rabbit.connection.CachingConnectionFactory;
 import org.springframework.amqp.rabbit.connection.ConnectionFactory;
 import org.springframework.amqp.rabbit.core.RabbitTemplate;
-import org.springframework.amqp.rabbit.listener.SimpleMessageListenerContainer;
+import org.springframework.amqp.rabbit.listener.RabbitListenerContainerFactory;
 import org.springframework.amqp.support.converter.Jackson2JsonMessageConverter;
-import org.springframework.boot.autoconfigure.amqp.RabbitProperties;
+
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Map;
+import java.util.Optional;
 
 @UtilityClass
 public class TemplateUtility {
 
-  public static SimpleMessageListenerContainer getMessageListener(ConnectionFactory connectionFactory, String queueName, AppListener listener) {
+  public static RabbitListenerContainerFactory getListenerContainer(ConnectionFactory connectionFactory) {
 
-    Queue queue = new Queue(queueName);
+    SimpleRabbitListenerContainerFactory rabbitListenerContainerFactory = new SimpleRabbitListenerContainerFactory();
+    rabbitListenerContainerFactory.setConnectionFactory(connectionFactory);
+    rabbitListenerContainerFactory.setAcknowledgeMode(AcknowledgeMode.MANUAL);
+    rabbitListenerContainerFactory.setPrefetchCount(1);
+    rabbitListenerContainerFactory.setApplicationContext(ApplicationContextUtility.getApplicationContext());
 
-    SimpleMessageListenerContainer messageListenerContainer = new SimpleMessageListenerContainer();
-    messageListenerContainer.setConnectionFactory(connectionFactory);
-    messageListenerContainer.setAcknowledgeMode(AcknowledgeMode.MANUAL);
-    messageListenerContainer.addQueues(queue);
-    messageListenerContainer.setMessageListener(listener);
-
-    return messageListenerContainer;
+    return rabbitListenerContainerFactory;
   }
 
   public static RabbitTemplate getTemplate(ConnectionFactory connectionFactory) {
@@ -38,7 +51,7 @@ public class TemplateUtility {
     return rabbitTemplate;
   }
 
-  public static ConnectionFactory getConnectionFactory(RabbitProperties properties) {
+  public static ConnectionFactory getConnectionFactory(RabbitmqProperties properties) {
 
     CachingConnectionFactory connectionFactory = new CachingConnectionFactory();
     connectionFactory.setHost(properties.getHost());
@@ -47,6 +60,54 @@ public class TemplateUtility {
     connectionFactory.setPassword(properties.getPassword());
     connectionFactory.setVirtualHost(properties.getVirtualHost());
 
+    Optional.ofNullable(properties.getMaximum()).ifPresent(connectionFactory::setConnectionLimit);
+    Optional.ofNullable(properties.getConnectionTimeout()).ifPresent(time -> connectionFactory.setConnectionTimeout((int) time.toMillis()));
+
     return connectionFactory;
+  }
+
+  public static Declarables getDeclarables(Map<RabbitmqProperties.Exchange, RabbitmqProperties.Queue> bindings) {
+
+    List<Declarable> declarables = new ArrayList<>();
+    for (Map.Entry<RabbitmqProperties.Exchange, RabbitmqProperties.Queue> binding : bindings.entrySet()) {
+
+      Exchange exchange = initializeExchange(binding.getKey());
+      declarables.add(exchange);
+
+      Queue queue = initializeQueue(binding.getValue());
+      declarables.add(queue);
+
+      declarables.add(BindingBuilder.bind(queue)
+          .to(exchange)
+          .with(binding.getValue().getRoutingKey())
+          .noargs());
+    }
+
+    return new Declarables(declarables);
+  }
+
+  private Exchange initializeExchange(RabbitmqProperties.Exchange exchange) {
+
+    switch (exchange.getType()) {
+
+      case DIRECT:
+        return new DirectExchange(exchange.getName(), exchange.getDurable(), exchange.getAutoDelete());
+
+      case TOPIC:
+        return new TopicExchange(exchange.getName(), exchange.getDurable(), exchange.getAutoDelete());
+
+      case FANOUT:
+        return new FanoutExchange(exchange.getName(), exchange.getDurable(), exchange.getAutoDelete());
+
+      case HEADERS:
+        return new HeadersExchange(exchange.getName(), exchange.getDurable(), exchange.getAutoDelete());
+
+      default:
+        throw new InvalidExchangeTypeException(exchange.getType().toString());
+    }
+  }
+
+  private Queue initializeQueue(RabbitmqProperties.Queue queue) {
+    return new Queue(queue.getName(), queue.getDurable(), queue.getExclusive(), queue.getAutoDelete());
   }
 }

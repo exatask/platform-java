@@ -1,0 +1,34 @@
+plugins {
+  id "platform.java-conventions"
+  id "org.springframework.boot"
+}
+
+version = "1.0.0-SNAPSHOT"
+
+bootJar {
+  enabled = false
+}
+
+jar {
+  enabled = true
+}
+
+dependencies {
+
+  implementation group: "com.fasterxml.jackson.core", name: "jackson-databind", version: "${fasterxmlJacksonVersion}"
+  implementation project(":logging-library")
+  implementation project(":utilities-library")
+
+  compileOnly group: "org.projectlombok", name: "lombok", version: "${lombokVersion}"
+  annotationProcessor group: "org.projectlombok", name: "lombok", version: "${lombokVersion}"
+}
+
+publishing {
+  publications {
+    maven(MavenPublication) {
+
+      artifactId = "exatask-memcache"
+      from components.java
+    }
+  }
+}

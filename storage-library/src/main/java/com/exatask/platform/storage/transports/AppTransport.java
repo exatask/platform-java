@@ -15,6 +15,7 @@ import java.util.stream.Collectors;
 public abstract class AppTransport {
 
   protected static final AppLogger LOGGER = AppLogManager.getLogger();
+  protected static final String FILE_SEPARATOR = "/";
 
   public abstract String upload(Path inputPath, String uploadPath, Map<MetadataProperties, String> properties);
 

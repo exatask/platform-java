@@ -7,13 +7,13 @@ import lombok.Getter;
 @AllArgsConstructor
 public enum ServiceAccess {
 
-  // Accessible to all, even without session (user, admin)
+  // Accessible to all, even without session (user, admin, partner)
   PUBLIC(ServiceEndpoints.ACCESS_PUBLIC),
 
-  // Accessible to all, with valid session (user, admin)
+  // Accessible to all, with valid session (user, admin, partner)
   AUTHENTICATED(ServiceEndpoints.ACCESS_AUTHENTICATED),
 
-  // Accessible to whoever has authorization for action (user, admin)
+  // Accessible to whoever has authorization for action (user, admin, partner)
   AUTHORIZED(ServiceEndpoints.ACCESS_AUTHORIZED),
 
   // Accessible to whoever has authorization for action after 2nd factor authentication (user, admin)
