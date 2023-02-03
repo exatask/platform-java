@@ -22,7 +22,7 @@ public abstract class AppListener<T extends AppMessage> implements ChannelAwareM
 
   protected static final AppLogger LOGGER = AppLogManager.getLogger();
 
-  protected final ObjectMapper objectMapper = new ObjectMapper();
+  private final ObjectMapper objectMapper = new ObjectMapper();
 
   public abstract boolean execute(T message);
 
@@ -32,6 +32,8 @@ public abstract class AppListener<T extends AppMessage> implements ChannelAwareM
   public void onMessage(Message message, Channel channel) {
 
     prepareRequestContext(message.getMessageProperties().getHeaders());
+
+    long deliveryTag = message.getMessageProperties().getDeliveryTag();
     String messageBody = new String(message.getBody());
     LOGGER.info(messageBody);
 
@@ -39,12 +41,12 @@ public abstract class AppListener<T extends AppMessage> implements ChannelAwareM
 
       T messageObject = objectMapper.readValue(messageBody, getType());
       boolean result = this.execute(messageObject);
-      acknowledge(channel, message.getMessageProperties().getDeliveryTag(), result);
+      acknowledge(channel, deliveryTag, result);
 
     } catch (JsonProcessingException exception) {
 
       LOGGER.error(exception);
-      acknowledge(channel, message.getMessageProperties().getDeliveryTag(), false);
+      acknowledge(channel, deliveryTag, false);
     }
   }
 

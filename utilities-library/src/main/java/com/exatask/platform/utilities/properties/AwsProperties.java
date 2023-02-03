@@ -16,6 +16,8 @@ import software.amazon.awssdk.auth.credentials.DefaultCredentialsProvider;
 import software.amazon.awssdk.auth.credentials.StaticCredentialsProvider;
 import software.amazon.awssdk.regions.Region;
 
+import java.util.List;
+
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor
@@ -34,7 +36,7 @@ public class AwsProperties {
   private String secretKey;
 
   @Getter
-  private S3Properties s3;
+  private List<S3Properties> s3;
 
   @Data
   @Accessors(chain = true)

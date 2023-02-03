@@ -2,7 +2,7 @@ package com.exatask.platform.api.services.healthcheck;
 
 import com.exatask.platform.api.configurations.ApiServiceConfig;
 import com.exatask.platform.api.services.AppService;
-import com.exatask.platform.api.services.healthcheck.responses.HealthCheckResponse;
+import com.exatask.platform.api.responses.HealthCheckResponse;
 import com.exatask.platform.dto.requests.AppRequest;
 import com.exatask.platform.utilities.CollectionUtility;
 import com.exatask.platform.utilities.healthcheck.ServiceHealthCheck;

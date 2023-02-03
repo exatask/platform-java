@@ -101,7 +101,7 @@ public class SftpTransport extends AppTransport {
 
   private String getDirectoryPath(String filePath) {
 
-    String[] filePathParts = filePath.split(File.separator);
+    String[] filePathParts = filePath.split(FILE_SEPARATOR);
     return String.join(File.separator, Arrays.copyOfRange(filePathParts, 0, filePathParts.length - 1));
   }
 
@@ -116,7 +116,7 @@ public class SftpTransport extends AppTransport {
 
   private void createSftpDirectory(String directory) throws SftpException {
 
-    String[] directoryParts = directory.split(File.separator);
+    String[] directoryParts = directory.split(FILE_SEPARATOR);
     sftpChannel.cd(sftpChannel.getHome());
 
     for (String part : directoryParts) {

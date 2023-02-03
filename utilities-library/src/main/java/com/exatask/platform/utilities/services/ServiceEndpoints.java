@@ -7,6 +7,7 @@ public class ServiceEndpoints {
 
   public static final String COMPONENT_USER = "/user";
   public static final String COMPONENT_ADMIN = "/admin";
+  public static final String COMPONENT_PARTNER = "/partner";
 
   public static final String ACCESS_PUBLIC = "/public";
   public static final String ACCESS_AUTHENTICATED = "/authenticated";

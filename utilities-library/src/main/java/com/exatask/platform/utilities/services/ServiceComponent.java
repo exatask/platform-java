@@ -8,7 +8,8 @@ import lombok.Getter;
 public enum ServiceComponent {
 
   USER(ServiceEndpoints.COMPONENT_USER),
-  ADMIN(ServiceEndpoints.COMPONENT_ADMIN);
+  ADMIN(ServiceEndpoints.COMPONENT_ADMIN),
+  PARTNER(ServiceEndpoints.COMPONENT_PARTNER);
 
   private final String uri;
 }

@@ -26,7 +26,13 @@ public class AuthenticationInterceptor extends AppInterceptor {
       return false;
     }
 
-    Boolean tokenValid = apiAuthenticator.authenticate(authHeader.replace(authPrefix, "").trim());
+    String authToken = authHeader.replace(authPrefix, "").trim();
+    if (StringUtils.isEmpty(authToken)) {
+      this.sendPreHandleErrorResponse(ProxyAuthenticationException.builder().build(), request, response);
+      return false;
+    }
+
+    Boolean tokenValid = apiAuthenticator.authenticate(authToken);
     if (Boolean.FALSE.equals(tokenValid)) {
       this.sendPreHandleErrorResponse(ProxyAuthenticationException.builder().build(), request, response);
     }
