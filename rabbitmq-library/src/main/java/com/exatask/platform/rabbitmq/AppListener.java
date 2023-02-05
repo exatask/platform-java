@@ -9,7 +9,6 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.rabbitmq.client.Channel;
 import org.springframework.amqp.core.Message;
-import org.springframework.amqp.rabbit.annotation.RabbitHandler;
 import org.springframework.amqp.rabbit.listener.api.ChannelAwareMessageListener;
 import org.springframework.util.CollectionUtils;
 
@@ -25,12 +24,11 @@ public abstract class AppListener<T extends AppMessage> implements ChannelAwareM
 
   private final ObjectMapper objectMapper = new ObjectMapper();
 
-  public abstract boolean execute(T message);
-
   public abstract Class<T> getType();
 
+  public abstract boolean execute(T message);
+
   @Override
-  @RabbitHandler
   public void onMessage(Message message, Channel channel) {
 
     prepareRequestContext(message.getMessageProperties().getHeaders());
