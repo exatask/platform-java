@@ -36,6 +36,7 @@ public class TemplateUtility {
     rabbitListenerContainerFactory.setAcknowledgeMode(AcknowledgeMode.MANUAL);
     rabbitListenerContainerFactory.setPrefetchCount(1);
     rabbitListenerContainerFactory.setApplicationContext(ApplicationContextUtility.getApplicationContext());
+    rabbitListenerContainerFactory.setAutoStartup(false);
 
     return rabbitListenerContainerFactory;
   }
@@ -88,19 +89,22 @@ public class TemplateUtility {
 
   private Exchange initializeExchange(RabbitmqProperties.Exchange exchange) {
 
+    Boolean durable = Boolean.TRUE.equals(exchange.getDurable());
+    Boolean autoDelete = Boolean.TRUE.equals(exchange.getAutoDelete());
+
     switch (exchange.getType()) {
 
       case DIRECT:
-        return new DirectExchange(exchange.getName(), exchange.getDurable(), exchange.getAutoDelete());
+        return new DirectExchange(exchange.getName(), durable, autoDelete);
 
       case TOPIC:
-        return new TopicExchange(exchange.getName(), exchange.getDurable(), exchange.getAutoDelete());
+        return new TopicExchange(exchange.getName(), durable, autoDelete);
 
       case FANOUT:
-        return new FanoutExchange(exchange.getName(), exchange.getDurable(), exchange.getAutoDelete());
+        return new FanoutExchange(exchange.getName(), durable, autoDelete);
 
       case HEADERS:
-        return new HeadersExchange(exchange.getName(), exchange.getDurable(), exchange.getAutoDelete());
+        return new HeadersExchange(exchange.getName(), durable, autoDelete);
 
       default:
         throw new InvalidExchangeTypeException(exchange.getType().toString());
@@ -108,6 +112,6 @@ public class TemplateUtility {
   }
 
   private Queue initializeQueue(RabbitmqProperties.Queue queue) {
-    return new Queue(queue.getName(), queue.getDurable(), queue.getExclusive(), queue.getAutoDelete());
+    return new Queue(queue.getName(), Boolean.TRUE.equals(queue.getDurable()), Boolean.TRUE.equals(queue.getExclusive()), Boolean.TRUE.equals(queue.getAutoDelete()));
   }
 }
