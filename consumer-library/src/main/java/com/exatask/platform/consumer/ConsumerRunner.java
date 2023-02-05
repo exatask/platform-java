@@ -13,6 +13,7 @@ import org.springframework.util.ObjectUtils;
 
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
+import java.lang.reflect.Modifier;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
@@ -92,9 +93,16 @@ public class ConsumerRunner implements CommandLineRunner {
         } else if (!(bean instanceof AppConsumer)) {
             LOGGER.error("Consumer bean is not an instance of AppConsumer base class", Collections.singletonMap("consumer", bean.getClass()));
             return;
-        }
 
-        if (!beanMethod.isAccessible()) {
+        } else if (bean.getClass() != beanMethod.getDeclaringClass()) {
+
+            Map<String, Object> extraParams = new HashMap<>();
+            extraParams.put("consumer", bean.getClass());
+            extraParams.put("action", beanMethod.getName());
+            LOGGER.warn("Action doesn't belong to consumer bean", extraParams);
+            return;
+
+        } else if (!Modifier.isPublic(beanMethod.getModifiers())) {
 
             Map<String, Object> extraParams = new HashMap<>();
             extraParams.put("consumer", bean.getClass());
