@@ -24,4 +24,8 @@ public class ApplicationContextUtility implements ApplicationContextAware {
   public static <T> T getBean(Class<T> beanClass) {
     return applicationContext.getBean(beanClass);
   }
+
+  public static String[] getBeanNames(Class<?> beanInterface) {
+    return applicationContext.getBeanNamesForType(beanInterface, false, true);
+  }
 }

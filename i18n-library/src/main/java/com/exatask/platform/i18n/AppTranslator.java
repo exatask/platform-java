@@ -1,6 +1,7 @@
 package com.exatask.platform.i18n;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.autoconfigure.condition.ConditionalOnBean;
 import org.springframework.context.i18n.LocaleContextHolder;
 import org.springframework.context.support.ResourceBundleMessageSource;
 import org.springframework.stereotype.Service;
@@ -8,6 +9,7 @@ import org.springframework.stereotype.Service;
 import java.util.Locale;
 
 @Service
+@ConditionalOnBean(ResourceBundleMessageSource.class)
 public class AppTranslator {
 
   private static ResourceBundleMessageSource messageSource;

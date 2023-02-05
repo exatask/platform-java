@@ -15,11 +15,11 @@ jar {
 
 dependencies {
 
+  api group: "org.springframework.boot", name: "spring-boot-starter"
   api project(":logging-library")
   api project(":utilities-library")
   api project(":crypto-library")
 
-  implementation project(":i18n-library")
   implementation project(":dto-library")
 
   compileOnly group: "org.projectlombok", name: "lombok", version: "${lombokVersion}"
@@ -30,7 +30,7 @@ publishing {
   publications {
     maven(MavenPublication) {
 
-      artifactId = "exatask-job"
+      artifactId = "exatask-consumer"
       from components.java
     }
   }
