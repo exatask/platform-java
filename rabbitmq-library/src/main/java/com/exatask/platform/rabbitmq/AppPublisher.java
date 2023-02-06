@@ -3,6 +3,7 @@ package com.exatask.platform.rabbitmq;
 import com.exatask.platform.logging.AppLogManager;
 import com.exatask.platform.logging.AppLogMessage;
 import com.exatask.platform.logging.AppLogger;
+import com.exatask.platform.rabbitmq.properties.AppMessageProperties;
 import com.exatask.platform.utilities.ApplicationContextUtility;
 import com.exatask.platform.utilities.constants.RequestContextHeader;
 import com.exatask.platform.utilities.contexts.RequestContextProvider;
@@ -27,14 +28,20 @@ public abstract class AppPublisher<T extends AppMessage> {
   public abstract String getExchange();
 
   public void send(T appMessage) {
+    send(appMessage, AppMessageProperties.builder().build());
+  }
+
+  public void send(T appMessage, AppMessageProperties appMessageProperties) {
 
     MessageProperties messageProperties = new MessageProperties();
     prepareRequestContext(messageProperties);
 
     messageProperties.setDeliveryMode(appMessage.deliveryMode());
 
+    Optional.ofNullable(appMessageProperties.getDelay()).ifPresent(messageProperties::setDelay);
+
     Message message = jsonMessageConverter.toMessage(appMessage, messageProperties);
-    rabbitTemplate.convertAndSend(getExchange(), appMessage.getRoutingKey(), message);
+    rabbitTemplate.convertAndSend(getExchange(), appMessage.routingKey(), message);
 
     LOGGER.debug(AppLogMessage.builder()
         .message("Message published successfully")

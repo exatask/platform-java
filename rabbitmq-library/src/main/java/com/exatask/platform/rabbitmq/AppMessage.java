@@ -1,12 +1,10 @@
 package com.exatask.platform.rabbitmq;
 
-import lombok.Data;
 import org.springframework.amqp.core.MessageDeliveryMode;
 
-@Data
-public abstract class AppMessage {
+public interface AppMessage {
 
-  private String routingKey;
+  String routingKey();
 
-  public abstract MessageDeliveryMode deliveryMode();
+  MessageDeliveryMode deliveryMode();
 }

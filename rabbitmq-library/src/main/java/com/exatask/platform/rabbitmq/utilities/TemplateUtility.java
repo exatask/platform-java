@@ -6,6 +6,7 @@ import com.exatask.platform.utilities.properties.RabbitmqProperties;
 import lombok.experimental.UtilityClass;
 import org.springframework.amqp.core.AcknowledgeMode;
 import org.springframework.amqp.core.BindingBuilder;
+import org.springframework.amqp.core.CustomExchange;
 import org.springframework.amqp.core.Declarable;
 import org.springframework.amqp.core.Declarables;
 import org.springframework.amqp.core.DirectExchange;
@@ -22,6 +23,7 @@ import org.springframework.amqp.rabbit.listener.RabbitListenerContainerFactory;
 import org.springframework.amqp.support.converter.Jackson2JsonMessageConverter;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
@@ -105,6 +107,10 @@ public class TemplateUtility {
 
       case HEADERS:
         return new HeadersExchange(exchange.getName(), durable, autoDelete);
+
+      case DELAYED:
+        Map<String, Object> exchangeArguments = Collections.singletonMap("x-delayed-type", "direct");
+        return new CustomExchange(exchange.getName(), "x-delayed-message", durable, autoDelete, exchangeArguments);
 
       default:
         throw new InvalidExchangeTypeException(exchange.getType().toString());

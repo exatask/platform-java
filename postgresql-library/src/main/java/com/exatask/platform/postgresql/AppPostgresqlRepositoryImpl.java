@@ -6,6 +6,7 @@ import com.exatask.platform.postgresql.constants.Defaults;
 import com.exatask.platform.postgresql.exceptions.InvalidOperationException;
 import com.exatask.platform.postgresql.filters.FilterElement;
 import com.exatask.platform.postgresql.joins.JoinElement;
+import com.exatask.platform.postgresql.replicas.ReplicaDataSource;
 import com.exatask.platform.postgresql.sorts.SortElement;
 import com.exatask.platform.postgresql.updates.UpdateElement;
 import com.exatask.platform.postgresql.updates.UpdateOperation;
@@ -283,6 +284,7 @@ public class AppPostgresqlRepositoryImpl<T, ID extends Serializable> extends Sim
     criteriaQuery = prepareFilters(criteriaBuilder, criteriaQuery, query.getFilters());
     criteriaQuery = prepareSort(criteriaBuilder, criteriaQuery, query.getSorts());
 
+    ReplicaDataSource.setReadOnly(true);
     TypedQuery<T> typedQuery = entityManager.createQuery(criteriaQuery);
     typedQuery = prepareSkip(typedQuery, query.getSkip());
     typedQuery = prepareLimit(typedQuery, query.getLimit());
@@ -322,6 +324,7 @@ public class AppPostgresqlRepositoryImpl<T, ID extends Serializable> extends Sim
     this.lastQuery = nativeSql;
     LOGGER.trace(this.lastQuery);
 
+    ReplicaDataSource.setReadOnly(true);
     javax.persistence.Query nativeQuery = this.entityManager.createNativeQuery(nativeSql, Tuple.class);
     List<Tuple> results = nativeQuery.getResultList();
     if (CollectionUtils.isEmpty(results)) {
@@ -347,6 +350,7 @@ public class AppPostgresqlRepositoryImpl<T, ID extends Serializable> extends Sim
     criteriaQuery = prepareFilters(criteriaBuilder, criteriaQuery, query.getFilters());
     criteriaQuery = prepareSort(criteriaBuilder, criteriaQuery, query.getSorts());
 
+    ReplicaDataSource.setReadOnly(true);
     TypedQuery<T> typedQuery = entityManager.createQuery(criteriaQuery);
 
     this.lastQuery = typedQuery.unwrap(Query.class).getQueryString();
@@ -370,6 +374,7 @@ public class AppPostgresqlRepositoryImpl<T, ID extends Serializable> extends Sim
     this.lastQuery = nativeSql;
     LOGGER.trace(this.lastQuery);
 
+    ReplicaDataSource.setReadOnly(true);
     javax.persistence.Query nativeQuery = this.entityManager.createNativeQuery(nativeSql, Tuple.class);
     Optional<Tuple> result = nativeQuery.getResultStream().findFirst();
     if (!result.isPresent()) {
@@ -392,6 +397,7 @@ public class AppPostgresqlRepositoryImpl<T, ID extends Serializable> extends Sim
     prepareJoins(query.getJoins());
     criteriaQuery = (CriteriaQuery<Long>) prepareFilters(criteriaBuilder, (CriteriaQuery<T>) criteriaQuery, query.getFilters());
 
+    ReplicaDataSource.setReadOnly(true);
     TypedQuery<Long> typedQuery = entityManager.createQuery(criteriaQuery);
 
     this.lastQuery = typedQuery.unwrap(Query.class).getQueryString();
@@ -413,6 +419,7 @@ public class AppPostgresqlRepositoryImpl<T, ID extends Serializable> extends Sim
     this.lastQuery = nativeSql;
     LOGGER.trace(this.lastQuery);
 
+    ReplicaDataSource.setReadOnly(true);
     javax.persistence.Query nativeQuery = this.entityManager.createNativeQuery(nativeSql, Tuple.class);
     return ((Number) nativeQuery.getSingleResult()).longValue();
   }
@@ -428,6 +435,7 @@ public class AppPostgresqlRepositoryImpl<T, ID extends Serializable> extends Sim
     criteriaUpdate = prepareFilters(criteriaBuilder, criteriaUpdate, query.getFilters());
     criteriaUpdate = prepareUpdates(criteriaBuilder, criteriaUpdate, query.getUpdates());
 
+    ReplicaDataSource.setReadOnly(false);
     javax.persistence.Query updateQuery = entityManager.createQuery(criteriaUpdate)
         .setMaxResults(1);
 
@@ -448,6 +456,7 @@ public class AppPostgresqlRepositoryImpl<T, ID extends Serializable> extends Sim
     criteriaUpdate = prepareFilters(criteriaBuilder, criteriaUpdate, query.getFilters());
     criteriaUpdate = prepareUpdates(criteriaBuilder, criteriaUpdate, query.getUpdates());
 
+    ReplicaDataSource.setReadOnly(false);
     javax.persistence.Query updateQuery = entityManager.createQuery(criteriaUpdate);
 
     this.lastQuery = updateQuery.unwrap(Query.class).getQueryString();

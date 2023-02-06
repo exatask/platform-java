@@ -1,6 +1,8 @@
 package com.exatask.platform.postgresql.utilities;
 
 import com.exatask.platform.postgresql.AppPostgresqlTenantConnectionProvider;
+import com.exatask.platform.postgresql.replicas.ReplicaDataSource;
+import com.exatask.platform.postgresql.replicas.ReplicaTransactionManager;
 import com.exatask.platform.postgresql.tenants.PostgresqlTenantConnections;
 import com.exatask.platform.postgresql.tenants.PostgresqlTenantResolver;
 import com.exatask.platform.postgresql.tenants.ServiceTenant;
@@ -30,7 +32,7 @@ public class TransactionUtility {
 
     JpaTransactionManager transactionManager = new JpaTransactionManager();
     transactionManager.setEntityManagerFactory(entityManagerFactory);
-    return transactionManager;
+    return new ReplicaTransactionManager(transactionManager);
   }
 
   public static LocalContainerEntityManagerFactoryBean getEntityManagerFactory(DataSource dataSource, String[] packages) {
@@ -65,11 +67,15 @@ public class TransactionUtility {
   }
 
   public static DataSource getDataSource(DataSourceSqlProperties dataSourceProperties) {
+    return new ReplicaDataSource(dataSourceProperties);
+  }
+
+  public static DataSource getDataSource(String url, String username, String password, DataSourceSqlProperties dataSourceProperties) {
 
     HikariDataSource hikariDataSource = new HikariDataSource();
-    hikariDataSource.setJdbcUrl(dataSourceProperties.getUrl());
-    hikariDataSource.setUsername(dataSourceProperties.getUsername());
-    hikariDataSource.setPassword(dataSourceProperties.getPassword());
+    hikariDataSource.setJdbcUrl(url);
+    hikariDataSource.setUsername(username);
+    hikariDataSource.setPassword(password);
 
     Optional.ofNullable(dataSourceProperties.getMinimum()).ifPresent(hikariDataSource::setMinimumIdle);
     Optional.ofNullable(dataSourceProperties.getMaximum()).ifPresent(hikariDataSource::setMaximumPoolSize);

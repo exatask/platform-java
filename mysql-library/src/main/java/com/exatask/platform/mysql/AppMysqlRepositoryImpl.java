@@ -6,6 +6,7 @@ import com.exatask.platform.mysql.constants.Defaults;
 import com.exatask.platform.mysql.exceptions.InvalidOperationException;
 import com.exatask.platform.mysql.filters.FilterElement;
 import com.exatask.platform.mysql.joins.JoinElement;
+import com.exatask.platform.mysql.replicas.ReplicaDataSource;
 import com.exatask.platform.mysql.sorts.SortElement;
 import com.exatask.platform.mysql.updates.UpdateElement;
 import com.exatask.platform.mysql.updates.UpdateOperation;
@@ -279,6 +280,7 @@ public class AppMysqlRepositoryImpl<T, ID extends Serializable> extends SimpleJp
     criteriaQuery = prepareFilters(criteriaBuilder, criteriaQuery, query.getFilters());
     criteriaQuery = prepareSort(criteriaBuilder, criteriaQuery, query.getSorts());
 
+    ReplicaDataSource.setReadOnly(true);
     TypedQuery<T> typedQuery = entityManager.createQuery(criteriaQuery);
     typedQuery = prepareSkip(typedQuery, query.getSkip());
     typedQuery = prepareLimit(typedQuery, query.getLimit());
@@ -318,6 +320,7 @@ public class AppMysqlRepositoryImpl<T, ID extends Serializable> extends SimpleJp
     this.lastQuery = nativeSql;
     LOGGER.trace(this.lastQuery);
 
+    ReplicaDataSource.setReadOnly(true);
     javax.persistence.Query nativeQuery = this.entityManager.createNativeQuery(nativeSql, Tuple.class);
     List<Tuple> results = nativeQuery.getResultList();
     if (CollectionUtils.isEmpty(results)) {
@@ -343,6 +346,7 @@ public class AppMysqlRepositoryImpl<T, ID extends Serializable> extends SimpleJp
     criteriaQuery = prepareFilters(criteriaBuilder, criteriaQuery, query.getFilters());
     criteriaQuery = prepareSort(criteriaBuilder, criteriaQuery, query.getSorts());
 
+    ReplicaDataSource.setReadOnly(true);
     TypedQuery<T> typedQuery = entityManager.createQuery(criteriaQuery);
 
     this.lastQuery = typedQuery.unwrap(Query.class).getQueryString();
@@ -366,6 +370,7 @@ public class AppMysqlRepositoryImpl<T, ID extends Serializable> extends SimpleJp
     this.lastQuery = nativeSql;
     LOGGER.trace(this.lastQuery);
 
+    ReplicaDataSource.setReadOnly(true);
     javax.persistence.Query nativeQuery = this.entityManager.createNativeQuery(nativeSql, Tuple.class);
     Optional<Tuple> result = nativeQuery.getResultStream().findFirst();
     if (!result.isPresent()) {
@@ -388,6 +393,7 @@ public class AppMysqlRepositoryImpl<T, ID extends Serializable> extends SimpleJp
     prepareJoins(query.getJoins());
     criteriaQuery = (CriteriaQuery<Long>) prepareFilters(criteriaBuilder, (CriteriaQuery<T>) criteriaQuery, query.getFilters());
 
+    ReplicaDataSource.setReadOnly(true);
     TypedQuery<Long> typedQuery = entityManager.createQuery(criteriaQuery);
 
     this.lastQuery = typedQuery.unwrap(Query.class).getQueryString();
@@ -409,6 +415,7 @@ public class AppMysqlRepositoryImpl<T, ID extends Serializable> extends SimpleJp
     this.lastQuery = nativeSql;
     LOGGER.trace(this.lastQuery);
 
+    ReplicaDataSource.setReadOnly(true);
     javax.persistence.Query nativeQuery = this.entityManager.createNativeQuery(nativeSql, Tuple.class);
     return ((Number) nativeQuery.getSingleResult()).longValue();
   }
@@ -424,6 +431,7 @@ public class AppMysqlRepositoryImpl<T, ID extends Serializable> extends SimpleJp
     criteriaUpdate = prepareFilters(criteriaBuilder, criteriaUpdate, query.getFilters());
     criteriaUpdate = prepareUpdates(criteriaBuilder, criteriaUpdate, query.getUpdates());
 
+    ReplicaDataSource.setReadOnly(false);
     javax.persistence.Query updateQuery = entityManager.createQuery(criteriaUpdate)
         .setMaxResults(1);
 
@@ -444,6 +452,7 @@ public class AppMysqlRepositoryImpl<T, ID extends Serializable> extends SimpleJp
     criteriaUpdate = prepareFilters(criteriaBuilder, criteriaUpdate, query.getFilters());
     criteriaUpdate = prepareUpdates(criteriaBuilder, criteriaUpdate, query.getUpdates());
 
+    ReplicaDataSource.setReadOnly(false);
     javax.persistence.Query updateQuery = entityManager.createQuery(criteriaUpdate);
 
     this.lastQuery = updateQuery.unwrap(Query.class).getQueryString();

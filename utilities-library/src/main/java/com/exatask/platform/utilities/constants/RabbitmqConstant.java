@@ -7,6 +7,7 @@ public interface RabbitmqConstant {
     DIRECT,
     TOPIC,
     FANOUT,
-    HEADERS
+    HEADERS,
+    DELAYED
   }
 }
