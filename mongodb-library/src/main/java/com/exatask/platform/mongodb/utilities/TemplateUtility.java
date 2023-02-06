@@ -22,10 +22,12 @@ import org.springframework.data.mongodb.core.convert.MappingMongoConverter;
 import org.springframework.data.mongodb.core.mapping.MongoMappingContext;
 import org.springframework.data.mongodb.core.mapping.MongoPersistentEntity;
 import org.springframework.data.mongodb.core.mapping.MongoPersistentProperty;
+import org.springframework.util.CollectionUtils;
 
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 @UtilityClass
 public class TemplateUtility {
@@ -97,8 +99,17 @@ public class TemplateUtility {
 
     mongoUriBuilder.append(Optional.ofNullable(mongoProperties.getHost()).orElse(DEFAULT_HOST))
         .append(":")
-        .append(Optional.ofNullable(mongoProperties.getPort()).orElse(DEFAULT_PORT))
-        .append("/")
+        .append(Optional.ofNullable(mongoProperties.getPort()).orElse(DEFAULT_PORT));
+
+    if (!CollectionUtils.isEmpty(mongoProperties.getSecondaryHosts())) {
+
+      mongoUriBuilder.append(mongoProperties.getSecondaryHosts().stream()
+              .map(host -> Optional.ofNullable(host.getHost()).orElse(DEFAULT_HOST) + ":" +
+                      Optional.ofNullable(host.getPort()).orElse(DEFAULT_PORT))
+              .collect(Collectors.joining(",")));
+    }
+
+    mongoUriBuilder.append("/")
         .append(mongoProperties.getDatabase())
         .append("?");
 
@@ -106,6 +117,9 @@ public class TemplateUtility {
 
     Optional.ofNullable(mongoProperties.getAuthenticationDatabase())
         .ifPresent(database -> properties.add("authSource=" + database));
+
+    Optional.ofNullable(mongoProperties.getReplicaSetName())
+        .ifPresent(replicaSet -> properties.add("replicaSet=" + replicaSet));
 
     Optional.ofNullable(mongoProperties.getMinimum())
         .ifPresent(minimum -> properties.add("minPoolSize=" + minimum));
