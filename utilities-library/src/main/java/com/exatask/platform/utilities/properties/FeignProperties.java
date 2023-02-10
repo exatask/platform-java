@@ -34,11 +34,9 @@ public class FeignProperties {
     public String httpHost() {
 
         if (StringUtils.isNotEmpty(url)) {
-
             return url;
 
         } else {
-
             String protocol = BooleanUtils.toBoolean(this.secured) ? "https://" : "http://";
             return protocol + this.host + ":" + this.port;
         }

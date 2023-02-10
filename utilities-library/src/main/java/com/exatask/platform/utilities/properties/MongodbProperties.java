@@ -1,5 +1,6 @@
 package com.exatask.platform.utilities.properties;
 
+import com.exatask.platform.utilities.constants.MongodbConstant;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.experimental.Accessors;
@@ -18,6 +19,12 @@ public class MongodbProperties extends MongoProperties {
   private Integer timeout;
 
   private Integer idleTimeout;
+
+  private String writeConcern;
+
+  private boolean journal;
+
+  private MongodbConstant.ReadPreference readPreference;
 
   private List<SecondaryHost> secondaryHosts;
 

@@ -3,6 +3,7 @@ package com.exatask.platform.mongodb.utilities;
 import com.exatask.platform.mongodb.AppMongoTenantClientDatabaseFactory;
 import com.exatask.platform.mongodb.tenants.MongoTenantClients;
 import com.exatask.platform.mongodb.tenants.ServiceTenant;
+import com.exatask.platform.utilities.ServiceUtility;
 import com.exatask.platform.utilities.properties.MongodbProperties;
 import com.mongodb.ConnectionString;
 import com.mongodb.MongoClientSettings;
@@ -72,6 +73,9 @@ public class TemplateUtility {
 
     MongoClientSettings clientSettings = MongoClientSettings.builder()
         .uuidRepresentation(UuidRepresentation.STANDARD)
+        .applicationName(ServiceUtility.getServiceName())
+        .retryReads(true)
+        .retryWrites(true)
         .applyConnectionString(connectionString)
         .build();
 
@@ -132,6 +136,15 @@ public class TemplateUtility {
 
     Optional.ofNullable(mongoProperties.getIdleTimeout())
         .ifPresent(idleTimeout -> properties.add("maxIdleTimeMS=" + idleTimeout));
+
+    Optional.ofNullable(mongoProperties.getWriteConcern())
+        .ifPresent(writeConcern -> properties.add("w=" + writeConcern));
+
+    Optional.of(mongoProperties.isJournal())
+        .ifPresent(journal -> properties.add("journal=" + journal));
+
+    Optional.ofNullable(mongoProperties.getReadPreference())
+        .ifPresent(readPreference -> properties.add("readPreference=" + readPreference.getValue()));
 
     mongoUriBuilder.append(String.join("&", properties));
 
