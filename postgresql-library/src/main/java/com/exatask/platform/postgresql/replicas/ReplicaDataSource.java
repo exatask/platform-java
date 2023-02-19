@@ -33,6 +33,7 @@ public class ReplicaDataSource extends AbstractRoutingDataSource {
 
         super.setTargetDataSources(dataSources);
         super.setDefaultTargetDataSource(primaryDataSource);
+        super.afterPropertiesSet();
     }
 
     @Override

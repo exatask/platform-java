@@ -6,7 +6,7 @@ import lombok.EqualsAndHashCode;
 import lombok.experimental.Accessors;
 import org.springframework.boot.autoconfigure.amqp.RabbitProperties;
 
-import java.util.Map;
+import java.util.List;
 
 @Data
 @EqualsAndHashCode(callSuper = true)
@@ -14,7 +14,18 @@ public class RabbitmqProperties extends RabbitProperties {
 
   private Integer maximum;
 
-  private Map<Exchange, Queue> bindings;
+  private List<Binding> bindings;
+
+  @Data
+  @Accessors(chain = true)
+  public static class Binding {
+
+    private Exchange exchange;
+
+    private Queue queue;
+
+    private String routingKey;
+  }
 
   @Data
   @Accessors(chain = true)
@@ -40,7 +51,5 @@ public class RabbitmqProperties extends RabbitProperties {
     private Boolean exclusive;
 
     private Boolean autoDelete;
-
-    private String routingKey;
   }
 }

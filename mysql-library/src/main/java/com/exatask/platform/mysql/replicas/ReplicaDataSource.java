@@ -19,7 +19,7 @@ public class ReplicaDataSource extends AbstractRoutingDataSource {
 
         Map<Object, Object> dataSources = new HashMap<>();
 
-        DataSource primaryDataSource = TransactionUtility.getDataSource(dataSourceSqlProperties.getUrl(), dataSourceSqlProperties.getUsername(), dataSourceSqlProperties.getDataPassword(), dataSourceSqlProperties);
+        DataSource primaryDataSource = TransactionUtility.getDataSource(dataSourceSqlProperties.getUrl(), dataSourceSqlProperties.getUsername(), dataSourceSqlProperties.getPassword(), dataSourceSqlProperties);
         dataSources.put(Type.PRIMARY, primaryDataSource);
 
         if (!CollectionUtils.isEmpty(dataSourceSqlProperties.getSecondaryHosts())) {
@@ -32,6 +32,7 @@ public class ReplicaDataSource extends AbstractRoutingDataSource {
 
         super.setTargetDataSources(dataSources);
         super.setDefaultTargetDataSource(primaryDataSource);
+        super.afterPropertiesSet();
     }
 
     @Override
