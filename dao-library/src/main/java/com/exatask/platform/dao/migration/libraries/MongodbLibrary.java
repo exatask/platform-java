@@ -67,7 +67,7 @@ public class MongodbLibrary extends AppLibrary {
     MongockConfiguration configuration = new MongockConfiguration();
     configuration.setMigrationRepositoryName(collection);
     configuration.setLockRepositoryName(CHANGELOG_LOCK_COLLECTION);
-    configuration.setDefaultMigrationAuthor("rohit.aggarwal@exatask.com");
+    configuration.setDefaultMigrationAuthor("no-author@exatask.com");
 
     SpringDataMongoV3Driver driver = SpringDataMongoV3Driver.withDefaultLock(mongoTemplate);
     driver.setWriteConcern(WriteConcern.MAJORITY.withJournal(true));

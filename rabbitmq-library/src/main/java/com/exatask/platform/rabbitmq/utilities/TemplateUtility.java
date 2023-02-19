@@ -69,20 +69,20 @@ public class TemplateUtility {
     return connectionFactory;
   }
 
-  public static Declarables getDeclarables(Map<RabbitmqProperties.Exchange, RabbitmqProperties.Queue> bindings) {
+  public static Declarables getDeclarables(List<RabbitmqProperties.Binding> bindings) {
 
     List<Declarable> declarables = new ArrayList<>();
-    for (Map.Entry<RabbitmqProperties.Exchange, RabbitmqProperties.Queue> binding : bindings.entrySet()) {
+    for (RabbitmqProperties.Binding binding : bindings) {
 
-      Exchange exchange = initializeExchange(binding.getKey());
+      Exchange exchange = initializeExchange(binding.getExchange());
       declarables.add(exchange);
 
-      Queue queue = initializeQueue(binding.getValue());
+      Queue queue = initializeQueue(binding.getQueue());
       declarables.add(queue);
 
       declarables.add(BindingBuilder.bind(queue)
           .to(exchange)
-          .with(binding.getValue().getRoutingKey())
+          .with(binding.getRoutingKey())
           .noargs());
     }
 
@@ -91,8 +91,8 @@ public class TemplateUtility {
 
   private Exchange initializeExchange(RabbitmqProperties.Exchange exchange) {
 
-    Boolean durable = Boolean.TRUE.equals(exchange.getDurable());
-    Boolean autoDelete = Boolean.TRUE.equals(exchange.getAutoDelete());
+    boolean durable = Boolean.TRUE.equals(exchange.getDurable());
+    boolean autoDelete = Boolean.TRUE.equals(exchange.getAutoDelete());
 
     switch (exchange.getType()) {
 

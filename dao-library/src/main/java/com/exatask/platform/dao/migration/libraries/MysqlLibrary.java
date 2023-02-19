@@ -41,7 +41,7 @@ public class MysqlLibrary extends AppLibrary {
         .validateOnMigrate(false)
         .validateMigrationNaming(true)
         .baselineOnMigrate(true)
-        .installedBy("rohit.aggarwal@exatask.com")
+        .installedBy("no-author@exatask.com")
         .dataSource(dataSource)
         .load();
   }
