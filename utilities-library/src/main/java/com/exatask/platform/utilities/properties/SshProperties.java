@@ -22,6 +22,8 @@ public class SshProperties {
 
   private final String password;
 
+  private final String sftpUrl;
+
   public SmtpAuthenticator getSmtpAuthenticator() {
     return new SmtpAuthenticator(username, password);
   }

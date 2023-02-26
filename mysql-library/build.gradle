@@ -19,7 +19,7 @@ dependencies {
   api group: "com.vladmihalcea", name: "hibernate-types-52", version: "${hibernateTypeVersion}"
 
   implementation group: "mysql", name: "mysql-connector-java", version: "${mysqlVersion}"
-  implementation group: "org.apache.commons", name: "commons-lang3", version: "${apacheCommonsVersion}"
+  implementation group: "org.apache.commons", name: "commons-lang3", version: "${apacheLangVersion}"
   implementation project(":logging-library")
   implementation project(":dto-library")
   implementation project(":utilities-library")

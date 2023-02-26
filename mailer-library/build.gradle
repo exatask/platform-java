@@ -18,7 +18,8 @@ dependencies {
   api group: "javax.mail", name: "mail", version: "${javaxMailVersion}"
 
   implementation group: "org.springframework.boot", name: "spring-boot-starter-thymeleaf"
-  implementation group: "org.apache.commons", name: "commons-lang3", version: "${apacheCommonsVersion}"
+  implementation group: "org.apache.commons", name: "commons-lang3", version: "${apacheLangVersion}"
+  implementation group: "org.apache.commons", name: "commons-text", version: "${apacheTextVersion}"
   implementation project(":logging-library")
   implementation project(":utilities-library")
 

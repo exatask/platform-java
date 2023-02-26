@@ -31,7 +31,7 @@ public class EmailMessage {
   private final String locale;
 
   @Singular
-  private final List<String> subjectVariables;
+  private final Map<String, String> subjectVariables;
 
   @Singular
   private final Map<String, String> templateVariables;
