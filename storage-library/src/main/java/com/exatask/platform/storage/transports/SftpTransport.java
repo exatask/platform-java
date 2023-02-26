@@ -2,8 +2,12 @@ package com.exatask.platform.storage.transports;
 
 import com.exatask.platform.storage.constants.MetadataProperties;
 import com.exatask.platform.storage.exceptions.CopyFailedException;
+import com.exatask.platform.storage.exceptions.DeleteFailedException;
 import com.exatask.platform.storage.exceptions.DownloadFailedException;
 import com.exatask.platform.storage.exceptions.UploadFailedException;
+import com.exatask.platform.storage.upload.CopyResponse;
+import com.exatask.platform.storage.upload.MoveResponse;
+import com.exatask.platform.storage.upload.UploadResponse;
 import com.exatask.platform.utilities.properties.SshProperties;
 import com.jcraft.jsch.ChannelSftp;
 import com.jcraft.jsch.JSch;
@@ -25,7 +29,9 @@ public class SftpTransport extends AppTransport {
 
   private static final String CHANNEL_TYPE = "sftp";
 
-  private ChannelSftp sftpChannel = null;
+  private ChannelSftp sftpChannel;
+
+  private String sftpUrl;
 
   public SftpTransport(SshProperties sshProperties) {
 
@@ -42,13 +48,15 @@ public class SftpTransport extends AppTransport {
       sftpChannel = (ChannelSftp) sftpSession.openChannel(CHANNEL_TYPE);
       sftpChannel.connect();
 
+      sftpUrl = sshProperties.getSftpUrl();
+
     } catch (JSchException exception) {
       LOGGER.error(exception);
     }
   }
 
   @Override
-  public String upload(Path inputPath, String uploadPath, Map<MetadataProperties, String> properties) {
+  public UploadResponse upload(Path inputPath, String uploadPath, Map<MetadataProperties, String> properties) {
 
     try {
 
@@ -56,7 +64,11 @@ public class SftpTransport extends AppTransport {
 
       InputStream inputStream = new FileInputStream(inputPath.toFile());
       sftpChannel.put(inputStream, uploadPath);
-      return AppTransportType.SFTP.getPathPrefix() + uploadPath;
+
+      return UploadResponse.builder()
+              .fileUrl(this.url(uploadPath, null))
+              .fileUri(AppTransportType.SFTP.getPathPrefix() + uploadPath)
+              .build();
 
     } catch (SftpException | FileNotFoundException exception) {
 
@@ -70,8 +82,9 @@ public class SftpTransport extends AppTransport {
 
     try {
 
+      String filePath = downloadPath.replace(AppTransportType.SFTP.getPathPrefix(), "");
       Path outputFile = createTempFile(AppTransportType.SFTP);
-      sftpChannel.get(downloadPath.replace(AppTransportType.SFTP.getPathPrefix(), ""), outputFile.toFile().getAbsolutePath());
+      sftpChannel.get(filePath, outputFile.toFile().getAbsolutePath());
       return outputFile;
 
     } catch (SftpException | IOException exception) {
@@ -82,21 +95,59 @@ public class SftpTransport extends AppTransport {
   }
 
   @Override
-  public String copy(String sourcePath, String destinationPath, Map<MetadataProperties, String> properties) {
+  public MoveResponse move(String sourcePath, String destinationPath) {
+
+    CopyResponse copyResponse = copy(sourcePath, destinationPath);
+    delete(sourcePath);
+
+    return MoveResponse.builder()
+            .fileUrl(copyResponse.getFileUrl())
+            .fileUri(copyResponse.getFileUri())
+            .build();
+  }
+
+  @Override
+  public CopyResponse copy(String sourcePath, String destinationPath) {
 
     try {
 
       validateSftpDirectory(getDirectoryPath(destinationPath));
 
-      sftpChannel.rename(sourcePath, destinationPath);
-      sftpChannel.exit();
-      return AppTransportType.SFTP.getPathPrefix() + destinationPath;
+      String filePath = sourcePath.replace(AppTransportType.SFTP.getPathPrefix(), "");
+      sftpChannel.rename(filePath, destinationPath);
+
+      return CopyResponse.builder()
+              .fileUrl(this.url(destinationPath, null))
+              .fileUri(AppTransportType.SFTP.getPathPrefix() + destinationPath)
+              .build();
 
     } catch (SftpException exception) {
 
       LOGGER.error(exception);
       throw new CopyFailedException(sourcePath, destinationPath, exception);
     }
+  }
+
+  @Override
+  public boolean delete(String filePath) {
+
+    try {
+
+      filePath = filePath.replace(AppTransportType.SFTP.getPathPrefix(), "");
+      sftpChannel.rm(filePath);
+
+    } catch (SftpException exception) {
+
+      LOGGER.error(exception);
+      throw new DeleteFailedException(filePath, exception);
+    }
+
+    return true;
+  }
+
+  @Override
+  public String url(String filePath, Long ttl) {
+    return this.sftpUrl + filePath;
   }
 
   private String getDirectoryPath(String filePath) {

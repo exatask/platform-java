@@ -12,6 +12,7 @@ import lombok.RequiredArgsConstructor;
 import org.apache.commons.lang3.ArrayUtils;
 import org.apache.commons.lang3.ObjectUtils;
 import org.apache.commons.lang3.StringUtils;
+import org.apache.commons.text.StringSubstitutor;
 import org.springframework.util.CollectionUtils;
 
 import javax.activation.DataHandler;
@@ -89,12 +90,8 @@ public abstract class AppTransport {
 
   protected String prepareSubject(MimeMessage message, EmailMessage emailMessage) throws MessagingException {
 
-    String[] subjectVariables = new String[]{};
-    if (!CollectionUtils.isEmpty(emailMessage.getSubjectVariables())) {
-      subjectVariables = emailMessage.getSubjectVariables().toArray(new String[]{});
-    }
-
-    String subject = String.format(emailMessage.getSubject(), (Object[]) subjectVariables);
+    StringSubstitutor substitutor = new StringSubstitutor(emailMessage.getSubjectVariables());
+    String subject = substitutor.replace(emailMessage.getSubject());
     message.setSubject(subject, CHARSET_UTF8);
     return subject;
   }

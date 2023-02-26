@@ -13,6 +13,7 @@ public interface AwsConstant {
 
     STANDARD,
     STANDARD_IA,
+    INTELLIGENT,
     GLACIER
   }
 }
