@@ -12,7 +12,6 @@ import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.Map;
-import java.util.stream.Collectors;
 
 @RequiredArgsConstructor
 public abstract class AppTransport {
@@ -20,7 +19,7 @@ public abstract class AppTransport {
   protected static final AppLogger LOGGER = AppLogManager.getLogger();
   protected static final String FILE_SEPARATOR = "/";
 
-  public abstract UploadResponse upload(Path inputPath, String uploadPath, Map<MetadataProperties, String> properties);
+  public abstract UploadResponse upload(Path inputPath, String uploadPath, Map<MetadataProperties, String> metadata, Map<String, String> tags);
 
   public abstract Path download(String filePath);
 
@@ -34,12 +33,5 @@ public abstract class AppTransport {
 
   protected Path createTempFile(AppTransportType transportType) throws IOException {
     return Files.createTempFile(transportType.getPathPrefix(), transportType.getFileSuffix());
-  }
-
-  protected Map<String, String> prepareMetadata(Map<MetadataProperties, String> properties) {
-
-    return properties.entrySet()
-        .stream()
-        .collect(Collectors.toMap(property -> property.getKey().getKey(), Map.Entry::getValue));
   }
 }

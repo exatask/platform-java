@@ -1,5 +1,6 @@
 package com.exatask.platform.rabbitmq;
 
+import com.exatask.platform.dto.messages.AppMessage;
 import com.exatask.platform.logging.AppLogManager;
 import com.exatask.platform.logging.AppLogger;
 import com.exatask.platform.utilities.constants.RequestContextHeader;

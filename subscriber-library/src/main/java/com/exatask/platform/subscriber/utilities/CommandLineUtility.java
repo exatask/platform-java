@@ -1,6 +1,6 @@
-package com.exatask.platform.consumer.utilities;
+package com.exatask.platform.subscriber.utilities;
 
-import com.exatask.platform.consumer.entities.Consumer;
+import com.exatask.platform.subscriber.entities.Subscriber;
 import com.exatask.platform.logging.AppLogManager;
 import com.exatask.platform.logging.AppLogger;
 import lombok.experimental.UtilityClass;
@@ -19,7 +19,7 @@ public class CommandLineUtility {
     private static final String COMMAND_LINE_ARG_PREFIX = "--";
     private static final String COMMAND_LINE_ARG_SEPARATOR = "=";
 
-    private static final String COMMAND_LINE_CONSUMER_ACTION_SEPARATOR = "@";
+    private static final String COMMAND_LINE_SUBSCRIBER_ACTION_SEPARATOR = "@";
 
     public static Map<String, List<String>> parseArguments(String... arguments) {
 
@@ -50,14 +50,14 @@ public class CommandLineUtility {
         return parsedArguments;
     }
 
-    public static Consumer parseConsumer(String consumer) {
+    public static Subscriber parseSubscriber(String subscriber) {
 
-        String[] consumerParts = consumer.split(COMMAND_LINE_CONSUMER_ACTION_SEPARATOR, 2);
-        if (consumerParts.length != 2) {
-            LOGGER.warn("Empty consumer or action provided", Collections.singletonMap("consumer", consumer));
+        String[] subscriberParts = subscriber.split(COMMAND_LINE_SUBSCRIBER_ACTION_SEPARATOR, 2);
+        if (subscriberParts.length != 2) {
+            LOGGER.warn("Empty subscriber or action provided", Collections.singletonMap("subscriber", subscriber));
             return null;
         }
 
-        return new Consumer(consumerParts[0], consumerParts[1]);
+        return new Subscriber(subscriberParts[0], subscriberParts[1]);
     }
 }

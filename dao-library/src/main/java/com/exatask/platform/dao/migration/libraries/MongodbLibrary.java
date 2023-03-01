@@ -49,23 +49,13 @@ public class MongodbLibrary extends AppLibrary {
   public MongockRunner createRunner(MongoProperties mongoProperties) {
 
     MongoTemplate mongoTemplate = prepareMongoTemplate(mongoProperties);
-    return createRunner(mongoTemplate, ServiceUtility.getServiceProperty(CHANGELOG_PACKAGE), CHANGELOG_COLLECTION);
-  }
-
-  public MongockRunner createRunner(MongoProperties mongoProperties, String scanPackage, String collection) {
-
-    MongoTemplate mongoTemplate = prepareMongoTemplate(mongoProperties);
-    return createRunner(mongoTemplate, scanPackage, collection);
+    return createRunner(mongoTemplate);
   }
 
   public MongockRunner createRunner(MongoTemplate mongoTemplate) {
-    return createRunner(mongoTemplate, ServiceUtility.getServiceProperty(CHANGELOG_PACKAGE), CHANGELOG_COLLECTION);
-  }
-
-  public MongockRunner createRunner(MongoTemplate mongoTemplate, String scanPackage, String collection) {
 
     MongockConfiguration configuration = new MongockConfiguration();
-    configuration.setMigrationRepositoryName(collection);
+    configuration.setMigrationRepositoryName(CHANGELOG_COLLECTION);
     configuration.setLockRepositoryName(CHANGELOG_LOCK_COLLECTION);
     configuration.setDefaultMigrationAuthor("no-author@exatask.com");
 
@@ -78,7 +68,7 @@ public class MongodbLibrary extends AppLibrary {
     return MongockSpringboot.builder()
         .setDriver(driver)
         .setConfig(configuration)
-        .addMigrationScanPackage(scanPackage)
+        .addMigrationScanPackage(ServiceUtility.getServiceProperty(CHANGELOG_PACKAGE))
         .setSpringContext(ApplicationContextUtility.getApplicationContext())
         .buildRunner();
   }

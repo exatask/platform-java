@@ -42,7 +42,9 @@ public class AwsProperties {
   @Accessors(chain = true)
   public static class S3Properties {
 
-    private String bucket;
+    private String bucketKey;
+
+    private String bucketName;
 
     private AwsConstant.S3Acl acl = AwsConstant.S3Acl.PRIVATE;
 

@@ -1,12 +1,12 @@
-package com.exatask.platform.consumer;
+package com.exatask.platform.subscriber;
 
 import com.exatask.platform.crypto.authenticators.AppAuthenticator;
 
 import java.util.concurrent.ExecutorService;
 
-public interface ConsumerApplication {
+public interface SubscriberApplication {
 
-  AppAuthenticator getConsumerAuthenticator();
+  AppAuthenticator getSubscriberAuthenticator();
 
   ExecutorService getExecutorService();
 }

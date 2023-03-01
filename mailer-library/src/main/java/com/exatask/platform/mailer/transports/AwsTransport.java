@@ -6,7 +6,6 @@ import com.exatask.platform.mailer.templates.AppTemplateEngine;
 import com.exatask.platform.utilities.properties.AwsProperties;
 import software.amazon.awssdk.core.SdkBytes;
 import software.amazon.awssdk.services.ses.SesClient;
-import software.amazon.awssdk.services.ses.model.RawMessage;
 import software.amazon.awssdk.services.ses.model.SendRawEmailRequest;
 import software.amazon.awssdk.services.ses.model.SendRawEmailResponse;
 
@@ -49,12 +48,9 @@ public class AwsTransport extends AppTransport {
       ByteArrayOutputStream messageStream = new ByteArrayOutputStream();
       message.writeTo(messageStream);
 
-      RawMessage rawMessage = RawMessage.builder()
-          .data(SdkBytes.fromByteArray(messageStream.toByteArray()))
-          .build();
-
       SendRawEmailRequest messageRequest = SendRawEmailRequest.builder()
-          .rawMessage(rawMessage)
+          .rawMessage(rawMessage -> rawMessage.data(SdkBytes.fromByteArray(messageStream.toByteArray()))
+                  .build())
           .build();
 
       SendRawEmailResponse messageResponse = sesClient.sendRawEmail(messageRequest);

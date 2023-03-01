@@ -30,7 +30,7 @@ publishing {
   publications {
     maven(MavenPublication) {
 
-      artifactId = "exatask-consumer"
+      artifactId = "exatask-subscriber"
       from components.java
     }
   }
