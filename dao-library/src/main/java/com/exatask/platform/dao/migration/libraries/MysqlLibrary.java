@@ -19,24 +19,14 @@ public class MysqlLibrary extends AppLibrary {
   public Flyway createRunner(DataSourceProperties dataSourceProperties) {
 
     DataSource dataSource = prepareMysqlDataSource(dataSourceProperties);
-    return createRunner(dataSource, ServiceUtility.getServiceProperty(CHANGELOG_PACKAGE), CHANGELOG_TABLE);
-  }
-
-  public Flyway createRunner(DataSourceProperties dataSourceProperties, String scanPackage, String collection) {
-
-    DataSource dataSource = prepareMysqlDataSource(dataSourceProperties);
-    return createRunner(dataSource, scanPackage, collection);
+    return createRunner(dataSource);
   }
 
   public Flyway createRunner(DataSource dataSource) {
-    return createRunner(dataSource, ServiceUtility.getServiceProperty(CHANGELOG_PACKAGE), CHANGELOG_TABLE);
-  }
-
-  public Flyway createRunner(DataSource dataSource, String scanPackage, String collection) {
 
     return Flyway.configure()
-        .table(collection)
-        .locations("classpath:" + scanPackage)
+        .table(CHANGELOG_TABLE)
+        .locations("classpath:" + ServiceUtility.getServiceProperty(CHANGELOG_PACKAGE))
         .sqlMigrationSuffixes(".sql,.java")
         .validateOnMigrate(false)
         .validateMigrationNaming(true)

@@ -23,9 +23,12 @@ import software.amazon.awssdk.services.s3.model.ObjectCannedACL;
 import software.amazon.awssdk.services.s3.model.PutObjectRequest;
 import software.amazon.awssdk.services.s3.model.PutObjectResponse;
 import software.amazon.awssdk.services.s3.model.StorageClass;
+import software.amazon.awssdk.services.s3.model.Tag;
+import software.amazon.awssdk.services.s3.model.Tagging;
 import software.amazon.awssdk.services.s3.presigner.S3Presigner;
 import software.amazon.awssdk.services.s3.presigner.model.GetObjectPresignRequest;
 import software.amazon.awssdk.services.s3.presigner.model.PresignedGetObjectRequest;
+import software.amazon.awssdk.utils.CollectionUtils;
 import software.amazon.awssdk.utils.StringUtils;
 
 import java.io.BufferedInputStream;
@@ -38,6 +41,7 @@ import java.time.temporal.ChronoUnit;
 import java.util.Arrays;
 import java.util.Map;
 import java.util.Optional;
+import java.util.Set;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 
@@ -55,23 +59,23 @@ public class AwsTransport extends AppTransport {
         .build();
 
     bucketProperties = awsProperties.getS3().stream()
-        .collect(Collectors.toMap(AwsProperties.S3Properties::getBucket, Function.identity()));
+        .collect(Collectors.toMap(AwsProperties.S3Properties::getBucketKey, Function.identity()));
   }
 
   @Override
-  public UploadResponse upload(Path inputPath, String uploadPath, Map<MetadataProperties, String> properties) {
+  public UploadResponse upload(Path inputPath, String uploadPath, Map<MetadataProperties, String> metadata, Map<String, String> tags) {
 
     AwsProperties.S3Properties bucketProperty = getBucket(uploadPath);
-    String uploadKey = uploadPath.replace(bucketProperty.getBucket() + FILE_SEPARATOR, "");
+    String uploadKey = uploadPath.replace(bucketProperty.getBucketName() + FILE_SEPARATOR, "");
 
     PutObjectRequest.Builder putObjectRequestBuilder = PutObjectRequest.builder()
-        .bucket(bucketProperty.getBucket())
+        .bucket(bucketProperty.getBucketName())
         .key(uploadKey)
         .acl(ObjectCannedACL.valueOf(bucketProperty.getAcl().toString()))
-        .storageClass(StorageClass.valueOf(bucketProperty.getStorageClass().toString()))
-        .metadata(prepareMetadata(properties));
+        .storageClass(StorageClass.valueOf(bucketProperty.getStorageClass().toString()));
 
-    prepareObjectProperties(putObjectRequestBuilder, properties);
+    prepareTags(putObjectRequestBuilder, tags);
+    prepareMetadata(putObjectRequestBuilder, metadata);
     try {
       putObjectRequestBuilder.contentType(Files.probeContentType(inputPath));
     } catch (IOException exception) {
@@ -95,10 +99,10 @@ public class AwsTransport extends AppTransport {
 
     downloadPath = downloadPath.replace(AppTransportType.AWS.getPathPrefix(), "");
     AwsProperties.S3Properties bucketProperty = getBucket(downloadPath);
-    String downloadKey = downloadPath.replace(bucketProperty.getBucket() + FILE_SEPARATOR, "");
+    String downloadKey = downloadPath.replace(bucketProperty.getBucketName() + FILE_SEPARATOR, "");
 
     GetObjectRequest getObjectRequest = GetObjectRequest.builder()
-        .bucket(bucketProperty.getBucket())
+        .bucket(bucketProperty.getBucketName())
         .key(downloadKey)
         .build();
 
@@ -133,16 +137,16 @@ public class AwsTransport extends AppTransport {
   public CopyResponse copy(String sourcePath, String destinationPath) {
 
     AwsProperties.S3Properties destinationBucket = getBucket(destinationPath);
-    String destinationKey = destinationPath.replace(destinationBucket.getBucket() + FILE_SEPARATOR, "");
+    String destinationKey = destinationPath.replace(destinationBucket.getBucketName() + FILE_SEPARATOR, "");
 
     sourcePath = sourcePath.replace(AppTransportType.AWS.getPathPrefix(), "");
     AwsProperties.S3Properties sourceBucket = getBucket(sourcePath);
-    String sourceKey = sourcePath.replace(sourceBucket.getBucket() + FILE_SEPARATOR, "");
+    String sourceKey = sourcePath.replace(sourceBucket.getBucketName() + FILE_SEPARATOR, "");
 
     CopyObjectRequest.Builder copyObjectRequestBuilder = CopyObjectRequest.builder()
-            .sourceBucket(sourceBucket.getBucket())
+            .sourceBucket(sourceBucket.getBucketName())
             .sourceKey(sourceKey)
-            .destinationBucket(destinationBucket.getBucket())
+            .destinationBucket(destinationBucket.getBucketName())
             .destinationKey(destinationKey)
             .acl(ObjectCannedACL.valueOf(destinationBucket.getAcl().toString()))
             .storageClass(StorageClass.valueOf(destinationBucket.getStorageClass().toString()));
@@ -164,10 +168,10 @@ public class AwsTransport extends AppTransport {
 
     filePath = filePath.replace(AppTransportType.AWS.getPathPrefix(), "");
     AwsProperties.S3Properties fileBucket = getBucket(filePath);
-    String fileKey = filePath.replace(fileBucket.getBucket() + FILE_SEPARATOR, "");
+    String fileKey = filePath.replace(fileBucket.getBucketName() + FILE_SEPARATOR, "");
 
     DeleteObjectRequest deleteObjectRequest = DeleteObjectRequest.builder()
-            .bucket(fileBucket.getBucket())
+            .bucket(fileBucket.getBucketName())
             .key(fileKey)
             .build();
 
@@ -185,20 +189,20 @@ public class AwsTransport extends AppTransport {
 
     filePath = filePath.replace(AppTransportType.AWS.getPathPrefix(), "");
     AwsProperties.S3Properties fileBucket = getBucket(filePath);
-    String fileKey = filePath.replace(fileBucket.getBucket() + FILE_SEPARATOR, "");
+    String fileKey = filePath.replace(fileBucket.getBucketName() + FILE_SEPARATOR, "");
 
     return this.getPublicUrl(fileBucket, fileKey, ttl);
   }
 
   private AwsProperties.S3Properties getBucket(String filePath) {
 
-    String bucket = Arrays.stream(filePath.split(FILE_SEPARATOR)).findFirst().orElse("");
-    if (StringUtils.isEmpty(bucket)) {
-      LOGGER.error(String.format("Bucket not found in file path: %s", filePath));
+    String bucketKey = Arrays.stream(filePath.split(FILE_SEPARATOR)).findFirst().orElse("");
+    if (StringUtils.isEmpty(bucketKey)) {
+      LOGGER.error(String.format("Bucket not found for file path: %s", filePath));
       throw new UploadFailedException(filePath, null);
     }
 
-    return bucketProperties.get(bucket);
+    return bucketProperties.get(bucketKey);
   }
 
   private String getPublicUrl(AwsProperties.S3Properties bucketProperties, String objectKey, Long ttl) {
@@ -206,7 +210,7 @@ public class AwsTransport extends AppTransport {
     if (bucketProperties.getAcl() == AwsConstant.S3Acl.PUBLIC_READ) {
 
       GetUrlRequest getUrlRequest = GetUrlRequest.builder()
-              .bucket(bucketProperties.getBucket())
+              .bucket(bucketProperties.getBucketName())
               .key(objectKey)
               .build();
       URL s3FileUrl = s3Client.utilities().getUrl(getUrlRequest);
@@ -215,7 +219,7 @@ public class AwsTransport extends AppTransport {
     } else {
 
       GetObjectPresignRequest getObjectPresignRequest = GetObjectPresignRequest.builder()
-              .getObjectRequest(getObjectRequest -> getObjectRequest.bucket(bucketProperties.getBucket())
+              .getObjectRequest(getObjectRequest -> getObjectRequest.bucket(bucketProperties.getBucketName())
                       .key(objectKey))
               .signatureDuration(Duration.of(Optional.ofNullable(ttl).orElse(60L), ChronoUnit.SECONDS))
               .build();
@@ -226,10 +230,31 @@ public class AwsTransport extends AppTransport {
     }
   }
 
-  private void prepareObjectProperties(PutObjectRequest.Builder putObjectRequestBuilder, Map<MetadataProperties, String> properties) {
+  private void prepareMetadata(PutObjectRequest.Builder putObjectRequestBuilder, Map<MetadataProperties, String> metadata) {
 
-    if (properties.containsKey(MetadataProperties.DOWNLOAD_FILENAME)) {
-      putObjectRequestBuilder.contentDisposition(String.format("attachment; filename=\"%s\"", properties.get(MetadataProperties.DOWNLOAD_FILENAME)));
+    if (metadata.containsKey(MetadataProperties.DOWNLOAD_FILENAME)) {
+      putObjectRequestBuilder.contentDisposition(String.format("attachment; filename=\"%s\"", metadata.get(MetadataProperties.DOWNLOAD_FILENAME)));
     }
+
+    if (CollectionUtils.isNotEmpty(metadata)) {
+
+      Map<String, String> objectMetadata = metadata.entrySet()
+              .stream()
+              .collect(Collectors.toMap(property -> property.getKey().getAwsKey(), Map.Entry::getValue));
+      putObjectRequestBuilder.metadata(objectMetadata);
+    }
+  }
+
+  private void prepareTags(PutObjectRequest.Builder putObjectRequestBuilder, Map<String, String> tags) {
+
+    Set<Tag> tagSet = tags.entrySet().stream()
+              .map(tag -> Tag.builder()
+                      .key(tag.getKey())
+                      .value(tag.getValue())
+                      .build())
+              .collect(Collectors.toSet());
+    putObjectRequestBuilder.tagging(Tagging.builder()
+            .tagSet(tagSet)
+            .build());
   }
 }

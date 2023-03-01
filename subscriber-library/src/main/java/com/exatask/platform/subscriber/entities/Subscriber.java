@@ -1,13 +1,13 @@
-package com.exatask.platform.consumer.entities;
+package com.exatask.platform.subscriber.entities;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 
 @Getter
 @AllArgsConstructor
-public class Consumer {
+public class Subscriber {
 
-    private final String consumer;
+    private final String subscriber;
 
     private final String action;
 }

@@ -7,8 +7,9 @@ import lombok.Getter;
 @AllArgsConstructor
 public enum MetadataProperties {
 
-  ORIGINAL_FILENAME("x-original-filename"),
-  DOWNLOAD_FILENAME("x-download-filename");
+  ORIGINAL_FILENAME("x-original-filename", "x-amz-meta-original-filename"),
+  DOWNLOAD_FILENAME("x-download-filename", "x-amz-meta-download-filename");
 
-  private final String key;
+  private final String sftpKey;
+  private final String awsKey;
 }

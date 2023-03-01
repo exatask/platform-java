@@ -1,4 +1,4 @@
-package com.exatask.platform.consumer.utilities;
+package com.exatask.platform.subscriber.utilities;
 
 import com.exatask.platform.logging.AppLogManager;
 import com.exatask.platform.logging.AppLogger;
@@ -8,7 +8,7 @@ import com.exatask.platform.utilities.services.ServiceEnvironment;
 import lombok.experimental.UtilityClass;
 
 @UtilityClass
-public class ConsumerServiceUtility {
+public class SubscriberServiceUtility {
 
   private static final AppLogger LOGGER = AppLogManager.getLogger();
 

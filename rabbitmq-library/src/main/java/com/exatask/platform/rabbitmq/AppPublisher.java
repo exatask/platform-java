@@ -1,5 +1,6 @@
 package com.exatask.platform.rabbitmq;
 
+import com.exatask.platform.dto.messages.AppMessage;
 import com.exatask.platform.logging.AppLogManager;
 import com.exatask.platform.logging.AppLogMessage;
 import com.exatask.platform.logging.AppLogger;
@@ -8,6 +9,7 @@ import com.exatask.platform.utilities.ApplicationContextUtility;
 import com.exatask.platform.utilities.constants.RequestContextHeader;
 import com.exatask.platform.utilities.contexts.RequestContextProvider;
 import org.springframework.amqp.core.Message;
+import org.springframework.amqp.core.MessageDeliveryMode;
 import org.springframework.amqp.core.MessageProperties;
 import org.springframework.amqp.rabbit.core.RabbitTemplate;
 import org.springframework.amqp.support.converter.Jackson2JsonMessageConverter;
@@ -27,6 +29,10 @@ public abstract class AppPublisher<T extends AppMessage> {
 
   public abstract String getExchange();
 
+  public abstract String routingKey(T appMessage);
+
+  public abstract MessageDeliveryMode deliveryMode();
+
   public void send(T appMessage) {
     send(appMessage, AppMessageProperties.builder().build());
   }
@@ -36,12 +42,12 @@ public abstract class AppPublisher<T extends AppMessage> {
     MessageProperties messageProperties = new MessageProperties();
     prepareRequestContext(messageProperties);
 
-    messageProperties.setDeliveryMode(appMessage.deliveryMode());
+    messageProperties.setDeliveryMode(this.deliveryMode());
 
     Optional.ofNullable(appMessageProperties.getDelay()).ifPresent(messageProperties::setDelay);
 
     Message message = jsonMessageConverter.toMessage(appMessage, messageProperties);
-    rabbitTemplate.convertAndSend(getExchange(), appMessage.routingKey(), message);
+    rabbitTemplate.convertAndSend(this.getExchange(), this.routingKey(appMessage), message);
 
     LOGGER.debug(AppLogMessage.builder()
         .message("Message published successfully")

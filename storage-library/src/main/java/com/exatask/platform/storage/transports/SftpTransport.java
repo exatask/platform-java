@@ -56,7 +56,7 @@ public class SftpTransport extends AppTransport {
   }
 
   @Override
-  public UploadResponse upload(Path inputPath, String uploadPath, Map<MetadataProperties, String> properties) {
+  public UploadResponse upload(Path inputPath, String uploadPath, Map<MetadataProperties, String> metadata, Map<String, String> tags) {
 
     try {
 
