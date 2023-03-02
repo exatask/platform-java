@@ -31,19 +31,13 @@ public class AppCipherFactory {
     switch (algorithm) {
 
       case RSA_ECB:
-        return new Rsa(algorithm, encoder, cipherKeys);
+        return new RsaCipher(algorithm, encoder, cipherKeys);
 
       case AES_CBC:
-        return new Aes(algorithm, encoder, cipherKeys);
+        return new AesCipher(algorithm, encoder, cipherKeys);
 
-      case MD5:
-      case SHA1:
-        return new Digest(algorithm, encoder);
-
-      case HMAC_SHA1:
-      case HMAC_SHA256:
-      case HMAC_SHA512:
-        return new Hmac(algorithm, encoder, cipherKeys);
+      case PLAIN_TEXT:
+        return new PlainTextCipher();
     }
 
     throw new InvalidCipherException(algorithm.toString());

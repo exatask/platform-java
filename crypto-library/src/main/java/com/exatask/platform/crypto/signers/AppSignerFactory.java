@@ -19,7 +19,10 @@ public class AppSignerFactory {
     switch (algorithm) {
 
       case JWT_HMAC:
-        return new JwtHmac(signerKeys);
+        return new JwtHmacSigner(signerKeys);
+
+      case NONE:
+        return new NoneSigner();
     }
 
     throw new InvalidSignerException(algorithm.toString());

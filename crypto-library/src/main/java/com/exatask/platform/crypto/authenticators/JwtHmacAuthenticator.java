@@ -1,6 +1,6 @@
 package com.exatask.platform.crypto.authenticators;
 
-import com.exatask.platform.crypto.signers.JwtHmac;
+import com.exatask.platform.crypto.signers.JwtHmacSigner;
 import com.exatask.platform.utilities.credentials.AppCredentials;
 import com.exatask.platform.utilities.credentials.JwtHmacCredentials;
 import com.exatask.platform.utilities.services.ServiceAuth;
@@ -17,7 +17,7 @@ import java.util.Map;
 
 public class JwtHmacAuthenticator implements AppAuthenticator {
 
-  private final JwtHmac signer;
+  private final JwtHmacSigner signer;
 
   private final JwtHmacCredentials credentials;
 
@@ -26,7 +26,7 @@ public class JwtHmacAuthenticator implements AppAuthenticator {
     JwtHmacCredentials jwtCredentials = (JwtHmacCredentials) credentials;
     Map<String, String> signerKeys = Collections.singletonMap("secret", jwtCredentials.getSecret());
 
-    this.signer = new JwtHmac(signerKeys);
+    this.signer = new JwtHmacSigner(signerKeys);
     this.credentials = jwtCredentials;
 
     if (!StringUtils.hasLength(jwtCredentials.getSubject())) {

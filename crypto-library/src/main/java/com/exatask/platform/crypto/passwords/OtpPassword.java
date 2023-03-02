@@ -1,12 +1,12 @@
 package com.exatask.platform.crypto.passwords;
 
-import com.exatask.platform.crypto.ciphers.AppCipher;
-import com.exatask.platform.crypto.ciphers.AppCipherAlgorithm;
-import com.exatask.platform.crypto.ciphers.AppCipherFactory;
 import com.exatask.platform.crypto.encoders.AppEncoder;
 import com.exatask.platform.crypto.encoders.AppEncoderAlgorithm;
 import com.exatask.platform.crypto.encoders.AppEncoderFactory;
 import com.exatask.platform.crypto.exceptions.PasswordGenerationException;
+import com.exatask.platform.crypto.hashes.AppHash;
+import com.exatask.platform.crypto.hashes.AppHashAlgorithm;
+import com.exatask.platform.crypto.hashes.AppHashFactory;
 import com.exatask.platform.logging.AppLogManager;
 import com.exatask.platform.logging.AppLogger;
 
@@ -15,7 +15,7 @@ import java.security.GeneralSecurityException;
 import java.util.Collections;
 import java.util.Map;
 
-public abstract class Otp implements AppPassword {
+public abstract class OtpPassword implements AppPassword {
 
     protected static final AppLogger LOGGER = AppLogManager.getLogger();
 
@@ -24,16 +24,16 @@ public abstract class Otp implements AppPassword {
 
     private final AppEncoder appEncoder = AppEncoderFactory.getEncoder(encoderType);
 
-    protected String getOtp(int length, String message, String key, AppCipherAlgorithm cipherAlgorithm) {
+    protected String getOtp(int length, String message, String key, AppHashAlgorithm hashAlgorithm) {
 
         length = length < 0 ? 4 : Math.min(length, 8);
 
         String encryptedMessage = "";
         try {
 
-            Map<String, String> cipherKeys = Collections.singletonMap("key", key);
-            AppCipher cipher = AppCipherFactory.getCipher(cipherAlgorithm, encoderType, cipherKeys);
-            encryptedMessage = cipher.encrypt(message);
+            Map<String, String> hashKeys = Collections.singletonMap("key", key);
+            AppHash hash = AppHashFactory.getHash(hashAlgorithm, encoderType, hashKeys);
+            encryptedMessage = hash.hash(message);
 
         } catch (GeneralSecurityException | IOException exception) {
             LOGGER.error(exception);

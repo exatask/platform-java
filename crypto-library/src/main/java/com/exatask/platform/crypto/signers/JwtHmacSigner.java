@@ -21,13 +21,13 @@ import java.util.Date;
 import java.util.Map;
 import java.util.stream.Collectors;
 
-public class JwtHmac implements AppSigner {
+public class JwtHmacSigner implements AppSigner {
 
   private static final AppLogger LOGGER = AppLogManager.getLogger();
 
   private final SecretKey secretKey;
 
-  public JwtHmac(Map<String, String> signerKeys) {
+  public JwtHmacSigner(Map<String, String> signerKeys) {
 
     this.secretKey = Keys.hmacShaKeyFor(signerKeys.get("secret").getBytes(StandardCharsets.UTF_8));
   }

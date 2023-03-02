@@ -1,9 +1,9 @@
 package com.exatask.platform.api.services.swagger;
 
-import com.exatask.platform.crypto.ciphers.AppCipherAlgorithm;
-import com.exatask.platform.crypto.ciphers.AppCipher;
-import com.exatask.platform.crypto.ciphers.AppCipherFactory;
 import com.exatask.platform.crypto.encoders.AppEncoderAlgorithm;
+import com.exatask.platform.crypto.hashes.AppHash;
+import com.exatask.platform.crypto.hashes.AppHashAlgorithm;
+import com.exatask.platform.crypto.hashes.AppHashFactory;
 import com.exatask.platform.logging.AppLogManager;
 import com.exatask.platform.logging.AppLogger;
 import org.apache.commons.lang3.StringUtils;
@@ -19,13 +19,13 @@ public class SwaggerPasswordEncoder implements PasswordEncoder {
 
   private static final AppLogger LOGGER = AppLogManager.getLogger();
 
-  private AppCipher cipher;
+  private AppHash hash;
 
   @PostConstruct
   private void initialize() {
 
     try {
-      cipher = AppCipherFactory.getCipher(AppCipherAlgorithm.MD5, AppEncoderAlgorithm.HEX, null);
+      hash = AppHashFactory.getHash(AppHashAlgorithm.MD5, AppEncoderAlgorithm.HEX, null);
     } catch (GeneralSecurityException | IOException exception) {
       LOGGER.error(exception);
     }
@@ -33,7 +33,7 @@ public class SwaggerPasswordEncoder implements PasswordEncoder {
 
   @Override
   public String encode(CharSequence rawPassword) {
-    return cipher.encrypt(rawPassword.toString());
+    return hash.hash(rawPassword.toString());
   }
 
   @Override

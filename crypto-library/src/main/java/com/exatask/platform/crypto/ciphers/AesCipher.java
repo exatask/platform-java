@@ -3,6 +3,9 @@ package com.exatask.platform.crypto.ciphers;
 import com.exatask.platform.crypto.encoders.AppEncoder;
 import com.exatask.platform.crypto.encoders.AppEncoderAlgorithm;
 import com.exatask.platform.crypto.encoders.AppEncoderFactory;
+import com.exatask.platform.crypto.hashes.AppHash;
+import com.exatask.platform.crypto.hashes.AppHashAlgorithm;
+import com.exatask.platform.crypto.hashes.AppHashFactory;
 import com.exatask.platform.logging.AppLogManager;
 import com.exatask.platform.logging.AppLogger;
 import com.fasterxml.jackson.core.JsonProcessingException;
@@ -22,7 +25,7 @@ import java.security.GeneralSecurityException;
 import java.util.Collections;
 import java.util.Map;
 
-public class Aes implements AppCipher {
+public class AesCipher implements AppCipher {
 
   private static final AppLogger LOGGER = AppLogManager.getLogger();
 
@@ -36,16 +39,16 @@ public class Aes implements AppCipher {
 
   private final SecretKeySpec secretKey;
 
-  private final AppCipher authenticator;
+  private final AppHash authenticator;
 
-  public Aes(AppCipherAlgorithm algorithm, AppEncoderAlgorithm encoderType, Map<String, String> cryptoKeys) throws GeneralSecurityException, IOException {
+  public AesCipher(AppCipherAlgorithm algorithm, AppEncoderAlgorithm encoderType, Map<String, String> cryptoKeys) throws GeneralSecurityException, IOException {
 
     String key = cryptoKeys.get("key");
     String hash = cryptoKeys.get("hash");
 
     this.cipher = Cipher.getInstance(algorithm.getAlgorithm(), BouncyCastleProvider.PROVIDER_NAME);
     this.encoder = AppEncoderFactory.getEncoder(encoderType);
-    this.authenticator = AppCipherFactory.getCipher(AppCipherAlgorithm.HMAC_SHA256, encoderType, Collections.singletonMap("key", hash));
+    this.authenticator = AppHashFactory.getHash(AppHashAlgorithm.HMAC_SHA256, encoderType, Collections.singletonMap("key", hash));
 
     this.secretKey = new SecretKeySpec(key.getBytes(), ALGORITHM);
   }
@@ -66,7 +69,7 @@ public class Aes implements AppCipher {
       byte[] encryptedBytes = cipher.doFinal(data.getBytes());
       String encryptedData = encoder.encode(encryptedBytes);
 
-      String authenticationCode = this.authenticator.encrypt(iv + "." + encryptedData);
+      String authenticationCode = this.authenticator.hash(iv + "." + encryptedData);
       EncryptedData encryptedDataObject = EncryptedData.builder()
           .data(encryptedData)
           .iv(iv)
@@ -95,7 +98,7 @@ public class Aes implements AppCipher {
       byte[] initialEncryptionData = encoder.decode(data);
       EncryptedData encryptedDataObject = mapper.readValue(initialEncryptionData, EncryptedData.class);
 
-      String authenticationCode = this.authenticator.encrypt(encryptedDataObject.getIv() + "." + encryptedDataObject.getData());
+      String authenticationCode = this.authenticator.hash(encryptedDataObject.getIv() + "." + encryptedDataObject.getData());
       if (!authenticationCode.equals(encryptedDataObject.getAuth())) {
         return null;
       }

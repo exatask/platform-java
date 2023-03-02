@@ -25,7 +25,7 @@ import java.security.spec.PKCS8EncodedKeySpec;
 import java.security.spec.X509EncodedKeySpec;
 import java.util.Map;
 
-public class Rsa implements AppCipher {
+public class RsaCipher implements AppCipher {
 
   private static final AppLogger LOGGER = AppLogManager.getLogger();
 
@@ -39,7 +39,7 @@ public class Rsa implements AppCipher {
 
   private final PrivateKey privateKey;
 
-  public Rsa(AppCipherAlgorithm algorithm, AppEncoderAlgorithm encoderType, Map<String, String> cryptoKeys)
+  public RsaCipher(AppCipherAlgorithm algorithm, AppEncoderAlgorithm encoderType, Map<String, String> cryptoKeys)
       throws GeneralSecurityException, IOException {
 
     String publicKeyFile = cryptoKeys.get("publicKeyFile");

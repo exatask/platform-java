@@ -19,10 +19,13 @@ public class AppPasswordFactory {
     switch (algorithm) {
 
       case HOTP:
-        return new Hotp();
+        return new HotpPassword();
 
       case TOTP:
-        return new Totp(passwordKeys);
+        return new TotpPassword(passwordKeys);
+
+      case NONE:
+        return new NonePassword();
     }
 
     throw new InvalidPasswordException(algorithm.toString());

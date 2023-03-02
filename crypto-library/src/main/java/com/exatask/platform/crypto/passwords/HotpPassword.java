@@ -1,8 +1,8 @@
 package com.exatask.platform.crypto.passwords;
 
-import com.exatask.platform.crypto.ciphers.AppCipherAlgorithm;
+import com.exatask.platform.crypto.hashes.AppHashAlgorithm;
 
-public class Hotp extends Otp {
+public class HotpPassword extends OtpPassword {
 
   @Override
   public String generate(String key, int length) {
@@ -14,6 +14,6 @@ public class Hotp extends Otp {
       movingFactor >>= 8;
     }
 
-    return this.getOtp(length, new String(message), key, AppCipherAlgorithm.HMAC_SHA1);
+    return this.getOtp(length, new String(message), key, AppHashAlgorithm.HMAC_SHA1);
   }
 }
