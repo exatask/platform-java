@@ -4,11 +4,7 @@ import org.apache.commons.codec.binary.Base32;
 
 public class Base32Encoder implements AppEncoder {
 
-  private final Base32 base32;
-
-  public Base32Encoder() {
-    base32 = new Base32();
-  }
+  private final Base32 base32 = new Base32();
 
   @Override
   public String encode(byte[] data) {

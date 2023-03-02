@@ -38,6 +38,10 @@ public class AppEncoderFactory {
       case HEX:
         encoder = new HexEncoder();
         break;
+
+      case NONE:
+        encoder = new NoneEncoder();
+        break;
     }
 
     if (Objects.isNull(encoder)) {
