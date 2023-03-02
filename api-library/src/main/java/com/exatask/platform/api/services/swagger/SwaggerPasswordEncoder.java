@@ -11,7 +11,6 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import javax.annotation.PostConstruct;
-import java.io.IOException;
 import java.security.GeneralSecurityException;
 
 @Service
@@ -26,7 +25,7 @@ public class SwaggerPasswordEncoder implements PasswordEncoder {
 
     try {
       hash = AppHashFactory.getHash(AppHashAlgorithm.MD5, AppEncoderAlgorithm.HEX, null);
-    } catch (GeneralSecurityException | IOException exception) {
+    } catch (GeneralSecurityException exception) {
       LOGGER.error(exception);
     }
   }

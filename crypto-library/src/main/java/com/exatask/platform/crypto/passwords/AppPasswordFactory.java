@@ -3,18 +3,16 @@ package com.exatask.platform.crypto.passwords;
 import com.exatask.platform.crypto.exceptions.InvalidPasswordException;
 import lombok.experimental.UtilityClass;
 
-import java.util.Map;
-
 @UtilityClass
 public class AppPasswordFactory {
 
-  public static AppPassword getPassword(String algorithm, Map<String, String> passwordKeys) {
+  public static AppPassword getPassword(String algorithm, AppPasswordProperties properties) {
 
     AppPasswordAlgorithm password = AppPasswordAlgorithm.valueOf(algorithm);
-    return getPassword(password, passwordKeys);
+    return getPassword(password, properties);
   }
 
-  public static AppPassword getPassword(AppPasswordAlgorithm algorithm, Map<String, String> passwordKeys) {
+  public static AppPassword getPassword(AppPasswordAlgorithm algorithm, AppPasswordProperties properties) {
 
     switch (algorithm) {
 
@@ -22,7 +20,7 @@ public class AppPasswordFactory {
         return new HotpPassword();
 
       case TOTP:
-        return new TotpPassword(passwordKeys);
+        return new TotpPassword(properties);
 
       case NONE:
         return new NonePassword();

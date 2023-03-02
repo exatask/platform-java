@@ -10,7 +10,6 @@ import javax.crypto.Mac;
 import javax.crypto.SecretKey;
 import javax.crypto.spec.SecretKeySpec;
 import java.security.GeneralSecurityException;
-import java.util.Map;
 
 public class HmacHash implements AppHash {
 
@@ -18,9 +17,9 @@ public class HmacHash implements AppHash {
 
   private final AppEncoder encoder;
 
-  public HmacHash(AppHashAlgorithm algorithm, AppEncoderAlgorithm encoderType, Map<String, String> hashKeys) throws GeneralSecurityException {
+  public HmacHash(AppHashAlgorithm algorithm, AppEncoderAlgorithm encoderType, AppHashProperties properties) throws GeneralSecurityException {
 
-    SecretKey secretKey = new SecretKeySpec(hashKeys.get("key").getBytes(), algorithm.getAlgorithm());
+    SecretKey secretKey = new SecretKeySpec(properties.getKey().getBytes(), algorithm.getAlgorithm());
 
     this.hash = Mac.getInstance(algorithm.getAlgorithm(), BouncyCastleProvider.PROVIDER_NAME);
     this.hash.init(secretKey);

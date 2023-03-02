@@ -1,25 +1,27 @@
 package com.exatask.platform.crypto.passwords;
 
-import com.exatask.platform.crypto.ciphers.AppCipherAlgorithm;
 import com.exatask.platform.crypto.hashes.AppHashAlgorithm;
 
-import java.util.Map;
+import java.util.Optional;
 
 public class TotpPassword extends OtpPassword {
 
+  private static final Integer DEFAULT_STEP = 30;
+
   // Time step (in seconds)
-  private Integer step = 30;
+  private Integer step;
+  private AppHashAlgorithm hash;
 
-  private AppHashAlgorithm hash = AppHashAlgorithm.HMAC_SHA1;
+  public TotpPassword(AppPasswordProperties properties) {
 
-  public TotpPassword(Map<String, String> passwordKeys) {
-
-    if (passwordKeys.containsKey("step")) {
-      step = Integer.parseInt(passwordKeys.get("step"));
+    step = Optional.ofNullable(properties.getStep()).orElse(DEFAULT_STEP);
+    if (step <= 0) {
+      step = DEFAULT_STEP;
     }
 
-    if (passwordKeys.containsKey("hash")) {
-      hash = AppHashAlgorithm.valueOf(passwordKeys.get("hash"));
+    hash = Optional.ofNullable(properties.getHash()).orElse(AppHashAlgorithm.HMAC_SHA1);
+    if (hash == AppHashAlgorithm.PLAIN_TEXT) {
+      hash = AppHashAlgorithm.HMAC_SHA1;
     }
   }
 

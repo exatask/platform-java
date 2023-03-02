@@ -6,6 +6,7 @@ import com.exatask.platform.crypto.encoders.AppEncoderFactory;
 import com.exatask.platform.crypto.hashes.AppHash;
 import com.exatask.platform.crypto.hashes.AppHashAlgorithm;
 import com.exatask.platform.crypto.hashes.AppHashFactory;
+import com.exatask.platform.crypto.hashes.AppHashProperties;
 import com.exatask.platform.logging.AppLogManager;
 import com.exatask.platform.logging.AppLogger;
 import com.fasterxml.jackson.core.JsonProcessingException;
@@ -22,8 +23,6 @@ import javax.crypto.spec.IvParameterSpec;
 import javax.crypto.spec.SecretKeySpec;
 import java.io.IOException;
 import java.security.GeneralSecurityException;
-import java.util.Collections;
-import java.util.Map;
 
 public class AesCipher implements AppCipher {
 
@@ -41,16 +40,17 @@ public class AesCipher implements AppCipher {
 
   private final AppHash authenticator;
 
-  public AesCipher(AppCipherAlgorithm algorithm, AppEncoderAlgorithm encoderType, Map<String, String> cryptoKeys) throws GeneralSecurityException, IOException {
-
-    String key = cryptoKeys.get("key");
-    String hash = cryptoKeys.get("hash");
+  public AesCipher(AppCipherAlgorithm algorithm, AppEncoderAlgorithm encoderType, AppCipherProperties properties) throws GeneralSecurityException, IOException {
 
     this.cipher = Cipher.getInstance(algorithm.getAlgorithm(), BouncyCastleProvider.PROVIDER_NAME);
     this.encoder = AppEncoderFactory.getEncoder(encoderType);
-    this.authenticator = AppHashFactory.getHash(AppHashAlgorithm.HMAC_SHA256, encoderType, Collections.singletonMap("key", hash));
 
-    this.secretKey = new SecretKeySpec(key.getBytes(), ALGORITHM);
+    AppHashProperties hashProperties = AppHashProperties.builder()
+            .key(properties.getHashKey())
+            .build();
+    this.authenticator = AppHashFactory.getHash(AppHashAlgorithm.HMAC_SHA256, encoderType, hashProperties);
+
+    this.secretKey = new SecretKeySpec(properties.getKey().getBytes(), ALGORITHM);
   }
 
   @Override

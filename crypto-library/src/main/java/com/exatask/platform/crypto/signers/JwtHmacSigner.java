@@ -27,9 +27,9 @@ public class JwtHmacSigner implements AppSigner {
 
   private final SecretKey secretKey;
 
-  public JwtHmacSigner(Map<String, String> signerKeys) {
+  public JwtHmacSigner(AppSignerProperties properties) {
 
-    this.secretKey = Keys.hmacShaKeyFor(signerKeys.get("secret").getBytes(StandardCharsets.UTF_8));
+    this.secretKey = Keys.hmacShaKeyFor(properties.getSecret().getBytes(StandardCharsets.UTF_8));
   }
 
   @Override
