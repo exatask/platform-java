@@ -5,10 +5,8 @@ import com.exatask.platform.crypto.exceptions.InvalidHashException;
 import lombok.experimental.UtilityClass;
 import org.bouncycastle.jce.provider.BouncyCastleProvider;
 
-import java.io.IOException;
 import java.security.GeneralSecurityException;
 import java.security.Security;
-import java.util.Map;
 
 @UtilityClass
 public class AppHashFactory {
@@ -17,16 +15,14 @@ public class AppHashFactory {
     Security.insertProviderAt(new BouncyCastleProvider(), 1);
   }
 
-  public static AppHash getHash(String algorithm, String encoderType, Map<String, String> cipherKeys)
-      throws GeneralSecurityException, IOException {
+  public static AppHash getHash(String algorithm, String encoderType, AppHashProperties properties) throws GeneralSecurityException {
 
     AppHashAlgorithm hash = AppHashAlgorithm.valueOf(algorithm);
     AppEncoderAlgorithm encoder = AppEncoderAlgorithm.valueOf(encoderType);
-    return getHash(hash, encoder, cipherKeys);
+    return getHash(hash, encoder, properties);
   }
 
-  public static AppHash getHash(AppHashAlgorithm algorithm, AppEncoderAlgorithm encoder, Map<String, String> hashKeys)
-      throws GeneralSecurityException, IOException {
+  public static AppHash getHash(AppHashAlgorithm algorithm, AppEncoderAlgorithm encoder, AppHashProperties properties) throws GeneralSecurityException {
 
     switch (algorithm) {
 
@@ -37,7 +33,7 @@ public class AppHashFactory {
       case HMAC_SHA1:
       case HMAC_SHA256:
       case HMAC_SHA512:
-        return new HmacHash(algorithm, encoder, hashKeys);
+        return new HmacHash(algorithm, encoder, properties);
 
       case PLAIN_TEXT:
         return new PlainTextHash();

@@ -1,5 +1,6 @@
 package com.exatask.platform.crypto.authenticators;
 
+import com.exatask.platform.crypto.signers.AppSignerProperties;
 import com.exatask.platform.crypto.signers.JwtHmacSigner;
 import com.exatask.platform.utilities.credentials.AppCredentials;
 import com.exatask.platform.utilities.credentials.JwtHmacCredentials;
@@ -11,7 +12,6 @@ import org.springframework.util.StringUtils;
 
 import java.time.LocalDateTime;
 import java.time.temporal.ChronoUnit;
-import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -24,9 +24,11 @@ public class JwtHmacAuthenticator implements AppAuthenticator {
   public JwtHmacAuthenticator(AppCredentials credentials) {
 
     JwtHmacCredentials jwtCredentials = (JwtHmacCredentials) credentials;
-    Map<String, String> signerKeys = Collections.singletonMap("secret", jwtCredentials.getSecret());
+    AppSignerProperties signerProperties = AppSignerProperties.builder()
+            .secret(jwtCredentials.getSecret())
+            .build();
 
-    this.signer = new JwtHmacSigner(signerKeys);
+    this.signer = new JwtHmacSigner(signerProperties);
     this.credentials = jwtCredentials;
 
     if (!StringUtils.hasLength(jwtCredentials.getSubject())) {

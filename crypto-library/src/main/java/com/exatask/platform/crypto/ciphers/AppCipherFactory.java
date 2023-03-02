@@ -8,7 +8,6 @@ import org.bouncycastle.jce.provider.BouncyCastleProvider;
 import java.io.IOException;
 import java.security.GeneralSecurityException;
 import java.security.Security;
-import java.util.Map;
 
 @UtilityClass
 public class AppCipherFactory {
@@ -17,24 +16,24 @@ public class AppCipherFactory {
     Security.insertProviderAt(new BouncyCastleProvider(), 1);
   }
 
-  public static AppCipher getCipher(String algorithm, String encoderType, Map<String, String> cipherKeys)
+  public static AppCipher getCipher(String algorithm, String encoderType, AppCipherProperties properties)
       throws GeneralSecurityException, IOException {
 
     AppCipherAlgorithm cipher = AppCipherAlgorithm.valueOf(algorithm);
     AppEncoderAlgorithm encoder = AppEncoderAlgorithm.valueOf(encoderType);
-    return getCipher(cipher, encoder, cipherKeys);
+    return getCipher(cipher, encoder, properties);
   }
 
-  public static AppCipher getCipher(AppCipherAlgorithm algorithm, AppEncoderAlgorithm encoder, Map<String, String> cipherKeys)
+  public static AppCipher getCipher(AppCipherAlgorithm algorithm, AppEncoderAlgorithm encoder, AppCipherProperties properties)
       throws GeneralSecurityException, IOException {
 
     switch (algorithm) {
 
       case RSA_ECB:
-        return new RsaCipher(algorithm, encoder, cipherKeys);
+        return new RsaCipher(algorithm, encoder, properties);
 
       case AES_CBC:
-        return new AesCipher(algorithm, encoder, cipherKeys);
+        return new AesCipher(algorithm, encoder, properties);
 
       case PLAIN_TEXT:
         return new PlainTextCipher();

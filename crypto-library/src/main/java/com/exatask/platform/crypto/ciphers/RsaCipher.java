@@ -23,7 +23,6 @@ import java.security.PrivateKey;
 import java.security.PublicKey;
 import java.security.spec.PKCS8EncodedKeySpec;
 import java.security.spec.X509EncodedKeySpec;
-import java.util.Map;
 
 public class RsaCipher implements AppCipher {
 
@@ -39,20 +38,16 @@ public class RsaCipher implements AppCipher {
 
   private final PrivateKey privateKey;
 
-  public RsaCipher(AppCipherAlgorithm algorithm, AppEncoderAlgorithm encoderType, Map<String, String> cryptoKeys)
+  public RsaCipher(AppCipherAlgorithm algorithm, AppEncoderAlgorithm encoderType, AppCipherProperties properties)
       throws GeneralSecurityException, IOException {
-
-    String publicKeyFile = cryptoKeys.get("publicKeyFile");
-    String privateKeyFile = cryptoKeys.get("privateKeyFile");
-    String passphrase = cryptoKeys.get("passphrase");
 
     KeyFactory keyFactory = KeyFactory.getInstance(ALGORITHM, BouncyCastleProvider.PROVIDER_NAME);
 
     this.cipher = Cipher.getInstance(algorithm.getAlgorithm());
     this.encoder = AppEncoderFactory.getEncoder(encoderType);
 
-    this.publicKey = getPublicKey(keyFactory, publicKeyFile);
-    this.privateKey = getPrivateKey(keyFactory, privateKeyFile, passphrase);
+    this.publicKey = getPublicKey(keyFactory, properties.getPublicKeyFile());
+    this.privateKey = getPrivateKey(keyFactory, properties.getPrivateKeyFile(), properties.getPassphrase());
   }
 
   private PrivateKey getPrivateKey(KeyFactory keyFactory, String privateKeyFile, String passphrase)

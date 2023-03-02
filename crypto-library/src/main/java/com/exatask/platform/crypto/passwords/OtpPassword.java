@@ -7,13 +7,11 @@ import com.exatask.platform.crypto.exceptions.PasswordGenerationException;
 import com.exatask.platform.crypto.hashes.AppHash;
 import com.exatask.platform.crypto.hashes.AppHashAlgorithm;
 import com.exatask.platform.crypto.hashes.AppHashFactory;
+import com.exatask.platform.crypto.hashes.AppHashProperties;
 import com.exatask.platform.logging.AppLogManager;
 import com.exatask.platform.logging.AppLogger;
 
-import java.io.IOException;
 import java.security.GeneralSecurityException;
-import java.util.Collections;
-import java.util.Map;
 
 public abstract class OtpPassword implements AppPassword {
 
@@ -31,11 +29,13 @@ public abstract class OtpPassword implements AppPassword {
         String encryptedMessage = "";
         try {
 
-            Map<String, String> hashKeys = Collections.singletonMap("key", key);
-            AppHash hash = AppHashFactory.getHash(hashAlgorithm, encoderType, hashKeys);
+            AppHashProperties hashProperties = AppHashProperties.builder()
+                    .key(key)
+                    .build();
+            AppHash hash = AppHashFactory.getHash(hashAlgorithm, encoderType, hashProperties);
             encryptedMessage = hash.hash(message);
 
-        } catch (GeneralSecurityException | IOException exception) {
+        } catch (GeneralSecurityException exception) {
             LOGGER.error(exception);
             throw new PasswordGenerationException();
         }

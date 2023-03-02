@@ -14,7 +14,7 @@ public class MysqlLibrary extends AppLibrary {
   private static final String MYSQL_DRIVER = "com.mysql.cj.jdbc.Driver";
 
   private static final String CHANGELOG_TABLE = "changelogs";
-  private static final String CHANGELOG_PACKAGE = "datastores.mysql.changelogs.package";
+  private static final String CHANGELOG_PACKAGE = "changelogs.mysql.package";
 
   public Flyway createRunner(DataSourceProperties dataSourceProperties) {
 
