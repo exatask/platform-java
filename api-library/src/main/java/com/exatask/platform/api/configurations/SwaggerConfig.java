@@ -2,6 +2,7 @@ package com.exatask.platform.api.configurations;
 
 import io.swagger.v3.oas.models.Components;
 import io.swagger.v3.oas.models.OpenAPI;
+import io.swagger.v3.oas.models.info.Contact;
 import io.swagger.v3.oas.models.info.Info;
 import io.swagger.v3.oas.models.info.License;
 import io.swagger.v3.oas.models.media.ArraySchema;
@@ -12,14 +13,13 @@ import io.swagger.v3.oas.models.responses.ApiResponse;
 import io.swagger.v3.oas.models.security.SecurityRequirement;
 import io.swagger.v3.oas.models.security.SecurityScheme;
 import io.swagger.v3.oas.models.tags.Tag;
-import org.apache.commons.lang3.ObjectUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.util.CollectionUtils;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 @Configuration
 public class SwaggerConfig {
@@ -30,7 +30,7 @@ public class SwaggerConfig {
   @Autowired
   private ApiServiceConfig serviceConfig;
 
-  @Autowired
+  @Autowired(required = false)
   private ApiSwaggerConfig swaggerConfig;
 
   private ApiResponse getApiFailureResponse() {
@@ -90,10 +90,9 @@ public class SwaggerConfig {
 
   private Components getComponents() {
 
-    Components components = swaggerConfig.getComponents();
-    if (ObjectUtils.isEmpty(components)) {
-      components = new Components();
-    }
+    Components components = Optional.ofNullable(swaggerConfig)
+            .map(ApiSwaggerConfig::getComponents)
+            .orElse(new Components());
 
     return components
         .addSecuritySchemes("BasicAuth", getBasicSecurityScheme())
@@ -109,21 +108,31 @@ public class SwaggerConfig {
     return requirements;
   }
 
+  private Contact getDefaultContact() {
+
+    return new Contact()
+            .name("Rohit Aggarwal")
+            .email("rohit.aggarwal@exatask.com");
+  }
+
   private Info getInfo() {
+
+    Contact contact = Optional.ofNullable(swaggerConfig)
+            .map(ApiSwaggerConfig::getContact)
+            .orElse(getDefaultContact());
 
     return new Info().title(serviceConfig.getName())
         .description(serviceConfig.getDescription())
         .version(serviceConfig.getVersion())
         .license((new License()).name(serviceConfig.getLicense()))
-        .contact(swaggerConfig.getContact());
+        .contact(contact);
   }
 
   private List<Tag> getTags() {
 
-    List<Tag> tags = swaggerConfig.getTags();
-    if (CollectionUtils.isEmpty(tags)) {
-      tags = new ArrayList<>();
-    }
+    List<Tag> tags = Optional.ofNullable(swaggerConfig)
+            .map(ApiSwaggerConfig::getTags)
+            .orElse(new ArrayList<>());
 
     tags.add(new Tag().name("monitoring").description("Operations in context to application monitoring"));
     return tags;

@@ -4,7 +4,12 @@ import org.springframework.context.event.ContextRefreshedEvent;
 
 public interface DaoApplication {
 
-  void migrateMongodb(ContextRefreshedEvent event);
+  default void migrateMongodb(ContextRefreshedEvent event) {
+  }
 
-  void migrateMysql(ContextRefreshedEvent event);
+  default void migrateMysql(ContextRefreshedEvent event) {
+  }
+
+  default void migratePostgresql(ContextRefreshedEvent event) {
+  }
 }
