@@ -16,6 +16,6 @@ public interface AddressMapper {
   @Mapper(componentModel = "spring")
   interface LocationMapper {
 
-    AddressEntity.Location toEntity(Address.Location location);
+    AddressEntity.Geoposition toEntity(Address.Geoposition geoposition);
   }
 }

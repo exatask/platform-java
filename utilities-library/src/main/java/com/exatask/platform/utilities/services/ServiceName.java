@@ -25,7 +25,12 @@ public enum ServiceName {
   ATTENDANCE(ServiceEndpoints.SERVICE_ATTENDANCE, true, false, false),
   TIME_OFF(ServiceEndpoints.SERVICE_TIME_OFF, true, false, false),
   WORK_FROM_HOME(ServiceEndpoints.SERVICE_WORK_FROM_HOME, true, false, false),
-  COMPENSATORY_OFF(ServiceEndpoints.SERVICE_COMPENSATORY_OFF, true, false, false);
+  COMPENSATORY_OFF(ServiceEndpoints.SERVICE_COMPENSATORY_OFF, true, false, false),
+  VACANCY(ServiceEndpoints.SERVICE_VACANCY, true, false, false),
+  RECRUITMENT(ServiceEndpoints.SERVICE_RECRUITMENT, true, false, false),
+  ONBOARDING(ServiceEndpoints.SERVICE_ONBOARDING, true, false, false),
+  SEPARATION(ServiceEndpoints.SERVICE_SEPARATION, true, false, false),
+  FEEDBACK(ServiceEndpoints.SERVICE_FEEDBACK, true, false, false);
 
   private final String uri;
 

@@ -33,4 +33,9 @@ public class ServiceEndpoints {
   public static final String SERVICE_TIME_OFF = "/time-off";
   public static final String SERVICE_WORK_FROM_HOME = "/work-from-home";
   public static final String SERVICE_COMPENSATORY_OFF = "/compensatory-off";
+  public static final String SERVICE_VACANCY = "/vacancy";
+  public static final String SERVICE_RECRUITMENT = "/recruitment";
+  public static final String SERVICE_ONBOARDING = "/onboarding";
+  public static final String SERVICE_SEPARATION = "/separation";
+  public static final String SERVICE_FEEDBACK = "/feedback";
 }
