@@ -1,10 +1,10 @@
 package com.exatask.platform.api.services;
 
-import com.exatask.platform.api.requests.ListRequest;
+import com.exatask.platform.dto.requests.AppRequest;
+import com.exatask.platform.dto.requests.ListRequest;
+import com.exatask.platform.dto.responses.AppResponse;
 import com.exatask.platform.logging.AppLogManager;
 import com.exatask.platform.logging.AppLogger;
-import com.exatask.platform.dto.requests.AppRequest;
-import com.exatask.platform.dto.responses.AppResponse;
 import org.springframework.hateoas.IanaLinkRelations;
 import org.springframework.hateoas.Link;
 import org.springframework.hateoas.server.mvc.WebMvcLinkBuilder;

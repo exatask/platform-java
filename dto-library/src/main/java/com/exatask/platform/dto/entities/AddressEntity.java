@@ -1,6 +1,6 @@
 package com.exatask.platform.dto.entities;
 
-import com.exatask.platform.dto.constants.Geolocation;
+import com.exatask.platform.dto.constants.GeopositionType;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.databind.PropertyNamingStrategy;
 import com.fasterxml.jackson.databind.annotation.JsonNaming;
@@ -19,27 +19,19 @@ public class AddressEntity {
 
   private String landmark;
 
-  private String city;
-
-  private String state;
-
-  private String stateCode;
-
-  private String country;
-
-  private String countryCode;
+  private String geolocation;
 
   private String postcode;
 
-  private Location location;
+  private Geoposition geoposition;
 
   @Data
   @Builder
   @JsonNaming(PropertyNamingStrategy.SnakeCaseStrategy.class)
   @JsonInclude(JsonInclude.Include.NON_NULL)
-  public static class Location {
+  public static class Geoposition {
 
-    private Geolocation type;
+    private GeopositionType type;
 
     private Double[] coordinates;
   }

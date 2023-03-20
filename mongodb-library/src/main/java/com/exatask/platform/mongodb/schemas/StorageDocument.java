@@ -11,10 +11,6 @@ import javax.validation.constraints.NotEmpty;
 public class StorageDocument {
 
   @NotEmpty
-  @Field("config")
-  private String config;
-
-  @NotEmpty
   @Field("file")
   private String file;
 

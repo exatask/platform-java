@@ -2,7 +2,9 @@ package com.exatask.platform.rabbitmq;
 
 import com.exatask.platform.dto.messages.AppMessage;
 import com.exatask.platform.logging.AppLogManager;
+import com.exatask.platform.logging.AppLogMessage;
 import com.exatask.platform.logging.AppLogger;
+import com.exatask.platform.rabbitmq.exceptions.ListenerException;
 import com.exatask.platform.utilities.constants.RequestContextHeader;
 import com.exatask.platform.utilities.contexts.RequestContext;
 import com.exatask.platform.utilities.contexts.RequestContextProvider;
@@ -12,6 +14,7 @@ import com.rabbitmq.client.Channel;
 import org.springframework.amqp.core.Message;
 import org.springframework.amqp.rabbit.listener.api.ChannelAwareMessageListener;
 import org.springframework.util.CollectionUtils;
+import org.springframework.util.ObjectUtils;
 
 import java.io.IOException;
 import java.time.LocalDateTime;
@@ -47,6 +50,11 @@ public abstract class AppListener<T extends AppMessage> implements ChannelAwareM
     } catch (JsonProcessingException exception) {
 
       LOGGER.error(exception);
+      acknowledge(channel, deliveryTag, false);
+
+    } catch (ListenerException exception) {
+
+      logException(exception);
       acknowledge(channel, deliveryTag, false);
     }
   }
@@ -104,5 +112,19 @@ public abstract class AppListener<T extends AppMessage> implements ChannelAwareM
     } catch (IOException exception) {
       LOGGER.error(exception);
     }
+  }
+
+  private void logException(ListenerException exception) {
+
+    String errorCode = null;
+    if (!ObjectUtils.isEmpty(exception.getError())) {
+      errorCode = exception.getError().getErrorCode();
+    }
+
+    AppLogMessage logMessage = AppLogMessage.builder().exception(exception).build();
+    logMessage.setErrorCode(errorCode)
+        .setInvalidAttributes(exception.getInvalidAttributes())
+        .setExtraParams(exception.getExtraParams());
+    LOGGER.error(logMessage);
   }
 }

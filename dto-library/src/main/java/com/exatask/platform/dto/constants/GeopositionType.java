@@ -1,6 +1,6 @@
 package com.exatask.platform.dto.constants;
 
-public enum Geolocation {
+public enum GeopositionType {
 
   Point
 }

@@ -1,4 +1,4 @@
-package com.exatask.platform.mysql.schemas;
+package com.exatask.platform.postgresql.schemas;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.Builder;

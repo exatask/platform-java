@@ -29,24 +29,8 @@ public class Address extends AppModel {
   private String landmark;
 
   @NotEmpty
-  @Column(name = "city")
-  private String city;
-
-  @NotEmpty
-  @Column(name = "state")
-  private String state;
-
-  @NotEmpty
-  @Column(name = "state_code")
-  private String stateCode;
-
-  @NotEmpty
-  @Column(name = "country")
-  private String country;
-
-  @NotEmpty
-  @Column(name = "country_code")
-  private String countryCode;
+  @Column(name = "location")
+  private String location;
 
   @NotEmpty
   @Column(name = "postcode")

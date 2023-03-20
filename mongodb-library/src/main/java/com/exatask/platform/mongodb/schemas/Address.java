@@ -1,6 +1,6 @@
 package com.exatask.platform.mongodb.schemas;
 
-import com.exatask.platform.dto.constants.Geolocation;
+import com.exatask.platform.dto.constants.GeopositionType;
 import com.exatask.platform.mongodb.annotations.Precision;
 import lombok.Builder;
 import lombok.Data;
@@ -24,38 +24,22 @@ public class Address {
   private String landmark;
 
   @NotEmpty
-  @Field("city")
-  private String city;
-
-  @NotEmpty
-  @Field("state")
-  private String state;
-
-  @NotEmpty
-  @Field("state_code")
-  private String stateCode;
-
-  @NotEmpty
-  @Field("country")
-  private String country;
-
-  @NotEmpty
-  @Field("country_code")
-  private String countryCode;
+  @Field("geolocation")
+  private String geolocation;
 
   @NotEmpty
   @Field("postcode")
   private String postcode;
 
-  @Field("location")
-  private Location location;
+  @Field("geoposition")
+  private Geoposition geoposition;
 
   @Data
   @Builder
-  public static class Location {
+  public static class Geoposition {
 
     @Field("type")
-    private Geolocation type;
+    private GeopositionType type;
 
     @Field("coordinates")
     @Precision(7)
