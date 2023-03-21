@@ -1,9 +1,9 @@
 package com.exatask.platform.api.controllers;
 
-import com.exatask.platform.api.annotations.NewRelicIgnoreTransaction;
 import com.exatask.platform.api.constants.Endpoints;
-import com.exatask.platform.api.services.healthcheck.HealthCheckService;
 import com.exatask.platform.api.responses.HealthCheckResponse;
+import com.exatask.platform.api.services.healthcheck.HealthCheckService;
+import com.exatask.platform.micrometer.annotations.NewRelicIgnoreTransaction;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.Schema;

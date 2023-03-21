@@ -1,4 +1,4 @@
-package com.exatask.platform.api.annotations;
+package com.exatask.platform.micrometer.annotations;
 
 import java.lang.annotation.ElementType;
 import java.lang.annotation.Retention;
