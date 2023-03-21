@@ -9,8 +9,11 @@ import feign.codec.Decoder;
 import feign.codec.Encoder;
 import feign.jackson.JacksonDecoder;
 import feign.jackson.JacksonEncoder;
+import io.micrometer.core.instrument.MeterRegistry;
+import io.micrometer.core.instrument.binder.okhttp3.OkHttpMetricsEventListener;
 import okhttp3.OkHttpClient;
 import okhttp3.Protocol;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.cloud.openfeign.EnableFeignClients;
 import org.springframework.cloud.openfeign.FeignClientsConfiguration;
 import org.springframework.cloud.openfeign.support.SpringMvcContract;
@@ -19,6 +22,7 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Import;
 
 import java.util.Arrays;
+import java.util.Optional;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
@@ -26,6 +30,9 @@ import java.util.concurrent.Executors;
 @EnableFeignClients
 @Import(FeignClientsConfiguration.class)
 public class AppFeignConfiguration {
+
+  @Autowired(required = false)
+  private MeterRegistry meterRegistry;
 
   @Bean
   public Contract contract() {
@@ -35,13 +42,16 @@ public class AppFeignConfiguration {
   @Bean
   public Client client() {
 
-    OkHttpClient okHttpClient = new OkHttpClient.Builder()
+    OkHttpClient.Builder okHttpClientBuilder = new OkHttpClient.Builder()
         .followRedirects(false)
         .protocols(Arrays.asList(Protocol.HTTP_1_1, Protocol.HTTP_2))
-        .retryOnConnectionFailure(true)
-        .build();
+        .retryOnConnectionFailure(true);
 
-    return new feign.okhttp.OkHttpClient(okHttpClient);
+    Optional.of(meterRegistry)
+        .ifPresent(registry -> okHttpClientBuilder.eventListener(OkHttpMetricsEventListener.builder(registry, "okhttp.requests")
+            .build()));
+
+    return new feign.okhttp.OkHttpClient(okHttpClientBuilder.build());
   }
 
   @Bean

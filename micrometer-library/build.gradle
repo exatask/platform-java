@@ -1,0 +1,40 @@
+plugins {
+  id "platform.java-conventions"
+  id "org.springframework.boot"
+}
+
+version = "1.0.0-SNAPSHOT"
+
+bootJar {
+  enabled = false
+}
+
+jar {
+  enabled = true
+}
+
+dependencies {
+
+  api group: "io.micrometer", name: "micrometer-core", version: "${micrometerVersion}"
+
+  implementation group: "org.springframework.boot", name: "spring-boot-autoconfigure"
+  implementation project(":utilities-library")
+
+  compileOnly group: "io.micrometer", name: "micrometer-registry-elastic", version: "${micrometerVersion}"
+  compileOnly group: "io.micrometer", name: "micrometer-registry-new-relic", version: "${micrometerVersion}"
+  compileOnly group: "io.micrometer", name: "micrometer-registry-cloudwatch2", version: "${micrometerVersion}"
+  compileOnly group: "io.micrometer", name: "micrometer-registry-prometheus", version: "${micrometerVersion}"
+
+  compileOnly group: "org.projectlombok", name: "lombok", version: "${lombokVersion}"
+  annotationProcessor group: "org.projectlombok", name: "lombok", version: "${lombokVersion}"
+}
+
+publishing {
+  publications {
+    maven(MavenPublication) {
+
+      artifactId = "exatask-micrometer"
+      from components.java
+    }
+  }
+}

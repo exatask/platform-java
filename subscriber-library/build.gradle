@@ -21,6 +21,7 @@ dependencies {
   api project(":crypto-library")
 
   implementation project(":dto-library")
+  implementation project(":micrometer-library")
 
   compileOnly group: "org.projectlombok", name: "lombok", version: "${lombokVersion}"
   annotationProcessor group: "org.projectlombok", name: "lombok", version: "${lombokVersion}"
