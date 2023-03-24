@@ -16,6 +16,7 @@ import org.springframework.data.jpa.repository.support.SimpleJpaRepository;
 import org.springframework.util.CollectionUtils;
 
 import javax.persistence.EntityManager;
+import javax.persistence.LockModeType;
 import javax.persistence.Tuple;
 import javax.persistence.TupleElement;
 import javax.persistence.TypedQuery;
@@ -165,6 +166,19 @@ public class AppPostgresqlRepositoryImpl<T, ID extends Serializable> extends Sim
   }
 
   /**
+   * @param query
+   * @param lockMode
+   */
+  private javax.persistence.Query prepareLock(javax.persistence.Query query, LockModeType lockMode) {
+
+    if (lockMode == null) {
+      return query;
+    }
+
+    return query.setLockMode(lockMode);
+  }
+
+  /**
    * @param typedQuery
    * @param skip
    */
@@ -190,6 +204,19 @@ public class AppPostgresqlRepositoryImpl<T, ID extends Serializable> extends Sim
     }
 
     return typedQuery.setMaxResults(limit);
+  }
+
+  /**
+   * @param typedQuery
+   * @param lockMode
+   */
+  private TypedQuery<T> prepareLock(TypedQuery<T> typedQuery, LockModeType lockMode) {
+
+    if (lockMode == null) {
+      return typedQuery;
+    }
+
+    return typedQuery.setLockMode(lockMode);
   }
 
   /**
@@ -288,6 +315,7 @@ public class AppPostgresqlRepositoryImpl<T, ID extends Serializable> extends Sim
     TypedQuery<T> typedQuery = entityManager.createQuery(criteriaQuery);
     typedQuery = prepareSkip(typedQuery, query.getSkip());
     typedQuery = prepareLimit(typedQuery, query.getLimit());
+    typedQuery = prepareLock(typedQuery, query.getLock());
 
     this.lastQuery = typedQuery.unwrap(Query.class).getQueryString();
     LOGGER.trace(this.lastQuery);
@@ -326,6 +354,8 @@ public class AppPostgresqlRepositoryImpl<T, ID extends Serializable> extends Sim
 
     ReplicaDataSource.setReadOnly(true);
     javax.persistence.Query nativeQuery = this.entityManager.createNativeQuery(nativeSql, Tuple.class);
+    nativeQuery = prepareLock(nativeQuery, query.getLock());
+
     List<Tuple> results = nativeQuery.getResultList();
     if (CollectionUtils.isEmpty(results)) {
       return null;
@@ -352,6 +382,7 @@ public class AppPostgresqlRepositoryImpl<T, ID extends Serializable> extends Sim
 
     ReplicaDataSource.setReadOnly(true);
     TypedQuery<T> typedQuery = entityManager.createQuery(criteriaQuery);
+    typedQuery = prepareLock(typedQuery, query.getLock());
 
     this.lastQuery = typedQuery.unwrap(Query.class).getQueryString();
     LOGGER.trace(this.lastQuery);
@@ -376,6 +407,8 @@ public class AppPostgresqlRepositoryImpl<T, ID extends Serializable> extends Sim
 
     ReplicaDataSource.setReadOnly(true);
     javax.persistence.Query nativeQuery = this.entityManager.createNativeQuery(nativeSql, Tuple.class);
+    nativeQuery = prepareLock(nativeQuery, query.getLock());
+
     Optional<Tuple> result = nativeQuery.getResultStream().findFirst();
     if (!result.isPresent()) {
       return Optional.empty();

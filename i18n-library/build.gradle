@@ -16,6 +16,7 @@ jar {
 dependencies {
 
   implementation group: "org.springframework.boot", name: "spring-boot-starter", version: "${springBootVersion}"
+  implementation group: "jakarta.validation", name: "jakarta.validation-api", version: "${jakartaVersion}"
 
   compileOnly group: "org.projectlombok", name: "lombok", version: "${lombokVersion}"
   annotationProcessor group: "org.projectlombok", name: "lombok", version: "${lombokVersion}"

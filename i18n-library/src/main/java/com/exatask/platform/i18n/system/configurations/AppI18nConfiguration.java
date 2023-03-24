@@ -8,6 +8,7 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.support.ResourceBundleMessageSource;
 import org.springframework.util.CollectionUtils;
+import org.springframework.validation.beanvalidation.LocalValidatorFactoryBean;
 
 import java.util.Set;
 
@@ -32,5 +33,14 @@ public class AppI18nConfiguration {
     }
 
     return messageSource;
+  }
+
+  @Bean
+  public LocalValidatorFactoryBean validatorFactoryBean() {
+
+    LocalValidatorFactoryBean validatorBean = new LocalValidatorFactoryBean();
+    validatorBean.setValidationMessageSource(resourceMessageSource());
+
+    return validatorBean;
   }
 }

@@ -11,6 +11,6 @@ public enum EmailType implements AppConstant {
 
   @Override
   public String toLocale() {
-    return AppTranslator.toLocale( "email-type." + this);
+    return AppTranslator.toLocale( "constants.email-type." + this);
   }
 }
