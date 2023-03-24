@@ -6,26 +6,26 @@ import org.springframework.data.mongodb.core.mapping.Field;
 
 import javax.validation.constraints.Max;
 import javax.validation.constraints.Min;
-import javax.validation.constraints.NotEmpty;
+import javax.validation.constraints.NotNull;
 
 @Data
 @Builder
 public class FullDate {
 
-  @Min(1)
-  @Max(31)
-  @NotEmpty
+  @Min(value = 1, message = "{validations.full-date.date.min}")
+  @Max(value = 31, message = "{validations.full-date.date.max}")
+  @NotNull(message = "{validations.full-date.date.not-null}")
   @Field("date")
   private Integer date;
 
-  @Min(1)
-  @Max(12)
-  @NotEmpty
+  @Min(value = 1, message = "{validations.full-date.month.min}")
+  @Max(value = 12, message = "{validations.full-date.month.max}")
+  @NotNull(message = "{validations.full-date.month.not-null}")
   @Field("month")
   private Integer month;
 
-  @Min(1900)
-  @NotEmpty
+  @Min(value = 1900, message = "{validations.full-date.year.min}")
+  @NotNull(message = "{validations.full-date.year.not-null}")
   @Field("year")
   private Integer year;
 }

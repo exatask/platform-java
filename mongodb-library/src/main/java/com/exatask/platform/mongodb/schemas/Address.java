@@ -6,28 +6,32 @@ import lombok.Builder;
 import lombok.Data;
 import org.springframework.data.mongodb.core.mapping.Field;
 
-import javax.validation.constraints.NotEmpty;
+import javax.validation.constraints.Digits;
+import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.NotNull;
+import javax.validation.constraints.Size;
 
 @Data
 @Builder
 public class Address {
 
-  @NotEmpty
+  @NotBlank(message = "{validations.address.address.not-blank}")
   @Field("address")
   private String address;
 
-  @NotEmpty
+  @NotBlank(message = "{validations.address.locality.not-blank}")
   @Field("locality")
   private String locality;
 
   @Field("landmark")
   private String landmark;
 
-  @NotEmpty
+  @NotBlank(message = "{validations.address.geolocation.not-blank}")
   @Field("geolocation")
   private String geolocation;
 
-  @NotEmpty
+  @Digits(integer = 6, fraction = 0, message = "{validations.address.postcode.digits}")
+  @NotBlank(message = "{validations.address.postcode.not-blank}")
   @Field("postcode")
   private String postcode;
 
@@ -38,9 +42,11 @@ public class Address {
   @Builder
   public static class Geoposition {
 
+    @NotNull(message = "{validations.address.geoposition.type.not-null}")
     @Field("type")
     private GeopositionType type;
 
+    @Size(min = 2, max = 2, message = "{validations.address.geoposition.coordinates.size}")
     @Field("coordinates")
     @Precision(7)
     private Double[] coordinates;

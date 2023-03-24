@@ -27,27 +27,30 @@ public class ApiContextInterceptor extends AppInterceptor {
         .parentId(StringUtils.defaultIfEmpty(request.getHeader(RequestContextHeader.PARENT_ID), traceId))
         .spanId(UUID.randomUUID().toString());
 
-    Optional.ofNullable(request.getHeader(RequestContextHeader.SESSION_TOKEN)).ifPresent(sessionToken ->
-        requestContextBuilder.sessionToken(sessionToken)
+    Optional.ofNullable(request.getHeader(RequestContextHeader.SESSION_TOKEN))
+        .filter(sessionToken -> !sessionToken.isEmpty())
+        .ifPresent(sessionToken -> requestContextBuilder.sessionToken(sessionToken)
             .sessionId(request.getHeader(RequestContextHeader.SESSION_ID)));
 
-    Optional.ofNullable(request.getHeader(RequestContextHeader.TENANT)).ifPresent(requestContextBuilder::tenant);
+    Optional.ofNullable(request.getHeader(RequestContextHeader.TENANT))
+        .filter(tenant -> !tenant.isEmpty())
+        .ifPresent(requestContextBuilder::tenant);
 
-    Optional.ofNullable(request.getHeader(RequestContextHeader.ORGANIZATION_ID)).ifPresent(organizationId ->
-        requestContextBuilder
-          .organizationId(Integer.parseInt(organizationId))
-          .organizationName(request.getHeader(RequestContextHeader.ORGANIZATION_NAME)));
+    Optional.ofNullable(request.getHeader(RequestContextHeader.ORGANIZATION_ID))
+        .filter(organizationId -> !organizationId.isEmpty())
+        .ifPresent(organizationId -> requestContextBuilder.organizationId(Integer.parseInt(organizationId))
+            .organizationName(request.getHeader(RequestContextHeader.ORGANIZATION_NAME)));
 
-    Optional.ofNullable(request.getHeader(RequestContextHeader.EMPLOYEE_ID)).ifPresent(employeeId ->
-        requestContextBuilder
-          .employeeId(Integer.parseInt(employeeId))
-          .employeeName(request.getHeader(RequestContextHeader.EMPLOYEE_NAME))
-          .employeeEmailId(request.getHeader(RequestContextHeader.EMPLOYEE_EMAIL_ID))
-          .employeeMobileNumber(request.getHeader(RequestContextHeader.EMPLOYEE_MOBILE_NUMBER)));
+    Optional.ofNullable(request.getHeader(RequestContextHeader.EMPLOYEE_ID))
+        .filter(employeeId -> !employeeId.isEmpty())
+        .ifPresent(employeeId -> requestContextBuilder.employeeId(Integer.parseInt(employeeId))
+            .employeeName(request.getHeader(RequestContextHeader.EMPLOYEE_NAME))
+            .employeeEmailId(request.getHeader(RequestContextHeader.EMPLOYEE_EMAIL_ID))
+            .employeeMobileNumber(request.getHeader(RequestContextHeader.EMPLOYEE_MOBILE_NUMBER)));
 
-    Optional.ofNullable(request.getHeader(RequestContextHeader.SECURITY_TARGET)).ifPresent(securityTarget ->
-        requestContextBuilder
-            .securityTarget(securityTarget)
+    Optional.ofNullable(request.getHeader(RequestContextHeader.SECURITY_TARGET))
+        .filter(securityTarget -> !securityTarget.isEmpty())
+        .ifPresent(securityTarget -> requestContextBuilder.securityTarget(securityTarget)
             .securityOtp(request.getHeader(RequestContextHeader.SECURITY_OTP)));
 
     RequestContextProvider.setContext(requestContextBuilder.build());

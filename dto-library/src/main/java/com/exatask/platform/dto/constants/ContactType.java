@@ -9,10 +9,11 @@ public enum ContactType implements AppConstant {
   OFFICIAL,
   MOBILE,
   LANDLINE,
-  FAX;
+  FAX,
+  OTHER;
 
   @Override
   public String toLocale() {
-    return AppTranslator.toLocale( "contact-type." + this);
+    return AppTranslator.toLocale( "constants.contact-type." + this);
   }
 }

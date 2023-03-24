@@ -1,5 +1,6 @@
 package com.exatask.platform.sdk;
 
+import com.exatask.platform.sdk.constants.HttpClientDefaults;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import feign.AsyncClient;
@@ -11,6 +12,7 @@ import feign.jackson.JacksonDecoder;
 import feign.jackson.JacksonEncoder;
 import io.micrometer.core.instrument.MeterRegistry;
 import io.micrometer.core.instrument.binder.okhttp3.OkHttpMetricsEventListener;
+import okhttp3.ConnectionPool;
 import okhttp3.OkHttpClient;
 import okhttp3.Protocol;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -25,6 +27,7 @@ import java.util.Arrays;
 import java.util.Optional;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
+import java.util.concurrent.TimeUnit;
 
 @Configuration
 @EnableFeignClients
@@ -45,9 +48,13 @@ public class AppFeignConfiguration {
     OkHttpClient.Builder okHttpClientBuilder = new OkHttpClient.Builder()
         .followRedirects(false)
         .protocols(Arrays.asList(Protocol.HTTP_1_1, Protocol.HTTP_2))
-        .retryOnConnectionFailure(true);
+        .retryOnConnectionFailure(true)
+        .connectTimeout(HttpClientDefaults.CONNECTION_TIMEOUT, TimeUnit.MINUTES)
+        .pingInterval(HttpClientDefaults.PING_INTERVAL, TimeUnit.MINUTES)
+        .callTimeout(HttpClientDefaults.CALL_TIMEOUT, TimeUnit.MINUTES)
+        .connectionPool(new ConnectionPool(HttpClientDefaults.MAX_IDLE_CONNECTION, HttpClientDefaults.KEEP_ALIVE_DURATION, TimeUnit.MINUTES));
 
-    Optional.of(meterRegistry)
+    Optional.ofNullable(meterRegistry)
         .ifPresent(registry -> okHttpClientBuilder.eventListener(OkHttpMetricsEventListener.builder(registry, "okhttp.requests")
             .build()));
 

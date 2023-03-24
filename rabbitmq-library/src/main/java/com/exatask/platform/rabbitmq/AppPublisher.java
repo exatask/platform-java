@@ -60,28 +60,38 @@ public abstract class AppPublisher<T extends AppMessage> {
     messageProperties.setHeader(RequestContextHeader.TRACE_ID, RequestContextProvider.getTraceId());
     messageProperties.setHeader(RequestContextHeader.PARENT_ID, RequestContextProvider.getSpanId());
 
-    Optional.ofNullable(RequestContextProvider.getSessionToken()).ifPresent(sessionToken -> {
-      messageProperties.setHeader(RequestContextHeader.SESSION_TOKEN, sessionToken);
-      messageProperties.setHeader(RequestContextHeader.SESSION_ID, RequestContextProvider.getSessionId());
-    });
+    Optional.ofNullable(RequestContextProvider.getSessionToken())
+        .filter(sessionToken -> !sessionToken.isEmpty())
+        .ifPresent(sessionToken -> {
+          messageProperties.setHeader(RequestContextHeader.SESSION_TOKEN, sessionToken);
+          messageProperties.setHeader(RequestContextHeader.SESSION_ID, RequestContextProvider.getSessionId());
+        });
 
-    Optional.ofNullable(RequestContextProvider.getTenant()).ifPresent(tenant -> messageProperties.setHeader(RequestContextHeader.TENANT, tenant));
+    Optional.ofNullable(RequestContextProvider.getTenant())
+        .filter(tenant -> !tenant.isEmpty())
+        .ifPresent(tenant -> messageProperties.setHeader(RequestContextHeader.TENANT, tenant));
 
-    Optional.ofNullable(RequestContextProvider.getOrganizationId()).ifPresent(organizationId -> {
-      messageProperties.setHeader(RequestContextHeader.ORGANIZATION_ID, organizationId);
-      messageProperties.setHeader(RequestContextHeader.ORGANIZATION_NAME, RequestContextProvider.getOrganizationName());
-    });
+    Optional.ofNullable(RequestContextProvider.getOrganizationId())
+        .filter(organizationId -> organizationId > 0)
+        .ifPresent(organizationId -> {
+          messageProperties.setHeader(RequestContextHeader.ORGANIZATION_ID, organizationId);
+          messageProperties.setHeader(RequestContextHeader.ORGANIZATION_NAME, RequestContextProvider.getOrganizationName());
+        });
 
-    Optional.ofNullable(RequestContextProvider.getEmployeeId()).ifPresent(employeeId -> {
-      messageProperties.setHeader(RequestContextHeader.EMPLOYEE_ID, employeeId);
-      messageProperties.setHeader(RequestContextHeader.EMPLOYEE_NAME, RequestContextProvider.getEmployeeName());
-      messageProperties.setHeader(RequestContextHeader.EMPLOYEE_EMAIL_ID, RequestContextProvider.getEmployeeEmailId());
-      messageProperties.setHeader(RequestContextHeader.EMPLOYEE_MOBILE_NUMBER, RequestContextProvider.getEmployeeMobileNumber());
-    });
+    Optional.ofNullable(RequestContextProvider.getEmployeeId())
+        .filter(employeeId -> employeeId > 0)
+        .ifPresent(employeeId -> {
+          messageProperties.setHeader(RequestContextHeader.EMPLOYEE_ID, employeeId);
+          messageProperties.setHeader(RequestContextHeader.EMPLOYEE_NAME, RequestContextProvider.getEmployeeName());
+          messageProperties.setHeader(RequestContextHeader.EMPLOYEE_EMAIL_ID, RequestContextProvider.getEmployeeEmailId());
+          messageProperties.setHeader(RequestContextHeader.EMPLOYEE_MOBILE_NUMBER, RequestContextProvider.getEmployeeMobileNumber());
+        });
 
-    Optional.ofNullable(RequestContextProvider.getSecurityTarget()).ifPresent(securityTarget -> {
-      messageProperties.setHeader(RequestContextHeader.SECURITY_TARGET, securityTarget);
-      messageProperties.setHeader(RequestContextHeader.SECURITY_OTP, RequestContextProvider.getSecurityOtp());
-    });
+    Optional.ofNullable(RequestContextProvider.getSecurityTarget())
+        .filter(securityTarget -> !securityTarget.isEmpty())
+        .ifPresent(securityTarget -> {
+          messageProperties.setHeader(RequestContextHeader.SECURITY_TARGET, securityTarget);
+          messageProperties.setHeader(RequestContextHeader.SECURITY_OTP, RequestContextProvider.getSecurityOtp());
+        });
   }
 }

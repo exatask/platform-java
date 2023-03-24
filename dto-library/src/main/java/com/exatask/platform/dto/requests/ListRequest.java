@@ -21,11 +21,11 @@ import java.util.Map;
 @JsonNaming(PropertyNamingStrategy.SnakeCaseStrategy.class)
 public class ListRequest extends AppRequest {
 
-  @Min(1)
+  @Min(value = 1, message = "{validations.list.page.min}")
   private Integer page = 1;
 
-  @Min(1)
-  @Max(100)
+  @Min(value = 1, message = "{validations.list.limit.min}")
+  @Max(value = 100, message = "{validations.list.limit.max}")
   private Integer limit = 25;
 
   private List<String> sort;

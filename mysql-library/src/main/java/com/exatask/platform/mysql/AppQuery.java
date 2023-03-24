@@ -10,6 +10,7 @@ import lombok.Builder;
 import lombok.Getter;
 import lombok.Singular;
 
+import javax.persistence.LockModeType;
 import java.util.List;
 import java.util.Map;
 
@@ -35,6 +36,8 @@ public class AppQuery {
 
   @Singular
   private List<UpdateElement> updates;
+
+  private LockModeType lock;
 
   public static class AppQueryBuilder {
 

@@ -10,7 +10,7 @@ import org.springframework.context.annotation.Configuration;
 import software.amazon.awssdk.services.cloudwatch.CloudWatchAsyncClient;
 
 @Configuration
-@ConditionalOnClass(CloudwatchMicrometerRegistry.class)
+@ConditionalOnClass(CloudWatchMeterRegistry.class)
 public class CloudwatchMicrometerRegistry {
 
   @Bean

@@ -8,7 +8,8 @@ import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
 
 import javax.persistence.Column;
-import javax.validation.constraints.NotEmpty;
+import javax.validation.constraints.Digits;
+import javax.validation.constraints.NotBlank;
 
 @Data
 @Builder
@@ -17,22 +18,23 @@ import javax.validation.constraints.NotEmpty;
 @EqualsAndHashCode(callSuper = true)
 public class Address extends AppModel {
 
-  @NotEmpty
+  @NotBlank(message = "{validations.address.address.not-blank}")
   @Column(name = "address")
   private String address;
 
-  @NotEmpty
+  @NotBlank(message = "{validations.address.locality.not-blank}")
   @Column(name = "locality")
   private String locality;
 
   @Column(name = "landmark")
   private String landmark;
 
-  @NotEmpty
+  @NotBlank(message = "{validations.address.geolocation.not-blank}")
   @Column(name = "location")
   private String location;
 
-  @NotEmpty
+  @Digits(integer = 6, fraction = 0, message = "{validations.address.postcode.digits}")
+  @NotBlank(message = "{validations.address.postcode.not-blank}")
   @Column(name = "postcode")
   private String postcode;
 
