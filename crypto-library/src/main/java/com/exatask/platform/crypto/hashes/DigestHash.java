@@ -28,7 +28,8 @@ public class DigestHash implements AppHash {
       return data;
     }
 
-    byte[] byteEncodedData = hash.digest(data.getBytes());
-    return encoder.encode(byteEncodedData);
+    this.hash.reset();
+    byte[] byteEncodedData = this.hash.digest(data.getBytes());
+    return this.encoder.encode(byteEncodedData);
   }
 }
