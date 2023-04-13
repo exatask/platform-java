@@ -30,7 +30,8 @@ public enum ServiceName {
   RECRUITMENT(ServiceEndpoints.SERVICE_RECRUITMENT, true, false, false),
   ONBOARDING(ServiceEndpoints.SERVICE_ONBOARDING, true, false, false),
   SEPARATION(ServiceEndpoints.SERVICE_SEPARATION, true, false, false),
-  FEEDBACK(ServiceEndpoints.SERVICE_FEEDBACK, true, false, false);
+  FEEDBACK(ServiceEndpoints.SERVICE_FEEDBACK, true, false, false),
+  WORKFLOW(ServiceEndpoints.SERVICE_WORKFLOW, true, false, false);
 
   private final String uri;
 

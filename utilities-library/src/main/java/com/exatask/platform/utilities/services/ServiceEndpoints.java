@@ -38,4 +38,5 @@ public class ServiceEndpoints {
   public static final String SERVICE_ONBOARDING = "/onboarding";
   public static final String SERVICE_SEPARATION = "/separation";
   public static final String SERVICE_FEEDBACK = "/feedback";
+  public static final String SERVICE_WORKFLOW = "/workflow";
 }

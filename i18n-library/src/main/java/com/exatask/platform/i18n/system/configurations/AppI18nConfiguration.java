@@ -6,6 +6,7 @@ import com.exatask.platform.i18n.sources.AppI18nSource;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.context.annotation.Primary;
 import org.springframework.context.support.ResourceBundleMessageSource;
 import org.springframework.util.CollectionUtils;
 import org.springframework.validation.beanvalidation.LocalValidatorFactoryBean;
@@ -36,11 +37,11 @@ public class AppI18nConfiguration {
   }
 
   @Bean
+  @Primary
   public LocalValidatorFactoryBean validatorFactoryBean() {
 
     LocalValidatorFactoryBean validatorBean = new LocalValidatorFactoryBean();
     validatorBean.setValidationMessageSource(resourceMessageSource());
-
     return validatorBean;
   }
 }

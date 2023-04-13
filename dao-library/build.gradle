@@ -18,6 +18,7 @@ dependencies {
   api project(":logging-library")
 
   implementation project(":utilities-library")
+  implementation project(":crypto-library")
 
   compileOnly group: "org.springframework.boot", name: "spring-boot-starter-data-mongodb"
   compileOnly group: "org.springframework.boot", name: "spring-boot-starter-data-jpa"

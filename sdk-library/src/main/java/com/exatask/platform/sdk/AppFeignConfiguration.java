@@ -3,6 +3,8 @@ package com.exatask.platform.sdk;
 import com.exatask.platform.sdk.constants.HttpClientDefaults;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.SerializationFeature;
+import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 import feign.AsyncClient;
 import feign.Client;
 import feign.Contract;
@@ -78,6 +80,9 @@ public class AppFeignConfiguration {
 
     ObjectMapper objectMapper = new ObjectMapper();
     objectMapper.setSerializationInclusion(JsonInclude.Include.NON_NULL);
+    objectMapper.registerModule(new JavaTimeModule());
+    objectMapper.disable(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS);
+
     return new JacksonEncoder(objectMapper);
   }
 
