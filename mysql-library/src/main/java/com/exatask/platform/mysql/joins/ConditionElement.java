@@ -13,7 +13,7 @@ public class ConditionElement {
 
   private final Class<? extends AppModel> targetModel;
 
-  private final Object targetKey;
+  private final String targetKey;
 
   public String getCondition(Class<? extends AppModel> model) {
 
