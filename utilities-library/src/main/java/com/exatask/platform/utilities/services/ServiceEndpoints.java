@@ -39,4 +39,5 @@ public class ServiceEndpoints {
   public static final String SERVICE_SEPARATION = "/separation";
   public static final String SERVICE_FEEDBACK = "/feedback";
   public static final String SERVICE_WORKFLOW = "/workflow";
+  public static final String SERVICE_AGENDA = "/agenda";
 }

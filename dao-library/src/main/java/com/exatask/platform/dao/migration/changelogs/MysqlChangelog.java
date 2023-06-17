@@ -19,7 +19,6 @@ import java.security.GeneralSecurityException;
 
 public abstract class MysqlChangelog extends BaseJavaMigration {
 
-  private static final String DIGEST_ALGORITHM = "MD5";
   protected static final AppLogger LOGGER = AppLogManager.getLogger();
 
   private AppHash appHash;
