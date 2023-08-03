@@ -2,6 +2,7 @@ package com.exatask.platform.api.configurations;
 
 import com.exatask.platform.api.services.swagger.SwaggerPasswordEncoder;
 import com.exatask.platform.api.services.swagger.SwaggerUserDetailService;
+import com.exatask.platform.utilities.services.ServiceEndpoints;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.authentication.dao.DaoAuthenticationProvider;
@@ -53,7 +54,7 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
   public void configure(WebSecurity web) {
 
     web.ignoring()
-        .antMatchers(apiServiceConfig.getKey().getUri() + "/**");
+        .antMatchers(ServiceEndpoints.API + apiServiceConfig.getKey().getUri() + "/**");
   }
 
   @Override

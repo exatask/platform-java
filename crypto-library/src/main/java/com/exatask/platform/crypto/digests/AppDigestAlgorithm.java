@@ -1,11 +1,11 @@
-package com.exatask.platform.crypto.hashes;
+package com.exatask.platform.crypto.digests;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 
 @Getter
 @AllArgsConstructor
-public enum AppHashAlgorithm {
+public enum AppDigestAlgorithm {
 
   PLAIN_TEXT(""),
   MD5("MD5"),

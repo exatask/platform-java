@@ -1,6 +1,6 @@
 package com.exatask.platform.crypto.passwords;
 
-import com.exatask.platform.crypto.hashes.AppHashAlgorithm;
+import com.exatask.platform.crypto.digests.AppDigestAlgorithm;
 
 import java.util.Optional;
 
@@ -10,7 +10,7 @@ public class TotpPassword extends OtpPassword {
 
   // Time step (in seconds)
   private Integer step;
-  private AppHashAlgorithm hash;
+  private AppDigestAlgorithm digest;
 
   public TotpPassword(AppPasswordProperties properties) {
 
@@ -19,9 +19,9 @@ public class TotpPassword extends OtpPassword {
       step = DEFAULT_STEP;
     }
 
-    hash = Optional.ofNullable(properties.getHash()).orElse(AppHashAlgorithm.HMAC_SHA1);
-    if (hash == AppHashAlgorithm.PLAIN_TEXT) {
-      hash = AppHashAlgorithm.HMAC_SHA1;
+    digest = Optional.ofNullable(properties.getDigest()).orElse(AppDigestAlgorithm.HMAC_SHA1);
+    if (digest == AppDigestAlgorithm.PLAIN_TEXT) {
+      digest = AppDigestAlgorithm.HMAC_SHA1;
     }
   }
 
@@ -36,6 +36,6 @@ public class TotpPassword extends OtpPassword {
     }
     String message = timeBuilder.toString();
 
-    return this.getOtp(length, message, key, this.hash);
+    return this.getOtp(length, message, key, this.digest);
   }
 }

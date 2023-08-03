@@ -1,4 +1,4 @@
-package com.exatask.platform.crypto.hashes;
+package com.exatask.platform.crypto.digests;
 
 import com.exatask.platform.crypto.encoders.AppEncoder;
 import com.exatask.platform.crypto.encoders.AppEncoderAlgorithm;
@@ -11,30 +11,30 @@ import javax.crypto.SecretKey;
 import javax.crypto.spec.SecretKeySpec;
 import java.security.GeneralSecurityException;
 
-public class HmacHash implements AppHash {
+public class HmacDigest implements AppDigest {
 
-  private final Mac hash;
+  private final Mac digest;
 
   private final AppEncoder encoder;
 
-  public HmacHash(AppHashAlgorithm algorithm, AppEncoderAlgorithm encoderType, AppHashProperties properties) throws GeneralSecurityException {
+  public HmacDigest(AppDigestAlgorithm algorithm, AppEncoderAlgorithm encoderType, AppDigestProperties properties) throws GeneralSecurityException {
 
     SecretKey secretKey = new SecretKeySpec(properties.getKey().getBytes(), algorithm.getAlgorithm());
 
-    this.hash = Mac.getInstance(algorithm.getAlgorithm(), BouncyCastleProvider.PROVIDER_NAME);
-    this.hash.init(secretKey);
+    this.digest = Mac.getInstance(algorithm.getAlgorithm(), BouncyCastleProvider.PROVIDER_NAME);
+    this.digest.init(secretKey);
     this.encoder = AppEncoderFactory.getEncoder(encoderType);
   }
 
   @Override
-  public String hash(String data) {
+  public String digest(String data) {
 
     if (ObjectUtils.isEmpty(data)) {
       return data;
     }
 
-    this.hash.reset();
-    byte[] byteEncodedPassword = this.hash.doFinal(data.getBytes());
+    this.digest.reset();
+    byte[] byteEncodedPassword = this.digest.doFinal(data.getBytes());
     return this.encoder.encode(byteEncodedPassword);
   }
 }

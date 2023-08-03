@@ -4,10 +4,10 @@ import com.exatask.platform.crypto.encoders.AppEncoder;
 import com.exatask.platform.crypto.encoders.AppEncoderAlgorithm;
 import com.exatask.platform.crypto.encoders.AppEncoderFactory;
 import com.exatask.platform.crypto.exceptions.PasswordGenerationException;
-import com.exatask.platform.crypto.hashes.AppHash;
-import com.exatask.platform.crypto.hashes.AppHashAlgorithm;
-import com.exatask.platform.crypto.hashes.AppHashFactory;
-import com.exatask.platform.crypto.hashes.AppHashProperties;
+import com.exatask.platform.crypto.digests.AppDigest;
+import com.exatask.platform.crypto.digests.AppDigestAlgorithm;
+import com.exatask.platform.crypto.digests.AppDigestFactory;
+import com.exatask.platform.crypto.digests.AppDigestProperties;
 import com.exatask.platform.logging.AppLogManager;
 import com.exatask.platform.logging.AppLogger;
 
@@ -22,18 +22,18 @@ public abstract class OtpPassword implements AppPassword {
 
     private final AppEncoder appEncoder = AppEncoderFactory.getEncoder(encoderType);
 
-    protected String getOtp(int length, String message, String key, AppHashAlgorithm hashAlgorithm) {
+    protected String getOtp(int length, String message, String key, AppDigestAlgorithm digestAlgorithm) {
 
         length = length < 0 ? 4 : Math.min(length, 8);
 
         String encryptedMessage = "";
         try {
 
-            AppHashProperties hashProperties = AppHashProperties.builder()
+            AppDigestProperties digestProperties = AppDigestProperties.builder()
                     .key(key)
                     .build();
-            AppHash hash = AppHashFactory.getHash(hashAlgorithm, encoderType, hashProperties);
-            encryptedMessage = hash.hash(message);
+            AppDigest digest = AppDigestFactory.getDigest(digestAlgorithm, encoderType, digestProperties);
+            encryptedMessage = digest.digest(message);
 
         } catch (GeneralSecurityException exception) {
             LOGGER.error(exception);

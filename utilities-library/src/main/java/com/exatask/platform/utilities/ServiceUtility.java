@@ -26,11 +26,7 @@ public class ServiceUtility {
 
   private static final String SERVICE_NAME_KEY = "service.name";
   private static final String SERVICE_ENV_KEY = "service.environment";
-
-  public static final String CONFIG_SERVICE_URL_KEY = "exatask.config-service.url";
-  public static final String CONFIG_SERVICE_USERNAME_KEY = "exatask.config-service.username";
-  public static final String CONFIG_SERVICE_PASSWORD_KEY = "exatask.config-service.password";
-  public static final String CONFIG_SERVICE_SECRET_KEY = "exatask.config-service.secret";
+  private static final String SERVICE_ZONE_KEY = "service.zone";
 
   @Getter
   private static Environment environment;
@@ -138,6 +134,16 @@ public class ServiceUtility {
     }
 
     throw new RuntimePropertyNotFoundException(SERVICE_ENV_KEY);
+  }
+
+  public static String getServiceZone() throws RuntimePropertyNotFoundException {
+
+    String value = getRuntimeProperty(SERVICE_ZONE_KEY);
+    if (StringUtils.isNotEmpty(value)) {
+      return value;
+    }
+
+    throw new RuntimePropertyNotFoundException(SERVICE_ZONE_KEY);
   }
 
   public static String getServiceProperty(String key) {

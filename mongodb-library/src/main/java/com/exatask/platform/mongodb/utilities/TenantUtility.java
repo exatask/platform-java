@@ -1,6 +1,5 @@
 package com.exatask.platform.mongodb.utilities;
 
-import com.exatask.platform.utilities.constants.Tenant;
 import lombok.experimental.UtilityClass;
 import org.apache.commons.lang3.StringUtils;
 
@@ -8,6 +7,6 @@ import org.apache.commons.lang3.StringUtils;
 public class TenantUtility {
 
   public static String getTenantKey(String serviceKey, String tenant) {
-    return serviceKey + "_" + StringUtils.defaultIfEmpty(tenant, Tenant.DEFAULT_TENANT);
+    return serviceKey + "_" + StringUtils.defaultIfEmpty(tenant, "");
   }
 }

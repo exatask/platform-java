@@ -17,13 +17,13 @@ import java.io.InputStreamReader;
 import java.math.BigInteger;
 import java.security.GeneralSecurityException;
 
-public abstract class MysqlChangelog extends BaseJavaMigration {
+public abstract class PostgresqlChangelog extends BaseJavaMigration {
 
   protected static final AppLogger LOGGER = AppLogManager.getLogger();
 
   private AppDigest appDigest;
 
-  protected MysqlChangelog() {
+  protected PostgresqlChangelog() {
 
     super();
 

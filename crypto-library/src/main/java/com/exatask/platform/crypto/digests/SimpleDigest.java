@@ -1,4 +1,4 @@
-package com.exatask.platform.crypto.hashes;
+package com.exatask.platform.crypto.digests;
 
 import com.exatask.platform.crypto.encoders.AppEncoder;
 import com.exatask.platform.crypto.encoders.AppEncoderAlgorithm;
@@ -9,27 +9,27 @@ import org.springframework.util.ObjectUtils;
 import java.security.GeneralSecurityException;
 import java.security.MessageDigest;
 
-public class DigestHash implements AppHash {
+public class SimpleDigest implements AppDigest {
 
-  private final MessageDigest hash;
+  private final MessageDigest digest;
 
   private final AppEncoder encoder;
 
-  public DigestHash(AppHashAlgorithm algorithm, AppEncoderAlgorithm encoderType) throws GeneralSecurityException {
+  public SimpleDigest(AppDigestAlgorithm algorithm, AppEncoderAlgorithm encoderType) throws GeneralSecurityException {
 
-    this.hash = MessageDigest.getInstance(algorithm.getAlgorithm(), BouncyCastleProvider.PROVIDER_NAME);
+    this.digest = MessageDigest.getInstance(algorithm.getAlgorithm(), BouncyCastleProvider.PROVIDER_NAME);
     this.encoder = AppEncoderFactory.getEncoder(encoderType);
   }
 
   @Override
-  public String hash(String data) {
+  public String digest(String data) {
 
     if (ObjectUtils.isEmpty(data)) {
       return data;
     }
 
-    this.hash.reset();
-    byte[] byteEncodedData = this.hash.digest(data.getBytes());
+    this.digest.reset();
+    byte[] byteEncodedData = this.digest.digest(data.getBytes());
     return this.encoder.encode(byteEncodedData);
   }
 }
