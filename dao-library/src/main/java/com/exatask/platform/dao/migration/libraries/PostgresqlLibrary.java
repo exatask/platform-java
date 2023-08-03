@@ -27,10 +27,10 @@ public class PostgresqlLibrary extends AppLibrary {
     return Flyway.configure()
         .table(CHANGELOG_TABLE)
         .locations("classpath:" + ServiceUtility.getServiceProperty(CHANGELOG_PACKAGE))
-        .sqlMigrationSuffixes(".sql,.java")
+        .sqlMigrationSuffixes(".java")
         .validateOnMigrate(false)
         .validateMigrationNaming(true)
-        .baselineOnMigrate(true)
+        .baselineOnMigrate(false)
         .installedBy("no-author@exatask.com")
         .dataSource(dataSource)
         .load();

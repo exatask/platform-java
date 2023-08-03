@@ -2,7 +2,7 @@ package com.exatask.platform.mysql.converters;
 
 import javax.persistence.AttributeConverter;
 
-public abstract class EncryptedConverter implements AttributeConverter<String, String> {
+public abstract class EncryptConverter implements AttributeConverter<String, String> {
 
   public abstract String encrypt(String data);
 

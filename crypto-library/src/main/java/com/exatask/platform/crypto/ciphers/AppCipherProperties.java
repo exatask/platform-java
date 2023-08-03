@@ -21,5 +21,5 @@ public class AppCipherProperties {
 
     private String key;
 
-    private String hashKey;
+    private String digestKey;
 }

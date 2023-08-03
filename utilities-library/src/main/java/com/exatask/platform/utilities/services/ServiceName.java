@@ -9,6 +9,7 @@ public enum ServiceName {
 
   PLATFORM,
   GATEWAY,
+  UNIVERSAL(ServiceEndpoints.SERVICE_UNIVERSAL),
   CONFIGURATION(ServiceEndpoints.SERVICE_CONFIGURATION),
   METADATA(ServiceEndpoints.SERVICE_METADATA),
   ORGANIZATION(ServiceEndpoints.SERVICE_ORGANIZATION),
@@ -16,7 +17,7 @@ public enum ServiceName {
   IDENTITY(ServiceEndpoints.SERVICE_IDENTITY),
   ACCESS_CONTROL(ServiceEndpoints.SERVICE_ACCESS_CONTROL),
   NOTIFICATION(ServiceEndpoints.SERVICE_NOTIFICATION),
-  DOCUMENT(ServiceEndpoints.SERVICE_DOCUMENT),
+  DRIVE(ServiceEndpoints.SERVICE_DRIVE),
   OTP(ServiceEndpoints.SERVICE_OTP),
   AUDIT(ServiceEndpoints.SERVICE_AUDIT),
   SUBSCRIPTION(ServiceEndpoints.SERVICE_SUBSCRIPTION),
@@ -25,14 +26,17 @@ public enum ServiceName {
   ATTENDANCE(ServiceEndpoints.SERVICE_ATTENDANCE),
   TIME_OFF(ServiceEndpoints.SERVICE_TIME_OFF),
   WORK_FROM_HOME(ServiceEndpoints.SERVICE_WORK_FROM_HOME),
-  COMPENSATORY_OFF(ServiceEndpoints.SERVICE_COMPENSATORY_OFF),
-  VACANCY(ServiceEndpoints.SERVICE_VACANCY),
   RECRUITMENT(ServiceEndpoints.SERVICE_RECRUITMENT),
+  INTERVIEW(ServiceEndpoints.SERVICE_INTERVIEW),
   ONBOARDING(ServiceEndpoints.SERVICE_ONBOARDING),
   SEPARATION(ServiceEndpoints.SERVICE_SEPARATION),
   FEEDBACK(ServiceEndpoints.SERVICE_FEEDBACK),
   WORKFLOW(ServiceEndpoints.SERVICE_WORKFLOW),
-  AGENDA(ServiceEndpoints.SERVICE_AGENDA);
+  OBJECTIVE(ServiceEndpoints.SERVICE_OBJECTIVE),
+  EXPENSE(ServiceEndpoints.SERVICE_EXPENSE),
+  SLACK(ServiceEndpoints.SERVICE_SLACK),
+  WEBHOOK(ServiceEndpoints.SERVICE_WEBHOOK),
+  OPPORTUNITY(ServiceEndpoints.SERVICE_OPPORTUNITY);
 
   private final String uri;
 
