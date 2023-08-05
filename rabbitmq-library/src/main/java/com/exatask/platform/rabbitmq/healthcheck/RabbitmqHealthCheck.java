@@ -30,7 +30,7 @@ public class RabbitmqHealthCheck implements ServiceHealthCheck {
       Map<String,Object> serverProperties = rabbitTemplate.execute(channel -> channel.getConnection().getServerProperties());
 
       rabbitmqHealthCheckData.add(ServiceHealthCheckData.builder()
-          .status(true)
+          .success(true)
           .version(serverProperties.get("version").toString())
           .build());
     }

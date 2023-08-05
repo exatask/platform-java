@@ -9,6 +9,7 @@ public enum ServiceName {
 
   PLATFORM,
   GATEWAY,
+  UTILITY(ServiceEndpoints.SERVICE_UTILITY),
   UNIVERSAL(ServiceEndpoints.SERVICE_UNIVERSAL),
   CONFIGURATION(ServiceEndpoints.SERVICE_CONFIGURATION),
   METADATA(ServiceEndpoints.SERVICE_METADATA),

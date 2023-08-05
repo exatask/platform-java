@@ -32,7 +32,7 @@ public class RedisHealthCheck implements ServiceHealthCheck {
       Properties redisProperties = redisConnection.info();
 
       redisHealthCheckData.add(ServiceHealthCheckData.builder()
-          .status(true)
+          .success(true)
           .version(redisProperties.getProperty("redis_version"))
           .build());
 

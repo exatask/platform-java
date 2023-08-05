@@ -1,12 +1,12 @@
 package com.exatask.platform.crypto.ciphers;
 
-import com.exatask.platform.crypto.encoders.AppEncoder;
-import com.exatask.platform.crypto.encoders.AppEncoderAlgorithm;
-import com.exatask.platform.crypto.encoders.AppEncoderFactory;
 import com.exatask.platform.crypto.digests.AppDigest;
 import com.exatask.platform.crypto.digests.AppDigestAlgorithm;
 import com.exatask.platform.crypto.digests.AppDigestFactory;
 import com.exatask.platform.crypto.digests.AppDigestProperties;
+import com.exatask.platform.crypto.encoders.AppEncoder;
+import com.exatask.platform.crypto.encoders.AppEncoderAlgorithm;
+import com.exatask.platform.crypto.encoders.AppEncoderFactory;
 import com.exatask.platform.logging.AppLogManager;
 import com.exatask.platform.logging.AppLogger;
 import com.fasterxml.jackson.core.JsonProcessingException;
@@ -16,6 +16,7 @@ import com.fasterxml.jackson.databind.annotation.JsonNaming;
 import lombok.Builder;
 import lombok.Getter;
 import org.bouncycastle.jce.provider.BouncyCastleProvider;
+import org.bouncycastle.util.encoders.Base64;
 import org.springframework.util.ObjectUtils;
 
 import javax.crypto.Cipher;
@@ -24,23 +25,18 @@ import javax.crypto.spec.SecretKeySpec;
 import java.io.IOException;
 import java.security.GeneralSecurityException;
 
-public class AesCipher implements AppCipher {
+public class SymmetricCipher implements AppCipher {
 
   private static final AppLogger LOGGER = AppLogManager.getLogger();
-
-  private static final String ALGORITHM = "AES";
 
   private final ObjectMapper mapper = new ObjectMapper();
 
   private final Cipher cipher;
-
   private final AppEncoder encoder;
-
   private final SecretKeySpec secretKey;
-
   private final AppDigest authenticator;
 
-  public AesCipher(AppCipherAlgorithm algorithm, AppEncoderAlgorithm encoderType, AppCipherProperties properties) throws GeneralSecurityException, IOException {
+  public SymmetricCipher(AppCipherAlgorithm algorithm, AppEncoderAlgorithm encoderType, AppCipherProperties properties) throws GeneralSecurityException {
 
     this.cipher = Cipher.getInstance(algorithm.getAlgorithm(), BouncyCastleProvider.PROVIDER_NAME);
     this.encoder = AppEncoderFactory.getEncoder(encoderType);
@@ -50,7 +46,7 @@ public class AesCipher implements AppCipher {
             .build();
     this.authenticator = AppDigestFactory.getDigest(AppDigestAlgorithm.HMAC_SHA256, encoderType, digestProperties);
 
-    this.secretKey = new SecretKeySpec(properties.getKey().getBytes(), ALGORITHM);
+    this.secretKey = new SecretKeySpec(Base64.decode(properties.getKey()), algorithm.getKeyAlgorithm());
   }
 
   @Override

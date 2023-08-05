@@ -11,5 +11,5 @@ import org.springframework.hateoas.RepresentationModel;
 @JsonNaming(PropertyNamingStrategy.SnakeCaseStrategy.class)
 public abstract class AppResponse extends RepresentationModel<AppResponse> {
 
-  protected Boolean status = true;
+  protected Boolean success = true;
 }

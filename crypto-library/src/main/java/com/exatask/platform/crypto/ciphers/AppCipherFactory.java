@@ -30,10 +30,11 @@ public class AppCipherFactory {
     switch (algorithm) {
 
       case RSA_ECB:
-        return new RsaCipher(algorithm, encoder, properties);
+        return new AsymmetricCipher(algorithm, encoder, properties);
 
       case AES_CBC:
-        return new AesCipher(algorithm, encoder, properties);
+      case DES_CBC:
+        return new SymmetricCipher(algorithm, encoder, properties);
 
       case PLAIN_TEXT:
         return new PlainTextCipher();

@@ -12,7 +12,7 @@ import lombok.experimental.SuperBuilder;
 @JsonNaming(PropertyNamingStrategy.SnakeCaseStrategy.class)
 public class ServiceHealthCheckData {
 
-  private final Boolean status;
+  private final Boolean success;
 
   private final String version;
 }

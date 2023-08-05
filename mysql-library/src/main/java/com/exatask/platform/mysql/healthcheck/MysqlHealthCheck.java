@@ -30,7 +30,7 @@ public class MysqlHealthCheck implements ServiceHealthCheck {
       Query versionQuery = entityManager.createNativeQuery("SELECT VERSION();");
 
       mysqlHealthCheckData.add(ServiceHealthCheckData.builder()
-          .status(true)
+          .success(true)
           .version(versionQuery.getSingleResult().toString())
           .build());
     }

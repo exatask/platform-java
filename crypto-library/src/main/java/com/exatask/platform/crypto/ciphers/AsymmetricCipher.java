@@ -24,24 +24,19 @@ import java.security.PublicKey;
 import java.security.spec.PKCS8EncodedKeySpec;
 import java.security.spec.X509EncodedKeySpec;
 
-public class RsaCipher implements AppCipher {
+public class AsymmetricCipher implements AppCipher {
 
   private static final AppLogger LOGGER = AppLogManager.getLogger();
 
-  private static final String ALGORITHM = "RSA";
-
   private final Cipher cipher;
-
   private final AppEncoder encoder;
-
   private final PublicKey publicKey;
-
   private final PrivateKey privateKey;
 
-  public RsaCipher(AppCipherAlgorithm algorithm, AppEncoderAlgorithm encoderType, AppCipherProperties properties)
+  public AsymmetricCipher(AppCipherAlgorithm algorithm, AppEncoderAlgorithm encoderType, AppCipherProperties properties)
       throws GeneralSecurityException, IOException {
 
-    KeyFactory keyFactory = KeyFactory.getInstance(ALGORITHM, BouncyCastleProvider.PROVIDER_NAME);
+    KeyFactory keyFactory = KeyFactory.getInstance(algorithm.getKeyAlgorithm(), BouncyCastleProvider.PROVIDER_NAME);
 
     this.cipher = Cipher.getInstance(algorithm.getAlgorithm());
     this.encoder = AppEncoderFactory.getEncoder(encoderType);

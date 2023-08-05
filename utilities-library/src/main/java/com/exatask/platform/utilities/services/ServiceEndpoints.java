@@ -18,6 +18,7 @@ public class ServiceEndpoints {
   public static final String ACCESS_RESTRICTED = "/restricted";
   public static final String ACCESS_INTERNAL = "/internal";
 
+  public static final String SERVICE_UTILITY = "/utility";
   public static final String SERVICE_UNIVERSAL = "/universal";
   public static final String SERVICE_CONFIGURATION = "/configuration";
   public static final String SERVICE_METADATA = "/metadata";
