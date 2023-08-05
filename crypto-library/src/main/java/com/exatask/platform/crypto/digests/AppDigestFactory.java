@@ -30,6 +30,7 @@ public class AppDigestFactory {
       case SHA1:
         return new SimpleDigest(algorithm, encoder);
 
+      case HMAC_MD5:
       case HMAC_SHA1:
       case HMAC_SHA256:
       case HMAC_SHA512:

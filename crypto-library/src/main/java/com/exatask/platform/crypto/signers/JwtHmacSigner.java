@@ -11,9 +11,9 @@ import io.jsonwebtoken.MalformedJwtException;
 import io.jsonwebtoken.UnsupportedJwtException;
 import io.jsonwebtoken.security.Keys;
 import io.jsonwebtoken.security.SignatureException;
+import org.bouncycastle.util.encoders.Base64;
 
 import javax.crypto.SecretKey;
-import java.nio.charset.StandardCharsets;
 import java.time.LocalDateTime;
 import java.time.ZoneId;
 import java.util.Collections;
@@ -29,7 +29,7 @@ public class JwtHmacSigner implements AppSigner {
 
   public JwtHmacSigner(AppSignerProperties properties) {
 
-    this.secretKey = Keys.hmacShaKeyFor(properties.getSecret().getBytes(StandardCharsets.UTF_8));
+    this.secretKey = Keys.hmacShaKeyFor(Base64.decode(properties.getSecret()));
   }
 
   @Override

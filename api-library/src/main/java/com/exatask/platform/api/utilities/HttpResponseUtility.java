@@ -34,7 +34,7 @@ public class HttpResponseUtility {
     }
 
     httpErrorResponse.setMessage(responseMessage)
-        .setStatus(false);
+        .setSuccess(false);
     return httpErrorResponse;
   }
 }

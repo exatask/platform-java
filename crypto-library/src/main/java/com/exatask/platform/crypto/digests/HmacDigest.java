@@ -4,6 +4,7 @@ import com.exatask.platform.crypto.encoders.AppEncoder;
 import com.exatask.platform.crypto.encoders.AppEncoderAlgorithm;
 import com.exatask.platform.crypto.encoders.AppEncoderFactory;
 import org.bouncycastle.jce.provider.BouncyCastleProvider;
+import org.bouncycastle.util.encoders.Base64;
 import org.springframework.util.ObjectUtils;
 
 import javax.crypto.Mac;
@@ -19,7 +20,7 @@ public class HmacDigest implements AppDigest {
 
   public HmacDigest(AppDigestAlgorithm algorithm, AppEncoderAlgorithm encoderType, AppDigestProperties properties) throws GeneralSecurityException {
 
-    SecretKey secretKey = new SecretKeySpec(properties.getKey().getBytes(), algorithm.getAlgorithm());
+    SecretKey secretKey = new SecretKeySpec(Base64.decode(properties.getKey()), algorithm.getAlgorithm());
 
     this.digest = Mac.getInstance(algorithm.getAlgorithm(), BouncyCastleProvider.PROVIDER_NAME);
     this.digest.init(secretKey);

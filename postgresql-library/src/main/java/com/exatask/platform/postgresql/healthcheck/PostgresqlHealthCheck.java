@@ -30,7 +30,7 @@ public class PostgresqlHealthCheck implements ServiceHealthCheck {
       Query versionQuery = entityManager.createNativeQuery("SELECT VERSION();");
 
       postgresqlHealthCheckData.add(ServiceHealthCheckData.builder()
-          .status(true)
+          .success(true)
           .version(versionQuery.getSingleResult().toString())
           .build());
     }

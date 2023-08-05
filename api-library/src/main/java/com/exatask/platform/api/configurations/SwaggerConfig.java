@@ -35,8 +35,8 @@ public class SwaggerConfig {
 
   private ApiResponse getApiFailureResponse() {
 
-    Schema<Boolean> statusSchema = new Schema<>();
-    statusSchema.type("boolean")
+    Schema<Boolean> succesSchema = new Schema<>();
+    succesSchema.type("boolean")
         .setDefault(false);
 
     Schema<String> messageTypeSchema = new Schema<>();
@@ -58,7 +58,7 @@ public class SwaggerConfig {
 
     Schema<Object> apiFailure = new Schema<>();
     apiFailure.type(TYPE_OBJECT)
-        .addProperties("status", statusSchema)
+        .addProperties("success", succesSchema)
         .addProperties("message", messageSchema)
         .addProperties("invalid_attributes", (new Schema<>()).type(TYPE_OBJECT))
         .addProperties("extra_params", (new Schema<>()).type(TYPE_OBJECT))
