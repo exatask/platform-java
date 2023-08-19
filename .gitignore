@@ -30,6 +30,7 @@
 ################################################
 .gradle
 **/build
+**/bin
 .tmp
 *.log
 **/logs/*
@@ -44,8 +45,10 @@
 nbproject
 **/.idea
 .project
-.vscode
+.vscode/*
 *.code-workspace
+!.vscode/settings.json
+!.vscode/tasks.json
 
 ################################################
 # OS

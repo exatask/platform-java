@@ -1,14 +1,16 @@
 package com.exatask.platform.mongodb.converters;
 
+import com.exatask.platform.logging.AppLogManager;
+import com.exatask.platform.logging.AppLogger;
 import com.exatask.platform.mongodb.annotations.Encrypted;
 
 import java.lang.annotation.Annotation;
 
-public abstract class EncryptedConverter implements AppConverter<String, String> {
+public abstract class DigestConverter implements AppConverter<String, String> {
 
-  public abstract String encrypt(String data);
+  protected static AppLogger LOGGER = AppLogManager.getLogger();
 
-  public abstract String decrypt(String data);
+  public abstract String digest(String data);
 
   @Override
   public Class<?> getAnnotation() {
@@ -17,11 +19,11 @@ public abstract class EncryptedConverter implements AppConverter<String, String>
 
   @Override
   public String convertToDatabaseColumn(Object data, Annotation annotation) {
-    return encrypt(data.toString());
+    return digest(data.toString());
   }
 
   @Override
   public String convertToEntityAttribute(Object data, Annotation annotation) {
-    return decrypt(data.toString());
+    return data.toString();
   }
 }

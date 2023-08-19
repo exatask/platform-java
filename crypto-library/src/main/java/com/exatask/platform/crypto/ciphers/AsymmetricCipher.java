@@ -6,9 +6,11 @@ import com.exatask.platform.crypto.encoders.AppEncoderFactory;
 import com.exatask.platform.logging.AppLogManager;
 import com.exatask.platform.logging.AppLogger;
 import org.bouncycastle.jce.provider.BouncyCastleProvider;
+import org.bouncycastle.util.encoders.Base64;
 import org.bouncycastle.util.io.pem.PemReader;
 import org.springframework.core.io.ClassPathResource;
 import org.springframework.util.ObjectUtils;
+import org.springframework.util.StringUtils;
 
 import javax.crypto.Cipher;
 import javax.crypto.EncryptedPrivateKeyInfo;
@@ -41,16 +43,24 @@ public class AsymmetricCipher implements AppCipher {
     this.cipher = Cipher.getInstance(algorithm.getAlgorithm());
     this.encoder = AppEncoderFactory.getEncoder(encoderType);
 
-    this.publicKey = getPublicKey(keyFactory, properties.getPublicKeyFile());
-    this.privateKey = getPrivateKey(keyFactory, properties.getPrivateKeyFile(), properties.getPassphrase());
+    if (StringUtils.hasText(properties.getPublicKeyFile())) {
+      properties.setPublicKey(readKeyFile(properties.getPublicKeyFile()));
+    }
+
+    byte[] publicKeyData = Base64.decode(properties.getPublicKey());
+    this.publicKey = keyFactory.generatePublic(new X509EncodedKeySpec(publicKeyData));
+
+    if (StringUtils.hasText(properties.getPrivateKeyFile())) {
+      properties.setPrivateKey(readKeyFile(properties.getPrivateKeyFile()));
+    }
+
+    this.privateKey = getPrivateKey(keyFactory, properties.getPrivateKey(), properties.getPassphrase());
   }
 
-  private PrivateKey getPrivateKey(KeyFactory keyFactory, String privateKeyFile, String passphrase)
+  private PrivateKey getPrivateKey(KeyFactory keyFactory, String privateKey, String passphrase)
       throws GeneralSecurityException, IOException {
 
-    InputStream privateKeyStream = new ClassPathResource(privateKeyFile).getInputStream();
-    PemReader privateKeyReader = new PemReader(new InputStreamReader(privateKeyStream));
-    byte[] privateKeyData = privateKeyReader.readPemObject().getContent();
+    byte[] privateKeyData = Base64.decode(privateKey);
     PKCS8EncodedKeySpec privateKeySpec;
 
     if (passphrase != null && passphrase.length() > 0) {
@@ -68,13 +78,11 @@ public class AsymmetricCipher implements AppCipher {
     return keyFactory.generatePrivate(privateKeySpec);
   }
 
-  private PublicKey getPublicKey(KeyFactory keyFactory, String publicKeyFile)
-      throws IOException, GeneralSecurityException {
+  private String readKeyFile(String keyFile) throws IOException {
 
-    InputStream publicKeyStream = new ClassPathResource(publicKeyFile).getInputStream();
-    PemReader publicKeyReader = new PemReader(new InputStreamReader(publicKeyStream));
-    byte[] publicKeyData = publicKeyReader.readPemObject().getContent();
-    return keyFactory.generatePublic(new X509EncodedKeySpec(publicKeyData));
+    InputStream keyStream = new ClassPathResource(keyFile).getInputStream();
+    PemReader keyReader = new PemReader(new InputStreamReader(keyStream));
+    return Base64.toBase64String(keyReader.readPemObject().getContent());
   }
 
   @Override
@@ -86,7 +94,7 @@ public class AsymmetricCipher implements AppCipher {
 
     try {
 
-      this.cipher.init(Cipher.ENCRYPT_MODE, publicKey);
+      this.cipher.init(Cipher.ENCRYPT_MODE, this.publicKey);
       byte[] encryptedBytes = this.cipher.doFinal(data.getBytes());
       return this.encoder.encode(encryptedBytes);
 
@@ -106,7 +114,7 @@ public class AsymmetricCipher implements AppCipher {
 
     try {
 
-      this.cipher.init(Cipher.DECRYPT_MODE, privateKey);
+      this.cipher.init(Cipher.DECRYPT_MODE, this.privateKey);
       byte[] decryptedBytes = this.cipher.doFinal(this.encoder.decode(data));
       return new String(decryptedBytes);
 

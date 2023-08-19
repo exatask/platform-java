@@ -26,7 +26,8 @@ public class ServiceUtility {
 
   private static final String SERVICE_NAME_KEY = "service.name";
   private static final String SERVICE_ENV_KEY = "service.environment";
-  private static final String SERVICE_ZONE_KEY = "service.zone";
+  private static final String SERVICE_REGION_KEY = "service.region";
+  private static final String SERVICE_TENANT_KEY = "service.tenant";
 
   @Getter
   private static Environment environment;
@@ -136,14 +137,24 @@ public class ServiceUtility {
     throw new RuntimePropertyNotFoundException(SERVICE_ENV_KEY);
   }
 
-  public static String getServiceZone() throws RuntimePropertyNotFoundException {
+  public static String getServiceRegion() throws RuntimePropertyNotFoundException {
 
-    String value = getRuntimeProperty(SERVICE_ZONE_KEY);
+    String value = getRuntimeProperty(SERVICE_REGION_KEY);
     if (StringUtils.isNotEmpty(value)) {
       return value;
     }
 
-    throw new RuntimePropertyNotFoundException(SERVICE_ZONE_KEY);
+    throw new RuntimePropertyNotFoundException(SERVICE_REGION_KEY);
+  }
+
+  public static String getServiceTenant() throws RuntimePropertyNotFoundException {
+
+    String value = getRuntimeProperty(SERVICE_TENANT_KEY);
+    if (StringUtils.isNotEmpty(value)) {
+      return value;
+    }
+
+    throw new RuntimePropertyNotFoundException(SERVICE_TENANT_KEY);
   }
 
   public static String getServiceProperty(String key) {
