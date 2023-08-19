@@ -1,0 +1,7 @@
+{
+  "java.compile.nullAnalysis.mode": "automatic",
+  "java.project.outputPath": "build",
+  "gradle.reuseTerminals": "task",
+  "boot-java.rewrite.reconcile": true,
+  "java.configuration.updateBuildConfiguration": "automatic",
+}

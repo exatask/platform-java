@@ -1,9 +1,14 @@
 package com.exatask.platform.postgresql.converters;
 
+import com.exatask.platform.logging.AppLogManager;
+import com.exatask.platform.logging.AppLogger;
+
 import javax.persistence.AttributeConverter;
 import javax.persistence.Convert;
 
-public abstract class EncryptedConverter implements AttributeConverter<String, String> {
+public abstract class EncryptConverter implements AttributeConverter<String, String> {
+
+  protected static AppLogger LOGGER = AppLogManager.getLogger();
 
   public abstract String encrypt(String data);
 

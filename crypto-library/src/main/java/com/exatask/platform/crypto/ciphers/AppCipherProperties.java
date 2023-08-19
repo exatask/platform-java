@@ -17,6 +17,10 @@ public class AppCipherProperties {
 
     private String privateKeyFile;
 
+    private String publicKey;
+
+    private String privateKey;
+
     private String passphrase;
 
     private String key;

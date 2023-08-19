@@ -1,8 +1,13 @@
 package com.exatask.platform.mysql.converters;
 
+import com.exatask.platform.logging.AppLogManager;
+import com.exatask.platform.logging.AppLogger;
+
 import javax.persistence.AttributeConverter;
 
 public abstract class EncryptConverter implements AttributeConverter<String, String> {
+
+  protected static AppLogger LOGGER = AppLogManager.getLogger();
 
   public abstract String encrypt(String data);
 
