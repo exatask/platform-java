@@ -52,10 +52,10 @@ public class JwtHmacAuthenticator implements AppAuthenticator {
     LocalDateTime expiry = LocalDateTime.now().plus(credentials.getExpiry(), ChronoUnit.SECONDS);
 
     Map<String, Object> signData = new HashMap<>();
-    signData.put(ServiceAuthData.AUTH_JWT_SUBJECT_LABEL, credentials.getSubject());
-    signData.put(ServiceAuthData.AUTH_JWT_ISSUER_LABEL, credentials.getIssuer());
-    signData.put(ServiceAuthData.AUTH_JWT_AUDIENCE_LABEL, credentials.getAudience());
-    signData.put(ServiceAuthData.AUTH_JWT_EXPIRY_LABEL, expiry);
+    signData.put(ServiceAuthData.AUTH_JWT_SUBJECT, credentials.getSubject());
+    signData.put(ServiceAuthData.AUTH_JWT_ISSUER, credentials.getIssuer());
+    signData.put(ServiceAuthData.AUTH_JWT_AUDIENCE, credentials.getAudience());
+    signData.put(ServiceAuthData.AUTH_JWT_EXPIRY, expiry);
 
     return this.signer.sign(signData);
   }
@@ -68,10 +68,10 @@ public class JwtHmacAuthenticator implements AppAuthenticator {
       return false;
     }
 
-    Object audienceData = claims.get(ServiceAuthData.AUTH_JWT_AUDIENCE_LABEL);
+    Object audienceData = claims.get(ServiceAuthData.AUTH_JWT_AUDIENCE);
     String audience = ObjectUtils.isEmpty(audienceData) ? "" : audienceData.toString();
 
-    Object subjectData = claims.get(ServiceAuthData.AUTH_JWT_SUBJECT_LABEL);
+    Object subjectData = claims.get(ServiceAuthData.AUTH_JWT_SUBJECT);
     String subject = ObjectUtils.isEmpty(subjectData) ? "" : subjectData.toString();
 
     return audience.compareTo(credentials.getAudience()) == 0 && subject.compareTo(credentials.getSubject()) == 0;

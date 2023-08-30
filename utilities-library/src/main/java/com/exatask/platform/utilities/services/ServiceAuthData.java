@@ -7,10 +7,18 @@ public class ServiceAuthData {
 
   public static final String AUTH_HEADER = "Authorization";
 
-  public static final String AUTH_JWT_SUBJECT_LABEL = "sub";
-  public static final String AUTH_JWT_ISSUER_LABEL = "iss";
-  public static final String AUTH_JWT_AUDIENCE_LABEL = "aud";
-  public static final String AUTH_JWT_EXPIRY_LABEL = "exp";
+  public static final String AUTH_JWT_SUBJECT = "sub";
+  public static final String AUTH_JWT_ISSUER = "iss";
+  public static final String AUTH_JWT_AUDIENCE = "aud";
+  public static final String AUTH_JWT_EXPIRY = "exp";
+  public static final String AUTH_JWT_JTI = "jti";
+
+  public static final String AUTH_JWT_EMPLOYEE_NAME = "enm";
+  public static final String AUTH_JWT_EMPLOYEE_EMAIL = "eem";
+  public static final String AUTH_JWT_EMPLOYEE_MOBILE = "emb";
+  public static final String AUTH_JWT_ORGANIZATION_ID = "oid";
+  public static final String AUTH_JWT_ORGANIZATION_NAME = "onm";
+  public static final String AUTH_JWT_TENANT = "tnt";
 
   public static final String AUTH_SUBJECT = "service-auth";
 
