@@ -7,6 +7,6 @@ import org.apache.commons.lang3.StringUtils;
 public class TenantUtility {
 
   public static String getTenantKey(String serviceKey, String tenant) {
-    return serviceKey + "_" + StringUtils.defaultIfEmpty(tenant, "");
+    return serviceKey + "_" + StringUtils.defaultIfEmpty(tenant, "default");
   }
 }

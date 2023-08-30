@@ -17,6 +17,7 @@ public class DateTimeUtility {
   public static final String DATE = "yyyy-MM-dd";
   public static final String TIME = "HH:mm:ss";
   public static final String DATE_TIME = "yyyy-MM-dd HH:mm:ss";
+  public static final String ISO_DATE_TIME = "yyyy-MM-dd'T'HH:mm:ss.SSSXXX";
   public static final String LOCAL_ISO_DATE_TIME = "yyyy-MM-dd'T'HH:mm:ss.SSS";
 
   static {
@@ -26,17 +27,22 @@ public class DateTimeUtility {
     DATE_TIME_FORMATS.put(DateTimeConstant.Format.ISO_DATE, DateTimeFormatter.ISO_DATE);
     DATE_TIME_FORMATS.put(DateTimeConstant.Format.ISO_TIME, DateTimeFormatter.ISO_TIME);
     DATE_TIME_FORMATS.put(DateTimeConstant.Format.ISO_DATE_TIME, DateTimeFormatter.ISO_DATE_TIME);
+    DATE_TIME_FORMATS.put(DateTimeConstant.Format.LOCAL_ISO_DATE_TIME, DateTimeFormatter.ofPattern(LOCAL_ISO_DATE_TIME));
   }
 
-  public static String toString(LocalDateTime date, DateTimeConstant.Format format) {
-    return date.format(DATE_TIME_FORMATS.get(format));
+  public static String toString(LocalDateTime dateTime, DateTimeConstant.Format format) {
+    return dateTime.format(DATE_TIME_FORMATS.get(format));
   }
 
   public static String toString(LocalDate date, DateTimeConstant.Format format) {
     return date.format(DATE_TIME_FORMATS.get(format));
   }
 
-  public static LocalDateTime toDate(String date, DateTimeConstant.Format format) {
-    return LocalDateTime.from(DATE_TIME_FORMATS.get(format).parse(date));
+  public static LocalDateTime toDateTime(String dateTime, DateTimeConstant.Format format) {
+    return LocalDateTime.from(DATE_TIME_FORMATS.get(format).parse(dateTime));
+  }
+
+  public static LocalDate toDate(String date, DateTimeConstant.Format format) {
+    return LocalDate.from(DATE_TIME_FORMATS.get(format).parse(date));
   }
 }
