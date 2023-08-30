@@ -20,7 +20,7 @@ public class DateTimeValidator extends AppValidator implements ConstraintValidat
   @Override
   public boolean isValid(String value, ConstraintValidatorContext context) {
 
-    LocalDateTime dateTime = DateTimeUtility.toDate(value, format);
+    LocalDateTime dateTime = DateTimeUtility.toDateTime(value, format);
     return value.equals(DateTimeUtility.toString(dateTime, format));
   }
 }

@@ -35,7 +35,7 @@ public class ElasticsearchHealthCheck implements ServiceHealthCheck {
       ClusterHealthResponse clusterResponse = template.execute(client -> client.cluster().health(new ClusterHealthRequest(), RequestOptions.DEFAULT));
 
       elasticHealthCheckData.add(ServiceHealthCheckData.builder()
-          .status(clusterResponse.getStatus() != ClusterHealthStatus.RED)
+          .success(clusterResponse.getStatus() != ClusterHealthStatus.RED)
           .version(mainResponse.getVersion().getNumber())
           .build());
     }

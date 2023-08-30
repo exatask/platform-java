@@ -1,10 +1,13 @@
 package com.exatask.platform.sdk;
 
 import com.exatask.platform.sdk.constants.HttpClientDefaults;
+import com.exatask.platform.utilities.deserializers.LocalDateDeserializer;
+import com.exatask.platform.utilities.deserializers.LocalDateTimeDeserializer;
+import com.exatask.platform.utilities.serializers.LocalDateSerializer;
+import com.exatask.platform.utilities.serializers.LocalDateTimeSerializer;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.fasterxml.jackson.databind.SerializationFeature;
-import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
+import com.fasterxml.jackson.databind.module.SimpleModule;
 import feign.AsyncClient;
 import feign.Client;
 import feign.Contract;
@@ -25,6 +28,8 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Import;
 
+import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.Arrays;
 import java.util.Optional;
 import java.util.concurrent.ExecutorService;
@@ -78,10 +83,15 @@ public class AppFeignConfiguration {
   @Bean
   public Encoder encoder() {
 
+    SimpleModule dateTimeModule = new SimpleModule();
+    dateTimeModule.addSerializer(LocalDateTime.class, new LocalDateTimeSerializer())
+        .addSerializer(LocalDate.class, new LocalDateSerializer())
+        .addDeserializer(LocalDateTime.class, new LocalDateTimeDeserializer())
+        .addDeserializer(LocalDate.class, new LocalDateDeserializer());
+
     ObjectMapper objectMapper = new ObjectMapper();
     objectMapper.setSerializationInclusion(JsonInclude.Include.NON_NULL);
-    objectMapper.registerModule(new JavaTimeModule());
-    objectMapper.disable(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS);
+    objectMapper.registerModule(dateTimeModule);
 
     return new JacksonEncoder(objectMapper);
   }

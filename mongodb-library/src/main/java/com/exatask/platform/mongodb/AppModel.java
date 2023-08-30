@@ -8,11 +8,12 @@ import org.springframework.data.annotation.Id;
 import org.springframework.data.annotation.LastModifiedDate;
 import org.springframework.data.mongodb.core.mapping.Field;
 
+import java.io.Serializable;
 import java.time.LocalDateTime;
 
 @Getter
 @NoArgsConstructor
-public abstract class AppModel {
+public abstract class AppModel implements Serializable {
 
   @Id
   @Field("_id")
