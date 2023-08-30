@@ -1,4 +1,4 @@
-package com.exatask.platform.mysql.utilities;
+package com.exatask.platform.mariadb.utilities;
 
 import lombok.experimental.UtilityClass;
 import org.apache.commons.lang3.StringUtils;
