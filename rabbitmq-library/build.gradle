@@ -22,6 +22,8 @@ dependencies {
   implementation project(":utilities-library")
   implementation project(":dto-library")
 
+  compileOnly group: "org.springframework.boot", name: "spring-boot-starter-web"
+
   compileOnly group: "org.projectlombok", name: "lombok", version: "${lombokVersion}"
   annotationProcessor group: "org.projectlombok", name: "lombok", version: "${lombokVersion}"
 }

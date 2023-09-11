@@ -50,14 +50,14 @@ public class CommandLineUtility {
         return parsedArguments;
     }
 
-    public static Subscriber parseSubscriber(String subscriber) {
+    public static Subscriber parseSubscriberAction(String subscriberAction) {
 
-        String[] subscriberParts = subscriber.split(COMMAND_LINE_SUBSCRIBER_ACTION_SEPARATOR, 2);
-        if (subscriberParts.length != 2) {
-            LOGGER.warn("Empty subscriber or action provided", Collections.singletonMap("subscriber", subscriber));
+        String[] subscriberActionParts = subscriberAction.split(COMMAND_LINE_SUBSCRIBER_ACTION_SEPARATOR, 2);
+        if (subscriberActionParts.length != 2) {
+            LOGGER.warn("Empty subscriber or action provided", Collections.singletonMap("subscriber-action", subscriberAction));
             return null;
         }
 
-        return new Subscriber(subscriberParts[0], subscriberParts[1]);
+        return new Subscriber(subscriberActionParts[0], subscriberActionParts[1]);
     }
 }

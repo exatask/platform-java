@@ -4,6 +4,9 @@ import com.exatask.platform.dto.messages.AppMessage;
 import com.exatask.platform.logging.AppLogManager;
 import com.exatask.platform.logging.AppLogMessage;
 import com.exatask.platform.logging.AppLogger;
+import com.exatask.platform.rabbitmq.constants.HttpContextHeader;
+import com.exatask.platform.rabbitmq.contexts.HttpContext;
+import com.exatask.platform.rabbitmq.contexts.HttpContextProvider;
 import com.exatask.platform.rabbitmq.exceptions.ListenerException;
 import com.exatask.platform.utilities.constants.RequestContextHeader;
 import com.exatask.platform.utilities.contexts.RequestContext;
@@ -12,6 +15,7 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.rabbitmq.client.Channel;
 import org.springframework.amqp.core.Message;
+import org.springframework.amqp.core.MessageProperties;
 import org.springframework.amqp.rabbit.listener.api.ChannelAwareMessageListener;
 import org.springframework.util.CollectionUtils;
 import org.springframework.util.ObjectUtils;
@@ -30,12 +34,13 @@ public abstract class AppListener<T extends AppMessage> implements ChannelAwareM
 
   public abstract Class<T> getType();
 
-  public abstract boolean execute(T message);
+  public abstract boolean execute(T message, MessageProperties messageProperties);
 
   @Override
   public void onMessage(Message message, Channel channel) {
 
     prepareRequestContext(message.getMessageProperties().getHeaders());
+    prepareHttpContext(message.getMessageProperties().getHeaders());
 
     long deliveryTag = message.getMessageProperties().getDeliveryTag();
     String messageBody = new String(message.getBody());
@@ -44,7 +49,7 @@ public abstract class AppListener<T extends AppMessage> implements ChannelAwareM
     try {
 
       T messageObject = objectMapper.readValue(messageBody, getType());
-      boolean result = this.execute(messageObject);
+      boolean result = this.execute(messageObject, message.getMessageProperties());
       acknowledge(channel, deliveryTag, result);
 
     } catch (JsonProcessingException exception) {
@@ -100,6 +105,33 @@ public abstract class AppListener<T extends AppMessage> implements ChannelAwareM
             .securityOtp(headers.get(RequestContextHeader.SECURITY_OTP).toString()));
 
     RequestContextProvider.setContext(requestContextBuilder.build());
+  }
+
+  private void prepareHttpContext(Map<String, Object> headers) {
+
+    if (CollectionUtils.isEmpty(headers)) {
+      return;
+    }
+
+    HttpContext.HttpContextBuilder httpContextBuilder = HttpContext.builder();
+
+    Optional.ofNullable(headers.get(HttpContextHeader.ACCEPT_LANGUAGE))
+        .filter(acceptLanguage -> !acceptLanguage.toString().isEmpty())
+        .ifPresent(acceptLanguage -> httpContextBuilder.acceptLanguage(acceptLanguage.toString()));
+
+    Optional.ofNullable(headers.get(HttpContextHeader.IP_ADDRESS))
+        .filter(ipAddress -> !ipAddress.toString().isEmpty())
+        .ifPresent(ipAddress -> httpContextBuilder.ipAddress(ipAddress.toString()));
+
+    Optional.ofNullable(headers.get(HttpContextHeader.USER_AGENT))
+        .filter(userAgent -> !userAgent.toString().isEmpty())
+        .ifPresent(userAgent -> httpContextBuilder.userAgent(userAgent.toString()));
+
+    Optional.ofNullable(headers.get(HttpContextHeader.REFERER))
+        .filter(referer -> !referer.toString().isEmpty())
+        .ifPresent(referer -> httpContextBuilder.referer(referer.toString()));
+
+    HttpContextProvider.setContext(httpContextBuilder.build());
   }
 
   private void acknowledge(Channel channel, long deliveryTag, boolean acknowledge) {

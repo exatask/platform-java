@@ -4,7 +4,11 @@ import com.exatask.platform.dto.messages.AppMessage;
 import com.exatask.platform.logging.AppLogManager;
 import com.exatask.platform.logging.AppLogMessage;
 import com.exatask.platform.logging.AppLogger;
+import com.exatask.platform.rabbitmq.constants.HttpContextHeader;
+import com.exatask.platform.rabbitmq.constants.HttpHeaders;
+import com.exatask.platform.rabbitmq.contexts.HttpContextProvider;
 import com.exatask.platform.rabbitmq.properties.AppMessageProperties;
+import com.exatask.platform.rabbitmq.utilities.HttpServletUtility;
 import com.exatask.platform.utilities.ApplicationContextUtility;
 import com.exatask.platform.utilities.constants.RequestContextHeader;
 import com.exatask.platform.utilities.contexts.RequestContextProvider;
@@ -41,6 +45,7 @@ public abstract class AppPublisher<T extends AppMessage> {
 
     MessageProperties messageProperties = new MessageProperties();
     prepareRequestContext(messageProperties);
+    prepareHttpContent(messageProperties);
 
     messageProperties.setDeliveryMode(this.deliveryMode());
 
@@ -93,5 +98,28 @@ public abstract class AppPublisher<T extends AppMessage> {
           messageProperties.setHeader(RequestContextHeader.SECURITY_TARGET, securityTarget);
           messageProperties.setHeader(RequestContextHeader.SECURITY_OTP, RequestContextProvider.getSecurityOtp());
         });
+  }
+
+  private void prepareHttpContent(MessageProperties messageProperties) {
+
+    Optional.ofNullable(HttpContextProvider.getAcceptLanguage())
+        .or(() -> Optional.ofNullable(HttpServletUtility.getHttpHeader(HttpHeaders.ACCEPT_LANGUAGE)))
+        .filter(acceptLanguage -> !acceptLanguage.isEmpty())
+        .ifPresent(acceptLanguage -> messageProperties.setHeader(HttpContextHeader.ACCEPT_LANGUAGE, acceptLanguage));
+
+    Optional.ofNullable(HttpContextProvider.getIpAddress())
+        .or(() -> Optional.ofNullable(HttpServletUtility.getIpAddress()))
+        .filter(ipAddress -> !ipAddress.isEmpty())
+        .ifPresent(ipAddress -> messageProperties.setHeader(HttpContextHeader.IP_ADDRESS, ipAddress));
+
+    Optional.ofNullable(HttpContextProvider.getReferer())
+        .or(() -> Optional.ofNullable(HttpServletUtility.getHttpHeader(HttpHeaders.REFERER)))
+        .filter(referer -> !referer.isEmpty())
+        .ifPresent(referer -> messageProperties.setHeader(HttpContextHeader.REFERER, referer));
+
+    Optional.ofNullable(HttpContextProvider.getUserAgent())
+        .or(() -> Optional.ofNullable(HttpServletUtility.getHttpHeader(HttpHeaders.USER_AGENT)))
+        .filter(userAgent -> !userAgent.isEmpty())
+        .ifPresent(userAgent -> messageProperties.setHeader(HttpContextHeader.USER_AGENT, userAgent));
   }
 }

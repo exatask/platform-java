@@ -6,5 +6,6 @@ import lombok.experimental.UtilityClass;
 public class CommandLine {
 
     public static final String SUBSCRIBER = "subscriber";
+    public static final String SUBSCRIBER_ACTION = "subscriber-action";
     public static final String ALL_SUBSCRIBERS = "all-subscribers";
 }
