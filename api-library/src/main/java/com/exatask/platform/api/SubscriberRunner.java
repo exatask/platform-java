@@ -1,9 +1,9 @@
-package com.exatask.platform.subscriber;
+package com.exatask.platform.api;
 
-import com.exatask.platform.subscriber.constants.CommandLine;
-import com.exatask.platform.subscriber.subscribers.AppSubscriber;
-import com.exatask.platform.subscriber.entities.Subscriber;
-import com.exatask.platform.subscriber.utilities.CommandLineUtility;
+import com.exatask.platform.api.constants.CommandLine;
+import com.exatask.platform.api.entities.Subscriber;
+import com.exatask.platform.api.subscribers.AppSubscriber;
+import com.exatask.platform.api.utilities.CommandLineUtility;
 import com.exatask.platform.logging.AppLogManager;
 import com.exatask.platform.logging.AppLogger;
 import com.exatask.platform.utilities.ApplicationContextUtility;
@@ -36,7 +36,9 @@ public class SubscriberRunner implements CommandLineRunner {
 
       List<String> allSubscribers = commandLineArgs.get(CommandLine.SUBSCRIBER);
       for (String subscriber : allSubscribers) {
-        executeSubscriber(subscriber);
+
+        Object subscriberBean = ApplicationContextUtility.getBean(subscriber);
+        executeSubscriber(subscriberBean);
       }
 
     } else if (commandLineArgs.containsKey(CommandLine.SUBSCRIBER_ACTION)) {
@@ -57,28 +59,17 @@ public class SubscriberRunner implements CommandLineRunner {
 
     String[] subscriberBeanNames = ApplicationContextUtility.getBeanNames(AppSubscriber.class);
     for (String subscriber : subscriberBeanNames) {
-
       Object subscriberBean = ApplicationContextUtility.getBean(subscriber);
-      Method[] beanMethods = subscriberBean.getClass().getMethods();
-      for (Method beanMethod : beanMethods) {
-
-        try {
-          executeSubscriberAction(subscriberBean, beanMethod);
-        } catch (InvocationTargetException | IllegalAccessException exception) {
-          LOGGER.error(exception);
-        }
-      }
+      executeSubscriber(subscriberBean);
     }
   }
 
-  private void executeSubscriber(String subscriber) {
+  private void executeSubscriber(Object subscriber) {
 
-    Object subscriberBean = ApplicationContextUtility.getBean(subscriber);
-    Method[] beanMethods = subscriberBean.getClass().getDeclaredMethods();
-
+    Method[] beanMethods = subscriber.getClass().getDeclaredMethods();
     for (Method beanMethod : beanMethods) {
       try {
-        executeSubscriberAction(subscriberBean, beanMethod);
+        executeSubscriberAction(subscriber, beanMethod);
       } catch (InvocationTargetException | IllegalAccessException exception) {
         LOGGER.error(exception);
       }

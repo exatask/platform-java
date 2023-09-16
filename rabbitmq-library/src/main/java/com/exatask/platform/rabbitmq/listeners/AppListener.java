@@ -1,4 +1,4 @@
-package com.exatask.platform.rabbitmq;
+package com.exatask.platform.rabbitmq.listeners;
 
 import com.exatask.platform.dto.messages.AppMessage;
 import com.exatask.platform.logging.AppLogManager;
