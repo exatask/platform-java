@@ -1,4 +1,4 @@
-package com.exatask.platform.subscriber.utilities;
+package com.exatask.platform.api.utilities;
 
 import com.exatask.platform.dto.responses.AppResponse;
 import com.exatask.platform.logging.AppLogManager;

@@ -1,6 +1,6 @@
 package com.exatask.platform.rabbitmq.utilities;
 
-import com.exatask.platform.rabbitmq.AppListener;
+import com.exatask.platform.rabbitmq.listeners.AppListener;
 import com.exatask.platform.utilities.ApplicationContextUtility;
 import lombok.experimental.UtilityClass;
 import org.springframework.amqp.core.AcknowledgeMode;

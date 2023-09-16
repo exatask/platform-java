@@ -2,10 +2,17 @@ package com.exatask.platform.rabbitmq.properties;
 
 import lombok.Builder;
 import lombok.Data;
+import org.springframework.amqp.core.MessageDeliveryMode;
 
 @Data
-@Builder
+@Builder(toBuilder = true)
 public class AppMessageProperties {
 
-    private final Integer delay;
+  private String exchange;
+
+  private MessageDeliveryMode deliveryMode;
+
+  private String routingKey;
+
+  private final Integer delay;
 }

@@ -1,4 +1,4 @@
-package com.exatask.platform.rabbitmq;
+package com.exatask.platform.rabbitmq.publishers;
 
 import com.exatask.platform.dto.messages.AppMessage;
 import com.exatask.platform.logging.AppLogManager;
@@ -9,50 +9,38 @@ import com.exatask.platform.rabbitmq.constants.HttpHeaders;
 import com.exatask.platform.rabbitmq.contexts.HttpContextProvider;
 import com.exatask.platform.rabbitmq.properties.AppMessageProperties;
 import com.exatask.platform.rabbitmq.utilities.HttpServletUtility;
-import com.exatask.platform.utilities.ApplicationContextUtility;
 import com.exatask.platform.utilities.constants.RequestContextHeader;
 import com.exatask.platform.utilities.contexts.RequestContextProvider;
 import org.springframework.amqp.core.Message;
-import org.springframework.amqp.core.MessageDeliveryMode;
 import org.springframework.amqp.core.MessageProperties;
 import org.springframework.amqp.rabbit.core.RabbitTemplate;
 import org.springframework.amqp.support.converter.Jackson2JsonMessageConverter;
 
 import java.util.Optional;
 
-public abstract class AppPublisher<T extends AppMessage> {
+public abstract class AppPublisher {
 
   protected static final AppLogger LOGGER = AppLogManager.getLogger();
 
   private final RabbitTemplate rabbitTemplate;
   private final Jackson2JsonMessageConverter jsonMessageConverter = new Jackson2JsonMessageConverter();
 
-  protected AppPublisher() {
-    this.rabbitTemplate = ApplicationContextUtility.getBean(RabbitTemplate.class);
+  protected AppPublisher(RabbitTemplate rabbitTemplate) {
+    this.rabbitTemplate = rabbitTemplate;
   }
 
-  public abstract String getExchange();
-
-  public abstract String routingKey(T appMessage);
-
-  public abstract MessageDeliveryMode deliveryMode();
-
-  public void send(T appMessage) {
-    send(appMessage, AppMessageProperties.builder().build());
-  }
-
-  public void send(T appMessage, AppMessageProperties appMessageProperties) {
+  public <T extends AppMessage> void send(T appMessage, AppMessageProperties appMessageProperties) {
 
     MessageProperties messageProperties = new MessageProperties();
     prepareRequestContext(messageProperties);
     prepareHttpContent(messageProperties);
 
-    messageProperties.setDeliveryMode(this.deliveryMode());
+    messageProperties.setDeliveryMode(appMessageProperties.getDeliveryMode());
 
     Optional.ofNullable(appMessageProperties.getDelay()).ifPresent(messageProperties::setDelay);
 
     Message message = jsonMessageConverter.toMessage(appMessage, messageProperties);
-    rabbitTemplate.convertAndSend(this.getExchange(), this.routingKey(appMessage), message);
+    rabbitTemplate.convertAndSend(appMessageProperties.getExchange(), appMessageProperties.getRoutingKey(), message);
 
     LOGGER.debug(AppLogMessage.builder()
         .message("Message published successfully")
