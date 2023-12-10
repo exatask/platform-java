@@ -24,10 +24,10 @@ public class ServiceUtility {
   private static final String SPRING_PROFILE_ENV_KEY = "spring_profiles_active";
   private static final String SPRING_PROFILE_KEY = "spring.profiles.active";
 
-  private static final String SERVICE_NAME_KEY = "service.name";
-  private static final String SERVICE_ENV_KEY = "service.environment";
   private static final String SERVICE_REGION_KEY = "service.region";
   private static final String SERVICE_TENANT_KEY = "service.tenant";
+
+  public static final String SERVICE_PLATFORM = "platform";
 
   @Getter
   private static Environment environment;
@@ -104,27 +104,17 @@ public class ServiceUtility {
 
   public static String getServiceName() throws RuntimePropertyNotFoundException {
 
-    String value = getRuntimeProperty(SERVICE_NAME_KEY);
+    String value = getRuntimeProperty(SPRING_APPLICATION_NAME_KEY);
     if (StringUtils.isNotEmpty(value)) {
       return value;
     }
 
-    value = getRuntimeProperty(SPRING_APPLICATION_NAME_KEY);
-    if (StringUtils.isNotEmpty(value)) {
-      return value;
-    }
-
-    throw new RuntimePropertyNotFoundException(SERVICE_NAME_KEY);
+    throw new RuntimePropertyNotFoundException(SPRING_APPLICATION_NAME_KEY);
   }
 
   public static String getServiceEnvironment() throws RuntimePropertyNotFoundException {
 
-    String value = getRuntimeProperty(SERVICE_ENV_KEY);
-    if (StringUtils.isNotEmpty(value)) {
-      return value;
-    }
-
-    value = getRuntimeProperty(SPRING_PROFILE_KEY);
+    String value = getRuntimeProperty(SPRING_PROFILE_KEY);
     if (StringUtils.isNotEmpty(value)) {
       return value;
     }
@@ -134,7 +124,7 @@ public class ServiceUtility {
       return value;
     }
 
-    throw new RuntimePropertyNotFoundException(SERVICE_ENV_KEY);
+    throw new RuntimePropertyNotFoundException(SPRING_PROFILE_KEY);
   }
 
   public static String getServiceRegion() throws RuntimePropertyNotFoundException {

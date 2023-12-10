@@ -16,7 +16,8 @@ public class ServiceAuthData {
   public static final String AUTH_JWT_EMPLOYEE_NAME = "enm";
   public static final String AUTH_JWT_EMPLOYEE_EMAIL = "eem";
   public static final String AUTH_JWT_EMPLOYEE_MOBILE = "emb";
-  public static final String AUTH_JWT_ORGANIZATION_ID = "oid";
+  public static final String AUTH_JWT_ACCOUNT_NUMBER = "acn";
+  public static final String AUTH_JWT_ORGANIZATION_URN = "orn";
   public static final String AUTH_JWT_ORGANIZATION_NAME = "onm";
   public static final String AUTH_JWT_TENANT = "tnt";
 

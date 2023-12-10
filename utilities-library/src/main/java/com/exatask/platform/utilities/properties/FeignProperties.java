@@ -6,7 +6,6 @@ import com.exatask.platform.utilities.credentials.HttpBasicCredentials;
 import com.exatask.platform.utilities.credentials.JwtHmacCredentials;
 import com.exatask.platform.utilities.credentials.NoAuthCredentials;
 import com.exatask.platform.utilities.services.ServiceAuth;
-import com.exatask.platform.utilities.services.ServiceName;
 import lombok.Setter;
 import org.apache.commons.lang3.BooleanUtils;
 import org.apache.commons.lang3.ObjectUtils;
@@ -27,7 +26,7 @@ public class FeignProperties {
 
     private String password;
 
-    private ServiceName service;
+    private String service;
 
     private ServiceAuth authentication;
 
@@ -60,7 +59,7 @@ public class FeignProperties {
                 JwtHmacCredentials jwtHmacCredentials = new JwtHmacCredentials();
                 jwtHmacCredentials.setSecret(this.password)
                         .setIssuer(ServiceUtility.getServiceName())
-                        .setAudience(this.service.toString());
+                        .setAudience(this.service);
                 return jwtHmacCredentials;
 
             default:

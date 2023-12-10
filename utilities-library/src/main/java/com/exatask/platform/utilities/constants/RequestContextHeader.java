@@ -14,10 +14,11 @@ public class RequestContextHeader {
 
   public static final String TENANT = "x-tenant";
 
-  public static final String ORGANIZATION_ID = "x-organization-id";
+  public static final String ACCOUNT_NUMBER = "x-account-number";
+  public static final String ORGANIZATION_URN = "x-organization-urn";
   public static final String ORGANIZATION_NAME = "x-organization-name";
 
-  public static final String EMPLOYEE_ID = "x-employee-id";
+  public static final String EMPLOYEE_URN = "x-employee-urn";
   public static final String EMPLOYEE_NAME = "x-employee-name";
   public static final String EMPLOYEE_EMAIL_ID = "x-employee-email-id";
   public static final String EMPLOYEE_MOBILE_NUMBER = "x-employee-mobile-number";

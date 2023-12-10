@@ -12,4 +12,7 @@ public interface DaoApplication {
 
   default void migratePostgresql(ContextRefreshedEvent event) {
   }
+
+  default void migrateMariadb(ContextRefreshedEvent event) {
+  }
 }

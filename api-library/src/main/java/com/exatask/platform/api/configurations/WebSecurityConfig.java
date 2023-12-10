@@ -54,7 +54,7 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
   public void configure(WebSecurity web) {
 
     web.ignoring()
-        .antMatchers(ServiceEndpoints.API + apiServiceConfig.getKey().getUri() + "/**");
+        .antMatchers(ServiceEndpoints.API + apiServiceConfig.getUri() + "/**");
   }
 
   @Override
