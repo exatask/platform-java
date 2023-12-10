@@ -1,11 +1,10 @@
 package com.exatask.platform.api.configurations;
 
-import lombok.AccessLevel;
+import lombok.Builder;
 import lombok.Getter;
-import lombok.Setter;
 
-@Setter
 @Getter
+@Builder
 public class ApiServiceConfig {
 
   private String name;
@@ -20,9 +19,9 @@ public class ApiServiceConfig {
 
   private String environment;
 
-  @Setter(AccessLevel.NONE)
+  @Builder.Default
   private final String copyright = "© 2020 HelpingHand Information Solutions LLP";
 
-  @Setter(AccessLevel.NONE)
+  @Builder.Default
   private final String license = "UNLICENSED";
 }

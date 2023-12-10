@@ -24,6 +24,7 @@ public class ServiceUtility {
   private static final String SPRING_PROFILE_ENV_KEY = "spring_profiles_active";
   private static final String SPRING_PROFILE_KEY = "spring.profiles.active";
 
+  private static final String SERVICE_VERSION_KEY = "service.version";
   private static final String SERVICE_REGION_KEY = "service.region";
   private static final String SERVICE_TENANT_KEY = "service.tenant";
 
@@ -125,6 +126,16 @@ public class ServiceUtility {
     }
 
     throw new RuntimePropertyNotFoundException(SPRING_PROFILE_KEY);
+  }
+
+  public static String getServiceVersion() throws RuntimePropertyNotFoundException {
+
+    String value = getRuntimeProperty(SERVICE_VERSION_KEY);
+    if (StringUtils.isNotEmpty(value)) {
+      return value;
+    }
+
+    throw new RuntimePropertyNotFoundException(SERVICE_VERSION_KEY);
   }
 
   public static String getServiceRegion() throws RuntimePropertyNotFoundException {
