@@ -87,14 +87,15 @@ public abstract class AppListener<T extends AppMessage> implements ChannelAwareM
         .filter(tenant -> !tenant.toString().isEmpty())
         .ifPresent(tenant -> requestContextBuilder.tenant(tenant.toString()));
 
-    Optional.ofNullable(headers.get(RequestContextHeader.ORGANIZATION_ID))
-        .filter(organizationId -> !organizationId.toString().isEmpty())
-        .ifPresent(organizationId -> requestContextBuilder.organizationId(Integer.parseInt(organizationId.toString()))
+    Optional.ofNullable(headers.get(RequestContextHeader.ACCOUNT_NUMBER))
+        .filter(accountNumber -> !accountNumber.toString().isEmpty())
+        .ifPresent(accountNumber -> requestContextBuilder.accountNumber(Long.parseLong(accountNumber.toString()))
+            .organizationUrn(headers.get(RequestContextHeader.ORGANIZATION_URN).toString())
             .organizationName(headers.get(RequestContextHeader.ORGANIZATION_NAME).toString()));
 
-    Optional.ofNullable(headers.get(RequestContextHeader.EMPLOYEE_ID))
-        .filter(employeeId -> !employeeId.toString().isEmpty())
-        .ifPresent(employeeId -> requestContextBuilder.employeeId(Integer.parseInt(employeeId.toString()))
+    Optional.ofNullable(headers.get(RequestContextHeader.EMPLOYEE_URN))
+        .filter(employeeUrn -> !employeeUrn.toString().isEmpty())
+        .ifPresent(employeeUrn -> requestContextBuilder.employeeUrn(employeeUrn.toString())
             .employeeName(headers.get(RequestContextHeader.EMPLOYEE_NAME).toString())
             .employeeEmailId(headers.get(RequestContextHeader.EMPLOYEE_EMAIL_ID).toString())
             .employeeMobileNumber(headers.get(RequestContextHeader.EMPLOYEE_MOBILE_NUMBER).toString()));

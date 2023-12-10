@@ -26,14 +26,15 @@ public class ServiceContextInterceptor implements RequestInterceptor {
         .filter(tenant -> !tenant.isEmpty())
         .ifPresent(tenant -> template.header(RequestContextHeader.TENANT, tenant));
 
-    Optional.ofNullable(RequestContextProvider.getOrganizationId())
-        .filter(organizationId -> organizationId > 0)
-        .ifPresent(organizationId -> template.header(RequestContextHeader.ORGANIZATION_ID, organizationId.toString())
+    Optional.ofNullable(RequestContextProvider.getAccountNumber())
+        .filter(accountNumber -> accountNumber > 0)
+        .ifPresent(accountNumber -> template.header(RequestContextHeader.ACCOUNT_NUMBER, accountNumber.toString())
+            .header(RequestContextHeader.ORGANIZATION_URN, RequestContextProvider.getOrganizationUrn())
             .header(RequestContextHeader.ORGANIZATION_NAME, RequestContextProvider.getOrganizationName()));
 
-    Optional.ofNullable(RequestContextProvider.getEmployeeId())
-        .filter(employeeId -> employeeId > 0)
-        .ifPresent(employeeId -> template.header(RequestContextHeader.EMPLOYEE_ID, employeeId.toString())
+    Optional.ofNullable(RequestContextProvider.getEmployeeUrn())
+        .filter(employeeUrn -> !employeeUrn.isEmpty())
+        .ifPresent(employeeUrn -> template.header(RequestContextHeader.EMPLOYEE_URN, employeeUrn)
             .header(RequestContextHeader.EMPLOYEE_NAME, RequestContextProvider.getEmployeeName())
             .header(RequestContextHeader.EMPLOYEE_EMAIL_ID, RequestContextProvider.getEmployeeEmailId())
             .header(RequestContextHeader.EMPLOYEE_MOBILE_NUMBER, RequestContextProvider.getEmployeeMobileNumber()));

@@ -11,11 +11,20 @@ import com.exatask.platform.rabbitmq.properties.AppMessageProperties;
 import com.exatask.platform.rabbitmq.utilities.HttpServletUtility;
 import com.exatask.platform.utilities.constants.RequestContextHeader;
 import com.exatask.platform.utilities.contexts.RequestContextProvider;
+import com.exatask.platform.utilities.deserializers.LocalDateDeserializer;
+import com.exatask.platform.utilities.deserializers.LocalDateTimeDeserializer;
+import com.exatask.platform.utilities.serializers.LocalDateSerializer;
+import com.exatask.platform.utilities.serializers.LocalDateTimeSerializer;
+import com.fasterxml.jackson.annotation.JsonInclude;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.module.SimpleModule;
 import org.springframework.amqp.core.Message;
 import org.springframework.amqp.core.MessageProperties;
 import org.springframework.amqp.rabbit.core.RabbitTemplate;
 import org.springframework.amqp.support.converter.Jackson2JsonMessageConverter;
 
+import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.Optional;
 
 public abstract class AppPublisher {
@@ -23,17 +32,30 @@ public abstract class AppPublisher {
   protected static final AppLogger LOGGER = AppLogManager.getLogger();
 
   private final RabbitTemplate rabbitTemplate;
-  private final Jackson2JsonMessageConverter jsonMessageConverter = new Jackson2JsonMessageConverter();
+  private final Jackson2JsonMessageConverter jsonMessageConverter;
 
   protected AppPublisher(RabbitTemplate rabbitTemplate) {
+
     this.rabbitTemplate = rabbitTemplate;
+
+    SimpleModule dateTimeModule = new SimpleModule();
+    dateTimeModule.addSerializer(LocalDateTime.class, new LocalDateTimeSerializer())
+        .addSerializer(LocalDate.class, new LocalDateSerializer())
+        .addDeserializer(LocalDateTime.class, new LocalDateTimeDeserializer())
+        .addDeserializer(LocalDate.class, new LocalDateDeserializer());
+
+    ObjectMapper objectMapper = new ObjectMapper();
+    objectMapper.setSerializationInclusion(JsonInclude.Include.NON_NULL);
+    objectMapper.registerModule(dateTimeModule);
+
+    this.jsonMessageConverter = new Jackson2JsonMessageConverter(objectMapper);
   }
 
   public <T extends AppMessage> void send(T appMessage, AppMessageProperties appMessageProperties) {
 
     MessageProperties messageProperties = new MessageProperties();
     prepareRequestContext(messageProperties);
-    prepareHttpContent(messageProperties);
+    prepareHttpContext(messageProperties);
 
     messageProperties.setDeliveryMode(appMessageProperties.getDeliveryMode());
 
@@ -64,17 +86,18 @@ public abstract class AppPublisher {
         .filter(tenant -> !tenant.isEmpty())
         .ifPresent(tenant -> messageProperties.setHeader(RequestContextHeader.TENANT, tenant));
 
-    Optional.ofNullable(RequestContextProvider.getOrganizationId())
-        .filter(organizationId -> organizationId > 0)
-        .ifPresent(organizationId -> {
-          messageProperties.setHeader(RequestContextHeader.ORGANIZATION_ID, organizationId);
+    Optional.ofNullable(RequestContextProvider.getAccountNumber())
+        .filter(accountNumber -> accountNumber > 0)
+        .ifPresent(accountNumber -> {
+          messageProperties.setHeader(RequestContextHeader.ACCOUNT_NUMBER, accountNumber);
+          messageProperties.setHeader(RequestContextHeader.ORGANIZATION_URN, RequestContextProvider.getOrganizationUrn());
           messageProperties.setHeader(RequestContextHeader.ORGANIZATION_NAME, RequestContextProvider.getOrganizationName());
         });
 
-    Optional.ofNullable(RequestContextProvider.getEmployeeId())
-        .filter(employeeId -> employeeId > 0)
-        .ifPresent(employeeId -> {
-          messageProperties.setHeader(RequestContextHeader.EMPLOYEE_ID, employeeId);
+    Optional.ofNullable(RequestContextProvider.getEmployeeUrn())
+        .filter(employeeUrn -> !employeeUrn.isEmpty())
+        .ifPresent(employeeUrn -> {
+          messageProperties.setHeader(RequestContextHeader.EMPLOYEE_URN, employeeUrn);
           messageProperties.setHeader(RequestContextHeader.EMPLOYEE_NAME, RequestContextProvider.getEmployeeName());
           messageProperties.setHeader(RequestContextHeader.EMPLOYEE_EMAIL_ID, RequestContextProvider.getEmployeeEmailId());
           messageProperties.setHeader(RequestContextHeader.EMPLOYEE_MOBILE_NUMBER, RequestContextProvider.getEmployeeMobileNumber());
@@ -88,7 +111,7 @@ public abstract class AppPublisher {
         });
   }
 
-  private void prepareHttpContent(MessageProperties messageProperties) {
+  private void prepareHttpContext(MessageProperties messageProperties) {
 
     Optional.ofNullable(HttpContextProvider.getAcceptLanguage())
         .or(() -> Optional.ofNullable(HttpServletUtility.getHttpHeader(HttpHeaders.ACCEPT_LANGUAGE)))

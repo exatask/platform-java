@@ -68,22 +68,28 @@ public class RequestContextProvider {
     return ObjectUtils.isNotEmpty(requestContext) ? requestContext.getTenant() : null;
   }
 
-  public static String getSecurityTarget() {
+  public static Long getAccountNumber() {
 
     RequestContext requestContext = getContext();
-    return ObjectUtils.isNotEmpty(requestContext) ? requestContext.getSecurityTarget() : null;
+    return ObjectUtils.isNotEmpty(requestContext) ? requestContext.getAccountNumber() : null;
   }
 
-  public static String getSecurityOtp() {
+  public static String getOrganizationUrn() {
 
     RequestContext requestContext = getContext();
-    return ObjectUtils.isNotEmpty(requestContext) ? requestContext.getSecurityOtp() : null;
+    return ObjectUtils.isNotEmpty(requestContext) ? requestContext.getOrganizationUrn() : null;
   }
 
-  public static Integer getEmployeeId() {
+  public static String getOrganizationName() {
 
     RequestContext requestContext = getContext();
-    return ObjectUtils.isNotEmpty(requestContext) ? requestContext.getEmployeeId() : null;
+    return ObjectUtils.isNotEmpty(requestContext) ? requestContext.getOrganizationName() : null;
+  }
+
+  public static String getEmployeeUrn() {
+
+    RequestContext requestContext = getContext();
+    return ObjectUtils.isNotEmpty(requestContext) ? requestContext.getEmployeeUrn() : null;
   }
 
   public static String getEmployeeName() {
@@ -104,15 +110,15 @@ public class RequestContextProvider {
     return ObjectUtils.isNotEmpty(requestContext) ? requestContext.getEmployeeMobileNumber() : null;
   }
 
-  public static Integer getOrganizationId() {
+  public static String getSecurityTarget() {
 
     RequestContext requestContext = getContext();
-    return ObjectUtils.isNotEmpty(requestContext) ? requestContext.getOrganizationId() : null;
+    return ObjectUtils.isNotEmpty(requestContext) ? requestContext.getSecurityTarget() : null;
   }
 
-  public static String getOrganizationName() {
+  public static String getSecurityOtp() {
 
     RequestContext requestContext = getContext();
-    return ObjectUtils.isNotEmpty(requestContext) ? requestContext.getOrganizationName() : null;
+    return ObjectUtils.isNotEmpty(requestContext) ? requestContext.getSecurityOtp() : null;
   }
 }

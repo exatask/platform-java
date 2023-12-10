@@ -36,14 +36,15 @@ public class ApiContextInterceptor extends AppInterceptor {
         .filter(tenant -> !tenant.isEmpty())
         .ifPresent(requestContextBuilder::tenant);
 
-    Optional.ofNullable(request.getHeader(RequestContextHeader.ORGANIZATION_ID))
-        .filter(organizationId -> !organizationId.isEmpty())
-        .ifPresent(organizationId -> requestContextBuilder.organizationId(Integer.parseInt(organizationId))
+    Optional.ofNullable(request.getHeader(RequestContextHeader.ACCOUNT_NUMBER))
+        .filter(accountNumber -> !accountNumber.isEmpty())
+        .ifPresent(accountNumber -> requestContextBuilder.accountNumber(Long.parseLong(accountNumber))
+            .organizationUrn(request.getHeader(RequestContextHeader.ORGANIZATION_URN))
             .organizationName(request.getHeader(RequestContextHeader.ORGANIZATION_NAME)));
 
-    Optional.ofNullable(request.getHeader(RequestContextHeader.EMPLOYEE_ID))
-        .filter(employeeId -> !employeeId.isEmpty())
-        .ifPresent(employeeId -> requestContextBuilder.employeeId(Integer.parseInt(employeeId))
+    Optional.ofNullable(request.getHeader(RequestContextHeader.EMPLOYEE_URN))
+        .filter(employeeUrn -> !employeeUrn.isEmpty())
+        .ifPresent(employeeUrn -> requestContextBuilder.employeeUrn(employeeUrn)
             .employeeName(request.getHeader(RequestContextHeader.EMPLOYEE_NAME))
             .employeeEmailId(request.getHeader(RequestContextHeader.EMPLOYEE_EMAIL_ID))
             .employeeMobileNumber(request.getHeader(RequestContextHeader.EMPLOYEE_MOBILE_NUMBER)));

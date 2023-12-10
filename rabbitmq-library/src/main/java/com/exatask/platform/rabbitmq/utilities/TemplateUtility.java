@@ -5,7 +5,6 @@ import com.exatask.platform.logging.AppLogger;
 import com.exatask.platform.rabbitmq.exceptions.InvalidExchangeTypeException;
 import com.exatask.platform.utilities.constants.RabbitmqConstant;
 import com.exatask.platform.utilities.properties.RabbitmqProperties;
-import com.exatask.platform.utilities.services.ServiceName;
 import com.rabbitmq.client.BuiltinExchangeType;
 import com.rabbitmq.client.Channel;
 import lombok.experimental.UtilityClass;
@@ -64,7 +63,7 @@ public class TemplateUtility {
     return connectionFactory;
   }
 
-  public static Declarables getDeclarables(ServiceName service, List<RabbitmqProperties.Binding> bindings, ConnectionFactory connectionFactory) {
+  public static Declarables getDeclarables(String service, List<RabbitmqProperties.Binding> bindings, ConnectionFactory connectionFactory) {
 
     Channel channel = connectionFactory.createConnection().createChannel(false);
 
@@ -90,15 +89,15 @@ public class TemplateUtility {
     return new Declarables(declarables);
   }
 
-  public String getExchangeName(ServiceName service, String exchange) {
-    return service.name().toLowerCase() + "." + exchange;
+  public String getExchangeName(String service, String exchange) {
+    return service + "." + exchange;
   }
 
-  public String getQueueName(ServiceName service, String queue) {
-    return service.name().toLowerCase() + "." + queue;
+  public String getQueueName(String service, String queue) {
+    return service + "." + queue;
   }
 
-  private Exchange initializeExchange(ServiceName service, RabbitmqProperties.Exchange exchange, Channel channel) {
+  private Exchange initializeExchange(String service, RabbitmqProperties.Exchange exchange, Channel channel) {
 
     String exchangeName = getExchangeName(service, exchange.getName());
     BuiltinExchangeType exchangeType = getExchangeType(exchange.getType());
@@ -134,7 +133,7 @@ public class TemplateUtility {
     }
   }
 
-  private Queue initializeQueue(ServiceName service, RabbitmqProperties.Queue queue, Channel channel) {
+  private Queue initializeQueue(String service, RabbitmqProperties.Queue queue, Channel channel) {
 
     String queueName = getQueueName(service, queue.getName());
     boolean durable = Boolean.TRUE.equals(queue.getDurable());
