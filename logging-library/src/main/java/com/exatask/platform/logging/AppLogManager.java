@@ -3,29 +3,16 @@ package com.exatask.platform.logging;
 import com.exatask.platform.logging.constants.LoggingService;
 import com.exatask.platform.utilities.ServiceUtility;
 import lombok.experimental.UtilityClass;
-import org.apache.commons.lang3.StringUtils;
 
 @UtilityClass
 public class AppLogManager {
 
-  private static String serviceName = null;
-
-  private static String getServiceName() {
-
-    if (StringUtils.isNotEmpty(serviceName)) {
-      return serviceName;
-    }
-
-    serviceName = ServiceUtility.getServiceName();
-    return serviceName;
-  }
-
   public static AppLogger getLogger() {
-    return new AppLogger(LoggingService.LOGGER_NAME, getServiceName());
+    return new AppLogger(LoggingService.LOGGER_NAME, ServiceUtility.getServiceName());
   }
 
   public static AppLogger getLogger(String logger) {
-    return new AppLogger(logger, getServiceName());
+    return new AppLogger(logger, ServiceUtility.getServiceName());
   }
 
   public static AppLogger getLogger(String logger, String service) {
@@ -33,7 +20,7 @@ public class AppLogManager {
   }
 
   public static AppLogger getLogger(Class<?> clazz) {
-    return new AppLogger(clazz.getPackage().getName(), getServiceName());
+    return new AppLogger(clazz.getPackage().getName(), ServiceUtility.getServiceName());
   }
 
   public static AppLogger getLogger(Class<?> clazz, String service) {
