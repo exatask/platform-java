@@ -1,8 +1,11 @@
 package com.exatask.platform.dao;
 
+import com.exatask.platform.dao.configurations.DaoServiceConfig;
 import org.springframework.context.event.ContextRefreshedEvent;
 
 public interface DaoApplication {
+
+  DaoServiceConfig getDaoServiceConfig();
 
   default void migrateMongodb(ContextRefreshedEvent event) {
   }

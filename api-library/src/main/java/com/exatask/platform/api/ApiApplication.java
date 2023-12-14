@@ -13,7 +13,7 @@ public interface ApiApplication {
 
   AppAuthenticator getApiAuthenticator();
 
-  ApiServiceConfig getServiceConfig();
+  ApiServiceConfig getApiServiceConfig();
 
   ExecutorService getExecutorService();
 
