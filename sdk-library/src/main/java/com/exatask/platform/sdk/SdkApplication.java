@@ -4,5 +4,5 @@ import com.exatask.platform.sdk.configurations.SdkServiceConfig;
 
 public interface SdkApplication {
 
-  SdkServiceConfig getServiceConfig();
+  SdkServiceConfig getSdkServiceConfig();
 }
