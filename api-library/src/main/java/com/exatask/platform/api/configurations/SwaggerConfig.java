@@ -1,5 +1,7 @@
 package com.exatask.platform.api.configurations;
 
+import com.exatask.platform.api.constants.ApiService;
+import com.exatask.platform.utilities.ServiceUtility;
 import io.swagger.v3.oas.models.Components;
 import io.swagger.v3.oas.models.OpenAPI;
 import io.swagger.v3.oas.models.info.Contact;
@@ -28,7 +30,7 @@ public class SwaggerConfig {
   private static final String TYPE_OBJECT = "object";
 
   @Autowired
-  private ApiServiceConfig serviceConfig;
+  private ApiServiceConfig apiServiceConfig;
 
   @Autowired(required = false)
   private ApiSwaggerConfig swaggerConfig;
@@ -121,10 +123,10 @@ public class SwaggerConfig {
             .map(ApiSwaggerConfig::getContact)
             .orElse(getDefaultContact());
 
-    return new Info().title(serviceConfig.getName())
-        .description(serviceConfig.getDescription())
-        .version(serviceConfig.getVersion())
-        .license((new License()).name(serviceConfig.getLicense()))
+    return new Info().title(ServiceUtility.getServiceName())
+        .description(apiServiceConfig.getDescription())
+        .version(ServiceUtility.getServiceVersion())
+        .license((new License()).name(ApiService.LICENSE))
         .contact(contact);
   }
 
