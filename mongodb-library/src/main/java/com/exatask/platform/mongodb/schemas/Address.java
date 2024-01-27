@@ -10,10 +10,11 @@ import javax.validation.constraints.Digits;
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
+import java.io.Serializable;
 
 @Data
 @Builder
-public class Address {
+public class Address implements Serializable {
 
   @NotBlank(message = "{validations.address.address.not-blank}")
   @Field("address")

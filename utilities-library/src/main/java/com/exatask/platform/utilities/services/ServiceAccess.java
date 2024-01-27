@@ -20,10 +20,7 @@ public enum ServiceAccess {
   SECURED(ServiceEndpoints.ACCESS_SECURED),
 
   // Accessible to only admin having authorization for action after 2nd factor authentication from client (admin)
-  RESTRICTED(ServiceEndpoints.ACCESS_RESTRICTED),
-
-  // Only accessible between services
-  INTERNAL(ServiceEndpoints.ACCESS_INTERNAL);
+  RESTRICTED(ServiceEndpoints.ACCESS_RESTRICTED);
 
   private final String uri;
 }

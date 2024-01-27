@@ -5,10 +5,11 @@ import lombok.Builder;
 import lombok.Data;
 
 import javax.validation.constraints.NotBlank;
+import java.io.Serializable;
 
 @Data
 @Builder
-public class StorageDocument {
+public class StorageDocument implements Serializable {
 
   @NotBlank(message = "{validations.storage-document.file.not-blank}")
   @JsonProperty("file")

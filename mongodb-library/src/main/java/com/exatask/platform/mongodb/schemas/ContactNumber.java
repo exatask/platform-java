@@ -9,11 +9,12 @@ import org.springframework.data.mongodb.core.mapping.Field;
 import javax.validation.constraints.Digits;
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
+import java.io.Serializable;
 
 @Data
 @SuperBuilder
 @AllArgsConstructor
-public class ContactNumber {
+public class ContactNumber implements Serializable {
 
   @NotNull(message = "{validations.contact-number.type.not-null}")
   @Field("type")
