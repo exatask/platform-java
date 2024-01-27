@@ -9,7 +9,8 @@ public enum ServiceComponent {
 
   USER(ServiceEndpoints.COMPONENT_USER),
   ADMIN(ServiceEndpoints.COMPONENT_ADMIN),
-  PARTNER(ServiceEndpoints.COMPONENT_PARTNER);
+  PARTNER(ServiceEndpoints.COMPONENT_PARTNER),
+  INTERNAL(ServiceEndpoints.COMPONENT_INTERNAL);
 
   private final String uri;
 }

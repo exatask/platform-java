@@ -11,7 +11,7 @@ public class UrnProperties {
 
   private final String tenant;
 
-  private final String accountNumber;
+  private final Long accountNumber;
 
   private final String resource;
 

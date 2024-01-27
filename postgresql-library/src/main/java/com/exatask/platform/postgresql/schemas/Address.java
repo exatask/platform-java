@@ -10,13 +10,14 @@ import lombok.NoArgsConstructor;
 import javax.persistence.Column;
 import javax.validation.constraints.Digits;
 import javax.validation.constraints.NotBlank;
+import java.io.Serializable;
 
 @Data
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
 @EqualsAndHashCode(callSuper = true)
-public class Address extends AppModel {
+public class Address extends AppModel implements Serializable {
 
   @NotBlank(message = "{validations.address.address.not-blank}")
   @Column(name = "address")
