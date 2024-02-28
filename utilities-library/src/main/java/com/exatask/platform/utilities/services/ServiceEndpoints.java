@@ -17,4 +17,7 @@ public class ServiceEndpoints {
   public static final String ACCESS_AUTHORIZED = "/authorized";
   public static final String ACCESS_SECURED = "/secured";
   public static final String ACCESS_RESTRICTED = "/restricted";
+
+  public static final String NOT_ASSIGNED = "/-";
+  public static final String ID = "/{id}";
 }

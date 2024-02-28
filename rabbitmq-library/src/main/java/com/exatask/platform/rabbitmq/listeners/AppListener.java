@@ -100,11 +100,6 @@ public abstract class AppListener<T extends AppMessage> implements ChannelAwareM
             .employeeEmailId(headers.get(RequestContextHeader.EMPLOYEE_EMAIL_ID).toString())
             .employeeMobileNumber(headers.get(RequestContextHeader.EMPLOYEE_MOBILE_NUMBER).toString()));
 
-    Optional.ofNullable(headers.get(RequestContextHeader.SECURITY_TARGET))
-        .filter(securityTarget -> !securityTarget.toString().isEmpty())
-        .ifPresent(securityTarget -> requestContextBuilder.securityTarget(securityTarget.toString())
-            .securityOtp(headers.get(RequestContextHeader.SECURITY_OTP).toString()));
-
     RequestContextProvider.setContext(requestContextBuilder.build());
   }
 

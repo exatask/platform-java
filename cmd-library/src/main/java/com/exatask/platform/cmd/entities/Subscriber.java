@@ -1,4 +1,4 @@
-package com.exatask.platform.api.entities;
+package com.exatask.platform.cmd.entities;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;

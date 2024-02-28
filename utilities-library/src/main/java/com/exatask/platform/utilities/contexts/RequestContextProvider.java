@@ -109,16 +109,4 @@ public class RequestContextProvider {
     RequestContext requestContext = getContext();
     return ObjectUtils.isNotEmpty(requestContext) ? requestContext.getEmployeeMobileNumber() : null;
   }
-
-  public static String getSecurityTarget() {
-
-    RequestContext requestContext = getContext();
-    return ObjectUtils.isNotEmpty(requestContext) ? requestContext.getSecurityTarget() : null;
-  }
-
-  public static String getSecurityOtp() {
-
-    RequestContext requestContext = getContext();
-    return ObjectUtils.isNotEmpty(requestContext) ? requestContext.getSecurityOtp() : null;
-  }
 }
