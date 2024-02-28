@@ -36,8 +36,4 @@ public class RequestContext {
   private final String employeeEmailId;
 
   private final String employeeMobileNumber;
-
-  private final String securityTarget;
-
-  private final String securityOtp;
 }

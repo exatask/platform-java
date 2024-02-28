@@ -102,13 +102,6 @@ public abstract class AppPublisher {
           messageProperties.setHeader(RequestContextHeader.EMPLOYEE_EMAIL_ID, RequestContextProvider.getEmployeeEmailId());
           messageProperties.setHeader(RequestContextHeader.EMPLOYEE_MOBILE_NUMBER, RequestContextProvider.getEmployeeMobileNumber());
         });
-
-    Optional.ofNullable(RequestContextProvider.getSecurityTarget())
-        .filter(securityTarget -> !securityTarget.isEmpty())
-        .ifPresent(securityTarget -> {
-          messageProperties.setHeader(RequestContextHeader.SECURITY_TARGET, securityTarget);
-          messageProperties.setHeader(RequestContextHeader.SECURITY_OTP, RequestContextProvider.getSecurityOtp());
-        });
   }
 
   private void prepareHttpContext(MessageProperties messageProperties) {

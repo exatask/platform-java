@@ -1,14 +1,16 @@
-package com.exatask.platform.api;
+package com.exatask.platform.cmd;
 
-import com.exatask.platform.api.constants.CommandLine;
-import com.exatask.platform.api.entities.Subscriber;
-import com.exatask.platform.api.subscribers.AppSubscriber;
-import com.exatask.platform.api.utilities.CommandLineUtility;
+import com.exatask.platform.cmd.constants.SubscriberOptions;
+import com.exatask.platform.cmd.entities.Subscriber;
+import com.exatask.platform.cmd.subscribers.AppSubscriber;
+import com.exatask.platform.cmd.utilities.CommandLineUtility;
 import com.exatask.platform.logging.AppLogManager;
 import com.exatask.platform.logging.AppLogger;
 import com.exatask.platform.utilities.ApplicationContextUtility;
+import org.apache.commons.cli.CommandLine;
+import org.apache.commons.cli.CommandLineParser;
+import org.apache.commons.cli.DefaultParser;
 import org.springframework.boot.CommandLineRunner;
-import org.springframework.context.annotation.Configuration;
 import org.springframework.util.ObjectUtils;
 
 import java.lang.reflect.InvocationTargetException;
@@ -16,10 +18,8 @@ import java.lang.reflect.Method;
 import java.lang.reflect.Modifier;
 import java.util.Collections;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 
-@Configuration
 public class SubscriberRunner implements CommandLineRunner {
 
   private static final AppLogger LOGGER = AppLogManager.getLogger();
@@ -27,23 +27,24 @@ public class SubscriberRunner implements CommandLineRunner {
   @Override
   public void run(String... args) throws Exception {
 
-    Map<String, List<String>> commandLineArgs = CommandLineUtility.parseArguments(args);
+    CommandLineParser commandLineParser = new DefaultParser();
+    CommandLine commandLine = commandLineParser.parse(CommandLineUtility.getSubscriberOptions(), args);
 
-    if (commandLineArgs.containsKey(CommandLine.ALL_SUBSCRIBERS)) {
-      executeAllSubscribers(commandLineArgs.get(CommandLine.ALL_SUBSCRIBERS).get(0).trim());
+    if (commandLine.hasOption(SubscriberOptions.ALL_SUBSCRIBERS)) {
+      executeAllSubscribers(commandLine.getOptionValue(SubscriberOptions.ALL_SUBSCRIBERS).trim());
 
-    } else if (commandLineArgs.containsKey(CommandLine.SUBSCRIBER)) {
+    } else if (commandLine.hasOption(SubscriberOptions.SUBSCRIBER)) {
 
-      List<String> allSubscribers = commandLineArgs.get(CommandLine.SUBSCRIBER);
+      String[] allSubscribers = commandLine.getOptionValues(SubscriberOptions.SUBSCRIBER);
       for (String subscriber : allSubscribers) {
 
         Object subscriberBean = ApplicationContextUtility.getBean(subscriber);
         executeSubscriber(subscriberBean);
       }
 
-    } else if (commandLineArgs.containsKey(CommandLine.SUBSCRIBER_ACTION)) {
+    } else if (commandLine.hasOption(SubscriberOptions.SUBSCRIBER_ACTION)) {
 
-      List<String> allSubscriberActions = commandLineArgs.get(CommandLine.SUBSCRIBER_ACTION);
+      String[] allSubscriberActions = commandLine.getOptionValues(SubscriberOptions.SUBSCRIBER_ACTION);
       for (String subscriberAction : allSubscriberActions) {
         executeSubscriberAction(subscriberAction);
       }

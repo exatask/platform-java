@@ -1,4 +1,4 @@
-package com.exatask.platform.api.subscribers;
+package com.exatask.platform.cmd.subscribers;
 
 import com.exatask.platform.logging.AppLogManager;
 import com.exatask.platform.logging.AppLogger;

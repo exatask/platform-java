@@ -5,6 +5,7 @@ import com.exatask.platform.utilities.ServiceUtility;
 import org.flywaydb.core.Flyway;
 import org.springframework.boot.autoconfigure.jdbc.DataSourceProperties;
 import org.springframework.jdbc.datasource.DriverManagerDataSource;
+import org.springframework.util.ResourceUtils;
 
 import javax.sql.DataSource;
 import java.util.Properties;
@@ -26,7 +27,7 @@ public class MariadbLibrary extends AppLibrary {
 
     return Flyway.configure()
         .table(CHANGELOG_TABLE)
-        .locations("classpath:" + ServiceUtility.getServiceProperty(CHANGELOG_PACKAGE))
+        .locations(ResourceUtils.CLASSPATH_URL_PREFIX + ServiceUtility.getServiceProperty(CHANGELOG_PACKAGE))
         .sqlMigrationSuffixes(".java")
         .validateOnMigrate(false)
         .validateMigrationNaming(true)

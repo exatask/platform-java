@@ -49,11 +49,6 @@ public class ApiContextInterceptor extends AppInterceptor {
             .employeeEmailId(request.getHeader(RequestContextHeader.EMPLOYEE_EMAIL_ID))
             .employeeMobileNumber(request.getHeader(RequestContextHeader.EMPLOYEE_MOBILE_NUMBER)));
 
-    Optional.ofNullable(request.getHeader(RequestContextHeader.SECURITY_TARGET))
-        .filter(securityTarget -> !securityTarget.isEmpty())
-        .ifPresent(securityTarget -> requestContextBuilder.securityTarget(securityTarget)
-            .securityOtp(request.getHeader(RequestContextHeader.SECURITY_OTP)));
-
     RequestContextProvider.setContext(requestContextBuilder.build());
     return true;
   }
