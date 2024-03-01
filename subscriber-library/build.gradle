@@ -15,15 +15,10 @@ jar {
 
 dependencies {
 
-  api group: "org.springframework.boot", name: "spring-boot"
+  api group: "org.springframework.boot", name: "spring-boot-starter"
   api group: "commons-cli", name: "commons-cli", version: "${apacheCliVersion}"
   api project(":logging-library")
   api project(":utilities-library")
-
-//  implementation group: "org.springframework.boot", name: "spring-boot-starter-security"
-//  implementation project(":i18n-library")
-//  implementation project(":dto-library")
-//  implementation project(":micrometer-library")
 
   compileOnly group: "org.projectlombok", name: "lombok", version: "${lombokVersion}"
   annotationProcessor group: "org.projectlombok", name: "lombok", version: "${lombokVersion}"
@@ -33,7 +28,7 @@ publishing {
   publications {
     maven(MavenPublication) {
 
-      artifactId = "exatask-cmd"
+      artifactId = "exatask-subscriber"
       from components.java
     }
   }
