@@ -4,6 +4,8 @@ This repository is divided into multiple libraries. These libraries are either c
 boilerplate to a functionality that underlying microservices can use.
 
 - [api-library](api-library/README.md)
+- [arangodb-library](arangodb-library/README.md)
+- [aurora-library](aurora-library/README.md)
 - [cassandra-library](cassandra-library/README.md)
 - [crypto-library](crypto-library/README.md)
 - [dao-library](dao-library/README.md)
@@ -19,6 +21,8 @@ boilerplate to a functionality that underlying microservices can use.
 - [micrometer-library](micrometer-library/README.md)
 - [mongodb-library](mongodb-library/README.md)
 - [mysql-library](mysql-library/README.md)
+- [neo4j-library](neo4j-library/README.md)
+- [oracle-library](oracle-library/README.md)
 - [postgresql-library](postgresql-library/README.md)
 - [rabbitmq-library](rabbitmq-library/README.md)
 - [redis-library](redis-library/README.md)
