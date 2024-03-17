@@ -8,7 +8,6 @@ import lombok.Data;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.experimental.Accessors;
-import org.apache.commons.lang3.ObjectUtils;
 import org.apache.commons.lang3.StringUtils;
 import software.amazon.awssdk.auth.credentials.AwsBasicCredentials;
 import software.amazon.awssdk.auth.credentials.AwsCredentialsProvider;
@@ -57,7 +56,7 @@ public class AwsProperties {
       this.region = ServiceUtility.getServiceProperty(AWS_REGION, DEFAULT_REGION.id());
     }
 
-    return ObjectUtils.defaultIfNull(Region.of(this.region), DEFAULT_REGION);
+    return Region.of(this.region);
   }
 
   public AwsCredentialsProvider getCredentialsProvider() {

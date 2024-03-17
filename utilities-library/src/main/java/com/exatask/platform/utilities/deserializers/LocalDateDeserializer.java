@@ -17,7 +17,7 @@ public class LocalDateDeserializer extends JsonDeserializer<LocalDate> {
   public LocalDate deserialize(JsonParser parser, DeserializationContext context) throws IOException {
 
     String dateTime = parser.getText();
-    if (dateTime == null || StringUtils.isEmpty(dateTime)) {
+    if (StringUtils.isEmpty(dateTime)) {
       return null;
     } else {
 
