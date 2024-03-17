@@ -1,6 +1,7 @@
 package com.exatask.platform.utilities;
 
 import com.exatask.platform.utilities.contexts.RequestContextProvider;
+import com.exatask.platform.utilities.exceptions.MissingUrnPropertyException;
 import com.exatask.platform.utilities.properties.UrnProperties;
 import lombok.experimental.UtilityClass;
 import org.apache.commons.lang3.StringUtils;
@@ -25,6 +26,14 @@ public class ResourceUtility {
   }
 
   public String urn(String service, String tenant, Long accountNumber, String resource, String resourceId) {
+
+    if (StringUtils.isEmpty(service)) {
+      throw new MissingUrnPropertyException("Service");
+    } else if (StringUtils.isEmpty(resource)) {
+      throw new MissingUrnPropertyException("Resource");
+    } else if (StringUtils.isEmpty(resourceId)) {
+      throw new MissingUrnPropertyException("Resource ID");
+    }
 
     String resourceUrn = URN_PREFIX + URN_SEPARATOR + service + URN_SEPARATOR;
     if (StringUtils.isNotEmpty(tenant)) {

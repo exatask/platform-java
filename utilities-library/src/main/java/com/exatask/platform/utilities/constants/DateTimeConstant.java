@@ -8,7 +8,6 @@ public interface DateTimeConstant {
     SIMPLE_DATE_TIME,
     ISO_DATE,
     ISO_TIME,
-    ISO_DATE_TIME,
-    LOCAL_ISO_DATE_TIME
+    ISO_DATE_TIME
   }
 }

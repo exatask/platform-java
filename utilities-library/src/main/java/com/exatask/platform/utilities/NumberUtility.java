@@ -21,6 +21,10 @@ public class NumberUtility {
     return isNotEmpty(number) && number > 0;
   }
 
+  public static Boolean isNegative(Integer number) {
+    return isNotEmpty(number) && number < 0;
+  }
+
   public static Boolean isEmpty(Double number) {
     return number == null;
   }
@@ -35,5 +39,9 @@ public class NumberUtility {
 
   public static Boolean isPositive(Double number) {
     return isNotEmpty(number) && number > 0.0;
+  }
+
+  public static Boolean isNegative(Double number) {
+    return isNotEmpty(number) && number < 0.0;
   }
 }

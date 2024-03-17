@@ -25,6 +25,10 @@ dependencies {
 
   compileOnly group: "org.projectlombok", name: "lombok", version: "${lombokVersion}"
   annotationProcessor group: "org.projectlombok", name: "lombok", version: "${lombokVersion}"
+
+  testCompile group: "org.springframework.boot", name: "spring-boot-starter-test"
+  testCompile group: "org.mockito", name: "mockito-inline", version: "${mockitoVersion}"
+  testCompile group: "org.instancio", name: "instancio-junit", version: "${instancioJunitVersion}"
 }
 
 publishing {
