@@ -6,7 +6,6 @@ import com.fasterxml.jackson.databind.SerializerProvider;
 
 import java.io.IOException;
 import java.time.LocalDate;
-import java.time.ZoneId;
 import java.time.ZoneOffset;
 import java.time.format.DateTimeFormatter;
 
@@ -19,9 +18,8 @@ public class LocalDateSerializer extends JsonSerializer<LocalDate> {
       generator.writeNull();
     } else {
 
-      generator.writeString(value.atStartOfDay(ZoneId.systemDefault())
+      generator.writeString(value.atStartOfDay(ZoneOffset.UTC)
           .toOffsetDateTime()
-          .atZoneSameInstant(ZoneId.of(ZoneOffset.UTC.toString()))
           .format(DateTimeFormatter.ISO_OFFSET_DATE));
     }
   }
