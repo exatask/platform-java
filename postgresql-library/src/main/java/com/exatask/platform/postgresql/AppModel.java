@@ -25,12 +25,12 @@ public abstract class AppModel implements Serializable {
   @Column(name = "id")
   protected Integer id;
 
-  @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = DateTimeUtility.LOCAL_ISO_DATE_TIME)
+  @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = DateTimeUtility.ISO_DATE_TIME)
   @CreationTimestamp
   @Column(name = "created_at")
   protected LocalDateTime createdAt;
 
-  @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = DateTimeUtility.LOCAL_ISO_DATE_TIME)
+  @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = DateTimeUtility.ISO_DATE_TIME)
   @UpdateTimestamp
   @Column(name = "updated_at")
   protected LocalDateTime updatedAt;

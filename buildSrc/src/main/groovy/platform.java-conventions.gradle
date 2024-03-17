@@ -3,6 +3,7 @@ plugins {
   id "java-library"
   id "maven-publish"
   id "io.spring.dependency-management"
+  id "jacoco"
 }
 
 group = "com.exatask.platform"
@@ -19,6 +20,16 @@ compileJava {
 
 test {
   useJUnitPlatform()
+  finalizedBy jacocoTestReport
+}
+
+jacocoTestReport {
+  dependsOn test
+}
+
+jacoco {
+  toolVersion = "${jacocoVersion}"
+  reportsDir = file("$buildDir/jacoco")
 }
 
 repositories {
