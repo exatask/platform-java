@@ -17,11 +17,11 @@ public class LocalDateTimeDeserializer extends JsonDeserializer<LocalDateTime> {
   public LocalDateTime deserialize(JsonParser parser, DeserializationContext context) throws IOException {
 
     String dateTime = parser.getText();
-    if (dateTime == null || StringUtils.isEmpty(dateTime)) {
+    if (StringUtils.isEmpty(dateTime)) {
       return null;
     } else {
 
-      return LocalDateTime.parse(dateTime, DateTimeFormatter.ISO_OFFSET_DATE)
+      return LocalDateTime.parse(dateTime, DateTimeFormatter.ISO_OFFSET_DATE_TIME)
           .atZone(ZoneId.of(ZoneOffset.UTC.toString()))
           .toOffsetDateTime()
           .toLocalDateTime();

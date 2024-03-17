@@ -14,56 +14,55 @@ import org.apache.commons.lang3.StringUtils;
 @Setter
 public class FeignProperties {
 
-    private String url;
+  private String url;
 
-    private String host;
+  private String host;
 
-    private Integer port;
+  private Integer port;
 
-    private Boolean secured;
+  private Boolean secured;
 
-    private String username;
+  private String username;
 
-    private String password;
+  private String password;
 
-    private String service;
+  private String service;
 
-    private ServiceAuth authentication;
+  private ServiceAuth authentication;
 
-    public String httpHost() {
+  public String httpHost() {
 
-        if (StringUtils.isNotEmpty(url)) {
-            return url;
+    if (StringUtils.isNotEmpty(url)) {
+      return url;
+    } else {
+      String protocol = BooleanUtils.toBoolean(this.secured) ? "https://" : "http://";
+      return protocol + this.host + ":" + this.port;
+    }
+  }
 
-        } else {
-            String protocol = BooleanUtils.toBoolean(this.secured) ? "https://" : "http://";
-            return protocol + this.host + ":" + this.port;
-        }
+  public AppCredentials credentials() {
+
+    if (ObjectUtils.isEmpty(this.host) && ObjectUtils.isEmpty(this.url)) {
+      return null;
     }
 
-    public AppCredentials credentials() {
+    switch (this.authentication) {
 
-        if (ObjectUtils.isEmpty(this.host) && ObjectUtils.isEmpty(this.url)) {
-            return null;
-        }
+      case HTTP_BASIC:
+        HttpBasicCredentials httpBasicCredentials = new HttpBasicCredentials();
+        httpBasicCredentials.setUsername(this.username)
+            .setPassword(this.password);
+        return httpBasicCredentials;
 
-        switch (this.authentication) {
+      case JWT_HMAC:
+        JwtHmacCredentials jwtHmacCredentials = new JwtHmacCredentials();
+        jwtHmacCredentials.setSecret(this.password)
+            .setIssuer(ServiceUtility.getServiceName())
+            .setAudience(this.service);
+        return jwtHmacCredentials;
 
-            case HTTP_BASIC:
-                HttpBasicCredentials httpBasicCredentials = new HttpBasicCredentials();
-                httpBasicCredentials.setUsername(this.username)
-                        .setPassword(this.password);
-                return httpBasicCredentials;
-
-            case JWT_HMAC:
-                JwtHmacCredentials jwtHmacCredentials = new JwtHmacCredentials();
-                jwtHmacCredentials.setSecret(this.password)
-                        .setIssuer(ServiceUtility.getServiceName())
-                        .setAudience(this.service);
-                return jwtHmacCredentials;
-
-            default:
-                return new NoAuthCredentials();
-        }
+      default:
+        return new NoAuthCredentials();
     }
+  }
 }
