@@ -1,24 +1,24 @@
-package com.exatask.platform.mongodb.utilities;
+package com.exatask.platform.mongodb.reactive.utilities;
 
-import com.exatask.platform.mongodb.AppMongoTenantClientDatabaseFactory;
-import com.exatask.platform.mongodb.tenants.MongoTenantClients;
+import com.exatask.platform.mongodb.reactive.AppReactiveMongoTenantClientDatabaseFactory;
+import com.exatask.platform.mongodb.reactive.tenants.ReactiveMongoTenantClients;
 import com.exatask.platform.mongodb.tenants.ServiceTenant;
+import com.exatask.platform.mongodb.utilities.ConnectionUtility;
 import com.exatask.platform.utilities.ServiceUtility;
 import com.exatask.platform.utilities.properties.MongodbProperties;
 import com.mongodb.ConnectionString;
 import com.mongodb.MongoClientSettings;
-import com.mongodb.client.MongoClient;
-import com.mongodb.client.MongoClients;
+import com.mongodb.reactivestreams.client.MongoClient;
+import com.mongodb.reactivestreams.client.MongoClients;
 import lombok.experimental.UtilityClass;
 import org.bson.UuidRepresentation;
 import org.springframework.data.mapping.context.MappingContext;
-import org.springframework.data.mongodb.MongoDatabaseFactory;
-import org.springframework.data.mongodb.core.MongoTemplate;
-import org.springframework.data.mongodb.core.SimpleMongoClientDatabaseFactory;
-import org.springframework.data.mongodb.core.convert.DbRefResolver;
-import org.springframework.data.mongodb.core.convert.DefaultDbRefResolver;
+import org.springframework.data.mongodb.ReactiveMongoDatabaseFactory;
+import org.springframework.data.mongodb.core.ReactiveMongoTemplate;
+import org.springframework.data.mongodb.core.SimpleReactiveMongoDatabaseFactory;
 import org.springframework.data.mongodb.core.convert.DefaultMongoTypeMapper;
 import org.springframework.data.mongodb.core.convert.MappingMongoConverter;
+import org.springframework.data.mongodb.core.convert.NoOpDbRefResolver;
 import org.springframework.data.mongodb.core.mapping.MongoMappingContext;
 import org.springframework.data.mongodb.core.mapping.MongoPersistentEntity;
 import org.springframework.data.mongodb.core.mapping.MongoPersistentProperty;
@@ -26,32 +26,31 @@ import org.springframework.data.mongodb.core.mapping.MongoPersistentProperty;
 import java.util.Optional;
 
 @UtilityClass
-public class TemplateUtility {
+public class ReactiveTemplateUtility {
 
   private static final String DEFAULT_DATABASE = "admin";
 
-  public static MongoTemplate getTemplate(MongoDatabaseFactory connectionFactory) {
+  public static ReactiveMongoTemplate getTemplate(ReactiveMongoDatabaseFactory connectionFactory) {
 
-    DbRefResolver refResolver = new DefaultDbRefResolver(connectionFactory);
     MappingContext<? extends MongoPersistentEntity<?>, MongoPersistentProperty> mappingContext = new MongoMappingContext();
 
-    MappingMongoConverter mongoConverter = new MappingMongoConverter(refResolver, mappingContext);
+    MappingMongoConverter mongoConverter = new MappingMongoConverter(NoOpDbRefResolver.INSTANCE, mappingContext);
     mongoConverter.setTypeMapper(new DefaultMongoTypeMapper(null, mappingContext));
     mongoConverter.afterPropertiesSet();
 
-    return new MongoTemplate(connectionFactory, mongoConverter);
+    return new ReactiveMongoTemplate(connectionFactory, mongoConverter);
   }
 
-  public static MongoDatabaseFactory getDatabaseFactory(MongodbProperties mongoProperties) {
+  public static ReactiveMongoDatabaseFactory getDatabaseFactory(MongodbProperties mongoProperties) {
 
     ConnectionString connectionString = ConnectionUtility.prepareConnectionString(mongoProperties);
-    return new SimpleMongoClientDatabaseFactory(getClient(connectionString), Optional.ofNullable(connectionString.getDatabase()).orElse(DEFAULT_DATABASE));
+    return new SimpleReactiveMongoDatabaseFactory(getClient(connectionString), Optional.ofNullable(connectionString.getDatabase()).orElse(DEFAULT_DATABASE));
   }
 
-  public static MongoDatabaseFactory getDatabaseFactory(ServiceTenant serviceTenant) {
+  public static ReactiveMongoDatabaseFactory getDatabaseFactory(ServiceTenant serviceTenant) {
 
-    MongoTenantClients mongoTenantClients = new MongoTenantClients(serviceTenant);
-    return new AppMongoTenantClientDatabaseFactory(mongoTenantClients);
+    ReactiveMongoTenantClients mongoTenantClients = new ReactiveMongoTenantClients(serviceTenant);
+    return new AppReactiveMongoTenantClientDatabaseFactory(mongoTenantClients);
   }
 
   public static MongoClient getClient(MongodbProperties mongoProperties) {
