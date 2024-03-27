@@ -214,8 +214,8 @@ public class AppMongoRepositoryImpl<T, ID extends Serializable> extends SimpleMo
         updateQuery);
     LOGGER.trace(this.lastQuery);
 
-    UpdateResult result = mongoOperations.updateFirst(findQuery, updateQuery, mongoEntityInformation.getJavaType(), mongoEntityInformation.getCollectionName());
-    return result.wasAcknowledged();
+    return mongoOperations.updateFirst(findQuery, updateQuery, mongoEntityInformation.getJavaType(), mongoEntityInformation.getCollectionName())
+        .wasAcknowledged();
   }
 
   @Override
@@ -234,8 +234,8 @@ public class AppMongoRepositoryImpl<T, ID extends Serializable> extends SimpleMo
         updateQuery);
     LOGGER.trace(this.lastQuery);
 
-    UpdateResult result = mongoOperations.updateMulti(findQuery, updateQuery, mongoEntityInformation.getJavaType(), mongoEntityInformation.getCollectionName());
-    return result.wasAcknowledged();
+    return mongoOperations.updateMulti(findQuery, updateQuery, mongoEntityInformation.getJavaType(), mongoEntityInformation.getCollectionName())
+        .wasAcknowledged();
   }
 
   @Override

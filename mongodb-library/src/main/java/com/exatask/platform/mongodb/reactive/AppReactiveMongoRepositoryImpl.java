@@ -1,7 +1,8 @@
-package com.exatask.platform.mongodb;
+package com.exatask.platform.mongodb.reactive;
 
 import com.exatask.platform.logging.AppLogManager;
 import com.exatask.platform.logging.AppLogger;
+import com.exatask.platform.mongodb.AppQuery;
 import com.exatask.platform.mongodb.constants.Defaults;
 import com.exatask.platform.mongodb.exceptions.InvalidOperationException;
 import com.exatask.platform.mongodb.filters.FilterElement;
@@ -9,13 +10,15 @@ import com.exatask.platform.mongodb.updates.UpdateElement;
 import com.mongodb.client.result.UpdateResult;
 import org.springframework.data.domain.Sort;
 import org.springframework.data.mongodb.core.FindAndModifyOptions;
-import org.springframework.data.mongodb.core.MongoOperations;
+import org.springframework.data.mongodb.core.ReactiveMongoOperations;
 import org.springframework.data.mongodb.core.query.Field;
 import org.springframework.data.mongodb.core.query.Query;
 import org.springframework.data.mongodb.core.query.SerializationUtils;
 import org.springframework.data.mongodb.core.query.Update;
 import org.springframework.data.mongodb.repository.query.MongoEntityInformation;
-import org.springframework.data.mongodb.repository.support.SimpleMongoRepository;
+import org.springframework.data.mongodb.repository.support.SimpleReactiveMongoRepository;
+import reactor.core.publisher.Flux;
+import reactor.core.publisher.Mono;
 
 import java.io.Serializable;
 import java.time.LocalDateTime;
@@ -23,19 +26,19 @@ import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 
-public class AppReactiveMongoRepositoryImpl<T, ID extends Serializable> extends SimpleMongoRepository<T, ID> implements AppReactiveMongoRepository<T, ID> {
+public class AppReactiveMongoRepositoryImpl<T, ID extends Serializable> extends SimpleReactiveMongoRepository<T, ID> implements AppReactiveMongoRepository<T, ID> {
 
   private static final AppLogger LOGGER = AppLogManager.getLogger();
 
   private static final String CREATED_AT = "created_at";
   private static final String UPDATED_AT = "updated_at";
 
-  private final MongoOperations mongoOperations;
+  private final ReactiveMongoOperations mongoOperations;
   private final MongoEntityInformation<T, ID> mongoEntityInformation;
 
   private String lastQuery = null;
 
-  public AppMongoRepositoryImpl(MongoEntityInformation<T, ID> mongoEntityInformation, MongoOperations mongoOperations) {
+  public AppReactiveMongoRepositoryImpl(MongoEntityInformation<T, ID> mongoEntityInformation, ReactiveMongoOperations mongoOperations) {
 
     super(mongoEntityInformation, mongoOperations);
     this.mongoEntityInformation = mongoEntityInformation;
@@ -109,7 +112,7 @@ public class AppReactiveMongoRepositoryImpl<T, ID extends Serializable> extends 
   }
 
   @Override
-  public List<T> find(AppQuery query) {
+  public Flux<T> find(AppQuery query) {
 
     Integer skip = Optional.ofNullable(query.getSkip()).orElse(Defaults.DEFAULT_SKIP);
     if (skip < Defaults.MINIMUM_SKIP) {
@@ -141,7 +144,7 @@ public class AppReactiveMongoRepositoryImpl<T, ID extends Serializable> extends 
   }
 
   @Override
-  public T findAndUpdate(AppQuery query) {
+  public Mono<T> findAndUpdate(AppQuery query) {
 
     Query findQuery = new Query();
     prepareFilters(findQuery, query.getFilters());
@@ -167,7 +170,7 @@ public class AppReactiveMongoRepositoryImpl<T, ID extends Serializable> extends 
   }
 
   @Override
-  public Optional<T> findOne(AppQuery query) {
+  public Mono<T> findOne(AppQuery query) {
 
     Query findQuery = new Query();
     prepareFilters(findQuery, query.getFilters());
@@ -181,11 +184,11 @@ public class AppReactiveMongoRepositoryImpl<T, ID extends Serializable> extends 
         SerializationUtils.serializeToJsonSafely(findQuery.getSortObject()));
     LOGGER.trace(this.lastQuery);
 
-    return Optional.ofNullable(mongoOperations.findOne(findQuery, mongoEntityInformation.getJavaType(), mongoEntityInformation.getCollectionName()));
+    return mongoOperations.findOne(findQuery, mongoEntityInformation.getJavaType(), mongoEntityInformation.getCollectionName());
   }
 
   @Override
-  public long count(AppQuery query) {
+  public Mono<Long> count(AppQuery query) {
 
     Query countQuery = new Query();
     prepareFilters(countQuery, query.getFilters());
@@ -199,7 +202,7 @@ public class AppReactiveMongoRepositoryImpl<T, ID extends Serializable> extends 
   }
 
   @Override
-  public boolean updateOne(AppQuery query) {
+  public Mono<Boolean> updateOne(AppQuery query) {
 
     Query findQuery = new Query();
     prepareFilters(findQuery, query.getFilters());
@@ -214,12 +217,12 @@ public class AppReactiveMongoRepositoryImpl<T, ID extends Serializable> extends 
         updateQuery);
     LOGGER.trace(this.lastQuery);
 
-    UpdateResult result = mongoOperations.updateFirst(findQuery, updateQuery, mongoEntityInformation.getJavaType(), mongoEntityInformation.getCollectionName());
-    return result.wasAcknowledged();
+    return mongoOperations.updateFirst(findQuery, updateQuery, mongoEntityInformation.getJavaType(), mongoEntityInformation.getCollectionName())
+        .map(UpdateResult::wasAcknowledged);
   }
 
   @Override
-  public boolean updateAll(AppQuery query) {
+  public Mono<Boolean> updateAll(AppQuery query) {
 
     Query findQuery = new Query();
     prepareFilters(findQuery, query.getFilters());
@@ -234,12 +237,12 @@ public class AppReactiveMongoRepositoryImpl<T, ID extends Serializable> extends 
         updateQuery);
     LOGGER.trace(this.lastQuery);
 
-    UpdateResult result = mongoOperations.updateMulti(findQuery, updateQuery, mongoEntityInformation.getJavaType(), mongoEntityInformation.getCollectionName());
-    return result.wasAcknowledged();
+    return mongoOperations.updateMulti(findQuery, updateQuery, mongoEntityInformation.getJavaType(), mongoEntityInformation.getCollectionName())
+        .map(UpdateResult::wasAcknowledged);
   }
 
   @Override
-  public ID upsert(AppQuery query) {
+  public Mono<ID> upsert(AppQuery query) {
 
     Query findQuery = new Query();
     prepareFilters(findQuery, query.getFilters());
@@ -255,12 +258,14 @@ public class AppReactiveMongoRepositoryImpl<T, ID extends Serializable> extends 
         updateQuery);
     LOGGER.trace(this.lastQuery);
 
-    UpdateResult result = mongoOperations.upsert(findQuery, updateQuery, mongoEntityInformation.getJavaType(), mongoEntityInformation.getCollectionName());
-    if (result.wasAcknowledged()) {
-      return (ID) result.getUpsertedId();
-    }
+    return mongoOperations.upsert(findQuery, updateQuery, mongoEntityInformation.getJavaType(), mongoEntityInformation.getCollectionName())
+        .mapNotNull(result -> {
 
-    return null;
+          if (result.wasAcknowledged()) {
+            return (ID) result.getUpsertedId();
+          }
+          return null;
+        });
   }
 
   @Override
@@ -269,22 +274,22 @@ public class AppReactiveMongoRepositoryImpl<T, ID extends Serializable> extends 
   }
 
   @Override
-  public void deleteById(ID id) {
+  public Mono<Void> deleteById(ID id) {
     throw new InvalidOperationException(this.getClass().getEnclosingMethod().getName());
   }
 
   @Override
-  public void delete(T entity) {
+  public Mono<Void> delete(T entity) {
     throw new InvalidOperationException(this.getClass().getEnclosingMethod().getName());
   }
 
   @Override
-  public void deleteAll(Iterable<? extends T> entities) {
+  public Mono<Void> deleteAll(Iterable<? extends T> entities) {
     throw new InvalidOperationException(this.getClass().getEnclosingMethod().getName());
   }
 
   @Override
-  public void deleteAll() {
+  public Mono<Void> deleteAll() {
     throw new InvalidOperationException(this.getClass().getEnclosingMethod().getName());
   }
 }
