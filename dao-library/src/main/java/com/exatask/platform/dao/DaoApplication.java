@@ -15,4 +15,7 @@ public interface DaoApplication {
 
   default void migrateMariadb(ContextRefreshedEvent event) {
   }
+
+  default void migrateOracle(ContextRefreshedEvent event) {
+  }
 }
