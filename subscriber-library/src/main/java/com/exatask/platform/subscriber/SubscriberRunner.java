@@ -52,8 +52,9 @@ public class SubscriberRunner implements CommandLineRunner {
             .build());
 
     for (AppService subscriberService : subscriberServices) {
-      subscriberService.options().stream()
-          .map(options::addOption);
+      for (Option subscriberOption : subscriberService.options()) {
+        options.addOption(subscriberOption);
+      }
     }
 
     return options;

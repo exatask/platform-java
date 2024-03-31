@@ -10,7 +10,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
 
 @Service("allSubscriberService")
@@ -40,12 +39,6 @@ public class AllSubscriberService extends AppService {
 
   @Override
   public void process(CommandLine commandLine) {
-
-    String value = commandLine.getOptionValue("all-subscribers");
-    if (!value.equalsIgnoreCase("true") && !value.equals("1")) {
-      LOGGER.warn("all-subscribers argument mentioned with invalid value", Collections.singletonMap("value", value));
-      return;
-    }
 
     String[] subscriberBeanNames = ApplicationContextUtility.getBeanNames(AppSubscriber.class);
     for (String subscriber : subscriberBeanNames) {
