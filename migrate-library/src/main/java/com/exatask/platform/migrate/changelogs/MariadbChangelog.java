@@ -1,4 +1,4 @@
-package com.exatask.platform.dao.migration.changelogs;
+package com.exatask.platform.migrate.changelogs;
 
 import com.exatask.platform.crypto.digests.AppDigest;
 import com.exatask.platform.crypto.digests.AppDigestAlgorithm;
@@ -17,13 +17,13 @@ import java.io.InputStreamReader;
 import java.math.BigInteger;
 import java.security.GeneralSecurityException;
 
-public abstract class OracleChangelog extends BaseJavaMigration {
+public abstract class MariadbChangelog extends BaseJavaMigration {
 
   protected static final AppLogger LOGGER = AppLogManager.getLogger();
 
   private AppDigest appDigest;
 
-  protected OracleChangelog() {
+  protected MariadbChangelog() {
 
     super();
 

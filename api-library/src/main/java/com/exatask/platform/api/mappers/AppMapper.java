@@ -1,4 +1,4 @@
-package com.exatask.platform.dao.mappers;
+package com.exatask.platform.api.mappers;
 
 import org.springframework.stereotype.Component;
 

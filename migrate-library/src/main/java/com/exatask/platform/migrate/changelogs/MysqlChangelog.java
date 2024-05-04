@@ -1,9 +1,9 @@
-package com.exatask.platform.dao.migration.changelogs;
+package com.exatask.platform.migrate.changelogs;
 
-import com.exatask.platform.crypto.encoders.AppEncoderAlgorithm;
 import com.exatask.platform.crypto.digests.AppDigest;
 import com.exatask.platform.crypto.digests.AppDigestAlgorithm;
 import com.exatask.platform.crypto.digests.AppDigestFactory;
+import com.exatask.platform.crypto.encoders.AppEncoderAlgorithm;
 import com.exatask.platform.logging.AppLogManager;
 import com.exatask.platform.logging.AppLogger;
 import org.flywaydb.core.api.configuration.ClassicConfiguration;

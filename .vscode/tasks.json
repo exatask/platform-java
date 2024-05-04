@@ -59,17 +59,17 @@
     },
     {
       "type": "gradle",
-      "id": "dao-library [publishToMavenLocal]",
-      "script": "dao-library:publishToMavenLocal",
+      "id": "migrate-library [publishToMavenLocal]",
+      "script": "migrate-library:publishToMavenLocal",
       "group": "publishing",
-      "project": "dao-library",
-      "buildFile": "${workspaceFolder}/dao-library/build.gradle",
+      "project": "migrate-library",
+      "buildFile": "${workspaceFolder}/migrate-library/build.gradle",
       "projectFolder": "${workspaceFolder}",
       "rootProject": "${workspaceFolder}",
       "workspaceFolder": "${workspaceFolder}",
       "args": "",
       "javaDebug": false,
-      "label": "dao-library [publishToMavenLocal]"
+      "label": "migrate-library [publishToMavenLocal]"
     },
     {
       "type": "gradle",
@@ -314,8 +314,10 @@
       "group": "service",
       "dependsOn": [
         "api-library [publishToMavenLocal]",
+        "arangodb-library [publishToMavenLocal]",
+        "aurora-library [publishToMavenLocal]",
         "crypto-library [publishToMavenLocal]",
-        "dao-library [publishToMavenLocal]",
+        "migrate-library [publishToMavenLocal]",
         "dto-library [publishToMavenLocal]",
         "i18n-library [publishToMavenLocal]",
         "logging-library [publishToMavenLocal]",
@@ -323,6 +325,8 @@
         "micrometer-library [publishToMavenLocal]",
         "mongodb-library [publishToMavenLocal]",
         "mysql-library [publishToMavenLocal]",
+        "neo4j-library [publishToMavenLocal]",
+        "oracle-library [publishToMavenLocal]",
         "postgresql-library [publishToMavenLocal]",
         "rabbitmq-library [publishToMavenLocal]",
         "redis-library [publishToMavenLocal]",

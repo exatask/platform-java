@@ -1,6 +1,5 @@
-package com.exatask.platform.dao.migration.libraries;
+package com.exatask.platform.migrate.libraries;
 
-import com.exatask.platform.dao.libraries.AppLibrary;
 import com.exatask.platform.utilities.ApplicationContextUtility;
 import com.exatask.platform.utilities.ServiceUtility;
 import com.mongodb.ConnectionString;
@@ -52,27 +51,6 @@ public class MongodbLibrary extends AppLibrary {
     return createRunner(mongoTemplate);
   }
 
-  public MongockRunner createRunner(MongoTemplate mongoTemplate) {
-
-    MongockConfiguration configuration = new MongockConfiguration();
-    configuration.setMigrationRepositoryName(CHANGELOG_COLLECTION);
-    configuration.setLockRepositoryName(CHANGELOG_LOCK_COLLECTION);
-    configuration.setDefaultMigrationAuthor("no-author@exatask.com");
-
-    SpringDataMongoV3Driver driver = SpringDataMongoV3Driver.withDefaultLock(mongoTemplate);
-    driver.setWriteConcern(WriteConcern.MAJORITY.withJournal(true));
-    driver.setReadConcern(ReadConcern.MAJORITY);
-    driver.setReadPreference(ReadPreference.primary());
-    driver.disableTransaction();
-
-    return MongockSpringboot.builder()
-        .setDriver(driver)
-        .setConfig(configuration)
-        .addMigrationScanPackage(ServiceUtility.getServiceProperty(CHANGELOG_PACKAGE))
-        .setSpringContext(ApplicationContextUtility.getApplicationContext())
-        .buildRunner();
-  }
-
   public void createIndex(MongoCollection collection, List<String> fields, String name) {
     createIndex(collection, fields, name, false, false);
   }
@@ -95,7 +73,28 @@ public class MongodbLibrary extends AppLibrary {
     collection.dropIndex(name);
   }
 
-  private static MongoTemplate prepareMongoTemplate(MongoProperties mongoProperties) {
+  private MongockRunner createRunner(MongoTemplate mongoTemplate) {
+
+    MongockConfiguration configuration = new MongockConfiguration();
+    configuration.setMigrationRepositoryName(CHANGELOG_COLLECTION);
+    configuration.setLockRepositoryName(CHANGELOG_LOCK_COLLECTION);
+    configuration.setDefaultMigrationAuthor("no-author@exatask.com");
+
+    SpringDataMongoV3Driver driver = SpringDataMongoV3Driver.withDefaultLock(mongoTemplate);
+    driver.setWriteConcern(WriteConcern.MAJORITY.withJournal(true));
+    driver.setReadConcern(ReadConcern.MAJORITY);
+    driver.setReadPreference(ReadPreference.primary());
+    driver.disableTransaction();
+
+    return MongockSpringboot.builder()
+        .setDriver(driver)
+        .setConfig(configuration)
+        .addMigrationScanPackage(ServiceUtility.getServiceProperty(CHANGELOG_PACKAGE))
+        .setSpringContext(ApplicationContextUtility.getApplicationContext())
+        .buildRunner();
+  }
+
+  private MongoTemplate prepareMongoTemplate(MongoProperties mongoProperties) {
 
     String mongoUri = mongoProperties.getUri();
     if (StringUtils.isEmpty(mongoUri)) {
@@ -119,7 +118,7 @@ public class MongodbLibrary extends AppLibrary {
     return new MongoTemplate(connectionFactory, mongoConverter);
   }
 
-  private static String prepareMongoUri(MongoProperties mongoProperties) {
+  private String prepareMongoUri(MongoProperties mongoProperties) {
 
     StringBuilder mongoUriBuilder = new StringBuilder(MONGODB_PREFIX);
 
