@@ -1,6 +1,5 @@
-package com.exatask.platform.dao.migration.libraries;
+package com.exatask.platform.migrate.libraries;
 
-import com.exatask.platform.dao.libraries.AppLibrary;
 import com.exatask.platform.utilities.ServiceUtility;
 import org.flywaydb.core.Flyway;
 import org.springframework.boot.autoconfigure.jdbc.DataSourceProperties;
@@ -23,7 +22,7 @@ public class OracleLibrary extends AppLibrary {
     return createRunner(dataSource);
   }
 
-  public Flyway createRunner(DataSource dataSource) {
+  private Flyway createRunner(DataSource dataSource) {
 
     return Flyway.configure()
         .table(CHANGELOG_TABLE)

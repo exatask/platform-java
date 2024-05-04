@@ -16,29 +16,24 @@ jar {
 dependencies {
 
   api project(":logging-library")
-
-  implementation project(":utilities-library")
-  implementation project(":crypto-library")
+  api project(":utilities-library")
+  api project(":crypto-library")
 
   compileOnly group: "org.springframework.boot", name: "spring-boot-starter-data-mongodb"
   compileOnly group: "org.springframework.boot", name: "spring-boot-starter-data-jpa"
-  compileOnly group: "org.springframework.boot", name: "spring-boot-starter-webflux"
   compileOnly group: "io.mongock", name: "mongock-springboot"
   compileOnly group: "io.mongock", name: "mongodb-springdata-v3-driver"
   compileOnly group: "org.flywaydb", name: "flyway-core", version: "${flywayVersion}"
 
   compileOnly group: "org.projectlombok", name: "lombok", version: "${lombokVersion}"
   annotationProcessor group: "org.projectlombok", name: "lombok", version: "${lombokVersion}"
-
-  compileOnly group: "org.mapstruct", name: "mapstruct", version: "${mapstructVersion}"
-  annotationProcessor group: "org.mapstruct", name: "mapstruct-processor", version: "${mapstructVersion}"
 }
 
 publishing {
   publications {
     maven(MavenPublication) {
 
-      artifactId = "exatask-dao"
+      artifactId = "exatask-migrate"
       from components.java
     }
   }
