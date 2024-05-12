@@ -7,9 +7,6 @@ public interface MigrateApplication {
   default void migrateMongodb(ContextRefreshedEvent event) {
   }
 
-  default void migrateMysql(ContextRefreshedEvent event) {
-  }
-
   default void migratePostgresql(ContextRefreshedEvent event) {
   }
 

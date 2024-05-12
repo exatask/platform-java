@@ -5,6 +5,7 @@ import com.exatask.platform.migrate.entities.AppEntity;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.SQLException;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
@@ -23,6 +24,7 @@ public class ServiceLibrary extends AppLibrary {
     String[] valuePlaceholder = new String[columns.size()];
     Arrays.fill(valuePlaceholder, VALUE_PLACEHOLDER);
 
+    List<String> queries = new ArrayList<>();
     String insertQuery = String.format("INSERT INTO `%s` (`%s`) VALUES (%s);",
         table,
         String.join("`,`", columns),
@@ -37,10 +39,12 @@ public class ServiceLibrary extends AppLibrary {
         preparedStatement.setObject(i++, entity.get(column));
       }
       preparedStatement.addBatch();
+      queries.add(preparedStatement.toString());
     }
 
-    LOGGER.debug("SQL statement: " + preparedStatement.toString());
+    LOGGER.debug("SQL statement: " + String.join("\n", queries));
     preparedStatement.executeBatch();
     connection.commit();
+    preparedStatement.clearBatch();
   }
 }

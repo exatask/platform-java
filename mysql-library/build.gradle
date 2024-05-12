@@ -17,11 +17,13 @@ dependencies {
 
   api group: "org.springframework.boot", name: "spring-boot-starter-data-jpa"
   api group: "com.vladmihalcea", name: "hibernate-types-52", version: "${hibernateTypeVersion}"
+  api group: "org.flywaydb", name: "flyway-core", version: "${flywayVersion}"
 
   implementation group: "mysql", name: "mysql-connector-java", version: "${mysqlVersion}"
   implementation group: "org.apache.commons", name: "commons-lang3", version: "${apacheLangVersion}"
   implementation project(":logging-library")
   implementation project(":dto-library")
+  implementation project(":crypto-library")
   implementation project(":utilities-library")
 
   compileOnly group: "org.projectlombok", name: "lombok", version: "${lombokVersion}"

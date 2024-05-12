@@ -1,4 +1,4 @@
-package com.exatask.platform.migrate.changelogs;
+package com.exatask.platform.mysql.changelogs;
 
 import com.exatask.platform.crypto.digests.AppDigest;
 import com.exatask.platform.crypto.digests.AppDigestAlgorithm;
