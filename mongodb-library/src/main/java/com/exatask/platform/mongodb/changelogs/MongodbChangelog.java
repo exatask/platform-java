@@ -1,4 +1,4 @@
-package com.exatask.platform.migrate.changelogs;
+package com.exatask.platform.mongodb.changelogs;
 
 import com.exatask.platform.logging.AppLogManager;
 import com.exatask.platform.logging.AppLogger;
