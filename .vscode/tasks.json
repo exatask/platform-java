@@ -59,20 +59,6 @@
     },
     {
       "type": "gradle",
-      "id": "migrate-library [publishToMavenLocal]",
-      "script": "migrate-library:publishToMavenLocal",
-      "group": "publishing",
-      "project": "migrate-library",
-      "buildFile": "${workspaceFolder}/migrate-library/build.gradle",
-      "projectFolder": "${workspaceFolder}",
-      "rootProject": "${workspaceFolder}",
-      "workspaceFolder": "${workspaceFolder}",
-      "args": "",
-      "javaDebug": false,
-      "label": "migrate-library [publishToMavenLocal]"
-    },
-    {
-      "type": "gradle",
       "id": "dto-library [publishToMavenLocal]",
       "script": "dto-library:publishToMavenLocal",
       "group": "publishing",
@@ -317,7 +303,6 @@
         "arangodb-library [publishToMavenLocal]",
         "aurora-library [publishToMavenLocal]",
         "crypto-library [publishToMavenLocal]",
-        "migrate-library [publishToMavenLocal]",
         "dto-library [publishToMavenLocal]",
         "i18n-library [publishToMavenLocal]",
         "logging-library [publishToMavenLocal]",

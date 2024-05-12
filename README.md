@@ -18,7 +18,6 @@ boilerplate to a functionality that underlying microservices can use.
 - [mariadb-library](mariadb-library/README.md)
 - [memcache-library](memcache-library/README.md)
 - [micrometer-library](micrometer-library/README.md)
-- [migrate-library](migrate-library/README.md)
 - [mongodb-library](mongodb-library/README.md)
 - [mysql-library](mysql-library/README.md)
 - [neo4j-library](neo4j-library/README.md)

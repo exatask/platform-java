@@ -1,4 +1,4 @@
-package com.exatask.platform.migrate.libraries;
+package com.exatask.platform.mongodb;
 
 import com.exatask.platform.utilities.ApplicationContextUtility;
 import com.exatask.platform.utilities.ServiceUtility;
@@ -33,7 +33,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
-public class MongodbLibrary extends AppLibrary {
+public class AppMongodbChangelog {
 
   private static final String MONGODB_PREFIX = "mongodb://";
 
@@ -43,12 +43,14 @@ public class MongodbLibrary extends AppLibrary {
 
   private static final String CHANGELOG_COLLECTION = "changelogs";
   private static final String CHANGELOG_LOCK_COLLECTION = "changelog_locks";
-  private static final String CHANGELOG_PACKAGE = "changelogs.mongodb.package";
+  private static final String SCHEMA_CHANGELOG_PACKAGE = "changelogs.mongodb.package.schema";
+  private static final String DATA_CHANGELOG_PACKAGE = "changelogs.mongodb.package.data";
 
-  public MongockRunner createRunner(MongoProperties mongoProperties) {
+  public void migrate(MongoProperties mongoProperties, boolean schema) {
 
     MongoTemplate mongoTemplate = prepareMongoTemplate(mongoProperties);
-    return createRunner(mongoTemplate);
+    MongockRunner mongockRunner = createRunner(mongoTemplate, schema);
+    mongockRunner.execute();
   }
 
   public void createIndex(MongoCollection collection, List<String> fields, String name) {
@@ -73,7 +75,7 @@ public class MongodbLibrary extends AppLibrary {
     collection.dropIndex(name);
   }
 
-  private MongockRunner createRunner(MongoTemplate mongoTemplate) {
+  private MongockRunner createRunner(MongoTemplate mongoTemplate, boolean schema) {
 
     MongockConfiguration configuration = new MongockConfiguration();
     configuration.setMigrationRepositoryName(CHANGELOG_COLLECTION);
@@ -86,10 +88,15 @@ public class MongodbLibrary extends AppLibrary {
     driver.setReadPreference(ReadPreference.primary());
     driver.disableTransaction();
 
+    String location = ServiceUtility.getServiceProperty(SCHEMA_CHANGELOG_PACKAGE);
+    if (!schema) {
+      location  = ServiceUtility.getServiceProperty(DATA_CHANGELOG_PACKAGE);
+    }
+
     return MongockSpringboot.builder()
         .setDriver(driver)
         .setConfig(configuration)
-        .addMigrationScanPackage(ServiceUtility.getServiceProperty(CHANGELOG_PACKAGE))
+        .addMigrationScanPackage(location)
         .setSpringContext(ApplicationContextUtility.getApplicationContext())
         .buildRunner();
   }

@@ -1,4 +1,4 @@
-package com.exatask.platform.migrate.libraries;
+package com.exatask.platform.postgresql;
 
 import com.exatask.platform.utilities.ServiceUtility;
 import org.flywaydb.core.Flyway;
@@ -9,25 +9,32 @@ import org.springframework.util.ResourceUtils;
 import javax.sql.DataSource;
 import java.util.Properties;
 
-public class MariadbLibrary extends AppLibrary {
+public class AppPostgresqlChangelog {
 
-  private static final String MARIADB_DRIVER = "com.mysql.cj.jdbc.Driver";
+  private static final String POSTGRESQL_DRIVER = "org.postgresql.Driver";
 
   private static final String CHANGELOG_TABLE = "changelogs";
-  private static final String CHANGELOG_PACKAGE = "changelogs.mariadb.package";
+  private static final String SCHEMA_CHANGELOG_PACKAGE = "changelogs.postgresql.package.schema";
+  private static final String DATA_CHANGELOG_PACKAGE = "changelogs.postgresql.package.data";
 
-  public Flyway createRunner(DataSourceProperties dataSourceProperties) {
+  public void migrate(DataSourceProperties dataSourceProperties, boolean schema) {
 
-    DataSource dataSource = prepareMariadbDataSource(dataSourceProperties);
-    return createRunner(dataSource);
+    DataSource dataSource = preparePostgresqlDataSource(dataSourceProperties);
+    Flyway flyway = createRunner(dataSource, schema);
+    flyway.migrate();
   }
 
-  private Flyway createRunner(DataSource dataSource) {
+  private Flyway createRunner(DataSource dataSource, boolean schema) {
+
+    String location = ServiceUtility.getServiceProperty(SCHEMA_CHANGELOG_PACKAGE);
+    if (!schema) {
+      location  = ResourceUtils.CLASSPATH_URL_PREFIX + ServiceUtility.getServiceProperty(DATA_CHANGELOG_PACKAGE);
+    }
 
     return Flyway.configure()
         .table(CHANGELOG_TABLE)
-        .locations(ResourceUtils.CLASSPATH_URL_PREFIX + ServiceUtility.getServiceProperty(CHANGELOG_PACKAGE))
-        .sqlMigrationSuffixes(".java,.sql")
+        .locations(location)
+        .sqlMigrationSuffixes(schema ? ".sql" : ".java")
         .validateOnMigrate(false)
         .validateMigrationNaming(true)
         .baselineOnMigrate(false)
@@ -36,13 +43,13 @@ public class MariadbLibrary extends AppLibrary {
         .load();
   }
 
-  private static DataSource prepareMariadbDataSource(DataSourceProperties dataSourceProperties) {
+  private static DataSource preparePostgresqlDataSource(DataSourceProperties dataSourceProperties) {
 
     Properties connectionProperties = new Properties();
     connectionProperties.setProperty("createDatabaseIfNotExist", "true");
 
     DriverManagerDataSource dataSource = new DriverManagerDataSource();
-    dataSource.setDriverClassName(MARIADB_DRIVER);
+    dataSource.setDriverClassName(POSTGRESQL_DRIVER);
     dataSource.setUrl(dataSourceProperties.getUrl());
     dataSource.setUsername(dataSourceProperties.getUsername());
     dataSource.setPassword(dataSourceProperties.getPassword());
