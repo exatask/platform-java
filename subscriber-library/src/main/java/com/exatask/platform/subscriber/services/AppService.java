@@ -2,18 +2,23 @@ package com.exatask.platform.subscriber.services;
 
 import com.exatask.platform.logging.AppLogManager;
 import com.exatask.platform.logging.AppLogger;
-import org.apache.commons.cli.CommandLine;
-import org.apache.commons.cli.Option;
+import lombok.Getter;
+import picocli.CommandLine;
 
-import java.util.List;
+import javax.annotation.PostConstruct;
+import java.util.concurrent.Callable;
 
-public abstract class AppService {
+public abstract class AppService implements Callable<Integer> {
 
   protected static final AppLogger LOGGER = AppLogManager.getLogger();
 
-  public abstract String option();
+  @Getter
+  protected CommandLine commandLine;
 
-  public abstract List<Option> options();
+  @PostConstruct
+  private void initialize() {
 
-  public abstract void process(CommandLine commandLine);
+    this.commandLine = new CommandLine(this);
+    commandLine.setUnmatchedArgumentsAllowed(true);
+  }
 }

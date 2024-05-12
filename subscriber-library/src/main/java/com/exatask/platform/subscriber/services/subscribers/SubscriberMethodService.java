@@ -4,17 +4,14 @@ import com.exatask.platform.subscriber.entities.Subscriber;
 import com.exatask.platform.subscriber.libraries.SubscriberLibrary;
 import com.exatask.platform.subscriber.services.AppService;
 import com.exatask.platform.utilities.ApplicationContextUtility;
-import org.apache.commons.cli.CommandLine;
-import org.apache.commons.cli.Option;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.util.ObjectUtils;
+import picocli.CommandLine;
 
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
-import java.util.ArrayList;
 import java.util.Collections;
-import java.util.List;
 
 @Service("subscriberMethodService")
 public class SubscriberMethodService extends AppService {
@@ -24,36 +21,21 @@ public class SubscriberMethodService extends AppService {
   @Autowired
   private SubscriberLibrary subscriberLibrary;
 
-  @Override
-  public String option() {
-    return "subscriber-method";
-  }
+  @CommandLine.Option(
+      names = "-subscriber-method",
+      description = "Subscriber Action within the specified class to be loaded and executed"
+  )
+  private String[] subscriberMethods;
 
   @Override
-  public List<Option> options() {
+  public Integer call() {
 
-    List<Option> options = new ArrayList<>();
-
-    options.add(Option.builder()
-        .longOpt("subscriber-method")
-        .desc("Subscriber Action within the specified class to be loaded and executed")
-        .hasArg(true)
-        .valueSeparator(',')
-        .build());
-
-    return options;
-  }
-
-  @Override
-  public void process(CommandLine commandLine) {
-
-    String[] allSubscriberMethods = commandLine.getOptionValues("subscriber-method");
-    for (String subscriberMethod : allSubscriberMethods) {
+    for (String subscriberMethod : subscriberMethods) {
 
       Subscriber subscriberInfo = parseSubscriberAction(subscriberMethod);
       if (ObjectUtils.isEmpty(subscriberInfo)) {
         LOGGER.warn("Provided subscriber-method information is invalid", Collections.singletonMap("subscriber-method", subscriberMethod));
-        return;
+        continue;
       }
 
       Object subscriberBean = ApplicationContextUtility.getBean(subscriberInfo.getSubscriber());
@@ -67,6 +49,8 @@ public class SubscriberMethodService extends AppService {
         LOGGER.error(exception);
       }
     }
+
+    return 0;
   }
 
   private Subscriber parseSubscriberAction(String subscriberAction) {

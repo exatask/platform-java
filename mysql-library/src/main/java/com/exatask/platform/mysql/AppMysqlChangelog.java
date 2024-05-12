@@ -1,4 +1,4 @@
-package com.exatask.platform.migrate.libraries;
+package com.exatask.platform.mysql;
 
 import com.exatask.platform.utilities.ServiceUtility;
 import org.flywaydb.core.Flyway;
@@ -9,25 +9,32 @@ import org.springframework.util.ResourceUtils;
 import javax.sql.DataSource;
 import java.util.Properties;
 
-public class MysqlLibrary extends AppLibrary {
+public class AppMysqlChangelog {
 
   private static final String MYSQL_DRIVER = "com.mysql.cj.jdbc.Driver";
 
   private static final String CHANGELOG_TABLE = "changelogs";
-  private static final String CHANGELOG_PACKAGE = "changelogs.mysql.package";
+  private static final String SCHEMA_CHANGELOG_PACKAGE = "changelogs.mysql.package.schema";
+  private static final String DATA_CHANGELOG_PACKAGE = "changelogs.mysql.package.data";
 
-  public Flyway createRunner(DataSourceProperties dataSourceProperties) {
+  public void migrate(DataSourceProperties dataSourceProperties, boolean schema) {
 
     DataSource dataSource = prepareMysqlDataSource(dataSourceProperties);
-    return createRunner(dataSource);
+    Flyway flyway = createRunner(dataSource, schema);
+    flyway.migrate();
   }
 
-  private Flyway createRunner(DataSource dataSource) {
+  private Flyway createRunner(DataSource dataSource, boolean schema) {
+
+    String location = ServiceUtility.getServiceProperty(SCHEMA_CHANGELOG_PACKAGE);
+    if (!schema) {
+      location  = ResourceUtils.CLASSPATH_URL_PREFIX + ServiceUtility.getServiceProperty(DATA_CHANGELOG_PACKAGE);
+    }
 
     return Flyway.configure()
         .table(CHANGELOG_TABLE)
-        .locations(ResourceUtils.CLASSPATH_URL_PREFIX + ServiceUtility.getServiceProperty(CHANGELOG_PACKAGE))
-        .sqlMigrationSuffixes(".java")
+        .locations(location)
+        .sqlMigrationSuffixes(schema ? ".sql" : ".java")
         .validateOnMigrate(false)
         .validateMigrationNaming(true)
         .baselineOnMigrate(false)

@@ -27,7 +27,7 @@ public class PostgresqlLibrary extends AppLibrary {
     return Flyway.configure()
         .table(CHANGELOG_TABLE)
         .locations(ResourceUtils.CLASSPATH_URL_PREFIX + ServiceUtility.getServiceProperty(CHANGELOG_PACKAGE))
-        .sqlMigrationSuffixes(".java")
+        .sqlMigrationSuffixes(".java,.sql")
         .validateOnMigrate(false)
         .validateMigrationNaming(true)
         .baselineOnMigrate(false)
