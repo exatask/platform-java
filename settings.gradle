@@ -8,7 +8,6 @@ rootProject.name = "platform"
 
 include "api-library"
 include "arangodb-library"
-include "aurora-library"
 include "cassandra-library"
 include "crypto-library"
 include "dto-library"
