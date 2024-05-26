@@ -9,15 +9,11 @@ import com.mongodb.ReadPreference;
 import com.mongodb.WriteConcern;
 import com.mongodb.client.MongoClient;
 import com.mongodb.client.MongoClients;
-import com.mongodb.client.MongoCollection;
-import com.mongodb.client.model.IndexOptions;
 import io.mongock.api.config.MongockConfiguration;
 import io.mongock.driver.mongodb.springdata.v3.SpringDataMongoV3Driver;
 import io.mongock.runner.core.executor.MongockRunner;
 import io.mongock.runner.springboot.MongockSpringboot;
 import org.apache.commons.lang3.StringUtils;
-import org.bson.BsonDocument;
-import org.bson.BsonInt32;
 import org.bson.UuidRepresentation;
 import org.springframework.boot.autoconfigure.mongo.MongoProperties;
 import org.springframework.data.mongodb.MongoDatabaseFactory;
@@ -50,29 +46,9 @@ public class AppMongodbChangelog {
 
     MongoTemplate mongoTemplate = prepareMongoTemplate(mongoProperties);
     MongockRunner mongockRunner = createRunner(mongoTemplate, schema);
-    mongockRunner.execute();
-  }
-
-  public void createIndex(MongoCollection collection, List<String> fields, String name) {
-    createIndex(collection, fields, name, false, false);
-  }
-
-  public void createIndex(MongoCollection collection, List<String> fields, String name, boolean unique) {
-    createIndex(collection, fields, name, unique, false);
-  }
-
-  public void createIndex(MongoCollection collection, List<String> fields, String name, boolean unique, boolean sparse) {
-
-    BsonDocument index = new BsonDocument();
-    fields.forEach(field -> index.append(field, new BsonInt32(1)));
-
-    IndexOptions indexOptions = new IndexOptions();
-    indexOptions.background(true).unique(unique).sparse(sparse).name(name);
-    collection.createIndex(index, indexOptions);
-  }
-
-  public void dropIndex(MongoCollection collection, String name) {
-    collection.dropIndex(name);
+    if (mongockRunner != null) {
+      mongockRunner.execute();
+    }
   }
 
   private MongockRunner createRunner(MongoTemplate mongoTemplate, boolean schema) {
@@ -88,9 +64,13 @@ public class AppMongodbChangelog {
     driver.setReadPreference(ReadPreference.primary());
     driver.disableTransaction();
 
-    String location = ServiceUtility.getServiceProperty(SCHEMA_CHANGELOG_PACKAGE);
+    String location = ServiceUtility.getServiceProperty(SCHEMA_CHANGELOG_PACKAGE, null);
     if (!schema) {
-      location  = ServiceUtility.getServiceProperty(DATA_CHANGELOG_PACKAGE);
+      location  = ServiceUtility.getServiceProperty(DATA_CHANGELOG_PACKAGE, null);
+    }
+
+    if (StringUtils.isEmpty(location)) {
+      return null;
     }
 
     return MongockSpringboot.builder()

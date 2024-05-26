@@ -21,14 +21,23 @@ public class AppPostgresqlChangelog {
 
     DataSource dataSource = preparePostgresqlDataSource(dataSourceProperties);
     Flyway flyway = createRunner(dataSource, schema);
-    flyway.migrate();
+    if (flyway != null) {
+      flyway.migrate();
+    }
   }
 
   private Flyway createRunner(DataSource dataSource, boolean schema) {
 
-    String location = ServiceUtility.getServiceProperty(SCHEMA_CHANGELOG_PACKAGE);
+    String location = ServiceUtility.getServiceProperty(SCHEMA_CHANGELOG_PACKAGE, null);
     if (!schema) {
-      location  = ResourceUtils.CLASSPATH_URL_PREFIX + ServiceUtility.getServiceProperty(DATA_CHANGELOG_PACKAGE);
+      String changelogPackage = ServiceUtility.getServiceProperty(DATA_CHANGELOG_PACKAGE, null);
+      if (changelogPackage != null) {
+        location  = ResourceUtils.CLASSPATH_URL_PREFIX + changelogPackage;
+      }
+    }
+
+    if (location == null) {
+      return null;
     }
 
     return Flyway.configure()

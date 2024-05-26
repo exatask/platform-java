@@ -31,20 +31,6 @@
     },
     {
       "type": "gradle",
-      "id": "aurora-library [publishToMavenLocal]",
-      "script": "aurora-library:publishToMavenLocal",
-      "group": "publishing",
-      "project": "aurora-library",
-      "buildFile": "${workspaceFolder}/aurora-library/build.gradle",
-      "projectFolder": "${workspaceFolder}",
-      "rootProject": "${workspaceFolder}",
-      "workspaceFolder": "${workspaceFolder}",
-      "args": "",
-      "javaDebug": false,
-      "label": "aurora-library [publishToMavenLocal]"
-    },
-    {
-      "type": "gradle",
       "id": "crypto-library [publishToMavenLocal]",
       "script": "crypto-library:publishToMavenLocal",
       "group": "publishing",
@@ -301,8 +287,7 @@
       "dependsOn": [
         "api-library [publishToMavenLocal]",
         "arangodb-library [publishToMavenLocal]",
-        "aurora-library [publishToMavenLocal]",
-        "crypto-library [publishToMavenLocal]",
+        `"crypto-library [publishToMavenLocal]",
         "dto-library [publishToMavenLocal]",
         "i18n-library [publishToMavenLocal]",
         "logging-library [publishToMavenLocal]",

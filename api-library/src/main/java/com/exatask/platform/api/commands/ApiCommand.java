@@ -9,13 +9,13 @@ public class ApiCommand {
   private final CommandLine commandLine;
 
   @CommandLine.Option(
-      names = "-disable-api",
+      names = "--disable-api",
       description = "Disables API execution in the service"
   )
   private boolean disableApi;
 
   @CommandLine.Option(
-      names = "-migrate-schema",
+      names = "--migrate-schema",
       description = "Execute schema migration in the service"
   )
   private boolean migrateSchema;

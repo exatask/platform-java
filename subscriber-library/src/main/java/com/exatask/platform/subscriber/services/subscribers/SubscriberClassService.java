@@ -14,13 +14,17 @@ public class SubscriberClassService extends AppService {
   private SubscriberLibrary subscriberLibrary;
 
   @CommandLine.Option(
-      names = "-subscriber-class",
+      names = "--subscriber-class",
       description = "Subscriber Class to be loaded and all the actions within the class to be executed"
   )
   private String[] subscriberClasses;
 
   @Override
   public Integer call() {
+
+    if (subscriberClasses == null) {
+      return 0;
+    }
 
     for (String subscriber : subscriberClasses) {
       Object subscriberBean = ApplicationContextUtility.getBean(subscriber);

@@ -15,13 +15,17 @@ public class AllSubscriberService extends AppService {
   private SubscriberLibrary subscriberLibrary;
 
   @CommandLine.Option(
-      names = "-all-subscribers",
+      names = "--all-subscribers",
       description = "Enable and execute all subscribers in the service"
   )
   private boolean allSubscribers;
 
   @Override
   public Integer call() {
+
+    if (!allSubscribers) {
+      return 0;
+    }
 
     String[] subscriberBeanNames = ApplicationContextUtility.getBeanNames(AppSubscriber.class);
     for (String subscriber : subscriberBeanNames) {

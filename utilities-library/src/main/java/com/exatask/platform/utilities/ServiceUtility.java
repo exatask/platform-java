@@ -69,6 +69,17 @@ public class ServiceUtility {
     loadClasspathProperties(APPLICATION_PROPERTIES_FILE);
 
     String activeProfile = applicationProperties.getProperty(SPRING_PROFILE_KEY);
+    if (StringUtils.isEmpty(activeProfile)) {
+      activeProfile = System.getProperty(SPRING_PROFILE_KEY);
+    }
+
+    if (StringUtils.isEmpty(activeProfile)) {
+      activeProfile = System.getenv(SPRING_PROFILE_KEY);
+      if (StringUtils.isEmpty(activeProfile)) {
+        activeProfile = System.getenv(SPRING_PROFILE_ENV_KEY);
+      }
+    }
+
     if (StringUtils.isNotEmpty(activeProfile)) {
 
       String applicationProfilePropertiesFile = APPLICATION_PROPERTIES_FILE.replace(APPLICATION_PROPERTIES_FILE_NAME, APPLICATION_PROPERTIES_FILE_NAME + "-" + activeProfile);

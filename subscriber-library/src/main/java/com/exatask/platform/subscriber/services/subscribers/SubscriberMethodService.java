@@ -22,13 +22,17 @@ public class SubscriberMethodService extends AppService {
   private SubscriberLibrary subscriberLibrary;
 
   @CommandLine.Option(
-      names = "-subscriber-method",
+      names = "--subscriber-method",
       description = "Subscriber Action within the specified class to be loaded and executed"
   )
   private String[] subscriberMethods;
 
   @Override
   public Integer call() {
+
+    if (subscriberMethods == null) {
+      return 0;
+    }
 
     for (String subscriberMethod : subscriberMethods) {
 
