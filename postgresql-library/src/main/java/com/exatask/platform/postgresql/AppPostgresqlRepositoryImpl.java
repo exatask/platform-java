@@ -3,6 +3,7 @@ package com.exatask.platform.postgresql;
 import com.exatask.platform.logging.AppLogManager;
 import com.exatask.platform.logging.AppLogger;
 import com.exatask.platform.postgresql.constants.Defaults;
+import com.exatask.platform.postgresql.exceptions.InvalidIdentifierException;
 import com.exatask.platform.postgresql.exceptions.InvalidOperationException;
 import com.exatask.platform.postgresql.filters.FilterElement;
 import com.exatask.platform.postgresql.joins.JoinElement;
@@ -11,6 +12,8 @@ import com.exatask.platform.postgresql.sorts.SortElement;
 import com.exatask.platform.postgresql.updates.UpdateElement;
 import com.exatask.platform.postgresql.updates.UpdateOperation;
 import com.exatask.platform.postgresql.utilities.QueryUtility;
+import com.exatask.platform.utilities.ResourceUtility;
+import org.apache.commons.lang3.StringUtils;
 import org.hibernate.query.Query;
 import org.springframework.data.jpa.repository.support.SimpleJpaRepository;
 import org.springframework.util.CollectionUtils;
@@ -417,6 +420,31 @@ public class AppPostgresqlRepositoryImpl<T, ID extends Serializable> extends Sim
     Map<String, Class<?>> tupleMapping = prepareTupleMapping(result.get().getElements());
     Map<String, Object> row = prepareTupleRow(result.get(), tupleMapping);
     return Optional.of(row);
+  }
+
+  @Override
+  public Optional<T> findByIdentifier(Class<? extends AppModel> clazz, String identifier) {
+
+    CriteriaBuilder criteriaBuilder = entityManager.getCriteriaBuilder();
+    CriteriaQuery<T> criteriaQuery = criteriaBuilder.createQuery(this.domainClass);
+
+    AppQuery.AppQueryBuilder queryBuilder = AppQuery.builder();
+    if (StringUtils.isNumeric(identifier)) {
+      queryBuilder.addFilter(clazz, "id", Integer.parseInt(identifier));
+    } else if (ResourceUtility.isUrn(identifier)) {
+      queryBuilder.addFilter(clazz, "urn", identifier);
+    } else {
+      throw new InvalidIdentifierException(identifier);
+    }
+
+    criteriaQuery = prepareFilters(criteriaBuilder, criteriaQuery, queryBuilder.build().getFilters());
+
+    ReplicaDataSource.setReadOnly(true);
+    TypedQuery<T> typedQuery = entityManager.createQuery(criteriaQuery);
+    this.lastQuery = typedQuery.unwrap(Query.class).getQueryString();
+    LOGGER.trace(this.lastQuery);
+
+    return typedQuery.getResultStream().findFirst();
   }
 
   @Override

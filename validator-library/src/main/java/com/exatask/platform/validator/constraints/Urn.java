@@ -1,6 +1,5 @@
 package com.exatask.platform.validator.constraints;
 
-import com.exatask.platform.validator.validators.ObjectIdValidator;
 import com.exatask.platform.validator.validators.UrnValidator;
 
 import javax.validation.Constraint;
@@ -17,7 +16,7 @@ import java.lang.annotation.Target;
 @Retention(RetentionPolicy.RUNTIME)
 public @interface Urn {
 
-  String message() default "{com.exatask.platform.validator.constraints.ObjectIdConstraint.message}";
+  String message() default "{com.exatask.platform.validator.constraints.UrnConstraint.message}";
 
   Class<?>[] groups() default { };
 

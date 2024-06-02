@@ -14,6 +14,8 @@ public interface AppMongoRepository<T, ID extends Serializable> extends MongoRep
 
   Optional<T> findOne(AppQuery query);
 
+  Optional<T> findByIdentifier(String identifier);
+
   long count(AppQuery query);
 
   boolean updateOne(AppQuery query);

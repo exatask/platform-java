@@ -17,6 +17,8 @@ public interface AppOracleRepository<T, ID extends Serializable> extends JpaRepo
 
   Optional<Map<String, Object>> findOneNative(AppQuery query);
 
+  Optional<T> findByIdentifier(Class<? extends AppModel> clazz, String identifier);
+
   long count(AppQuery query);
 
   long countNative(AppQuery query);
