@@ -71,4 +71,22 @@ public class ResourceUtility {
 
     return urnPropertiesBuilder.build();
   }
+
+  public boolean isUrn(String urn) {
+
+    if (!StringUtils.startsWith(urn, URN_PREFIX)) {
+      return false;
+    }
+
+    String[] resourceElements = urn.split(RESOURCE_SEPARATOR);
+    String[] urnElements = resourceElements[0].split(URN_SEPARATOR);
+
+    if (resourceElements.length != 2 || resourceElements[1].isEmpty()) {
+      return false;
+    } else if (urnElements.length != 5) {
+      return false;
+    }
+
+    return true;
+  }
 }
