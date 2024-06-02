@@ -1,13 +1,15 @@
-package com.exatask.platform.mongodb.reactive;
+package com.exatask.platform.mongodb;
 
 import com.exatask.platform.logging.AppLogManager;
 import com.exatask.platform.logging.AppLogger;
-import com.exatask.platform.mongodb.AppQuery;
 import com.exatask.platform.mongodb.constants.Defaults;
+import com.exatask.platform.mongodb.exceptions.InvalidIdentifierException;
 import com.exatask.platform.mongodb.exceptions.InvalidOperationException;
 import com.exatask.platform.mongodb.filters.FilterElement;
 import com.exatask.platform.mongodb.updates.UpdateElement;
+import com.exatask.platform.utilities.ResourceUtility;
 import com.mongodb.client.result.UpdateResult;
+import org.bson.types.ObjectId;
 import org.springframework.data.domain.Sort;
 import org.springframework.data.mongodb.core.FindAndModifyOptions;
 import org.springframework.data.mongodb.core.ReactiveMongoOperations;
@@ -182,6 +184,29 @@ public class AppReactiveMongoRepositoryImpl<T, ID extends Serializable> extends 
         SerializationUtils.serializeToJsonSafely(findQuery.getQueryObject()),
         SerializationUtils.serializeToJsonSafely(findQuery.getFieldsObject()),
         SerializationUtils.serializeToJsonSafely(findQuery.getSortObject()));
+    LOGGER.trace(this.lastQuery);
+
+    return mongoOperations.findOne(findQuery, mongoEntityInformation.getJavaType(), mongoEntityInformation.getCollectionName());
+  }
+
+  @Override
+  public Mono<T> findByIdentifier(String identifier) {
+
+    AppQuery.AppQueryBuilder queryBuilder = AppQuery.builder();
+    if (ObjectId.isValid(identifier)) {
+      queryBuilder.filter("_id", identifier);
+    } else if (ResourceUtility.isUrn(identifier)) {
+      queryBuilder.filter("urn", identifier);
+    } else {
+      throw new InvalidIdentifierException(identifier);
+    }
+
+    Query findQuery = new Query();
+    prepareFilters(findQuery, queryBuilder.build().getFilters());
+
+    this.lastQuery = String.format("%s.findOne(%s)",
+        mongoEntityInformation.getCollectionName(),
+        SerializationUtils.serializeToJsonSafely(findQuery.getQueryObject()));
     LOGGER.trace(this.lastQuery);
 
     return mongoOperations.findOne(findQuery, mongoEntityInformation.getJavaType(), mongoEntityInformation.getCollectionName());

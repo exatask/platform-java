@@ -1,6 +1,5 @@
-package com.exatask.platform.mongodb.reactive;
+package com.exatask.platform.mongodb;
 
-import com.exatask.platform.mongodb.AppQuery;
 import org.springframework.data.mongodb.repository.ReactiveMongoRepository;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
@@ -14,6 +13,8 @@ public interface AppReactiveMongoRepository<T, ID extends Serializable> extends 
   Mono<T> findAndUpdate(AppQuery query);
 
   Mono<T> findOne(AppQuery query);
+
+  Mono<T> findByIdentifier(String identifier);
 
   Mono<Long> count(AppQuery query);
 

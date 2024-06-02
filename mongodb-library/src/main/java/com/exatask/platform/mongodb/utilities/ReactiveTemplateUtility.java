@@ -1,9 +1,8 @@
-package com.exatask.platform.mongodb.reactive.utilities;
+package com.exatask.platform.mongodb.utilities;
 
-import com.exatask.platform.mongodb.reactive.AppReactiveMongoTenantClientDatabaseFactory;
-import com.exatask.platform.mongodb.reactive.tenants.ReactiveMongoTenantClients;
+import com.exatask.platform.mongodb.AppReactiveMongoTenantClientDatabaseFactory;
+import com.exatask.platform.mongodb.tenants.ReactiveMongoTenantClients;
 import com.exatask.platform.mongodb.tenants.ServiceTenant;
-import com.exatask.platform.mongodb.utilities.ConnectionUtility;
 import com.exatask.platform.utilities.ServiceUtility;
 import com.exatask.platform.utilities.properties.MongodbProperties;
 import com.mongodb.ConnectionString;

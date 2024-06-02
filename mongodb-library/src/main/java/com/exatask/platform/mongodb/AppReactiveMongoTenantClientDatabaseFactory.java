@@ -1,6 +1,6 @@
-package com.exatask.platform.mongodb.reactive;
+package com.exatask.platform.mongodb;
 
-import com.exatask.platform.mongodb.reactive.tenants.ReactiveMongoTenantClients;
+import com.exatask.platform.mongodb.tenants.ReactiveMongoTenantClients;
 import com.mongodb.reactivestreams.client.MongoDatabase;
 import org.springframework.data.mongodb.core.SimpleReactiveMongoDatabaseFactory;
 import reactor.core.publisher.Mono;
