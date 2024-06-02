@@ -1,4 +1,4 @@
-package com.exatask.platform.mongodb.reactive;
+package com.exatask.platform.mongodb;
 
 import org.springframework.data.mongodb.core.ReactiveMongoOperations;
 import org.springframework.data.mongodb.core.mapping.BasicMongoPersistentEntity;

@@ -1,6 +1,5 @@
-package com.exatask.platform.mongodb.reactive.tenants;
+package com.exatask.platform.mongodb.tenants;
 
-import com.exatask.platform.mongodb.tenants.ServiceTenant;
 import com.exatask.platform.mongodb.utilities.TenantUtility;
 import com.exatask.platform.utilities.contexts.RequestContextProvider;
 import com.exatask.platform.utilities.properties.MongodbProperties;

@@ -1,6 +1,6 @@
-package com.exatask.platform.mongodb.reactive.tenants;
+package com.exatask.platform.mongodb.tenants;
 
-import com.exatask.platform.mongodb.reactive.utilities.ReactiveTemplateUtility;
+import com.exatask.platform.mongodb.utilities.ReactiveTemplateUtility;
 import com.exatask.platform.utilities.properties.MongodbProperties;
 import com.mongodb.reactivestreams.client.MongoClient;
 import lombok.Getter;
