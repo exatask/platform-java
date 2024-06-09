@@ -32,6 +32,8 @@ public class ListRequest extends AppRequest {
 
   private List<String> fields;
 
+  private Boolean all;
+
   public Map<String, Integer> parseSort() {
 
     Map<String, Integer> sortList = new HashMap<>();

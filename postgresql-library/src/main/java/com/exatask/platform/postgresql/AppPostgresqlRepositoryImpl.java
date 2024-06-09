@@ -26,8 +26,6 @@ import javax.persistence.TypedQuery;
 import javax.persistence.criteria.CriteriaBuilder;
 import javax.persistence.criteria.CriteriaQuery;
 import javax.persistence.criteria.CriteriaUpdate;
-import javax.persistence.criteria.Fetch;
-import javax.persistence.criteria.FetchParent;
 import javax.persistence.criteria.Order;
 import javax.persistence.criteria.Predicate;
 import javax.persistence.criteria.Root;
@@ -226,18 +224,14 @@ public class AppPostgresqlRepositoryImpl<T, ID extends Serializable> extends Sim
    * @param from
    * @param joins
    */
-  private void prepareJoins(FetchParent from, List<JoinElement> joins) {
+  private void prepareJoins(Root from, List<JoinElement> joins) {
 
     if (CollectionUtils.isEmpty(joins)) {
       return;
     }
 
     for (JoinElement join : joins) {
-
-      Fetch fetched = from.fetch(join.getAttribute(), join.getType());
-      if (!CollectionUtils.isEmpty(join.getJoins())) {
-        prepareJoins(fetched, join.getJoins());
-      }
+      from.join(join.getAttribute(), join.getType());
     }
   }
 
@@ -455,7 +449,7 @@ public class AppPostgresqlRepositoryImpl<T, ID extends Serializable> extends Sim
     Root<T> from = criteriaQuery.from(this.domainClass);
 
     criteriaQuery = criteriaQuery.select(criteriaBuilder.count(from));
-    prepareJoins(query.getJoins());
+    prepareJoins(from, query.getJoins());
     criteriaQuery = (CriteriaQuery<Long>) prepareFilters(criteriaBuilder, (CriteriaQuery<T>) criteriaQuery, query.getFilters());
 
     ReplicaDataSource.setReadOnly(true);
