@@ -155,6 +155,7 @@ public class AppLogger {
     logMessage.setLevel(level.toString().toLowerCase())
         .setServiceName(serviceName)
         .setTimestamp(LocalDateTime.now())
+        .setThreadName(Thread.currentThread().getName())
         .setTraceId(RequestContextProvider.getTraceId())
         .setParentId(RequestContextProvider.getParentId())
         .setSpanId(RequestContextProvider.getSpanId())

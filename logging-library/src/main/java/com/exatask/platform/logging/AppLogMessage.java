@@ -42,6 +42,9 @@ public class AppLogMessage {
   private String serviceName;
 
   @Setter(AccessLevel.PACKAGE)
+  private String threadName;
+
+  @Setter(AccessLevel.PACKAGE)
   private String traceId;
 
   @Setter(AccessLevel.PACKAGE)
