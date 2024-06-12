@@ -169,21 +169,21 @@ public class ServiceUtility {
     throw new RuntimePropertyNotFoundException(SERVICE_TENANT_KEY);
   }
 
-  public static String getServiceProperty(String key) {
+  public static <T> T getServiceProperty(String key) {
 
     String value = getRuntimeProperty(key);
     if (StringUtils.isNotEmpty(value)) {
-      return value;
+      return (T) value;
     }
 
     throw new RuntimePropertyNotFoundException(key);
   }
 
-  public static String getServiceProperty(String key, String defaultValue) {
+  public static <T> T getServiceProperty(String key, T defaultValue) {
 
     String value = getRuntimeProperty(key);
     if (StringUtils.isNotEmpty(value)) {
-      return value;
+      return (T) value;
     } else {
       return defaultValue;
     }

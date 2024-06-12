@@ -1,6 +1,7 @@
 package com.exatask.platform.mariadb;
 
 import com.exatask.platform.utilities.ServiceUtility;
+import org.apache.commons.lang3.StringUtils;
 import org.flywaydb.core.Flyway;
 import org.springframework.boot.autoconfigure.jdbc.DataSourceProperties;
 import org.springframework.jdbc.datasource.DriverManagerDataSource;
@@ -28,22 +29,19 @@ public class AppMariadbChangelog {
 
   private Flyway createRunner(DataSource dataSource, boolean schema) {
 
-    String location = ServiceUtility.getServiceProperty(SCHEMA_CHANGELOG_PACKAGE, null);
+    String location = ServiceUtility.getServiceProperty(SCHEMA_CHANGELOG_PACKAGE, "");
     if (!schema) {
-      String changelogPackage = ServiceUtility.getServiceProperty(DATA_CHANGELOG_PACKAGE, null);
-      if (changelogPackage != null) {
-        location  = ResourceUtils.CLASSPATH_URL_PREFIX + changelogPackage;
-      }
+      location = ServiceUtility.getServiceProperty(DATA_CHANGELOG_PACKAGE, "");
     }
 
-    if (location == null) {
+    if (StringUtils.isEmpty(location)) {
       return null;
     }
 
     return Flyway.configure()
         .table(CHANGELOG_TABLE)
-        .locations(location)
-        .sqlMigrationSuffixes(schema ? ".sql" : ".java")
+        .locations(ResourceUtils.CLASSPATH_URL_PREFIX + location)
+        .sqlMigrationSuffixes(".java")
         .validateOnMigrate(false)
         .validateMigrationNaming(true)
         .baselineOnMigrate(false)

@@ -64,9 +64,9 @@ public class AppMongodbChangelog {
     driver.setReadPreference(ReadPreference.primary());
     driver.disableTransaction();
 
-    String location = ServiceUtility.getServiceProperty(SCHEMA_CHANGELOG_PACKAGE, null);
+    String location = ServiceUtility.getServiceProperty(SCHEMA_CHANGELOG_PACKAGE, "");
     if (!schema) {
-      location  = ServiceUtility.getServiceProperty(DATA_CHANGELOG_PACKAGE, null);
+      location  = ServiceUtility.getServiceProperty(DATA_CHANGELOG_PACKAGE, "");
     }
 
     if (StringUtils.isEmpty(location)) {

@@ -82,7 +82,7 @@ public class ServiceClientTemplate {
     Logger.Level logLevel = Logger.Level.BASIC;
     try {
 
-      String logLevelProperty = ServiceUtility.getServiceProperty(LOG_LEVEL_PROPERTY);
+      String logLevelProperty = ServiceUtility.getServiceProperty(LOG_LEVEL_PROPERTY, Logger.Level.BASIC.toString());
       logLevel = Logger.Level.valueOf(logLevelProperty);
 
     } catch (RuntimePropertyNotFoundException | IllegalArgumentException exception) {

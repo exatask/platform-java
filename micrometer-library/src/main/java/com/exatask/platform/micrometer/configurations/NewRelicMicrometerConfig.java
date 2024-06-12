@@ -8,12 +8,12 @@ public class NewRelicMicrometerConfig implements NewRelicConfig {
 
   @Override
   public String accountId() {
-    return ServiceUtility.getServiceProperty(MicrometerConfig.NEWRELIC_ACCOUNT_ID, null);
+    return ServiceUtility.getServiceProperty(MicrometerConfig.NEWRELIC_ACCOUNT_ID, "");
   }
 
   @Override
   public String apiKey() {
-    return ServiceUtility.getServiceProperty(MicrometerConfig.NEWRELIC_API_KEY, null);
+    return ServiceUtility.getServiceProperty(MicrometerConfig.NEWRELIC_API_KEY, "");
   }
 
   @Override
