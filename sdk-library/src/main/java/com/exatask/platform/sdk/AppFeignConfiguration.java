@@ -56,10 +56,10 @@ public class AppFeignConfiguration {
         .followRedirects(false)
         .protocols(Arrays.asList(Protocol.HTTP_1_1, Protocol.HTTP_2))
         .retryOnConnectionFailure(true)
-        .connectTimeout(HttpClientDefaults.CONNECTION_TIMEOUT, TimeUnit.MINUTES)
-        .pingInterval(HttpClientDefaults.PING_INTERVAL, TimeUnit.MINUTES)
-        .callTimeout(HttpClientDefaults.CALL_TIMEOUT, TimeUnit.MINUTES)
-        .connectionPool(new ConnectionPool(HttpClientDefaults.MAX_IDLE_CONNECTION, HttpClientDefaults.KEEP_ALIVE_DURATION, TimeUnit.MINUTES));
+        .connectTimeout(HttpClientDefaults.connectionTimeout(), TimeUnit.MINUTES)
+        .pingInterval(HttpClientDefaults.pingInterval(), TimeUnit.MINUTES)
+        .callTimeout(HttpClientDefaults.callTimeout(), TimeUnit.MINUTES)
+        .connectionPool(new ConnectionPool(HttpClientDefaults.maxIdleConnections(), HttpClientDefaults.keepAliveDuration(), TimeUnit.MINUTES));
 
     Optional.ofNullable(meterRegistry)
         .ifPresent(registry -> okHttpClientBuilder.eventListener(OkHttpMetricsEventListener.builder(registry, "okhttp.requests")
