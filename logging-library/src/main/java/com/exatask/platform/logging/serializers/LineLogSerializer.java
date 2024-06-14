@@ -18,53 +18,36 @@ public class LineLogSerializer implements AppLogSerializer {
 
     StringBuilder stringBuilder = new StringBuilder();
 
-    stringBuilder.append("[")
-        .append(logMessage.getTimestamp())
-        .append(", ")
-        .append(logMessage.getServiceName())
-        .append(", ")
-        .append(logMessage.getThreadName())
-        .append("] [")
-        .append(StringUtils.defaultString(logMessage.getTraceId(), "-"))
-        .append(", ")
-        .append(StringUtils.defaultString(logMessage.getParentId(), "-"))
-        .append(", ")
-        .append(StringUtils.defaultString(logMessage.getSpanId(), "-"))
-        .append(", ")
-        .append(StringUtils.defaultString(logMessage.getSessionId(), "-"))
-        .append("] ")
-        .append(logMessage.getLevel().toUpperCase())
-        .append(": ")
-        .append(logMessage.getMessage());
+    stringBuilder.append(String.format("[%s, %s, %s] [%s, %s, %s, %s] %s: %s",
+        logMessage.getTimestamp(),
+        logMessage.getServiceName(),
+        logMessage.getThreadName(),
+        StringUtils.defaultString(logMessage.getTraceId(), "-"),
+        StringUtils.defaultString(logMessage.getParentId(), "-"),
+        StringUtils.defaultString(logMessage.getSpanId(), "-"),
+        StringUtils.defaultString(logMessage.getSessionId(), "-"),
+        logMessage.getLevel().toUpperCase(),
+        logMessage.getMessage()));
 
     if (ObjectUtils.anyNotNull(logMessage.getErrorCode(), logMessage.getHttpCode())) {
-      stringBuilder.append(" (")
-          .append(StringUtils.defaultString(logMessage.getErrorCode(), "-"))
-          .append(", ")
-          .append(ObjectUtils.defaultIfNull(logMessage.getHttpCode(), "-"))
-          .append(")");
+      stringBuilder.append(String.format(" (%s, %s)",
+          StringUtils.defaultString(logMessage.getErrorCode(), "-"),
+          ObjectUtils.defaultIfNull(logMessage.getHttpCode(), "-")));
     }
 
     if (ObjectUtils.anyNotNull(logMessage.getUrl(), logMessage.getRequestTime())) {
-      stringBuilder.append(" [")
-          .append(StringUtils.defaultString(logMessage.getMethod(), "-"))
-          .append(" ")
-          .append(StringUtils.defaultString(logMessage.getUrl(), "-"))
-          .append(", ")
-          .append(ObjectUtils.defaultIfNull(logMessage.getRequestTime(), "-"))
-          .append("ms]");
+      stringBuilder.append(String.format(" [%s %s, %sms]",
+          StringUtils.defaultString(logMessage.getMethod(), "-"),
+          StringUtils.defaultString(logMessage.getUrl(), "-"),
+          ObjectUtils.defaultIfNull(logMessage.getRequestTime(), "-")));
     }
 
     if (!MapUtils.isEmpty(logMessage.getExtraParams())) {
-      stringBuilder.append(" [Info ")
-          .append(logMessage.getExtraParams())
-          .append("]");
+      stringBuilder.append(String.format(" [Info %s]", logMessage.getExtraParams()));
     }
 
     if (!MapUtils.isEmpty(logMessage.getInvalidAttributes())) {
-      stringBuilder.append(" [Invalid Attrs ")
-          .append(logMessage.getInvalidAttributes())
-          .append("]");
+      stringBuilder.append(String.format(" [Invalid Attrs %s]", logMessage.getInvalidAttributes()));
     }
 
     if (!CollectionUtils.isEmpty(logMessage.getStackTrace())) {
