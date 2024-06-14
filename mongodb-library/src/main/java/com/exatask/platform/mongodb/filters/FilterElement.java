@@ -1,6 +1,9 @@
 package com.exatask.platform.mongodb.filters;
 
+import com.exatask.platform.mongodb.exceptions.InvalidIdentifierException;
+import com.exatask.platform.utilities.ResourceUtility;
 import lombok.AllArgsConstructor;
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.data.mongodb.core.query.Criteria;
 
 import java.util.Arrays;
@@ -14,6 +17,17 @@ public class FilterElement {
   private final FilterOperation operation;
 
   private final Object value;
+
+  public static FilterElement identifier(String value) {
+
+    if (StringUtils.isNumeric(value)) {
+      return new FilterElement("id", FilterOperation.EQUAL, Integer.parseInt(value));
+    } else if (ResourceUtility.isUrn(value)) {
+      return new FilterElement("urn", FilterOperation.EQUAL, value);
+    } else {
+      throw new InvalidIdentifierException(value);
+    }
+  }
 
   public Criteria getCriteria() {
 

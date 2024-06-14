@@ -17,8 +17,6 @@ public interface AppMysqlRepository<T, ID extends Serializable> extends JpaRepos
 
   Optional<Map<String, Object>> findOneNative(AppQuery query);
 
-  Optional<T> findByIdentifier(Class<? extends AppModel> clazz, String identifier);
-
   long count(AppQuery query);
 
   long countNative(AppQuery query);

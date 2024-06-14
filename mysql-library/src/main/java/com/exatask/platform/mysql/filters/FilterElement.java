@@ -2,9 +2,12 @@ package com.exatask.platform.mysql.filters;
 
 import com.exatask.platform.mysql.AppModel;
 import com.exatask.platform.mysql.exceptions.InvalidFilterException;
+import com.exatask.platform.mysql.exceptions.InvalidIdentifierException;
 import com.exatask.platform.mysql.utilities.QueryUtility;
-import lombok.AllArgsConstructor;
+import com.exatask.platform.utilities.ResourceUtility;
+import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.math.NumberUtils;
+import org.springframework.util.CollectionUtils;
 
 import javax.persistence.criteria.CriteriaBuilder;
 import javax.persistence.criteria.CriteriaQuery;
@@ -12,21 +15,64 @@ import javax.persistence.criteria.CriteriaUpdate;
 import javax.persistence.criteria.Path;
 import javax.persistence.criteria.Predicate;
 import javax.persistence.criteria.Root;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
 
-@AllArgsConstructor
 public class FilterElement {
 
-  private final Class<? extends AppModel> model;
+  private Class<? extends AppModel> model;
 
-  private final String key;
+  private String key;
 
-  private final FilterOperation operation;
+  private FilterOperation operation;
 
-  private final Object value;
+  private Object value;
+
+  private FilterType type;
+
+  private List<FilterElement> elements;
+
+  public FilterElement(Class<? extends AppModel> model, String key, FilterOperation operation, Object value) {
+
+    this.model = model;
+    this.key = key;
+    this.operation = operation;
+    this.value = value;
+  }
+
+  public FilterElement(FilterType type, List<FilterElement> elements) {
+
+    this.type = type;
+    this.elements = elements;
+  }
+
+  public static FilterElement identifier(Class<? extends AppModel> model, String value) {
+
+    if (StringUtils.isNumeric(value)) {
+      return new FilterElement(model, "id", FilterOperation.EQUAL, Integer.parseInt(value));
+    } else if (ResourceUtility.isUrn(value)) {
+      return new FilterElement(model, "urn", FilterOperation.EQUAL, value);
+    } else {
+      throw new InvalidIdentifierException(value);
+    }
+  }
 
   public Predicate getPredicate(CriteriaBuilder criteriaBuilder, CriteriaQuery criteriaQuery) {
+
+    if (!CollectionUtils.isEmpty(this.elements)) {
+
+      List<Predicate> predicates = new ArrayList<>();
+      for (FilterElement element : this.elements) {
+        predicates.add(element.getPredicate(criteriaBuilder, criteriaQuery));
+      }
+
+      if (type == FilterType.AND) {
+        return criteriaBuilder.and(predicates.toArray(new Predicate[]{}));
+      } else {
+        return criteriaBuilder.or(predicates.toArray(new Predicate[]{}));
+      }
+    }
 
     Root from = null;
     Set<Root> roots = criteriaQuery.getRoots();
@@ -47,6 +93,20 @@ public class FilterElement {
 
   public Predicate getPredicate(CriteriaBuilder criteriaBuilder, CriteriaUpdate criteriaUpdate) {
 
+    if (!CollectionUtils.isEmpty(this.elements)) {
+
+      List<Predicate> predicates = new ArrayList<>();
+      for (FilterElement element : this.elements) {
+        predicates.add(element.getPredicate(criteriaBuilder, criteriaUpdate));
+      }
+
+      if (type == FilterType.AND) {
+        return criteriaBuilder.and(predicates.toArray(new Predicate[]{}));
+      } else {
+        return criteriaBuilder.or(predicates.toArray(new Predicate[]{}));
+      }
+    }
+
     Root from = criteriaUpdate.getRoot();
     if (from.getModel().getJavaType() != model) {
       from = criteriaUpdate.from(model);
@@ -57,6 +117,23 @@ public class FilterElement {
   }
 
   public String getPredicate() {
+
+    if (!CollectionUtils.isEmpty(elements)) {
+
+      StringBuilder query = new StringBuilder("(");
+      int length = elements.size();
+
+      for (int i = 0; i < elements.size(); i++) {
+
+        query.append(elements.get(i).getPredicate());
+        if (i != (length - 1)) {
+          query.append(type == FilterType.AND ? " AND " : " OR ");
+        }
+      }
+
+      query.append(")");
+      return query.toString();
+    }
 
     String path = QueryUtility.getClassAlias(model) + "." + key;
 

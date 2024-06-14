@@ -11,12 +11,16 @@ public class HttpClientDefaults {
   private static final String HTTP_CLIENT_CALL_TIMEOUT = "http.client.callTimeout";
   private static final String HTTP_CLIENT_MAX_IDLE_CONNECTION = "http.client.maxIdleConnections";
   private static final String HTTP_CLIENT_KEEP_ALIVE_DURATION = "http.client.keepAliveDuration";
+  private static final String HTTP_CLIENT_MAX_REQUESTS = "http.client.maxRequests";
+  private static final String HTTP_CLIENT_MAX_REQUESTS_PER_HOST = "http.client.maxRequestsPerHost";
 
   private static final int PING_INTERVAL = 1;
   private static final int CONNECTION_TIMEOUT = 1;
   private static final int CALL_TIMEOUT = 5;
   private static final int MAX_IDLE_CONNECTION = 2;
   private static final int KEEP_ALIVE_DURATION = 5;
+  private static final int MAX_REQUESTS = 5;
+  private static final int MAX_REQUESTS_PER_HOST = 2;
 
   public static int pingInterval() {
     return ServiceUtility.getServiceProperty(HTTP_CLIENT_PING_INTERVAL, PING_INTERVAL);
@@ -36,5 +40,13 @@ public class HttpClientDefaults {
 
   public static int keepAliveDuration() {
     return ServiceUtility.getServiceProperty(HTTP_CLIENT_KEEP_ALIVE_DURATION, KEEP_ALIVE_DURATION);
+  }
+
+  public static int getMaxRequests() {
+    return ServiceUtility.getServiceProperty(HTTP_CLIENT_MAX_REQUESTS, MAX_REQUESTS);
+  }
+
+  public static int getMaxRequestsPerHost() {
+    return ServiceUtility.getServiceProperty(HTTP_CLIENT_MAX_REQUESTS_PER_HOST, MAX_REQUESTS_PER_HOST);
   }
 }

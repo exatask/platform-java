@@ -18,6 +18,7 @@ import feign.jackson.JacksonEncoder;
 import io.micrometer.core.instrument.MeterRegistry;
 import io.micrometer.core.instrument.binder.okhttp3.OkHttpMetricsEventListener;
 import okhttp3.ConnectionPool;
+import okhttp3.Dispatcher;
 import okhttp3.OkHttpClient;
 import okhttp3.Protocol;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -52,6 +53,10 @@ public class AppFeignConfiguration {
   @Bean
   public Client client() {
 
+    Dispatcher dispatcher = new Dispatcher();
+    dispatcher.setMaxRequests(HttpClientDefaults.getMaxRequests());
+    dispatcher.setMaxRequestsPerHost(HttpClientDefaults.getMaxRequestsPerHost());
+
     OkHttpClient.Builder okHttpClientBuilder = new OkHttpClient.Builder()
         .followRedirects(false)
         .protocols(Arrays.asList(Protocol.HTTP_1_1, Protocol.HTTP_2))
@@ -59,6 +64,7 @@ public class AppFeignConfiguration {
         .connectTimeout(HttpClientDefaults.connectionTimeout(), TimeUnit.MINUTES)
         .pingInterval(HttpClientDefaults.pingInterval(), TimeUnit.MINUTES)
         .callTimeout(HttpClientDefaults.callTimeout(), TimeUnit.MINUTES)
+        .dispatcher(dispatcher)
         .connectionPool(new ConnectionPool(HttpClientDefaults.maxIdleConnections(), HttpClientDefaults.keepAliveDuration(), TimeUnit.MINUTES));
 
     Optional.ofNullable(meterRegistry)
