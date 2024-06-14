@@ -3,7 +3,6 @@ package com.exatask.platform.oracle.filters;
 import com.exatask.platform.oracle.AppModel;
 import com.exatask.platform.oracle.exceptions.InvalidFilterException;
 import com.exatask.platform.oracle.utilities.QueryUtility;
-import lombok.AllArgsConstructor;
 import org.apache.commons.lang3.math.NumberUtils;
 
 import javax.persistence.criteria.CriteriaBuilder;
@@ -15,16 +14,33 @@ import javax.persistence.criteria.Root;
 import java.util.List;
 import java.util.Set;
 
-@AllArgsConstructor
 public class FilterElement {
 
-  private final Class<? extends AppModel> model;
+  private Class<? extends AppModel> model;
 
-  private final String key;
+  private String key;
 
-  private final FilterOperation operation;
+  private FilterOperation operation;
 
-  private final Object value;
+  private Object value;
+
+  private FilterType type;
+
+  private List<FilterElement> elements;
+
+  public FilterElement(Class<? extends AppModel> model, String key, FilterOperation operation, Object value) {
+
+    this.model = model;
+    this.key = key;
+    this.operation = operation;
+    this.value = value;
+  }
+
+  public FilterElement(FilterType type, List<FilterElement> elements) {
+
+    this.type = type;
+    this.elements = elements;
+  }
 
   public Predicate getPredicate(CriteriaBuilder criteriaBuilder, CriteriaQuery criteriaQuery) {
 
