@@ -12,6 +12,8 @@ import org.apache.logging.log4j.core.LoggerContext;
 
 import java.time.LocalDateTime;
 import java.util.Map;
+import java.util.Properties;
+import java.util.PropertyPermission;
 
 public class AppLogger {
 

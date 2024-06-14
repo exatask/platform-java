@@ -124,6 +124,10 @@ public class AppLogMessage {
           .method(element.getMethodName())
           .line(element.getLineNumber())
           .build());
+
+      if (stackTrace.size() == 5) {
+        break;
+      }
     }
 
     return stackTrace;
