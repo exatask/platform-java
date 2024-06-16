@@ -1,10 +1,10 @@
 package com.exatask.platform.logging;
 
+import com.exatask.platform.logging.properties.AppProperties;
+import com.exatask.platform.logging.properties.AppPropertyManager;
 import com.exatask.platform.logging.serializers.AppLogSerializer;
 import com.exatask.platform.logging.serializers.AppLogSerializerFactory;
-import com.exatask.platform.logging.serializers.AppLogSerializerType;
 import com.exatask.platform.utilities.contexts.RequestContextProvider;
-import org.apache.commons.lang3.StringUtils;
 import org.apache.logging.log4j.Level;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -12,14 +12,14 @@ import org.apache.logging.log4j.core.LoggerContext;
 
 import java.time.LocalDateTime;
 import java.util.Map;
-import java.util.Properties;
-import java.util.PropertyPermission;
 
 public class AppLogger {
 
   private final Logger log4jLogger;
 
   private final AppLogSerializer serializer;
+
+  private final AppProperties properties;
 
   private final String serviceName;
 
@@ -29,12 +29,9 @@ public class AppLogger {
     serviceName = service;
 
     LoggerContext loggerContext = ((org.apache.logging.log4j.core.Logger) log4jLogger).getContext();
-    String style = loggerContext.getConfiguration().getStrSubstitutor().getVariableResolver().lookup("style");
+    properties = AppPropertyManager.parse(loggerContext);
 
-    if (StringUtils.isEmpty(style)) {
-      style = AppLogSerializerType.LINE.toString();
-    }
-    serializer = AppLogSerializerFactory.getLogSerializer(style);
+    serializer = AppLogSerializerFactory.getLogSerializer(properties);
   }
 
   public void trace(String message) {
@@ -135,20 +132,29 @@ public class AppLogger {
 
   public void log(Level level, String message) {
 
-    AppLogMessage logMessage = AppLogMessage.builder().message(message).build();
+    AppLogMessage logMessage = AppLogMessage.builder()
+        .properties(properties)
+        .message(message)
+        .build();
     this.log(level, logMessage);
   }
 
   public void log(Level level, String message, Map<String, Object> extraParams) {
 
-    AppLogMessage logMessage = AppLogMessage.builder().message(message).build();
-    logMessage.setExtraParams(extraParams);
+    AppLogMessage logMessage = AppLogMessage.builder()
+        .properties(properties)
+        .message(message)
+        .extraParams(extraParams)
+        .build();
     this.log(level, logMessage);
   }
 
   public void log(Level level, Exception exception) {
 
-    AppLogMessage logMessage = AppLogMessage.builder().exception(exception).build();
+    AppLogMessage logMessage = AppLogMessage.builder()
+        .properties(properties)
+        .exception(exception)
+        .build();
     this.log(level, logMessage);
   }
 
