@@ -1,5 +1,7 @@
 package com.exatask.platform.logging.serializers;
 
+import com.exatask.platform.logging.constants.LogSerializer;
+import com.exatask.platform.logging.properties.AppProperties;
 import lombok.experimental.UtilityClass;
 
 import java.util.EnumMap;
@@ -8,43 +10,34 @@ import java.util.Map;
 @UtilityClass
 public class AppLogSerializerFactory {
 
-  private static final Map<AppLogSerializerType, AppLogSerializer> serializerList = new EnumMap<>(AppLogSerializerType.class);
+  private static final Map<LogSerializer.Style, AppLogSerializer> serializerList = new EnumMap<>(LogSerializer.Style.class);
 
-  private static final AppLogSerializer defaultSerializer = initializeLogSerializer(AppLogSerializerType.LINE);
+  private static final AppLogSerializer defaultSerializer = initializeLogSerializer(AppProperties.builder()
+      .style(LogSerializer.Style.LINE)
+      .length(LogSerializer.Length.SMALL)
+      .build());
 
-  public static AppLogSerializer getLogSerializer(String type) {
+  public static AppLogSerializer getLogSerializer(AppProperties properties) {
 
-    try {
-
-      AppLogSerializerType serializerType = AppLogSerializerType.valueOf(type);
-      return getLogSerializer(serializerType);
-
-    } catch (IllegalArgumentException exception) {
-      return defaultSerializer;
-    }
-  }
-
-  public static AppLogSerializer getLogSerializer(AppLogSerializerType type) {
-
-    if (serializerList.containsKey(type)) {
-      return serializerList.get(type);
+    if (serializerList.containsKey(properties.getStyle())) {
+      return serializerList.get(properties.getStyle());
     }
 
-    AppLogSerializer logSerializer = initializeLogSerializer(type);
-    serializerList.put(type, logSerializer);
+    AppLogSerializer logSerializer = initializeLogSerializer(properties);
+    serializerList.put(properties.getStyle(), logSerializer);
     return logSerializer;
   }
 
-  private static AppLogSerializer initializeLogSerializer(AppLogSerializerType type) {
+  private static AppLogSerializer initializeLogSerializer(AppProperties properties) {
 
-    switch(type) {
+    switch(properties.getStyle()) {
 
       case LINE:
-        return new LineLogSerializer();
+        return new LineLogSerializer(properties);
       case JSON:
-        return new JsonLogSerializer();
+        return new JsonLogSerializer(properties);
       default:
-        throw new IllegalArgumentException(String.format("'%s' is not a supported log serializer", type.name()));
+        throw new IllegalArgumentException(String.format("'%s' is not a supported log serializer", properties.getStyle().name()));
     }
   }
 }

@@ -2,6 +2,7 @@ package com.exatask.platform.logging;
 
 import com.exatask.platform.logging.elements.AppExceptionCause;
 import com.exatask.platform.logging.elements.AppStackTraceElement;
+import com.exatask.platform.logging.properties.AppProperties;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.databind.PropertyNamingStrategy;
 import com.fasterxml.jackson.databind.annotation.JsonNaming;
@@ -84,19 +85,19 @@ public class AppLogMessage {
   }
 
   @Builder
-  public static AppLogMessage buildLogMessage(String message, Exception exception, @Singular Map<String, Object> extraParams, @Singular Map<String, String> invalidAttributes) {
+  public static AppLogMessage buildLogMessage(AppProperties properties, String message, Exception exception, @Singular Map<String, Object> extraParams, @Singular Map<String, String> invalidAttributes) {
 
     AppLogMessage logMessage = new AppLogMessage();
 
     Optional.ofNullable(exception).ifPresent(ex -> {
 
       logMessage.setMessage(ex.getMessage());
-      logMessage.setStackTrace(parseStackTrace(Arrays.asList(ex.getStackTrace())));
+      logMessage.setStackTrace(parseStackTrace(properties, Arrays.asList(ex.getStackTrace())));
 
       Optional.ofNullable(ex.getCause()).ifPresent(cause -> {
 
         List<StackTraceElement> elements = Arrays.asList(cause.getStackTrace());
-        logMessage.setExceptionCause(new AppExceptionCause(cause.getMessage(), parseStackTrace(elements)));
+        logMessage.setExceptionCause(new AppExceptionCause(cause.getMessage(), parseStackTrace(properties, elements)));
       });
     });
 
@@ -107,7 +108,7 @@ public class AppLogMessage {
     return logMessage;
   }
 
-  private static List<AppStackTraceElement> parseStackTrace(List<StackTraceElement> elements) {
+  private static List<AppStackTraceElement> parseStackTrace(AppProperties properties, List<StackTraceElement> elements) {
 
     List<AppStackTraceElement> stackTrace = new ArrayList<>();
 
@@ -125,7 +126,7 @@ public class AppLogMessage {
           .line(element.getLineNumber())
           .build());
 
-      if (stackTrace.size() == 5) {
+      if (stackTrace.size() >= properties.getStackTrace()) {
         break;
       }
     }
