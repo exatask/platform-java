@@ -1,6 +1,5 @@
 package com.exatask.platform.logging;
 
-import com.exatask.platform.logging.elements.AppExceptionCause;
 import com.exatask.platform.logging.elements.AppStackTraceElement;
 import com.exatask.platform.logging.properties.AppProperties;
 import com.fasterxml.jackson.annotation.JsonInclude;
@@ -18,7 +17,6 @@ import java.time.ZoneId;
 import java.time.ZoneOffset;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
@@ -67,15 +65,13 @@ public class AppLogMessage {
 
   private String errorCode;
 
-  private Long requestTime;
+  private long requestTime;
 
   private Map<String, String> invalidAttributes;
 
   private Map<String, Object> extraParams;
 
-  private List<AppStackTraceElement> stackTrace;
-
-  private AppExceptionCause exceptionCause;
+  private Exception exception;
 
   public String getTimestamp() {
 
@@ -84,35 +80,11 @@ public class AppLogMessage {
         .format(DATE_TIME_FORMATTER);
   }
 
-  @Builder
-  public static AppLogMessage buildLogMessage(AppProperties properties, String message, Exception exception, @Singular Map<String, Object> extraParams, @Singular Map<String, String> invalidAttributes) {
-
-    AppLogMessage logMessage = new AppLogMessage();
-
-    Optional.ofNullable(exception).ifPresent(ex -> {
-
-      logMessage.setMessage(ex.getMessage());
-      logMessage.setStackTrace(parseStackTrace(properties, Arrays.asList(ex.getStackTrace())));
-
-      Optional.ofNullable(ex.getCause()).ifPresent(cause -> {
-
-        List<StackTraceElement> elements = Arrays.asList(cause.getStackTrace());
-        logMessage.setExceptionCause(new AppExceptionCause(cause.getMessage(), parseStackTrace(properties, elements)));
-      });
-    });
-
-    Optional.ofNullable(message).ifPresent(logMessage::setMessage);
-    Optional.ofNullable(extraParams).ifPresent(logMessage::setExtraParams);
-    Optional.ofNullable(invalidAttributes).ifPresent(logMessage::setInvalidAttributes);
-
-    return logMessage;
-  }
-
-  private static List<AppStackTraceElement> parseStackTrace(AppProperties properties, List<StackTraceElement> elements) {
+  public List<AppStackTraceElement> getStackTrace(AppProperties properties) {
 
     List<AppStackTraceElement> stackTrace = new ArrayList<>();
 
-    for (StackTraceElement element : elements) {
+    for (StackTraceElement element : this.exception.getStackTrace()) {
 
       String className = element.getClassName();
       if (!PACKAGES.matcher(className).matches()) {
@@ -132,5 +104,23 @@ public class AppLogMessage {
     }
 
     return stackTrace;
+  }
+
+  @Builder
+  public static AppLogMessage buildLogMessage(String message, Exception exception, @Singular Map<String, Object> extraParams, @Singular Map<String, String> invalidAttributes) {
+
+    AppLogMessage logMessage = new AppLogMessage();
+
+    Optional.ofNullable(exception).ifPresent(ex -> {
+
+      logMessage.setMessage(ex.getMessage());
+      logMessage.setException(ex);
+    });
+
+    Optional.ofNullable(message).ifPresent(logMessage::setMessage);
+    Optional.ofNullable(extraParams).ifPresent(logMessage::setExtraParams);
+    Optional.ofNullable(invalidAttributes).ifPresent(logMessage::setInvalidAttributes);
+
+    return logMessage;
   }
 }

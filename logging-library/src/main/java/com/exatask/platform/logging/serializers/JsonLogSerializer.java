@@ -11,8 +11,6 @@ import com.fasterxml.jackson.databind.module.SimpleModule;
 import com.fasterxml.jackson.databind.ser.std.StdSerializer;
 
 import java.io.IOException;
-import java.util.Collections;
-import java.util.Map;
 
 public class JsonLogSerializer implements AppLogSerializer {
 
@@ -56,79 +54,92 @@ public class JsonLogSerializer implements AppLogSerializer {
 
     switch (properties.getLength()) {
 
-      case SMALL: new JsonSmallLogSerializer(AppLogMessage.class);
-      case MEDIUM: return new JsonMediumLogSerializer(AppLogMessage.class);
-      case LONG: return new JsonLongLogSerializer(AppLogMessage.class);
+      case SMALL: new JsonSmallLogSerializer(AppLogMessage.class, this.properties);
+      case MEDIUM: return new JsonMediumLogSerializer(AppLogMessage.class, this.properties);
+      case LONG: return new JsonLongLogSerializer(AppLogMessage.class, this.properties);
     }
 
     return null;
   }
 
-  static class JsonSmallLogSerializer extends StdSerializer<AppLogMessage> {
+  private static abstract class JsonLogMessageSerializer extends StdSerializer<AppLogMessage> {
 
-    public JsonSmallLogSerializer(Class<AppLogMessage> clazz) {
+    protected final AppProperties properties;
+
+    public JsonLogMessageSerializer(Class<AppLogMessage> clazz, AppProperties properties) {
+
       super(clazz);
+      this.properties = properties;
     }
+
+    public abstract void prepareMessage(AppLogMessage logMessage, JsonGenerator jsonGenerator, boolean direct) throws IOException;
 
     @Override
     public void serialize(AppLogMessage logMessage, JsonGenerator jsonGenerator, SerializerProvider serializerProvider) throws IOException {
 
-      Map<String, String> exceptionCause = Collections.singletonMap("cause", logMessage.getExceptionCause().getMessage());
-
       jsonGenerator.writeStartObject();
+      prepareMessage(logMessage, jsonGenerator, true);
+      jsonGenerator.writeEndObject();
+      jsonGenerator.flush();
+    }
+  }
+
+  static class JsonSmallLogSerializer extends JsonLogMessageSerializer {
+
+    public JsonSmallLogSerializer(Class<AppLogMessage> clazz, AppProperties properties) {
+      super(clazz, properties);
+    }
+
+    @Override
+    public void prepareMessage(AppLogMessage logMessage, JsonGenerator jsonGenerator, boolean direct) throws IOException {
+
       jsonGenerator.writeStringField("timestamp", logMessage.getTimestamp());
       jsonGenerator.writeStringField("traceId", logMessage.getTraceId());
       jsonGenerator.writeStringField("level", logMessage.getLevel().toUpperCase());
       jsonGenerator.writeStringField("message", logMessage.getMessage());
       jsonGenerator.writeStringField("errorCode", logMessage.getErrorCode());
       jsonGenerator.writeObjectField("extraParams", logMessage.getExtraParams());
-      jsonGenerator.writeObjectField("stackTrace", logMessage.getStackTrace());
-      jsonGenerator.writeObjectField("exception", exceptionCause);
-      jsonGenerator.writeEndObject();
+      jsonGenerator.writeObjectField("stackTrace", logMessage.getStackTrace(properties));
     }
   }
 
   static class JsonMediumLogSerializer extends JsonSmallLogSerializer {
 
-    public JsonMediumLogSerializer(Class<AppLogMessage> clazz) {
-      super(clazz);
+    public JsonMediumLogSerializer(Class<AppLogMessage> clazz, AppProperties properties) {
+      super(clazz, properties);
     }
 
     @Override
-    public void serialize(AppLogMessage logMessage, JsonGenerator jsonGenerator, SerializerProvider serializerProvider) throws IOException {
+    public void prepareMessage(AppLogMessage logMessage, JsonGenerator jsonGenerator, boolean direct) throws IOException {
 
-      super.serialize(logMessage, jsonGenerator, serializerProvider);
-
-      jsonGenerator.writeStartObject();
+      super.prepareMessage(logMessage, jsonGenerator, false);
       jsonGenerator.writeStringField("threadName", logMessage.getThreadName());
       jsonGenerator.writeStringField("sessionId", logMessage.getSessionId());
       jsonGenerator.writeStringField("method", logMessage.getMethod());
       jsonGenerator.writeStringField("url", logMessage.getUrl());
-      jsonGenerator.writeObjectField("invalidAttributes", logMessage.getInvalidAttributes().keySet());
-      jsonGenerator.writeEndObject();
+
+      if (direct) {
+        jsonGenerator.writeObjectField("invalidAttributes", logMessage.getInvalidAttributes().keySet());
+      }
     }
   }
 
   static class JsonLongLogSerializer extends JsonMediumLogSerializer {
 
-    public JsonLongLogSerializer(Class<AppLogMessage> clazz) {
-      super(clazz);
+    public JsonLongLogSerializer(Class<AppLogMessage> clazz, AppProperties properties) {
+      super(clazz, properties);
     }
 
     @Override
-    public void serialize(AppLogMessage logMessage, JsonGenerator jsonGenerator, SerializerProvider serializerProvider) throws IOException {
+    public void prepareMessage(AppLogMessage logMessage, JsonGenerator jsonGenerator, boolean direct) throws IOException {
 
-      super.serialize(logMessage, jsonGenerator, serializerProvider);
-
-      jsonGenerator.writeStartObject();
+      super.prepareMessage(logMessage, jsonGenerator, false);
       jsonGenerator.writeStringField("serviceName", logMessage.getServiceName());
       jsonGenerator.writeStringField("parentId", logMessage.getParentId());
       jsonGenerator.writeStringField("spanId", logMessage.getSpanId());
       jsonGenerator.writeNumberField("httpCode", logMessage.getHttpCode());
       jsonGenerator.writeNumberField("requestTime", logMessage.getRequestTime());
       jsonGenerator.writeObjectField("invalidAttributes", logMessage.getInvalidAttributes());
-      jsonGenerator.writeObjectField("exception", logMessage.getExceptionCause());
-      jsonGenerator.writeEndObject();
     }
   }
 }

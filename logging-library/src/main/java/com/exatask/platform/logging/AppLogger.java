@@ -1,6 +1,5 @@
 package com.exatask.platform.logging;
 
-import com.exatask.platform.logging.properties.AppProperties;
 import com.exatask.platform.logging.properties.AppPropertyManager;
 import com.exatask.platform.logging.serializers.AppLogSerializer;
 import com.exatask.platform.logging.serializers.AppLogSerializerFactory;
@@ -19,8 +18,6 @@ public class AppLogger {
 
   private final AppLogSerializer serializer;
 
-  private final AppProperties properties;
-
   private final String serviceName;
 
   AppLogger(String clazz, String service) {
@@ -29,9 +26,7 @@ public class AppLogger {
     serviceName = service;
 
     LoggerContext loggerContext = ((org.apache.logging.log4j.core.Logger) log4jLogger).getContext();
-    properties = AppPropertyManager.parse(loggerContext);
-
-    serializer = AppLogSerializerFactory.getLogSerializer(properties);
+    serializer = AppLogSerializerFactory.getLogSerializer(AppPropertyManager.parse(loggerContext));
   }
 
   public void trace(String message) {
@@ -133,7 +128,6 @@ public class AppLogger {
   public void log(Level level, String message) {
 
     AppLogMessage logMessage = AppLogMessage.builder()
-        .properties(properties)
         .message(message)
         .build();
     this.log(level, logMessage);
@@ -142,7 +136,6 @@ public class AppLogger {
   public void log(Level level, String message, Map<String, Object> extraParams) {
 
     AppLogMessage logMessage = AppLogMessage.builder()
-        .properties(properties)
         .message(message)
         .extraParams(extraParams)
         .build();
@@ -152,7 +145,6 @@ public class AppLogger {
   public void log(Level level, Exception exception) {
 
     AppLogMessage logMessage = AppLogMessage.builder()
-        .properties(properties)
         .exception(exception)
         .build();
     this.log(level, logMessage);
