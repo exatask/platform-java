@@ -2,7 +2,6 @@ package com.exatask.platform.logging.serializers;
 
 import com.exatask.platform.logging.AppLogMessage;
 import com.exatask.platform.logging.properties.AppProperties;
-import org.apache.commons.collections4.CollectionUtils;
 import org.apache.commons.collections4.MapUtils;
 import org.apache.commons.lang3.ObjectUtils;
 import org.apache.commons.lang3.StringUtils;
@@ -30,20 +29,19 @@ public class LineLogSerializer implements AppLogSerializer {
 
   private String serializeSmall(AppLogMessage logMessage) {
 
-    return String.format("[%s] [%s] %s: %s (%s) [Info %s] [Trace %s] [Cause %s]",
+    return String.format("[%s] [%s] %s: %s (%s) [Info %s] [Trace %s]",
         logMessage.getTimestamp(),
         StringUtils.defaultString(logMessage.getTraceId(), "-"),
         logMessage.getLevel().toUpperCase(),
         logMessage.getMessage(),
         StringUtils.defaultString(logMessage.getErrorCode(), "-"),
         !MapUtils.isEmpty(logMessage.getExtraParams()) ? logMessage.getExtraParams() : "-",
-        !CollectionUtils.isEmpty(logMessage.getStackTrace()) ? logMessage.getStackTrace() : "-",
-        !ObjectUtils.isEmpty(logMessage.getExceptionCause()) ? logMessage.getExceptionCause().getMessage() : "-");
+        !ObjectUtils.isEmpty(logMessage.getException()) ? logMessage.getStackTrace(properties) : "-");
   }
 
   private String serializeMedium(AppLogMessage logMessage) {
 
-    return String.format("[%s, %s] [%s, %s] %s: %s (%s) [%s %s] [Info %s] [Invalid Attrs %s] [Trace %s] [Cause %s]",
+    return String.format("[%s, %s] [%s, %s] %s: %s (%s) [%s %s] [Info %s] [Invalid Attrs %s] [Trace %s]",
         logMessage.getTimestamp(),
         logMessage.getThreadName(),
         StringUtils.defaultString(logMessage.getTraceId(), "-"),
@@ -55,13 +53,12 @@ public class LineLogSerializer implements AppLogSerializer {
         StringUtils.defaultString(logMessage.getUrl(), "-"),
         !MapUtils.isEmpty(logMessage.getExtraParams()) ? logMessage.getExtraParams() : "-",
         !MapUtils.isEmpty(logMessage.getInvalidAttributes()) ? logMessage.getInvalidAttributes().keySet() : "-",
-        !CollectionUtils.isEmpty(logMessage.getStackTrace()) ? logMessage.getStackTrace() : "-",
-        !ObjectUtils.isEmpty(logMessage.getExceptionCause()) ? logMessage.getExceptionCause().getMessage() : "-");
+        !ObjectUtils.isEmpty(logMessage.getException()) ? logMessage.getStackTrace(properties) : "-");
   }
 
   private String serializeLong(AppLogMessage logMessage) {
 
-    return String.format("[%s, %s, %s] [%s, %s, %s, %s] %s: %s (%s, %s) [%s %s, %sms] [Info %s] [Invalid Attrs %s] [Trace %s] [Cause %s %s]",
+    return String.format("[%s, %s, %s] [%s, %s, %s, %s] %s: %s (%s, %s) [%s %s, %sms] [Info %s] [Invalid Attrs %s] [Trace %s]",
         logMessage.getTimestamp(),
         logMessage.getServiceName(),
         logMessage.getThreadName(),
@@ -78,8 +75,6 @@ public class LineLogSerializer implements AppLogSerializer {
         ObjectUtils.defaultIfNull(logMessage.getRequestTime(), "-"),
         !MapUtils.isEmpty(logMessage.getExtraParams()) ? logMessage.getExtraParams() : "-",
         !MapUtils.isEmpty(logMessage.getInvalidAttributes()) ? logMessage.getInvalidAttributes() : "-",
-        !CollectionUtils.isEmpty(logMessage.getStackTrace()) ? logMessage.getStackTrace() : "-",
-        !ObjectUtils.isEmpty(logMessage.getExceptionCause()) ? logMessage.getExceptionCause().getMessage() : "-",
-        !ObjectUtils.isEmpty(logMessage.getExceptionCause()) ? logMessage.getExceptionCause().getStackTrace() : "-");
+        !ObjectUtils.isEmpty(logMessage.getException()) ? logMessage.getStackTrace(properties) : "-");
   }
 }
