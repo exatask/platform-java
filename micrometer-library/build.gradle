@@ -22,7 +22,6 @@ dependencies {
 
   compileOnly group: "io.micrometer", name: "micrometer-registry-elastic", version: "${micrometerVersion}"
   compileOnly group: "io.micrometer", name: "micrometer-registry-new-relic", version: "${micrometerVersion}"
-  compileOnly group: "io.micrometer", name: "micrometer-registry-cloudwatch2", version: "${micrometerVersion}"
   compileOnly group: "io.micrometer", name: "micrometer-registry-prometheus", version: "${micrometerVersion}"
 
   compileOnly group: "org.projectlombok", name: "lombok", version: "${lombokVersion}"
