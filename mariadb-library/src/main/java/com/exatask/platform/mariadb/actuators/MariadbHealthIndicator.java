@@ -2,6 +2,7 @@ package com.exatask.platform.mariadb.actuators;
 
 import com.exatask.platform.logging.AppLogManager;
 import com.exatask.platform.logging.AppLogger;
+import com.exatask.platform.mariadb.constants.MariadbService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.actuate.health.Health;
 import org.springframework.boot.actuate.health.HealthIndicator;
@@ -16,8 +17,8 @@ import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.Set;
 
-@Component("mariadb")
-public class MariadbActuator implements HealthIndicator {
+@Component(MariadbService.HEALTH_CHECK_NAME)
+public class MariadbHealthIndicator implements HealthIndicator {
 
   private static final AppLogger LOGGER = AppLogManager.getLogger();
 

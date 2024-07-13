@@ -7,6 +7,7 @@ import com.exatask.platform.storage.upload.CopyResponse;
 import com.exatask.platform.storage.upload.MoveResponse;
 import com.exatask.platform.storage.upload.UploadResponse;
 import lombok.RequiredArgsConstructor;
+import org.springframework.boot.actuate.health.Health;
 
 import java.io.IOException;
 import java.nio.file.Files;
@@ -18,6 +19,8 @@ public abstract class AppTransport {
 
   protected static final AppLogger LOGGER = AppLogManager.getLogger();
   protected static final String FILE_SEPARATOR = "/";
+
+  public abstract Health health();
 
   public abstract UploadResponse upload(Path inputPath, String uploadPath, Map<MetadataProperties, String> metadata, Map<String, String> tags);
 

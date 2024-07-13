@@ -2,6 +2,7 @@ package com.exatask.platform.mysql.actuators;
 
 import com.exatask.platform.logging.AppLogManager;
 import com.exatask.platform.logging.AppLogger;
+import com.exatask.platform.mysql.constants.MysqlService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.actuate.health.Health;
 import org.springframework.boot.actuate.health.HealthIndicator;
@@ -16,8 +17,8 @@ import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.Set;
 
-@Component("mysql")
-public class MysqlActuator implements HealthIndicator {
+@Component(MysqlService.HEALTH_CHECK_NAME)
+public class MysqlHealthIndicator implements HealthIndicator {
 
   private static final AppLogger LOGGER = AppLogManager.getLogger();
 

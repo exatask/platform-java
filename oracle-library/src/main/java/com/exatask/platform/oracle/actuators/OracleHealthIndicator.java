@@ -1,7 +1,8 @@
-package com.exatask.platform.postgresql.actuators;
+package com.exatask.platform.oracle.actuators;
 
 import com.exatask.platform.logging.AppLogManager;
 import com.exatask.platform.logging.AppLogger;
+import com.exatask.platform.oracle.constants.OracleService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.actuate.health.Health;
 import org.springframework.boot.actuate.health.HealthIndicator;
@@ -16,8 +17,8 @@ import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.Set;
 
-@Component("postgresql")
-public class PostgresqlActuator implements HealthIndicator {
+@Component(OracleService.HEALTH_CHECK_NAME)
+public class OracleHealthIndicator implements HealthIndicator {
 
   private static final AppLogger LOGGER = AppLogManager.getLogger();
 

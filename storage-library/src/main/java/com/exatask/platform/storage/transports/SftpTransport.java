@@ -14,6 +14,7 @@ import com.jcraft.jsch.JSch;
 import com.jcraft.jsch.JSchException;
 import com.jcraft.jsch.Session;
 import com.jcraft.jsch.SftpException;
+import org.springframework.boot.actuate.health.Health;
 
 import java.io.File;
 import java.io.FileInputStream;
@@ -53,6 +54,26 @@ public class SftpTransport extends AppTransport {
     } catch (JSchException exception) {
       LOGGER.error(exception);
     }
+  }
+
+  @Override
+  public Health health() {
+
+    Health.Builder entityHealth = Health.up()
+        .withDetail("type", AppTransportType.SFTP);
+
+    try {
+
+      entityHealth.withDetail("version", sftpChannel.getServerVersion());
+      entityHealth.withDetail("home", sftpChannel.getHome());
+
+    } catch (SftpException exception) {
+
+      entityHealth.down();
+      LOGGER.error(exception);
+    }
+
+    return entityHealth.build();
   }
 
   @Override
