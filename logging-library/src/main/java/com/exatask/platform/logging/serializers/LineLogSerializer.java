@@ -1,85 +1,80 @@
 package com.exatask.platform.logging.serializers;
 
 import com.exatask.platform.logging.AppLogMessage;
-import org.apache.commons.collections4.CollectionUtils;
+import com.exatask.platform.logging.properties.AppProperties;
 import org.apache.commons.collections4.MapUtils;
 import org.apache.commons.lang3.ObjectUtils;
 import org.apache.commons.lang3.StringUtils;
 
 public class LineLogSerializer implements AppLogSerializer {
 
-  @Override
-  public AppLogSerializerType getType() {
-    return AppLogSerializerType.LINE;
+  private final AppProperties properties;
+
+  public LineLogSerializer(AppProperties properties) {
+    this.properties = properties;
   }
 
   @Override
   public String serialize(AppLogMessage logMessage) {
 
-    StringBuilder stringBuilder = new StringBuilder();
+    switch (properties.getLength()) {
 
-    stringBuilder.append("[")
-        .append(logMessage.getTimestamp())
-        .append(", ")
-        .append(logMessage.getServiceName())
-        .append(", ")
-        .append(logMessage.getThreadName())
-        .append("] [")
-        .append(StringUtils.defaultString(logMessage.getTraceId(), "-"))
-        .append(", ")
-        .append(StringUtils.defaultString(logMessage.getParentId(), "-"))
-        .append(", ")
-        .append(StringUtils.defaultString(logMessage.getSpanId(), "-"))
-        .append(", ")
-        .append(StringUtils.defaultString(logMessage.getSessionId(), "-"))
-        .append("] ")
-        .append(logMessage.getLevel().toUpperCase())
-        .append(": ")
-        .append(logMessage.getMessage());
-
-    if (ObjectUtils.anyNotNull(logMessage.getErrorCode(), logMessage.getHttpCode())) {
-      stringBuilder.append(" (")
-          .append(StringUtils.defaultString(logMessage.getErrorCode(), "-"))
-          .append(", ")
-          .append(ObjectUtils.defaultIfNull(logMessage.getHttpCode(), "-"))
-          .append(")");
+      case SMALL: return serializeSmall(logMessage);
+      case MEDIUM: return serializeMedium(logMessage);
+      case LONG: return serializeLong(logMessage);
     }
 
-    if (ObjectUtils.anyNotNull(logMessage.getUrl(), logMessage.getRequestTime())) {
-      stringBuilder.append(" [")
-          .append(StringUtils.defaultString(logMessage.getMethod(), "-"))
-          .append(" ")
-          .append(StringUtils.defaultString(logMessage.getUrl(), "-"))
-          .append(", ")
-          .append(ObjectUtils.defaultIfNull(logMessage.getRequestTime(), "-"))
-          .append("ms]");
-    }
+    return logMessage.toString();
+  }
 
-    if (!MapUtils.isEmpty(logMessage.getExtraParams())) {
-      stringBuilder.append(" [Info ")
-          .append(logMessage.getExtraParams())
-          .append("]");
-    }
+  private String serializeSmall(AppLogMessage logMessage) {
 
-    if (!MapUtils.isEmpty(logMessage.getInvalidAttributes())) {
-      stringBuilder.append(" [Invalid Attrs ")
-          .append(logMessage.getInvalidAttributes())
-          .append("]");
-    }
+    return String.format("[%s] [%s] %s: %s (%s) [Info %s] [Trace %s]",
+        logMessage.getTimestamp(),
+        StringUtils.defaultString(logMessage.getTraceId(), "-"),
+        logMessage.getLevel().toUpperCase(),
+        logMessage.getMessage(),
+        StringUtils.defaultString(logMessage.getErrorCode(), "-"),
+        !MapUtils.isEmpty(logMessage.getExtraParams()) ? logMessage.getExtraParams() : "-",
+        !ObjectUtils.isEmpty(logMessage.getException()) ? logMessage.getStackTrace(properties) : "-");
+  }
 
-    if (!CollectionUtils.isEmpty(logMessage.getStackTrace())) {
-      stringBuilder.append(" ")
-          .append(logMessage.getStackTrace());
-    }
+  private String serializeMedium(AppLogMessage logMessage) {
 
-    if (!ObjectUtils.isEmpty(logMessage.getExceptionCause())) {
-      stringBuilder.append(" [Cause ")
-          .append(logMessage.getExceptionCause().getMessage())
-          .append(" ")
-          .append(logMessage.getExceptionCause().getStackTrace())
-          .append("]");
-    }
+    return String.format("[%s, %s] [%s, %s] %s: %s (%s) [%s %s] [Info %s] [Invalid Attrs %s] [Trace %s]",
+        logMessage.getTimestamp(),
+        logMessage.getThreadName(),
+        StringUtils.defaultString(logMessage.getTraceId(), "-"),
+        StringUtils.defaultString(logMessage.getSessionId(), "-"),
+        logMessage.getLevel().toUpperCase(),
+        logMessage.getMessage(),
+        StringUtils.defaultString(logMessage.getErrorCode(), "-"),
+        StringUtils.defaultString(logMessage.getMethod(), "-"),
+        StringUtils.defaultString(logMessage.getUrl(), "-"),
+        !MapUtils.isEmpty(logMessage.getExtraParams()) ? logMessage.getExtraParams() : "-",
+        !MapUtils.isEmpty(logMessage.getInvalidAttributes()) ? logMessage.getInvalidAttributes().keySet() : "-",
+        !ObjectUtils.isEmpty(logMessage.getException()) ? logMessage.getStackTrace(properties) : "-");
+  }
 
-    return stringBuilder.toString();
+  private String serializeLong(AppLogMessage logMessage) {
+
+    return String.format("[%s, %s, %s] [%s, %s, %s, %s] %s: %s (%s, %s) [%s %s, %sms] [Info %s] [Invalid Attrs %s] [Trace %s]",
+        logMessage.getTimestamp(),
+        logMessage.getServiceName(),
+        logMessage.getThreadName(),
+        StringUtils.defaultString(logMessage.getTraceId(), "-"),
+        StringUtils.defaultString(logMessage.getParentId(), "-"),
+        StringUtils.defaultString(logMessage.getSpanId(), "-"),
+        StringUtils.defaultString(logMessage.getSessionId(), "-"),
+        logMessage.getLevel().toUpperCase(),
+        logMessage.getMessage(),
+        StringUtils.defaultString(logMessage.getErrorCode(), "-"),
+        ObjectUtils.defaultIfNull(logMessage.getHttpCode(), "-"),
+        StringUtils.defaultString(logMessage.getMethod(), "-"),
+        StringUtils.defaultString(logMessage.getUrl(), "-"),
+        ObjectUtils.defaultIfNull(logMessage.getRequestTime(), "-"),
+        !MapUtils.isEmpty(logMessage.getExtraParams()) ? logMessage.getExtraParams() : "-",
+        !MapUtils.isEmpty(logMessage.getInvalidAttributes()) ? logMessage.getInvalidAttributes() : "-",
+        !ObjectUtils.isEmpty(logMessage.getException()) ? logMessage.getStackTrace(properties) : "-");
   }
 }

@@ -98,7 +98,7 @@ public class ServiceLogger extends Logger {
     logMessage.setRequestTime(requestTime);
 
     if (logLevel.ordinal() < Level.FULL.ordinal()) {
-      logMessage.setStackTrace(null);
+      logMessage.setException(null);
     }
 
     LOGGER.error(logMessage);

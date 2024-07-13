@@ -18,6 +18,7 @@ dependencies {
   implementation project(":logging-library")
   implementation project(":utilities-library")
 
+  compileOnly group: "org.springframework.boot", name: "spring-boot-starter-actuator"
   compileOnly group: "software.amazon.awssdk", name: "s3"
   compileOnly group: "com.jcraft", name: "jsch", version: "${jschVersion}"
 

@@ -10,8 +10,11 @@ import com.exatask.platform.storage.upload.MoveResponse;
 import com.exatask.platform.storage.upload.UploadResponse;
 import com.exatask.platform.utilities.constants.AwsConstant;
 import com.exatask.platform.utilities.properties.AwsProperties;
+import org.springframework.boot.actuate.health.Health;
+import software.amazon.awssdk.awscore.exception.AwsServiceException;
 import software.amazon.awssdk.core.ResponseInputStream;
 import software.amazon.awssdk.services.s3.S3Client;
+import software.amazon.awssdk.services.s3.model.Bucket;
 import software.amazon.awssdk.services.s3.model.CopyObjectRequest;
 import software.amazon.awssdk.services.s3.model.CopyObjectResponse;
 import software.amazon.awssdk.services.s3.model.DeleteObjectRequest;
@@ -19,6 +22,7 @@ import software.amazon.awssdk.services.s3.model.DeleteObjectResponse;
 import software.amazon.awssdk.services.s3.model.GetObjectRequest;
 import software.amazon.awssdk.services.s3.model.GetObjectResponse;
 import software.amazon.awssdk.services.s3.model.GetUrlRequest;
+import software.amazon.awssdk.services.s3.model.ListBucketsResponse;
 import software.amazon.awssdk.services.s3.model.ObjectCannedACL;
 import software.amazon.awssdk.services.s3.model.PutObjectRequest;
 import software.amazon.awssdk.services.s3.model.PutObjectResponse;
@@ -39,6 +43,7 @@ import java.nio.file.Path;
 import java.time.Duration;
 import java.time.temporal.ChronoUnit;
 import java.util.Arrays;
+import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 import java.util.Set;
@@ -60,6 +65,34 @@ public class AwsTransport extends AppTransport {
 
     bucketProperties = awsProperties.getS3().stream()
         .collect(Collectors.toMap(AwsProperties.S3Properties::getBucketKey, Function.identity()));
+  }
+
+  @Override
+  public Health health() {
+
+    Health.Builder entityHealth = Health.up()
+        .withDetail("type", AppTransportType.AWS);
+
+    try {
+
+      ListBucketsResponse bucketsResponse = s3Client.listBuckets();
+      if (bucketsResponse.hasBuckets()) {
+
+        List<Bucket> buckets = bucketsResponse.buckets();
+        List<String> bucketNames = buckets.stream()
+            .map(Bucket::name)
+            .collect(Collectors.toList());
+
+        entityHealth.withDetail("buckets", bucketNames);
+      }
+
+    } catch (AwsServiceException exception) {
+
+      entityHealth.down();
+      LOGGER.error(exception);
+    }
+
+    return entityHealth.build();
   }
 
   @Override
