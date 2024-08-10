@@ -38,7 +38,7 @@ public class AppPostgresqlRepositoryFactoryBean<R extends JpaRepository<T, ID>, 
 
     @Override
     protected Class<?> getRepositoryBaseClass(RepositoryMetadata metadata) {
-      return AppPostgresqlRepository.class;
+      return JpaRepository.class;
     }
   }
 }

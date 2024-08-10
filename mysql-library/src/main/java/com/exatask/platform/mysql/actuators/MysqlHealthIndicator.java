@@ -11,9 +11,6 @@ import java.util.Set;
 @Component(MysqlService.HEALTH_CHECK_NAME)
 public class MysqlHealthIndicator extends JpaHealthIndicator {
 
-  private static final String VERSION_QUERY = "SELECT VERSION() AS `version`";
-  private static final String DATABASE_QUERY = "SELECT DATABASE() AS `database`";
-
   @Autowired(required = false)
   public MysqlHealthIndicator(Set<DataSource> dataSources) {
     super(dataSources);
@@ -21,11 +18,11 @@ public class MysqlHealthIndicator extends JpaHealthIndicator {
 
   @Override
   protected String getVersionQuery() {
-    return VERSION_QUERY;
+    return "SELECT VERSION() AS `version`";
   }
 
   @Override
   protected String getDatabaseQuery() {
-    return DATABASE_QUERY;
+    return "SELECT DATABASE() AS `database`";
   }
 }
