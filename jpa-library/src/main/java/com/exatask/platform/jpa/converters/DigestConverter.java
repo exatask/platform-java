@@ -1,4 +1,4 @@
-package com.exatask.platform.mysql.converters;
+package com.exatask.platform.jpa.converters;
 
 import com.exatask.platform.logging.AppLogManager;
 import com.exatask.platform.logging.AppLogger;

@@ -9,6 +9,7 @@ import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.math.NumberUtils;
 import org.springframework.util.CollectionUtils;
 
+import javax.persistence.criteria.CommonAbstractCriteria;
 import javax.persistence.criteria.CriteriaBuilder;
 import javax.persistence.criteria.CriteriaQuery;
 import javax.persistence.criteria.CriteriaUpdate;
@@ -32,6 +33,10 @@ public class FilterElement {
   private FilterType type;
 
   private List<FilterElement> elements;
+
+  public FilterElement(Class<? extends AppModel> model, String key, Object value) {
+    this(model, key, FilterOperation.EQUAL, value);
+  }
 
   public FilterElement(Class<? extends AppModel> model, String key, FilterOperation operation, Object value) {
 
@@ -61,138 +66,66 @@ public class FilterElement {
   public Predicate getPredicate(CriteriaBuilder criteriaBuilder, CriteriaQuery criteriaQuery) {
 
     if (!CollectionUtils.isEmpty(this.elements)) {
+      return getNestedPredicate(criteriaBuilder, criteriaQuery);
+    } else {
 
-      List<Predicate> predicates = new ArrayList<>();
-      for (FilterElement element : this.elements) {
-        predicates.add(element.getPredicate(criteriaBuilder, criteriaQuery));
+      Root from = criteriaQuery.from(model);
+      Set<Root> roots = criteriaQuery.getRoots();
+      for (Root root : roots) {
+        if (root.getModel().getJavaType() == model) {
+          from = root;
+          break;
+        }
       }
 
-      if (type == FilterType.AND) {
-        return criteriaBuilder.and(predicates.toArray(new Predicate[]{}));
-      } else {
-        return criteriaBuilder.or(predicates.toArray(new Predicate[]{}));
-      }
+      Path path = from.get(key);
+      return getPredicate(criteriaBuilder, path);
     }
-
-    Root from = null;
-    Set<Root> roots = criteriaQuery.getRoots();
-    for (Root root : roots) {
-      if (root.getModel().getJavaType() == model) {
-        from = root;
-        break;
-      }
-    }
-
-    if (from == null) {
-      from = criteriaQuery.from(model);
-    }
-
-    Path path = from.get(key);
-    return getPredicate(criteriaBuilder, path);
   }
 
   public Predicate getPredicate(CriteriaBuilder criteriaBuilder, CriteriaUpdate criteriaUpdate) {
 
     if (!CollectionUtils.isEmpty(this.elements)) {
+      return getNestedPredicate(criteriaBuilder, criteriaUpdate);
+    } else {
 
-      List<Predicate> predicates = new ArrayList<>();
-      for (FilterElement element : this.elements) {
-        predicates.add(element.getPredicate(criteriaBuilder, criteriaUpdate));
+      Root from = criteriaUpdate.getRoot();
+      if (from.getModel().getJavaType() != model) {
+        from = criteriaUpdate.from(model);
       }
 
-      if (type == FilterType.AND) {
-        return criteriaBuilder.and(predicates.toArray(new Predicate[]{}));
-      } else {
-        return criteriaBuilder.or(predicates.toArray(new Predicate[]{}));
-      }
+      Path path = from.get(key);
+      return getPredicate(criteriaBuilder, path);
     }
-
-    Root from = criteriaUpdate.getRoot();
-    if (from.getModel().getJavaType() != model) {
-      from = criteriaUpdate.from(model);
-    }
-
-    Path path = from.get(key);
-    return getPredicate(criteriaBuilder, path);
   }
 
   public String getPredicate() {
 
     if (!CollectionUtils.isEmpty(elements)) {
 
-      StringBuilder query = new StringBuilder("(");
-      int length = elements.size();
-
-      for (int i = 0; i < elements.size(); i++) {
-
-        query.append(elements.get(i).getPredicate());
-        if (i != (length - 1)) {
-          query.append(type == FilterType.AND ? " AND " : " OR ");
-        }
+      List<String> predicates = new ArrayList<>();
+      for (FilterElement element : elements) {
+        predicates.add(element.getPredicate());
       }
 
-      query.append(")");
-      return query.toString();
+      return "(" + String.join(type == FilterType.AND ? " AND " : " OR ", predicates) + ")";
+
+    } else {
+      return getPredicate(QueryUtility.getClassAlias(model) + "." + key);
+    }
+  }
+
+  private Predicate getNestedPredicate(CriteriaBuilder criteriaBuilder, CommonAbstractCriteria criteria) {
+
+    List<Predicate> predicates = new ArrayList<>();
+    for (FilterElement element : this.elements) {
+      predicates.add(element.getNestedPredicate(criteriaBuilder, criteria));
     }
 
-    String path = QueryUtility.getClassAlias(model) + "." + key;
-
-    switch (operation) {
-
-      case EQUAL:
-        if (value == null) {
-          return String.format(" %s IS NULL ", path);
-        } else if (value instanceof List || value.getClass().isArray()) {
-          return String.format(" %s IN ('%s') ", path, String.join("','", (List) value));
-        } else {
-          return String.format(" %s = '%s' ", path, value);
-        }
-
-      case NOT_EQUAL:
-        if (value == null) {
-          return String.format(" %s IS NOT NULL ", path);
-        } else if (value instanceof List || value.getClass().isArray()) {
-          return String.format(" %s NOT IN ('%s') ", path, String.join("','", (List) value));
-        } else {
-          return String.format(" %s != '%s' ", path, value);
-        }
-
-      case GREATER:
-        if (NumberUtils.isCreatable(value.toString())) {
-          return String.format(" %s > %s ", path, NumberUtils.createNumber(value.toString()));
-        } else {
-          return String.format(" %s > '%s' ", path, value);
-        }
-
-      case GREATER_EQUAL:
-        if (NumberUtils.isCreatable(value.toString())) {
-          return String.format(" %s >= %s ", path, NumberUtils.createNumber(value.toString()));
-        } else {
-          return String.format(" %s >= '%s' ", path, value);
-        }
-
-      case LESSER:
-        if (NumberUtils.isCreatable(value.toString())) {
-          return String.format(" %s < %s ", path, NumberUtils.createNumber(value.toString()));
-        } else {
-          return String.format(" %s < '%s' ", path, value);
-        }
-
-      case LESSER_EQUAL:
-        if (NumberUtils.isCreatable(value.toString())) {
-          return String.format(" %s <= %s ", path, NumberUtils.createNumber(value.toString()));
-        } else {
-          return String.format(" %s <= '%s' ", path, value);
-        }
-
-      case REGEX:
-        return String.format(" %s LIKE '%s' ", path, value.toString());
-
-      case NOT_REGEX:
-        return String.format(" %s NOT LIKE '%s' ", path, value.toString());
-
-      default:
-        throw new InvalidFilterException(operation.toString());
+    if (type == FilterType.AND) {
+      return criteriaBuilder.and(predicates.toArray(new Predicate[]{}));
+    } else {
+      return criteriaBuilder.or(predicates.toArray(new Predicate[]{}));
     }
   }
 
@@ -255,5 +188,71 @@ public class FilterElement {
       default:
         throw new InvalidFilterException(operation.toString());
     }
+  }
+
+  private String getPredicate(String path) {
+
+    switch (operation) {
+
+      case EQUAL:
+        if (value == null) {
+          return String.format(" %s IS NULL ", path);
+        } else if (value instanceof List || value.getClass().isArray()) {
+          return String.format(" %s IN ('%s') ", path, String.join("','", (List) value));
+        } else {
+          return String.format(" %s = '%s' ", path, value);
+        }
+
+      case NOT_EQUAL:
+        if (value == null) {
+          return String.format(" %s IS NOT NULL ", path);
+        } else if (value instanceof List || value.getClass().isArray()) {
+          return String.format(" %s NOT IN ('%s') ", path, String.join("','", (List) value));
+        } else {
+          return String.format(" %s != '%s' ", path, value);
+        }
+
+      case GREATER:
+        if (NumberUtils.isCreatable(value.toString())) {
+          return String.format(" %s > %s ", path, NumberUtils.createNumber(value.toString()));
+        } else {
+          return String.format(" %s > '%s' ", path, value);
+        }
+
+      case GREATER_EQUAL:
+        if (NumberUtils.isCreatable(value.toString())) {
+          return String.format(" %s >= %s ", path, NumberUtils.createNumber(value.toString()));
+        } else {
+          return String.format(" %s >= '%s' ", path, value);
+        }
+
+      case LESSER:
+        if (NumberUtils.isCreatable(value.toString())) {
+          return String.format(" %s < %s ", path, NumberUtils.createNumber(value.toString()));
+        } else {
+          return String.format(" %s < '%s' ", path, value);
+        }
+
+      case LESSER_EQUAL:
+        if (NumberUtils.isCreatable(value.toString())) {
+          return String.format(" %s <= %s ", path, NumberUtils.createNumber(value.toString()));
+        } else {
+          return String.format(" %s <= '%s' ", path, value);
+        }
+
+      case REGEX:
+        return String.format(" %s LIKE '%s' ", path, value.toString());
+
+      case NOT_REGEX:
+        return String.format(" %s NOT LIKE '%s' ", path, value.toString());
+
+      default:
+        throw new InvalidFilterException(operation.toString());
+    }
+  }
+
+  @Override
+  public String toString() {
+    return this.getPredicate();
   }
 }

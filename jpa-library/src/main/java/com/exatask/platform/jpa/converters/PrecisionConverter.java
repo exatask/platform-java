@@ -1,4 +1,4 @@
-package com.exatask.platform.mysql.converters;
+package com.exatask.platform.jpa.converters;
 
 import javax.persistence.AttributeConverter;
 import java.math.BigDecimal;
