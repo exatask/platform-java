@@ -16,20 +16,12 @@ jar {
 dependencies {
 
   implementation group: "mysql", name: "mysql-connector-java", version: "${mysqlVersion}"
-//  implementation group: "org.apache.commons", name: "commons-lang3", version: "${apacheLangVersion}"
   implementation project(":jpa-library")
-//  implementation project(":logging-library")
-//  implementation project(":dto-library")
-//  implementation project(":crypto-library")
-//  implementation project(":utilities-library")
 
   compileOnly group: "org.springframework.boot", name: "spring-boot-starter-actuator"
 
   compileOnly group: "org.projectlombok", name: "lombok", version: "${lombokVersion}"
   annotationProcessor group: "org.projectlombok", name: "lombok", version: "${lombokVersion}"
-
-//  compileOnly group: "org.mapstruct", name: "mapstruct", version: "${mapstructVersion}"
-//  annotationProcessor group: "org.mapstruct", name: "mapstruct-processor", version: "${mapstructVersion}"
 }
 
 publishing {

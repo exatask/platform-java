@@ -1,5 +1,6 @@
 package com.exatask.platform.mysql;
 
+import com.exatask.platform.jpa.AppJpaRepository;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.support.JpaRepositoryFactory;
 import org.springframework.data.jpa.repository.support.JpaRepositoryFactoryBean;
@@ -38,7 +39,7 @@ public class AppMysqlRepositoryFactoryBean<R extends JpaRepository<T, ID>, T, ID
 
     @Override
     protected Class<?> getRepositoryBaseClass(RepositoryMetadata metadata) {
-      return AppMysqlRepository.class;
+      return AppJpaRepository.class;
     }
   }
 }
