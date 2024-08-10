@@ -1,4 +1,4 @@
-package com.exatask.platform.mysql.exceptions;
+package com.exatask.platform.jpa.exceptions;
 
 public class InvalidTransactionException extends RuntimeException {
 

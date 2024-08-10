@@ -1,6 +1,5 @@
 package com.exatask.platform.mysql.replicas;
 
-import com.exatask.platform.mysql.exceptions.InvalidTransactionException;
 import org.springframework.transaction.PlatformTransactionManager;
 import org.springframework.transaction.TransactionDefinition;
 import org.springframework.transaction.TransactionException;

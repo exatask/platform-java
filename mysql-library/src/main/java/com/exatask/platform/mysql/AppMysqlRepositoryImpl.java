@@ -2,9 +2,8 @@ package com.exatask.platform.mysql;
 
 import com.exatask.platform.logging.AppLogManager;
 import com.exatask.platform.logging.AppLogger;
-import com.exatask.platform.mysql.constants.Defaults;
-import com.exatask.platform.mysql.exceptions.InvalidOperationException;
 import com.exatask.platform.mysql.filters.FilterElement;
+import com.exatask.platform.mysql.groups.GroupElement;
 import com.exatask.platform.mysql.joins.JoinElement;
 import com.exatask.platform.mysql.replicas.ReplicaDataSource;
 import com.exatask.platform.mysql.sorts.SortElement;
@@ -14,6 +13,7 @@ import com.exatask.platform.mysql.utilities.QueryUtility;
 import org.hibernate.query.Query;
 import org.springframework.data.jpa.repository.support.SimpleJpaRepository;
 import org.springframework.util.CollectionUtils;
+import org.springframework.util.ObjectUtils;
 
 import javax.persistence.EntityManager;
 import javax.persistence.LockModeType;
@@ -23,8 +23,8 @@ import javax.persistence.TypedQuery;
 import javax.persistence.criteria.CriteriaBuilder;
 import javax.persistence.criteria.CriteriaQuery;
 import javax.persistence.criteria.CriteriaUpdate;
+import javax.persistence.criteria.Expression;
 import javax.persistence.criteria.Order;
-import javax.persistence.criteria.Predicate;
 import javax.persistence.criteria.Root;
 import javax.transaction.Transactional;
 import java.io.Serializable;
@@ -58,33 +58,23 @@ public class AppMysqlRepositoryImpl<T, ID extends Serializable> extends SimpleJp
    * @param criteriaQuery
    * @param filters
    */
-  private CriteriaQuery<T> prepareFilters(CriteriaBuilder criteriaBuilder, CriteriaQuery<T> criteriaQuery, List<FilterElement> filters) {
+  private CriteriaQuery<T> prepareFilters(CriteriaBuilder criteriaBuilder, CriteriaQuery<T> criteriaQuery, FilterElement filters) {
 
-    if (CollectionUtils.isEmpty(filters)) {
+    if (ObjectUtils.isEmpty(filters)) {
       return criteriaQuery;
     }
-
-    List<Predicate> predicates = new ArrayList<>();
-    for (FilterElement filterElement : filters) {
-      predicates.add(filterElement.getPredicate(criteriaBuilder, criteriaQuery));
-    }
-    return criteriaQuery.where(predicates.toArray(new Predicate[]{}));
+    return criteriaQuery.where(filters.getPredicate(criteriaBuilder, criteriaQuery));
   }
 
   /**
    * @param filters
    */
-  private String prepareFilters(List<FilterElement> filters) {
+  private String prepareFilters(FilterElement filters) {
 
-    if (CollectionUtils.isEmpty(filters)) {
+    if (ObjectUtils.isEmpty(filters)) {
       return " 1=1 ";
     }
-
-    List<String> filterList = new ArrayList<>();
-    for (FilterElement filter : filters) {
-      filterList.add(filter.getPredicate());
-    }
-    return String.join(" AND ", filterList);
+    return filters.getPredicate();
   }
 
   /**
@@ -92,17 +82,12 @@ public class AppMysqlRepositoryImpl<T, ID extends Serializable> extends SimpleJp
    * @param criteriaUpdate
    * @param filters
    */
-  private CriteriaUpdate<T> prepareFilters(CriteriaBuilder criteriaBuilder, CriteriaUpdate<T> criteriaUpdate, List<FilterElement> filters) {
+  private CriteriaUpdate<T> prepareFilters(CriteriaBuilder criteriaBuilder, CriteriaUpdate<T> criteriaUpdate, FilterElement filters) {
 
-    if (CollectionUtils.isEmpty(filters)) {
+    if (ObjectUtils.isEmpty(filters)) {
       return criteriaUpdate;
     }
-
-    List<Predicate> predicates = new ArrayList<>();
-    for (FilterElement filterElement : filters) {
-      predicates.add(filterElement.getPredicate(criteriaBuilder, criteriaUpdate));
-    }
-    return criteriaUpdate.where(predicates.toArray(new Predicate[]{}));
+    return criteriaUpdate.where(filters.getPredicate(criteriaBuilder, criteriaUpdate));
   }
 
   /**
@@ -128,6 +113,40 @@ public class AppMysqlRepositoryImpl<T, ID extends Serializable> extends SimpleJp
               .collect(Collectors.toList()));
     }
     return String.join(", ", projectionList);
+  }
+
+  /**
+   * @param criteriaQuery
+   * @param groups
+   */
+  private CriteriaQuery<T> prepareGroupBy(CriteriaQuery<T> criteriaQuery, List<GroupElement> groups) {
+
+    if (CollectionUtils.isEmpty(groups)) {
+      return criteriaQuery;
+    }
+
+    List<Expression<?>> groupBy = new ArrayList<>();
+    for (GroupElement group : groups) {
+      groupBy.add(group.getGroup(criteriaQuery));
+    }
+
+    return criteriaQuery.groupBy(groupBy);
+  }
+
+  /**
+   * @param groups
+   */
+  private String prepareGroupBy(List<GroupElement> groups) {
+
+    if (CollectionUtils.isEmpty(groups)) {
+      return "";
+    }
+
+    List<String> groupBy = new ArrayList<>();
+    for (GroupElement group : groups) {
+      groupBy.add(group.getGroup());
+    }
+    return String.format(" GROUP BY %s ", String.join(", ", groupBy));
   }
 
   /**
@@ -165,19 +184,6 @@ public class AppMysqlRepositoryImpl<T, ID extends Serializable> extends SimpleJp
   }
 
   /**
-   * @param query
-   * @param lockMode
-   */
-  private javax.persistence.Query prepareLock(javax.persistence.Query query, LockModeType lockMode) {
-
-    if (lockMode == null) {
-      return query;
-    }
-
-    return query.setLockMode(lockMode);
-  }
-
-  /**
    * @param typedQuery
    * @param skip
    */
@@ -188,6 +194,22 @@ public class AppMysqlRepositoryImpl<T, ID extends Serializable> extends SimpleJp
     }
 
     return typedQuery.setFirstResult(skip);
+  }
+
+  /**
+   * @param skip
+   */
+  private String prepareSkip(Integer skip) {
+
+    if (skip == null) {
+      return "";
+    }
+
+    if (skip < Defaults.MINIMUM_SKIP) {
+      skip = Defaults.MINIMUM_SKIP;
+    }
+
+    return String.format(" OFFSET %d ", skip);
   }
 
   /**
@@ -203,6 +225,37 @@ public class AppMysqlRepositoryImpl<T, ID extends Serializable> extends SimpleJp
     }
 
     return typedQuery.setMaxResults(limit);
+  }
+
+  /**
+   * @param limit
+   */
+  private String prepareLimit(Integer limit) {
+
+    if (limit == null) {
+      return "";
+    }
+
+    if (limit < Defaults.MINIMUM_LIMIT) {
+      limit = Defaults.MINIMUM_LIMIT;
+    } else if (limit > Defaults.MAXIMUM_LIMIT) {
+      limit = Defaults.MAXIMUM_LIMIT;
+    }
+
+    return String.format(" LIMIT %d ", limit);
+  }
+
+  /**
+   * @param query
+   * @param lockMode
+   */
+  private javax.persistence.Query prepareLock(javax.persistence.Query query, LockModeType lockMode) {
+
+    if (lockMode == null) {
+      return query;
+    }
+
+    return query.setLockMode(lockMode);
   }
 
   /**
@@ -260,12 +313,10 @@ public class AppMysqlRepositoryImpl<T, ID extends Serializable> extends SimpleJp
       return criteriaUpdate;
     }
 
+    updates.add(new UpdateElement((Class<? extends AppModel>) this.domainClass, "updatedAt", UpdateOperation.SET, LocalDateTime.now()));
     for (UpdateElement updateElement : updates) {
       criteriaUpdate = updateElement.setUpdate(criteriaBuilder, criteriaUpdate);
     }
-
-    UpdateElement updatedAt = new UpdateElement((Class<? extends AppModel>) this.domainClass, "updatedAt", UpdateOperation.SET, LocalDateTime.now());
-    updatedAt.setUpdate(criteriaBuilder, criteriaUpdate);
 
     return criteriaUpdate;
   }
@@ -304,12 +355,13 @@ public class AppMysqlRepositoryImpl<T, ID extends Serializable> extends SimpleJp
 
     prepareJoins(from, query.getJoins());
     criteriaQuery = prepareFilters(criteriaBuilder, criteriaQuery, query.getFilters());
+    criteriaQuery = prepareGroupBy(criteriaQuery, query.getGroups());
     criteriaQuery = prepareSort(criteriaBuilder, criteriaQuery, query.getSorts());
 
     ReplicaDataSource.setReadOnly(true);
     TypedQuery<T> typedQuery = entityManager.createQuery(criteriaQuery);
-    typedQuery = prepareSkip(typedQuery, query.getSkip());
     typedQuery = prepareLimit(typedQuery, query.getLimit());
+    typedQuery = prepareSkip(typedQuery, query.getSkip());
     typedQuery = prepareLock(typedQuery, query.getLock());
 
     this.lastQuery = typedQuery.unwrap(Query.class).getQueryString();
@@ -321,27 +373,16 @@ public class AppMysqlRepositoryImpl<T, ID extends Serializable> extends SimpleJp
   @Override
   public List<Map<String, Object>> findNative(AppQuery query) {
 
-    Integer skip = Optional.ofNullable(query.getSkip()).orElse(Defaults.DEFAULT_SKIP);
-    if (skip < Defaults.MINIMUM_SKIP) {
-      skip = Defaults.MINIMUM_SKIP;
-    }
-
-    Integer limit = Optional.ofNullable(query.getLimit()).orElse(Defaults.DEFAULT_LIMIT);
-    if (limit < Defaults.MINIMUM_LIMIT) {
-      limit = Defaults.MINIMUM_LIMIT;
-    } else if (limit > Defaults.MAXIMUM_LIMIT) {
-      limit = Defaults.MAXIMUM_LIMIT;
-    }
-
-    String nativeSql = String.format("SELECT %s FROM %s AS %s %s WHERE %s %s LIMIT %d, %d;",
+    String nativeSql = String.format("SELECT %s FROM %s AS %s %s WHERE %s %s %s %s %s;",
         prepareProjection(query.getProjections()),
         QueryUtility.getTableName(this.domainClass),
         QueryUtility.getClassAlias(this.domainClass),
         prepareJoins(query.getJoins()),
         prepareFilters(query.getFilters()),
+        prepareGroupBy(query.getGroups()),
         prepareSort(query.getSorts()),
-        skip,
-        limit
+        prepareLimit(query.getLimit()),
+        prepareSkip(query.getSkip())
     );
 
     this.lastQuery = nativeSql;
@@ -373,6 +414,7 @@ public class AppMysqlRepositoryImpl<T, ID extends Serializable> extends SimpleJp
 
     prepareJoins(from, query.getJoins());
     criteriaQuery = prepareFilters(criteriaBuilder, criteriaQuery, query.getFilters());
+    criteriaQuery = prepareGroupBy(criteriaQuery, query.getGroups());
     criteriaQuery = prepareSort(criteriaBuilder, criteriaQuery, query.getSorts());
 
     ReplicaDataSource.setReadOnly(true);
@@ -388,12 +430,13 @@ public class AppMysqlRepositoryImpl<T, ID extends Serializable> extends SimpleJp
   @Override
   public Optional<Map<String, Object>> findOneNative(AppQuery query) {
 
-    String nativeSql = String.format("SELECT %s FROM %s AS %s %s WHERE %s %s LIMIT 1;",
+    String nativeSql = String.format("SELECT %s FROM %s AS %s %s WHERE %s %s %s LIMIT 1;",
         prepareProjection(query.getProjections()),
         QueryUtility.getTableName(this.domainClass),
         QueryUtility.getClassAlias(this.domainClass),
         prepareJoins(query.getJoins()),
         prepareFilters(query.getFilters()),
+        prepareGroupBy(query.getGroups()),
         prepareSort(query.getSorts())
     );
 
@@ -405,7 +448,7 @@ public class AppMysqlRepositoryImpl<T, ID extends Serializable> extends SimpleJp
     nativeQuery = prepareLock(nativeQuery, query.getLock());
 
     Optional<Tuple> result = nativeQuery.getResultStream().findFirst();
-    if (!result.isPresent()) {
+    if (result.isEmpty()) {
       return Optional.empty();
     }
 

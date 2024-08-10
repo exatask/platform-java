@@ -1,4 +1,4 @@
-package com.exatask.platform.mariadb.exceptions;
+package com.exatask.platform.jpa.exceptions;
 
 public class InvalidIdentifierException extends RuntimeException {
 

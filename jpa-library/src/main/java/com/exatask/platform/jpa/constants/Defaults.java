@@ -1,4 +1,4 @@
-package com.exatask.platform.mariadb.constants;
+package com.exatask.platform.jpa.constants;
 
 import lombok.experimental.UtilityClass;
 

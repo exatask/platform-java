@@ -3,6 +3,7 @@ package com.exatask.platform.mariadb.sorts;
 import com.exatask.platform.mariadb.AppModel;
 import com.exatask.platform.mariadb.utilities.QueryUtility;
 import lombok.AllArgsConstructor;
+import org.springframework.data.domain.Sort;
 
 import javax.persistence.criteria.CriteriaBuilder;
 import javax.persistence.criteria.CriteriaQuery;
@@ -16,17 +17,17 @@ public class SortElement {
 
   private final String key;
 
-  private final Integer sort;
+  private final Sort.Direction sort;
 
   public Order getOrder(CriteriaBuilder criteriaBuilder, CriteriaQuery criteriaQuery) {
 
     Path path = criteriaQuery.from(model).get(key);
-    return sort == 1 ? criteriaBuilder.asc(path) : criteriaBuilder.desc(path);
+    return sort == Sort.Direction.ASC ? criteriaBuilder.asc(path) : criteriaBuilder.desc(path);
   }
 
   public String getOrder() {
 
-    String direction = sort == 1 ? "ASC" : "DESC";
+    String direction = sort == Sort.Direction.ASC ? "ASC" : "DESC";
     return String.format(" %s.%s %s ", QueryUtility.getClassAlias(model), key, direction);
   }
 }

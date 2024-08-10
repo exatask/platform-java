@@ -1,4 +1,4 @@
-package com.exatask.platform.mariadb.converters;
+package com.exatask.platform.jpa.converters;
 
 import com.exatask.platform.logging.AppLogManager;
 import com.exatask.platform.logging.AppLogger;
