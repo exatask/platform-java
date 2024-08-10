@@ -1,5 +1,6 @@
 package com.exatask.platform.mariadb;
 
+import com.exatask.platform.jpa.AppJpaRepository;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.support.JpaRepositoryFactory;
 import org.springframework.data.jpa.repository.support.JpaRepositoryFactoryBean;
@@ -38,7 +39,7 @@ public class AppMariadbRepositoryFactoryBean<R extends JpaRepository<T, ID>, T, 
 
     @Override
     protected Class<?> getRepositoryBaseClass(RepositoryMetadata metadata) {
-      return AppMariadbRepository.class;
+      return AppJpaRepository.class;
     }
   }
 }

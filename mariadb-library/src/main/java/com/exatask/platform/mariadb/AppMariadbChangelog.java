@@ -1,67 +1,21 @@
 package com.exatask.platform.mariadb;
 
-import com.exatask.platform.utilities.ServiceUtility;
-import org.apache.commons.lang3.StringUtils;
-import org.flywaydb.core.Flyway;
-import org.springframework.boot.autoconfigure.jdbc.DataSourceProperties;
-import org.springframework.jdbc.datasource.DriverManagerDataSource;
-import org.springframework.util.ResourceUtils;
+import com.exatask.platform.jpa.AppJpaChangelog;
 
-import javax.sql.DataSource;
-import java.util.Properties;
+public class AppMariadbChangelog extends AppJpaChangelog {
 
-public class AppMariadbChangelog {
-
-  private static final String MARIADB_DRIVER = "com.mysql.cj.jdbc.Driver";
-
-  private static final String CHANGELOG_TABLE = "changelogs";
-  private static final String SCHEMA_CHANGELOG_PACKAGE = "changelogs.mariadb.package.schema";
-  private static final String DATA_CHANGELOG_PACKAGE = "changelogs.mariadb.package.data";
-
-  public void migrate(DataSourceProperties dataSourceProperties, boolean schema) {
-
-    DataSource dataSource = prepareMariadbDataSource(dataSourceProperties);
-    Flyway flyway = createRunner(dataSource, schema);
-    if (flyway != null) {
-      flyway.migrate();
-    }
+  @Override
+  protected String getSchemaChangelogPackage() {
+    return "changelogs.mariadb.package.schema";
   }
 
-  private Flyway createRunner(DataSource dataSource, boolean schema) {
-
-    String location = ServiceUtility.getServiceProperty(SCHEMA_CHANGELOG_PACKAGE, "");
-    if (!schema) {
-      location = ServiceUtility.getServiceProperty(DATA_CHANGELOG_PACKAGE, "");
-    }
-
-    if (StringUtils.isEmpty(location)) {
-      return null;
-    }
-
-    return Flyway.configure()
-        .table(CHANGELOG_TABLE)
-        .locations(ResourceUtils.CLASSPATH_URL_PREFIX + location)
-        .sqlMigrationSuffixes(".java")
-        .validateOnMigrate(false)
-        .validateMigrationNaming(true)
-        .baselineOnMigrate(false)
-        .installedBy("no-author@exatask.com")
-        .dataSource(dataSource)
-        .load();
+  @Override
+  protected String getDataChangelogPackage() {
+    return "changelogs.mariadb.package.data";
   }
 
-  private static DataSource prepareMariadbDataSource(DataSourceProperties dataSourceProperties) {
-
-    Properties connectionProperties = new Properties();
-    connectionProperties.setProperty("createDatabaseIfNotExist", "true");
-
-    DriverManagerDataSource dataSource = new DriverManagerDataSource();
-    dataSource.setDriverClassName(MARIADB_DRIVER);
-    dataSource.setUrl(dataSourceProperties.getUrl());
-    dataSource.setUsername(dataSourceProperties.getUsername());
-    dataSource.setPassword(dataSourceProperties.getPassword());
-    dataSource.setConnectionProperties(connectionProperties);
-
-    return dataSource;
+  @Override
+  protected String getDriverClassName() {
+    return "com.mysql.cj.jdbc.Driver";
   }
 }
