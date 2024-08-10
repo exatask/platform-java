@@ -15,24 +15,13 @@ jar {
 
 dependencies {
 
-  api group: "org.springframework.boot", name: "spring-boot-starter-data-jpa"
-  api group: "com.vladmihalcea", name: "hibernate-types-52", version: "${hibernateTypeVersion}"
-  api group: "org.flywaydb", name: "flyway-core", version: "${flywayVersion}"
-
   implementation group: "com.oracle.database.jdbc", name: "ojdbc8", version: "${oracleVersion}"
-  implementation group: "org.apache.commons", name: "commons-lang3", version: "${apacheLangVersion}"
-  implementation project(":logging-library")
-  implementation project(":dto-library")
-  implementation project(":crypto-library")
-  implementation project(":utilities-library")
+  implementation project(":jpa-library")
 
   compileOnly group: "org.springframework.boot", name: "spring-boot-starter-actuator"
 
   compileOnly group: "org.projectlombok", name: "lombok", version: "${lombokVersion}"
   annotationProcessor group: "org.projectlombok", name: "lombok", version: "${lombokVersion}"
-
-  compileOnly group: "org.mapstruct", name: "mapstruct", version: "${mapstructVersion}"
-  annotationProcessor group: "org.mapstruct", name: "mapstruct-processor", version: "${mapstructVersion}"
 }
 
 publishing {
