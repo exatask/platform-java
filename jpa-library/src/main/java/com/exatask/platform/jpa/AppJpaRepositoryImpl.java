@@ -13,11 +13,13 @@ import com.exatask.platform.jpa.system.exceptions.InvalidOperationException;
 import com.exatask.platform.jpa.utilities.QueryUtility;
 import com.exatask.platform.logging.AppLogManager;
 import com.exatask.platform.logging.AppLogger;
+import org.apache.commons.lang3.StringUtils;
 import org.hibernate.query.Query;
 import org.springframework.data.jpa.repository.support.SimpleJpaRepository;
 import org.springframework.util.CollectionUtils;
 import org.springframework.util.ObjectUtils;
 
+import javax.persistence.Column;
 import javax.persistence.EntityManager;
 import javax.persistence.LockModeType;
 import javax.persistence.Tuple;
@@ -31,6 +33,7 @@ import javax.persistence.criteria.Order;
 import javax.persistence.criteria.Root;
 import javax.transaction.Transactional;
 import java.io.Serializable;
+import java.lang.reflect.Field;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.Collections;
@@ -40,7 +43,7 @@ import java.util.Map;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
-public class AppJpaRepositoryImpl<T, ID extends Serializable> extends SimpleJpaRepository<T, ID> implements AppJpaRepository<T, ID> {
+public class AppJpaRepositoryImpl<T extends AppModel, ID extends Serializable> extends SimpleJpaRepository<T, ID> implements AppJpaRepository<T, ID> {
 
   protected static final AppLogger LOGGER = AppLogManager.getLogger();
 
@@ -108,27 +111,34 @@ public class AppJpaRepositoryImpl<T, ID extends Serializable> extends SimpleJpaR
   }
 
   /**
-   * @param projections
+   * @param projections Map of all the projections to be returned
    */
   private String prepareProjection(Map<Class<? extends AppModel>, List<String>> projections) {
 
+    List<String> projectionList = new ArrayList<>();
     if (CollectionUtils.isEmpty(projections)) {
-      return "*";
+      projections.put(this.domainClass, null);
     }
 
-    List<String> projectionList = new ArrayList<>();
     for (Map.Entry<Class<? extends AppModel>, List<String>> projection : projections.entrySet()) {
 
-      if (CollectionUtils.isEmpty(projection.getValue())) {
-        continue;
-      }
-
       String from = QueryUtility.getClassAlias(projection.getKey());
-      projectionList.addAll(
-          projection.getValue().stream()
-              .map(field -> String.format("%s.%s", from, field))
-              .collect(Collectors.toList()));
+      if (CollectionUtils.isEmpty(projection.getValue())) {
+
+        for (Field field : projection.getKey().getDeclaredFields()) {
+          Column column = field.getAnnotation(Column.class);
+          projectionList.add(String.format("%s.%s", from, StringUtils.defaultIfEmpty(column.name(), field.getName())));
+        }
+
+      } else {
+
+        projectionList.addAll(projection.getValue()
+            .stream()
+            .map(field -> String.format("%s.%s", from, field))
+            .collect(Collectors.toList()));
+      }
     }
+
     return String.join(", ", projectionList);
   }
 
@@ -330,7 +340,7 @@ public class AppJpaRepositoryImpl<T, ID extends Serializable> extends SimpleJpaR
       return criteriaUpdate;
     }
 
-    updates.add(new UpdateElement((Class<? extends AppModel>) this.domainClass, "updatedAt", UpdateOperation.SET, LocalDateTime.now()));
+    updates.add(new UpdateElement(this.domainClass, "updatedAt", UpdateOperation.SET, LocalDateTime.now()));
     for (UpdateElement updateElement : updates) {
       criteriaUpdate = updateElement.setUpdate(criteriaBuilder, criteriaUpdate);
     }
@@ -502,7 +512,7 @@ public class AppJpaRepositoryImpl<T, ID extends Serializable> extends SimpleJpaR
 
     criteriaQuery = criteriaQuery.select(criteriaBuilder.count(from));
     prepareJoins(from, query.getJoins());
-    criteriaQuery = (CriteriaQuery<Long>) prepareFilters(criteriaBuilder, (CriteriaQuery<T>) criteriaQuery, query.getFilters());
+    criteriaQuery = (CriteriaQuery<Long>) prepareFilters(criteriaBuilder, (CriteriaUpdate<T>) criteriaQuery, query.getFilters());
 
     ReplicaDataSource.setReadOnly(true);
     TypedQuery<Long> typedQuery = entityManager.createQuery(criteriaQuery);

@@ -8,7 +8,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 
-public interface AppJpaRepository<T, ID extends Serializable> extends JpaRepository<T, ID> {
+public interface AppJpaRepository<T extends AppModel, ID extends Serializable> extends JpaRepository<T, ID> {
 
   List<T> find(AppQuery query);
 
