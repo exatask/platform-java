@@ -12,36 +12,32 @@ public class UpdateElement {
 
   private final Object value;
 
-  public void setUpdate(Update update) {
+  public Update setUpdate(Update update) {
 
     switch (operation) {
 
       case SET:
-        update.set(key, value);
-        break;
+        return update.set(key, value);
 
       case UNSET:
-        update.unset(key);
-        break;
+        return update.unset(key);
 
       case ADD_TO_SET:
-        update.addToSet(key, value);
-        break;
+        return update.addToSet(key, value);
 
       case INC:
-        update.inc(key, Integer.parseInt(value.toString()));
-        break;
+        return update.inc(key, Integer.parseInt(value.toString()));
 
       case DEC:
-        update.inc(key, Integer.parseInt(value.toString()) * -1);
-        break;
+        return update.inc(key, Integer.parseInt(value.toString()) * -1);
 
       case PUSH:
-        update.push(key, value);
-        break;
+        return update.push(key, value);
 
       case SET_ON_INSERT:
-        update.setOnInsert(key, value);
+        return update.setOnInsert(key, value);
     }
+
+    return update;
   }
 }
