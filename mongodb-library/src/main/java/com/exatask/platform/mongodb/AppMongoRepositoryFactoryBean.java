@@ -16,7 +16,7 @@ import org.springframework.data.util.TypeInformation;
 
 import java.io.Serializable;
 
-public class AppMongoRepositoryFactoryBean<R extends MongoRepository<T, ID>, T, ID extends Serializable> extends MongoRepositoryFactoryBean<R, T, ID> {
+public class AppMongoRepositoryFactoryBean<R extends MongoRepository<T, ID>, T extends AppModel, ID extends Serializable> extends MongoRepositoryFactoryBean<R, T, ID> {
 
   public AppMongoRepositoryFactoryBean(Class<? extends R> repositoryInterface) {
     super(repositoryInterface);
@@ -27,7 +27,7 @@ public class AppMongoRepositoryFactoryBean<R extends MongoRepository<T, ID>, T, 
     return new AppRepositoryFactory<T, ID>(mongoOperations);
   }
 
-  private static class AppRepositoryFactory<T, I extends Serializable> extends MongoRepositoryFactory {
+  private static class AppRepositoryFactory<T extends AppModel, ID extends Serializable> extends MongoRepositoryFactory {
 
     private final MongoOperations mongoOperations;
 
@@ -41,7 +41,7 @@ public class AppMongoRepositoryFactoryBean<R extends MongoRepository<T, ID>, T, 
 
       TypeInformation<T> information = ClassTypeInformation.from((Class<T>) metadata.getDomainType());
       MongoPersistentEntity<T> persistentEntity = new BasicMongoPersistentEntity<>(information);
-      MongoEntityInformation<T, I> mongoEntityInformation = new MappingMongoEntityInformation<>(persistentEntity);
+      MongoEntityInformation<T, ID> mongoEntityInformation = new MappingMongoEntityInformation<>(persistentEntity);
 
       return new AppMongoRepositoryImpl<>(mongoEntityInformation, this.mongoOperations);
     }

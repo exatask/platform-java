@@ -8,13 +8,13 @@ import com.mongodb.client.MongoDatabase;
 import java.util.HashMap;
 import java.util.Map;
 
-public class MongoTenantClients {
+public class TenantClients {
 
   private final ServiceTenant serviceTenant;
 
   private final Map<String, TenantClient> tenantClients = new HashMap<>();
 
-  public MongoTenantClients(ServiceTenant serviceTenant) {
+  public TenantClients(ServiceTenant serviceTenant) {
 
     this.serviceTenant = serviceTenant;
 

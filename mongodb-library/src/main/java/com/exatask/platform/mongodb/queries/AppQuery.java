@@ -1,9 +1,9 @@
-package com.exatask.platform.mongodb;
+package com.exatask.platform.mongodb.queries;
 
-import com.exatask.platform.mongodb.filters.FilterElement;
-import com.exatask.platform.mongodb.filters.FilterOperation;
-import com.exatask.platform.mongodb.updates.UpdateElement;
-import com.exatask.platform.mongodb.updates.UpdateOperation;
+import com.exatask.platform.mongodb.queries.filters.FilterElement;
+import com.exatask.platform.mongodb.queries.filters.FilterOperation;
+import com.exatask.platform.mongodb.queries.updates.UpdateElement;
+import com.exatask.platform.mongodb.queries.updates.UpdateOperation;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.Singular;

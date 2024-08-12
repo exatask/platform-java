@@ -1,9 +1,10 @@
-package com.exatask.platform.mongodb;
+package com.exatask.platform.mongodb.system.listeners;
 
+import com.exatask.platform.mongodb.AppModel;
+import com.exatask.platform.mongodb.constants.Operation;
 import com.exatask.platform.mongodb.converters.AppConverter;
 import com.exatask.platform.mongodb.converters.AppConverterFactory;
-import com.exatask.platform.mongodb.constants.Operation;
-import com.exatask.platform.mongodb.fields.FieldAnnotations;
+import com.exatask.platform.mongodb.queries.fields.FieldAnnotations;
 import com.exatask.platform.mongodb.utilities.DocumentUtility;
 import org.apache.commons.lang3.ObjectUtils;
 import org.bson.Document;
@@ -18,7 +19,7 @@ import java.util.List;
 import java.util.Map;
 
 @Service
-public class AppMongoRepositoryListener extends AbstractMongoEventListener<AppModel> {
+public class MongoRepositoryListener extends AbstractMongoEventListener<AppModel> {
 
   private void convertFields(Document model, Map<String, FieldAnnotations> converterAnnotations, Operation operation) {
 

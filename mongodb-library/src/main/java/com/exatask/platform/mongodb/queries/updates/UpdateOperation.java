@@ -1,4 +1,4 @@
-package com.exatask.platform.mongodb.updates;
+package com.exatask.platform.mongodb.queries.updates;
 
 public enum UpdateOperation {
 

@@ -1,7 +1,7 @@
 package com.exatask.platform.mongodb.schemas;
 
 import com.exatask.platform.dto.constants.GeopositionType;
-import com.exatask.platform.mongodb.annotations.Precision;
+import com.exatask.platform.mongodb.converters.annotations.Precision;
 import lombok.Builder;
 import lombok.Data;
 import org.springframework.data.mongodb.core.mapping.Field;

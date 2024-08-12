@@ -1,15 +1,14 @@
-package com.exatask.platform.mongodb;
+package com.exatask.platform.mongodb.tenants;
 
-import com.exatask.platform.mongodb.tenants.ReactiveMongoTenantClients;
 import com.mongodb.reactivestreams.client.MongoDatabase;
 import org.springframework.data.mongodb.core.SimpleReactiveMongoDatabaseFactory;
 import reactor.core.publisher.Mono;
 
-public class AppReactiveMongoTenantClientDatabaseFactory extends SimpleReactiveMongoDatabaseFactory {
+public class ReactiveTenantClientDatabaseFactory extends SimpleReactiveMongoDatabaseFactory {
 
-  private final ReactiveMongoTenantClients mongoTenantClients;
+  private final ReactiveTenantClients mongoTenantClients;
 
-  public AppReactiveMongoTenantClientDatabaseFactory(ReactiveMongoTenantClients mongoTenantClients) {
+  public ReactiveTenantClientDatabaseFactory(ReactiveTenantClients mongoTenantClients) {
 
     super(mongoTenantClients.getTenantClient().getMongoClient(), mongoTenantClients.getTenantClient().getDatabase());
     this.mongoTenantClients = mongoTenantClients;

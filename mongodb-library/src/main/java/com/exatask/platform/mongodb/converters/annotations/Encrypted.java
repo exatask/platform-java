@@ -1,4 +1,6 @@
-package com.exatask.platform.mongodb.annotations;
+package com.exatask.platform.mongodb.converters.annotations;
+
+import com.exatask.platform.mongodb.converters.EncryptConverter;
 
 import java.lang.annotation.Documented;
 import java.lang.annotation.ElementType;
@@ -9,7 +11,7 @@ import java.lang.annotation.Target;
 @Documented
 @Target(ElementType.FIELD)
 @Retention(RetentionPolicy.RUNTIME)
-public @interface Precision {
+public @interface Encrypted {
 
-  int value() default 2;
+  Class<? extends EncryptConverter> value();
 }

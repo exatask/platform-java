@@ -1,4 +1,4 @@
-package com.exatask.platform.mongodb.mappers;
+package com.exatask.platform.mongodb.schemas.mappers;
 
 import org.apache.commons.lang3.ObjectUtils;
 import org.bson.types.ObjectId;

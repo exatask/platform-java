@@ -1,4 +1,4 @@
-package com.exatask.platform.mongodb.exceptions;
+package com.exatask.platform.mongodb.system.exceptions;
 
 public class InvalidIdentifierException extends RuntimeException {
 

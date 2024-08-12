@@ -1,4 +1,4 @@
-package com.exatask.platform.mongodb.configurations;
+package com.exatask.platform.mongodb.system.configurations;
 
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.PropertySource;

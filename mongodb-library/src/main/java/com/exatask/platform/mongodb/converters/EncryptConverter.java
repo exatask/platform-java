@@ -2,7 +2,7 @@ package com.exatask.platform.mongodb.converters;
 
 import com.exatask.platform.logging.AppLogManager;
 import com.exatask.platform.logging.AppLogger;
-import com.exatask.platform.mongodb.annotations.Encrypted;
+import com.exatask.platform.mongodb.converters.annotations.Encrypted;
 
 import java.lang.annotation.Annotation;
 

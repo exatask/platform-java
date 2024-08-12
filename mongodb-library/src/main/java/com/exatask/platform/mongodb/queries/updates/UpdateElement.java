@@ -1,4 +1,4 @@
-package com.exatask.platform.mongodb.updates;
+package com.exatask.platform.mongodb.queries.updates;
 
 import lombok.AllArgsConstructor;
 import org.springframework.data.mongodb.core.query.Update;
