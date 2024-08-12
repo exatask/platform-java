@@ -1,6 +1,7 @@
 package com.exatask.platform.mariadb;
 
 import com.exatask.platform.jpa.AppJpaRepository;
+import com.exatask.platform.jpa.AppModel;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.support.JpaRepositoryFactory;
 import org.springframework.data.jpa.repository.support.JpaRepositoryFactoryBean;
@@ -12,7 +13,7 @@ import org.springframework.data.repository.core.support.RepositoryFactorySupport
 import javax.persistence.EntityManager;
 import java.io.Serializable;
 
-public class AppMariadbRepositoryFactoryBean<R extends JpaRepository<T, ID>, T, ID extends Serializable> extends JpaRepositoryFactoryBean<R, T, ID> {
+public class AppMariadbRepositoryFactoryBean<R extends JpaRepository<T, ID>, T extends AppModel, ID extends Serializable> extends JpaRepositoryFactoryBean<R, T, ID> {
 
   public AppMariadbRepositoryFactoryBean(Class<? extends R> repositoryInterface) {
     super(repositoryInterface);
@@ -23,7 +24,7 @@ public class AppMariadbRepositoryFactoryBean<R extends JpaRepository<T, ID>, T, 
     return new AppRepositoryFactory<T, ID>(entityManager);
   }
 
-  private static class AppRepositoryFactory<T, I extends Serializable> extends JpaRepositoryFactory {
+  private static class AppRepositoryFactory<T extends AppModel, ID extends Serializable> extends JpaRepositoryFactory {
 
     private final EntityManager entityManager;
 
@@ -34,7 +35,7 @@ public class AppMariadbRepositoryFactoryBean<R extends JpaRepository<T, ID>, T, 
 
     @Override
     protected JpaRepositoryImplementation<?, ?> getTargetRepository(RepositoryInformation information, EntityManager entityManager) {
-      return new AppMariadbRepositoryImpl<>(information.getDomainType(), this.entityManager);
+      return new AppMariadbRepositoryImpl<T, ID>((Class<T>) information.getDomainType(), this.entityManager);
     }
 
     @Override
