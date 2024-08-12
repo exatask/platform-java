@@ -15,8 +15,6 @@ public interface AppReactiveMongoRepository<T extends AppModel, ID extends Seria
 
   Mono<T> findOne(AppQuery query);
 
-  Mono<T> findByIdentifier(String identifier);
-
   Mono<Long> count(AppQuery query);
 
   Mono<Boolean> updateOne(AppQuery query);
