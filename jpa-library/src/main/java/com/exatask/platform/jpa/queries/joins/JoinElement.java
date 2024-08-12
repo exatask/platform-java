@@ -2,7 +2,9 @@ package com.exatask.platform.jpa.queries.joins;
 
 import com.exatask.platform.jpa.AppModel;
 import com.exatask.platform.jpa.utilities.QueryUtility;
+import lombok.Builder;
 import lombok.Getter;
+import lombok.Singular;
 
 import javax.persistence.criteria.JoinType;
 import java.util.ArrayList;
@@ -28,7 +30,8 @@ public class JoinElement {
     this.conditions = null;
   }
 
-  public JoinElement(Class<? extends AppModel> model, JoinType type, List<ConditionElement> conditions) {
+  @Builder
+  public JoinElement(Class<? extends AppModel> model, JoinType type, @Singular List<ConditionElement> conditions) {
 
     this.model = model;
     this.type = type;

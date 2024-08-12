@@ -5,6 +5,8 @@ import com.exatask.platform.jpa.system.exceptions.InvalidFilterException;
 import com.exatask.platform.jpa.system.exceptions.InvalidIdentifierException;
 import com.exatask.platform.jpa.utilities.QueryUtility;
 import com.exatask.platform.utilities.ResourceUtility;
+import lombok.Builder;
+import lombok.Singular;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.math.NumberUtils;
 import org.springframework.util.CollectionUtils;
@@ -46,7 +48,8 @@ public class FilterElement {
     this.value = value;
   }
 
-  public FilterElement(FilterType type, List<FilterElement> elements) {
+  @Builder
+  public FilterElement(FilterType type, @Singular List<FilterElement> elements) {
 
     this.type = type;
     this.elements = elements;
@@ -134,55 +137,38 @@ public class FilterElement {
     switch (operation) {
 
       case EQUAL:
+      case NOT_EQUAL:
+
+        Predicate predicate;
         if (value == null) {
-          return criteriaBuilder.isNull(path);
+          predicate = criteriaBuilder.isNull(path);
         } else if (value instanceof List || value.getClass().isArray()) {
-          return path.in(value);
+          predicate = criteriaBuilder.in(path).in(value);
         } else {
-          return criteriaBuilder.equal(path, value);
+          predicate = criteriaBuilder.equal(path, value);
         }
 
-      case NOT_EQUAL:
-        if (value == null) {
-          return criteriaBuilder.isNotNull(path);
-        } else if (value instanceof List || value.getClass().isArray()) {
-          return path.in(value).not();
-        } else {
-          return criteriaBuilder.equal(path, value).not();
+        if (operation == FilterOperation.NOT_EQUAL) {
+          predicate = predicate.not();
         }
+        return predicate;
 
       case GREATER:
-        if (NumberUtils.isCreatable(value.toString())) {
-          return criteriaBuilder.gt(path, NumberUtils.createNumber(value.toString()));
-        } else {
-          return criteriaBuilder.greaterThan(path, value.toString());
-        }
+        return criteriaBuilder.greaterThan(path, value.toString());
 
       case GREATER_EQUAL:
-        if (NumberUtils.isCreatable(value.toString())) {
-          return criteriaBuilder.ge(path, NumberUtils.createNumber(value.toString()));
-        } else {
-          return criteriaBuilder.greaterThanOrEqualTo(path, value.toString());
-        }
+        return criteriaBuilder.greaterThanOrEqualTo(path, value.toString());
 
       case LESSER:
-        if (NumberUtils.isCreatable(value.toString())) {
-          return criteriaBuilder.lt(path, NumberUtils.createNumber(value.toString()));
-        } else {
-          return criteriaBuilder.lessThan(path, value.toString());
-        }
+        return criteriaBuilder.lessThan(path, value.toString());
 
       case LESSER_EQUAL:
-        if (NumberUtils.isCreatable(value.toString())) {
-          return criteriaBuilder.le(path, NumberUtils.createNumber(value.toString()));
-        } else {
-          return criteriaBuilder.lessThanOrEqualTo(path, value.toString());
-        }
+        return criteriaBuilder.lessThanOrEqualTo(path, value.toString());
 
-      case REGEX:
+      case LIKE:
         return criteriaBuilder.like(path, value.toString());
 
-      case NOT_REGEX:
+      case NOT_LIKE:
         return criteriaBuilder.like(path, value.toString()).not();
 
       default:
@@ -195,56 +181,30 @@ public class FilterElement {
     switch (operation) {
 
       case EQUAL:
-        if (value == null) {
-          return String.format(" %s IS NULL ", path);
-        } else if (value instanceof List || value.getClass().isArray()) {
-          return String.format(" %s IN ('%s') ", path, String.join("','", (List) value));
-        } else {
-          return String.format(" %s = '%s' ", path, value);
-        }
-
       case NOT_EQUAL:
         if (value == null) {
-          return String.format(" %s IS NOT NULL ", path);
+          return String.format(" %s %s ", path, operation.getNullOperation());
         } else if (value instanceof List || value.getClass().isArray()) {
-          return String.format(" %s NOT IN ('%s') ", path, String.join("','", (List) value));
+          return String.format(" %s %s ('%s') ", path, operation.getListOperation(), String.join("','", (List) value));
         } else {
-          return String.format(" %s != '%s' ", path, value);
+          return String.format(" %s %s '%s' ", path, operation.getOperation(), value);
         }
 
       case GREATER:
-        if (NumberUtils.isCreatable(value.toString())) {
-          return String.format(" %s > %s ", path, NumberUtils.createNumber(value.toString()));
-        } else {
-          return String.format(" %s > '%s' ", path, value);
-        }
-
       case GREATER_EQUAL:
-        if (NumberUtils.isCreatable(value.toString())) {
-          return String.format(" %s >= %s ", path, NumberUtils.createNumber(value.toString()));
-        } else {
-          return String.format(" %s >= '%s' ", path, value);
-        }
-
       case LESSER:
-        if (NumberUtils.isCreatable(value.toString())) {
-          return String.format(" %s < %s ", path, NumberUtils.createNumber(value.toString()));
-        } else {
-          return String.format(" %s < '%s' ", path, value);
-        }
-
       case LESSER_EQUAL:
         if (NumberUtils.isCreatable(value.toString())) {
-          return String.format(" %s <= %s ", path, NumberUtils.createNumber(value.toString()));
+          return String.format(" %s %s %s ", path, operation.getOperation(), NumberUtils.createNumber(value.toString()));
         } else {
-          return String.format(" %s <= '%s' ", path, value);
+          return String.format(" %s %s '%s' ", path, operation.getOperation(), value);
         }
 
+      case LIKE:
+      case NOT_LIKE:
       case REGEX:
-        return String.format(" %s LIKE '%s' ", path, value.toString());
-
       case NOT_REGEX:
-        return String.format(" %s NOT LIKE '%s' ", path, value.toString());
+        return String.format(" %s %s '%s' ", path, operation.getOperation(), value.toString());
 
       default:
         throw new InvalidFilterException(operation.toString());

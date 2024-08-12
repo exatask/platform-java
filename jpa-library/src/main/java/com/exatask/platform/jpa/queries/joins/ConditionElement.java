@@ -1,6 +1,7 @@
 package com.exatask.platform.jpa.queries.joins;
 
 import com.exatask.platform.jpa.AppModel;
+import com.exatask.platform.jpa.queries.filters.FilterOperation;
 import com.exatask.platform.jpa.utilities.QueryUtility;
 import lombok.AllArgsConstructor;
 
@@ -9,7 +10,7 @@ public class ConditionElement {
 
   private final String key;
 
-  private final ConditionOperation operation;
+  private final FilterOperation operation;
 
   private final Class<? extends AppModel> targetModel;
 

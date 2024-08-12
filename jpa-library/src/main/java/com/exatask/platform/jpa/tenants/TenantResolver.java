@@ -6,7 +6,7 @@ import lombok.AllArgsConstructor;
 import org.hibernate.context.spi.CurrentTenantIdentifierResolver;
 
 @AllArgsConstructor
-public class JpaTenantResolver implements CurrentTenantIdentifierResolver {
+public class TenantResolver implements CurrentTenantIdentifierResolver {
 
   private final ServiceTenant serviceTenant;
 

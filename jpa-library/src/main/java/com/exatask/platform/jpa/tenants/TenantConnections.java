@@ -8,13 +8,13 @@ import javax.sql.DataSource;
 import java.util.HashMap;
 import java.util.Map;
 
-public class JpaTenantConnections {
+public class TenantConnections {
 
   private final ServiceTenant serviceTenant;
 
   private final Map<String, TenantDataSource> tenantDataSources = new HashMap<>();
 
-  public JpaTenantConnections(ServiceTenant serviceTenant) {
+  public TenantConnections(ServiceTenant serviceTenant) {
 
     this.serviceTenant = serviceTenant;
 

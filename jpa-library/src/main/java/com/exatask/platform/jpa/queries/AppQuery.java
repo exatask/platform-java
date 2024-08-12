@@ -1,5 +1,6 @@
-package com.exatask.platform.jpa;
+package com.exatask.platform.jpa.queries;
 
+import com.exatask.platform.jpa.AppModel;
 import com.exatask.platform.jpa.queries.filters.FilterElement;
 import com.exatask.platform.jpa.queries.groups.GroupElement;
 import com.exatask.platform.jpa.queries.joins.JoinElement;
@@ -12,6 +13,7 @@ import lombok.Singular;
 import org.springframework.data.domain.Sort;
 
 import javax.persistence.LockModeType;
+import javax.persistence.criteria.JoinType;
 import java.util.List;
 import java.util.Map;
 
@@ -19,7 +21,8 @@ import java.util.Map;
 @Builder
 public class AppQuery {
 
-  private FilterElement filters;
+  @Singular
+  private List<FilterElement> filters;
 
   @Singular
   private Map<Class<? extends AppModel>, List<String>> projections;
@@ -44,10 +47,16 @@ public class AppQuery {
 
   public static class AppQueryBuilder {
 
-    public AppQueryBuilder addSort(Class<? extends AppModel> model, Map<String, Sort.Direction> sorts) {
+    public AppQueryBuilder addFilter(Class<? extends AppModel> model, String key, Object value) {
+      return this.filter(new FilterElement(model, key, value));
+    }
 
-      sorts.forEach((key, value) -> this.sort(new SortElement(model, key, value)));
-      return this;
+    public AppQueryBuilder addJoin(String attribute, JoinType type) {
+      return this.join(new JoinElement(attribute, type));
+    }
+
+    public AppQueryBuilder addSort(Class<? extends AppModel> model, String key, Sort.Direction direction) {
+      return this.sort(new SortElement(model, key, direction));
     }
 
     public AppQueryBuilder addUpdate(Class<? extends AppModel> model, String key, Object value) {

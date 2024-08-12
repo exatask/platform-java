@@ -1,5 +1,6 @@
 package com.exatask.platform.jpa;
 
+import com.exatask.platform.jpa.queries.AppQuery;
 import org.springframework.data.jpa.repository.JpaRepository;
 
 import java.io.Serializable;
@@ -12,6 +13,8 @@ public interface AppJpaRepository<T, ID extends Serializable> extends JpaReposit
   List<T> find(AppQuery query);
 
   List<Map<String, Object>> findNative(AppQuery query);
+
+  List<Map<String, Object>> findNative(String query);
 
   Optional<T> findOne(AppQuery query);
 

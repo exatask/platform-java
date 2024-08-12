@@ -30,20 +30,16 @@ public class UpdateElement {
     switch (operation) {
 
       case SET:
-        criteriaUpdate = criteriaUpdate.set(path, value);
-        break;
+        return criteriaUpdate.set(path, value);
 
       case UNSET:
-        criteriaUpdate = criteriaUpdate.set(path, criteriaBuilder.nullLiteral(path.getClass()));
-        break;
+        return criteriaUpdate.set(path, criteriaBuilder.nullLiteral(path.getClass()));
 
       case INC:
-        criteriaUpdate = criteriaUpdate.set(path, criteriaBuilder.sum(path, Integer.parseInt(value.toString())));
-        break;
+        return criteriaUpdate.set(path, criteriaBuilder.sum(path, Integer.parseInt(value.toString())));
 
       case DEC:
-        criteriaUpdate = criteriaUpdate.set(path, criteriaBuilder.sum(path, Integer.parseInt(value.toString()) * -1));
-        break;
+        return criteriaUpdate.set(path, criteriaBuilder.sum(path, Integer.parseInt(value.toString()) * -1));
     }
 
     return criteriaUpdate;
