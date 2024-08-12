@@ -33,3 +33,13 @@ dependencies {
   compileOnly group: "org.mapstruct", name: "mapstruct", version: "${mapstructVersion}"
   annotationProcessor group: "org.mapstruct", name: "mapstruct-processor", version: "${mapstructVersion}"
 }
+
+publishing {
+  publications {
+    maven(MavenPublication) {
+
+      artifactId = "exatask-jpa"
+      from components.java
+    }
+  }
+}

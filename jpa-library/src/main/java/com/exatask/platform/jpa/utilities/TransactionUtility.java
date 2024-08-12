@@ -1,11 +1,11 @@
 package com.exatask.platform.jpa.utilities;
 
-import com.exatask.platform.jpa.AppJpaTenantConnectionProvider;
 import com.exatask.platform.jpa.replicas.ReplicaDataSource;
 import com.exatask.platform.jpa.replicas.ReplicaTransactionManager;
-import com.exatask.platform.jpa.tenants.JpaTenantConnections;
-import com.exatask.platform.jpa.tenants.JpaTenantResolver;
 import com.exatask.platform.jpa.tenants.ServiceTenant;
+import com.exatask.platform.jpa.tenants.TenantConnectionProvider;
+import com.exatask.platform.jpa.tenants.TenantConnections;
+import com.exatask.platform.jpa.tenants.TenantResolver;
 import com.exatask.platform.utilities.properties.DataSourceSqlProperties;
 import com.zaxxer.hikari.HikariDataSource;
 import lombok.experimental.UtilityClass;
@@ -44,16 +44,16 @@ public class TransactionUtility {
 
   public static LocalContainerEntityManagerFactoryBean getEntityManagerFactory(ServiceTenant serviceTenant, String[] packages, Map<String, Object> jpaProperties) {
 
-    JpaTenantConnections jpaTenantConnections = new JpaTenantConnections(serviceTenant);
-    JpaTenantResolver jpaTenantResolver = new JpaTenantResolver(serviceTenant);
-    AppJpaTenantConnectionProvider jpaTenantConnectionProvider = new AppJpaTenantConnectionProvider(jpaTenantConnections);
+    TenantConnections tenantConnections = new TenantConnections(serviceTenant);
+    TenantResolver tenantResolver = new TenantResolver(serviceTenant);
+    TenantConnectionProvider tenantConnectionProvider = new TenantConnectionProvider(tenantConnections);
 
     jpaProperties.put(AvailableSettings.MULTI_TENANT, MultiTenancyStrategy.DATABASE.toString());
-    jpaProperties.put(AvailableSettings.MULTI_TENANT_CONNECTION_PROVIDER, jpaTenantConnectionProvider);
-    jpaProperties.put(AvailableSettings.MULTI_TENANT_IDENTIFIER_RESOLVER, jpaTenantResolver);
+    jpaProperties.put(AvailableSettings.MULTI_TENANT_CONNECTION_PROVIDER, tenantConnectionProvider);
+    jpaProperties.put(AvailableSettings.MULTI_TENANT_IDENTIFIER_RESOLVER, tenantResolver);
 
     LocalContainerEntityManagerFactoryBean entityManager = new LocalContainerEntityManagerFactoryBean();
-    entityManager.setDataSource(jpaTenantConnections.getTenantDataSource());
+    entityManager.setDataSource(tenantConnections.getTenantDataSource());
     entityManager.setPackagesToScan(packages);
     entityManager.setJpaVendorAdapter(getVendorAdapter());
     entityManager.setJpaPropertyMap(jpaProperties);

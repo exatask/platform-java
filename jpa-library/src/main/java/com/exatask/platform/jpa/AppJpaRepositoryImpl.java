@@ -1,6 +1,7 @@
 package com.exatask.platform.jpa;
 
 import com.exatask.platform.jpa.constants.Defaults;
+import com.exatask.platform.jpa.queries.AppQuery;
 import com.exatask.platform.jpa.queries.filters.FilterElement;
 import com.exatask.platform.jpa.queries.groups.GroupElement;
 import com.exatask.platform.jpa.queries.joins.JoinElement;
@@ -60,23 +61,33 @@ public class AppJpaRepositoryImpl<T, ID extends Serializable> extends SimpleJpaR
    * @param criteriaQuery
    * @param filters
    */
-  private CriteriaQuery<T> prepareFilters(CriteriaBuilder criteriaBuilder, CriteriaQuery<T> criteriaQuery, FilterElement filters) {
+  private CriteriaQuery<T> prepareFilters(CriteriaBuilder criteriaBuilder, CriteriaQuery<T> criteriaQuery, List<FilterElement> filters) {
 
-    if (ObjectUtils.isEmpty(filters)) {
+    if (CollectionUtils.isEmpty(filters)) {
       return criteriaQuery;
     }
-    return criteriaQuery.where(filters.getPredicate(criteriaBuilder, criteriaQuery));
+
+    for (FilterElement filter : filters) {
+      criteriaQuery = criteriaQuery.where(filter.getPredicate(criteriaBuilder, criteriaQuery));
+    }
+    return criteriaQuery;
   }
 
   /**
    * @param filters
    */
-  private String prepareFilters(FilterElement filters) {
+  private String prepareFilters(List<FilterElement> filters) {
 
     if (ObjectUtils.isEmpty(filters)) {
       return " 1=1 ";
     }
-    return filters.getPredicate();
+
+    List<String> predicates = new ArrayList<>();
+    for (FilterElement filter : filters) {
+      predicates.add(filter.getPredicate());
+    }
+
+    return String.format(" (%s) ", String.join(") AND (", predicates));
   }
 
   /**
@@ -84,12 +95,16 @@ public class AppJpaRepositoryImpl<T, ID extends Serializable> extends SimpleJpaR
    * @param criteriaUpdate
    * @param filters
    */
-  private CriteriaUpdate<T> prepareFilters(CriteriaBuilder criteriaBuilder, CriteriaUpdate<T> criteriaUpdate, FilterElement filters) {
+  private CriteriaUpdate<T> prepareFilters(CriteriaBuilder criteriaBuilder, CriteriaUpdate<T> criteriaUpdate, List<FilterElement> filters) {
 
     if (ObjectUtils.isEmpty(filters)) {
       return criteriaUpdate;
     }
-    return criteriaUpdate.where(filters.getPredicate(criteriaBuilder, criteriaUpdate));
+
+    for (FilterElement filter : filters) {
+      criteriaUpdate = criteriaUpdate.where(filter.getPredicate(criteriaBuilder, criteriaUpdate));
+    }
+    return criteriaUpdate;
   }
 
   /**
@@ -348,6 +363,23 @@ public class AppJpaRepositoryImpl<T, ID extends Serializable> extends SimpleJpaR
     return row;
   }
 
+  /**
+   * @param results
+   */
+  private List<Map<String, Object>> prepareResults(List<Tuple> results) {
+
+    if (CollectionUtils.isEmpty(results)) {
+      return Collections.emptyList();
+    }
+
+    Map<String, Class<?>> tupleMapping = prepareTupleMapping(results.get(0).getElements());
+    List<Map<String, Object>> resultSet = new ArrayList<>();
+    for (Tuple row : results) {
+      resultSet.add(prepareTupleRow(row, tupleMapping));
+    }
+    return resultSet;
+  }
+
   @Override
   public List<T> find(AppQuery query) {
 
@@ -394,17 +426,19 @@ public class AppJpaRepositoryImpl<T, ID extends Serializable> extends SimpleJpaR
     javax.persistence.Query nativeQuery = this.entityManager.createNativeQuery(nativeSql, Tuple.class);
     nativeQuery = prepareLock(nativeQuery, query.getLock());
 
-    List<Tuple> results = nativeQuery.getResultList();
-    if (CollectionUtils.isEmpty(results)) {
-      return Collections.emptyList();
-    }
+    return prepareResults(nativeQuery.getResultList());
+  }
 
-    Map<String, Class<?>> tupleMapping = prepareTupleMapping(results.get(0).getElements());
-    List<Map<String, Object>> resultSet = new ArrayList<>();
-    for (Tuple row : results) {
-      resultSet.add(prepareTupleRow(row, tupleMapping));
-    }
-    return resultSet;
+  @Override
+  public List<Map<String, Object>> findNative(String query) {
+
+    this.lastQuery = query;
+    LOGGER.trace(this.lastQuery);
+
+    ReplicaDataSource.setReadOnly(true);
+    javax.persistence.Query nativeQuery = this.entityManager.createNativeQuery(query, Tuple.class);
+
+    return prepareResults(nativeQuery.getResultList());
   }
 
   @Override

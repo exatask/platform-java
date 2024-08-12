@@ -15,11 +15,8 @@ jar {
 
 dependencies {
 
-  api project(":jpa-library")
-
-  implementation group: "mysql", name: "mysql-connector-java", version: "${mysqlVersion}"
-
-  compileOnly group: "org.springframework.boot", name: "spring-boot-starter-actuator"
+  implementation project(":logging-library")
+  implementation project(":utilities-library")
 
   compileOnly group: "org.projectlombok", name: "lombok", version: "${lombokVersion}"
   annotationProcessor group: "org.projectlombok", name: "lombok", version: "${lombokVersion}"
@@ -29,7 +26,7 @@ publishing {
   publications {
     maven(MavenPublication) {
 
-      artifactId = "exatask-mysql"
+      artifactId = "exatask-couchbase"
       from components.java
     }
   }
