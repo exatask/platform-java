@@ -6,6 +6,7 @@ boilerplate to a functionality that underlying microservices can use.
 - [api-library](api-library/README.md)
 - [arangodb-library](arangodb-library/README.md)
 - [cassandra-library](cassandra-library/README.md)
+- [couchbase-library](couchbase-library/README.md)
 - [crypto-library](crypto-library/README.md)
 - [dto-library](dto-library/README.md)
 - [dynamo-library](dynamo-library/README.md)
