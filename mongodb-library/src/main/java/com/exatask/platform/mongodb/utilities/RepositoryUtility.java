@@ -113,41 +113,4 @@ public class RepositoryUtility {
       updateElement.setUpdate(update);
     }
   }
-
-//  public static Query findQuery(AppQuery query) {
-//
-//    Integer skip = Optional.ofNullable(query.getSkip()).orElse(Defaults.DEFAULT_SKIP);
-//    if (skip < Defaults.MINIMUM_SKIP) {
-//      skip = Defaults.MINIMUM_SKIP;
-//    }
-//
-//    Integer limit = Optional.ofNullable(query.getLimit()).orElse(Defaults.DEFAULT_LIMIT);
-//    if (limit < Defaults.MINIMUM_LIMIT) {
-//      limit = Defaults.MINIMUM_LIMIT;
-//    } else if (limit > Defaults.MAXIMUM_LIMIT) {
-//      limit = Defaults.MAXIMUM_LIMIT;
-//    }
-//
-//    Query findQuery = new Query();
-//    prepareFilters(findQuery, query.getFilters());
-//    prepareProjection(findQuery, query.getProjections());
-//    prepareSort(findQuery, query.getSorts());
-//    findQuery.skip(skip).limit(limit);
-//    return findQuery;
-//  }
-
-//  public static Query findAndUpdate(AppQuery query) {
-//
-//    Query findQuery = new Query();
-//    prepareFilters(findQuery, query.getFilters());
-//    prepareProjection(findQuery, query.getProjections());
-//
-//    Update updateQuery = new Update();
-//    prepareUpdates(updateQuery, query.getUpdates());
-//    updateQuery.set(UPDATED_AT, LocalDateTime.now());
-//
-//    FindAndModifyOptions options = new FindAndModifyOptions();
-//    options.returnNew(true)
-//        .upsert(query.getUpsert());
-//  }
 }

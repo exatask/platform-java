@@ -37,55 +37,46 @@ public class FilterElement {
 
       case EQUAL:
         if (value instanceof List) {
-          criteria.in((List<?>) value);
+          return criteria.in((List<?>) value);
         } else if (value.getClass().isArray()) {
-          criteria.in(Arrays.asList((Object[]) value));
+          return criteria.in(Arrays.asList((Object[]) value));
         } else if (value.getClass().isEnum()) {
-          criteria.is(value.toString());
+          return criteria.is(value.toString());
         } else {
-          criteria.is(value);
+          return criteria.is(value);
         }
-        break;
 
       case NOT_EQUAL:
         if (value instanceof List) {
-          criteria.nin((List<?>) value);
+          return criteria.nin((List<?>) value);
         } else if (value.getClass().isArray()) {
-          criteria.nin(Arrays.asList((Object[]) value));
+          return criteria.nin(Arrays.asList((Object[]) value));
         } else if (value.getClass().isEnum()) {
-          criteria.ne(value.toString());
+          return criteria.ne(value.toString());
         } else {
-          criteria.ne(value);
+          return criteria.ne(value);
         }
-        break;
 
       case GREATER:
-        criteria.gt(value);
-        break;
+        return criteria.gt(value);
 
       case GREATER_EQUAL:
-        criteria.gte(value);
-        break;
+        return criteria.gte(value);
 
       case LESSER:
-        criteria.lt(value);
-        break;
+        return criteria.lt(value);
 
       case LESSER_EQUAL:
-        criteria.lte(value);
-        break;
+        return criteria.lte(value);
 
       case REGEX:
-        criteria.regex(value.toString());
-        break;
+        return criteria.regex(value.toString());
 
       case NOT_REGEX:
-        criteria.not().regex(value.toString());
-        break;
+        return criteria.not().regex(value.toString());
 
       case EXISTS:
-        criteria.exists(Boolean.parseBoolean(value.toString()));
-        break;
+        return criteria.exists(Boolean.parseBoolean(value.toString()));
     }
 
     return criteria;
