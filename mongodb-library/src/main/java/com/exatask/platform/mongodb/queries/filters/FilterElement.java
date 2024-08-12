@@ -1,6 +1,6 @@
-package com.exatask.platform.mongodb.filters;
+package com.exatask.platform.mongodb.queries.filters;
 
-import com.exatask.platform.mongodb.exceptions.InvalidIdentifierException;
+import com.exatask.platform.mongodb.system.exceptions.InvalidIdentifierException;
 import com.exatask.platform.utilities.ResourceUtility;
 import lombok.AllArgsConstructor;
 import org.apache.commons.lang3.StringUtils;

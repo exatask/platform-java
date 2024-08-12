@@ -1,7 +1,7 @@
 package com.exatask.platform.mongodb.utilities;
 
-import com.exatask.platform.mongodb.AppReactiveMongoTenantClientDatabaseFactory;
-import com.exatask.platform.mongodb.tenants.ReactiveMongoTenantClients;
+import com.exatask.platform.mongodb.tenants.ReactiveTenantClientDatabaseFactory;
+import com.exatask.platform.mongodb.tenants.ReactiveTenantClients;
 import com.exatask.platform.mongodb.tenants.ServiceTenant;
 import com.exatask.platform.utilities.ServiceUtility;
 import com.exatask.platform.utilities.properties.MongodbProperties;
@@ -48,8 +48,8 @@ public class ReactiveTemplateUtility {
 
   public static ReactiveMongoDatabaseFactory getDatabaseFactory(ServiceTenant serviceTenant) {
 
-    ReactiveMongoTenantClients mongoTenantClients = new ReactiveMongoTenantClients(serviceTenant);
-    return new AppReactiveMongoTenantClientDatabaseFactory(mongoTenantClients);
+    ReactiveTenantClients mongoTenantClients = new ReactiveTenantClients(serviceTenant);
+    return new ReactiveTenantClientDatabaseFactory(mongoTenantClients);
   }
 
   public static MongoClient getClient(MongodbProperties mongoProperties) {

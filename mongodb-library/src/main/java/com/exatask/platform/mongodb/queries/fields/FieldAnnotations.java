@@ -1,4 +1,4 @@
-package com.exatask.platform.mongodb.fields;
+package com.exatask.platform.mongodb.queries.fields;
 
 import lombok.Builder;
 import lombok.Getter;

@@ -1,7 +1,7 @@
 package com.exatask.platform.mongodb.utilities;
 
 import com.exatask.platform.mongodb.converters.AppConverterFactory;
-import com.exatask.platform.mongodb.fields.FieldAnnotations;
+import com.exatask.platform.mongodb.queries.fields.FieldAnnotations;
 import lombok.experimental.UtilityClass;
 import org.apache.commons.lang3.reflect.FieldUtils;
 import org.springframework.data.mongodb.core.mapping.Field;

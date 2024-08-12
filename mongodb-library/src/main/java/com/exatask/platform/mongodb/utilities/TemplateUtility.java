@@ -1,8 +1,8 @@
 package com.exatask.platform.mongodb.utilities;
 
-import com.exatask.platform.mongodb.AppMongoTenantClientDatabaseFactory;
-import com.exatask.platform.mongodb.tenants.MongoTenantClients;
 import com.exatask.platform.mongodb.tenants.ServiceTenant;
+import com.exatask.platform.mongodb.tenants.TenantClientDatabaseFactory;
+import com.exatask.platform.mongodb.tenants.TenantClients;
 import com.exatask.platform.utilities.ServiceUtility;
 import com.exatask.platform.utilities.properties.MongodbProperties;
 import com.mongodb.ConnectionString;
@@ -50,8 +50,8 @@ public class TemplateUtility {
 
   public static MongoDatabaseFactory getDatabaseFactory(ServiceTenant serviceTenant) {
 
-    MongoTenantClients mongoTenantClients = new MongoTenantClients(serviceTenant);
-    return new AppMongoTenantClientDatabaseFactory(mongoTenantClients);
+    TenantClients tenantClients = new TenantClients(serviceTenant);
+    return new TenantClientDatabaseFactory(tenantClients);
   }
 
   public static MongoClient getClient(MongodbProperties mongoProperties) {

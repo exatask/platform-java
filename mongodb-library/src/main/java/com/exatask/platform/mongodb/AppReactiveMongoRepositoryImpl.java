@@ -3,10 +3,11 @@ package com.exatask.platform.mongodb;
 import com.exatask.platform.logging.AppLogManager;
 import com.exatask.platform.logging.AppLogger;
 import com.exatask.platform.mongodb.constants.Defaults;
-import com.exatask.platform.mongodb.exceptions.InvalidIdentifierException;
-import com.exatask.platform.mongodb.exceptions.InvalidOperationException;
-import com.exatask.platform.mongodb.filters.FilterElement;
-import com.exatask.platform.mongodb.updates.UpdateElement;
+import com.exatask.platform.mongodb.queries.AppQuery;
+import com.exatask.platform.mongodb.queries.filters.FilterElement;
+import com.exatask.platform.mongodb.queries.updates.UpdateElement;
+import com.exatask.platform.mongodb.system.exceptions.InvalidIdentifierException;
+import com.exatask.platform.mongodb.system.exceptions.InvalidOperationException;
 import com.exatask.platform.utilities.ResourceUtility;
 import com.mongodb.client.result.UpdateResult;
 import org.bson.types.ObjectId;
@@ -28,7 +29,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 
-public class AppReactiveMongoRepositoryImpl<T, ID extends Serializable> extends SimpleReactiveMongoRepository<T, ID> implements AppReactiveMongoRepository<T, ID> {
+public class AppReactiveMongoRepositoryImpl<T extends AppModel, ID extends Serializable> extends SimpleReactiveMongoRepository<T, ID> implements AppReactiveMongoRepository<T, ID> {
 
   private static final AppLogger LOGGER = AppLogManager.getLogger();
 

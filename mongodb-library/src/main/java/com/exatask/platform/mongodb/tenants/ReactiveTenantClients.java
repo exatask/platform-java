@@ -8,13 +8,13 @@ import com.mongodb.reactivestreams.client.MongoDatabase;
 import java.util.HashMap;
 import java.util.Map;
 
-public class ReactiveMongoTenantClients {
+public class ReactiveTenantClients {
 
   private final ServiceTenant serviceTenant;
 
   private final Map<String, ReactiveTenantClient> tenantClients = new HashMap<>();
 
-  public ReactiveMongoTenantClients(ServiceTenant serviceTenant) {
+  public ReactiveTenantClients(ServiceTenant serviceTenant) {
 
     this.serviceTenant = serviceTenant;
 

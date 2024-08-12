@@ -1,4 +1,4 @@
-package com.exatask.platform.mongodb.filters;
+package com.exatask.platform.mongodb.queries.filters;
 
 public enum FilterOperation {
 

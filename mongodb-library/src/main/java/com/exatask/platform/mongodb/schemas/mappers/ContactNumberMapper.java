@@ -1,4 +1,4 @@
-package com.exatask.platform.mongodb.mappers;
+package com.exatask.platform.mongodb.schemas.mappers;
 
 import com.exatask.platform.dto.entities.ContactNumberEntity;
 import com.exatask.platform.mongodb.schemas.ContactNumber;
