@@ -72,13 +72,17 @@ public class FilterElement {
       return getNestedPredicate(criteriaBuilder, criteriaQuery);
     } else {
 
-      Root from = criteriaQuery.from(model);
+      Root from = null;
       Set<Root> roots = criteriaQuery.getRoots();
       for (Root root : roots) {
         if (root.getModel().getJavaType() == model) {
           from = root;
           break;
         }
+      }
+
+      if (from == null) {
+        from = criteriaQuery.from(model);
       }
 
       Path path = from.get(key);
