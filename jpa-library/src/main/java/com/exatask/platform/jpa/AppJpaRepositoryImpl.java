@@ -30,6 +30,7 @@ import javax.persistence.criteria.CriteriaQuery;
 import javax.persistence.criteria.CriteriaUpdate;
 import javax.persistence.criteria.Expression;
 import javax.persistence.criteria.Order;
+import javax.persistence.criteria.Predicate;
 import javax.persistence.criteria.Root;
 import javax.transaction.Transactional;
 import java.io.Serializable;
@@ -70,10 +71,11 @@ public class AppJpaRepositoryImpl<T extends AppModel, ID extends Serializable> e
       return criteriaQuery;
     }
 
+    List<Predicate> predicates = new ArrayList<>();
     for (FilterElement filter : filters) {
-      criteriaQuery = criteriaQuery.where(filter.getPredicate(criteriaBuilder, criteriaQuery));
+      predicates.add(filter.getPredicate(criteriaBuilder, criteriaQuery));
     }
-    return criteriaQuery;
+    return criteriaQuery.where(predicates.toArray(new Predicate[predicates.size()]));
   }
 
   /**
@@ -104,10 +106,11 @@ public class AppJpaRepositoryImpl<T extends AppModel, ID extends Serializable> e
       return criteriaUpdate;
     }
 
+    List<Predicate> predicates = new ArrayList<>();
     for (FilterElement filter : filters) {
-      criteriaUpdate = criteriaUpdate.where(filter.getPredicate(criteriaBuilder, criteriaUpdate));
+      predicates.add(filter.getPredicate(criteriaBuilder, criteriaUpdate));
     }
-    return criteriaUpdate;
+    return criteriaUpdate.where(predicates.toArray(new Predicate[predicates.size()]));
   }
 
   /**
@@ -302,14 +305,18 @@ public class AppJpaRepositoryImpl<T extends AppModel, ID extends Serializable> e
    * @param from
    * @param joins
    */
-  private void prepareJoins(Root from, List<JoinElement> joins) {
+  private void prepareJoins(Root from, List<JoinElement> joins, boolean fetch) {
 
     if (CollectionUtils.isEmpty(joins)) {
       return;
     }
 
     for (JoinElement join : joins) {
-      from.join(join.getAttribute(), join.getType());
+      if (fetch) {
+        from.fetch(join.getAttribute(), join.getType());
+      } else {
+        from.join(join.getAttribute(), join.getType());
+      }
     }
   }
 
@@ -397,7 +404,8 @@ public class AppJpaRepositoryImpl<T extends AppModel, ID extends Serializable> e
     CriteriaQuery<T> criteriaQuery = criteriaBuilder.createQuery(this.domainClass);
     Root<T> from = criteriaQuery.from(this.domainClass);
 
-    prepareJoins(from, query.getJoins());
+    criteriaQuery.select(from);
+    prepareJoins(from, query.getJoins(), true);
     criteriaQuery = prepareFilters(criteriaBuilder, criteriaQuery, query.getFilters());
     criteriaQuery = prepareGroupBy(criteriaQuery, query.getGroups());
     criteriaQuery = prepareSort(criteriaBuilder, criteriaQuery, query.getSorts());
@@ -458,7 +466,8 @@ public class AppJpaRepositoryImpl<T extends AppModel, ID extends Serializable> e
     CriteriaQuery<T> criteriaQuery = criteriaBuilder.createQuery(this.domainClass);
     Root<T> from = criteriaQuery.from(this.domainClass);
 
-    prepareJoins(from, query.getJoins());
+    criteriaQuery.select(from);
+    prepareJoins(from, query.getJoins(), true);
     criteriaQuery = prepareFilters(criteriaBuilder, criteriaQuery, query.getFilters());
     criteriaQuery = prepareGroupBy(criteriaQuery, query.getGroups());
     criteriaQuery = prepareSort(criteriaBuilder, criteriaQuery, query.getSorts());
@@ -511,7 +520,7 @@ public class AppJpaRepositoryImpl<T extends AppModel, ID extends Serializable> e
     Root<T> from = criteriaQuery.from(this.domainClass);
 
     criteriaQuery = criteriaQuery.select(criteriaBuilder.count(from));
-    prepareJoins(from, query.getJoins());
+    prepareJoins(from, query.getJoins(), false);
     criteriaQuery = (CriteriaQuery<Long>) prepareFilters(criteriaBuilder, (CriteriaUpdate<T>) criteriaQuery, query.getFilters());
 
     ReplicaDataSource.setReadOnly(true);

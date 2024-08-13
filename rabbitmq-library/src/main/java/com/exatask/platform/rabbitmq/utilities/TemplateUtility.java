@@ -2,6 +2,7 @@ package com.exatask.platform.rabbitmq.utilities;
 
 import com.exatask.platform.logging.AppLogManager;
 import com.exatask.platform.logging.AppLogger;
+import com.exatask.platform.rabbitmq.constants.RabbitmqService;
 import com.exatask.platform.rabbitmq.exceptions.InvalidExchangeTypeException;
 import com.exatask.platform.utilities.constants.RabbitmqConstant;
 import com.exatask.platform.utilities.properties.RabbitmqProperties;
@@ -70,7 +71,7 @@ public class TemplateUtility {
     List<Declarable> declarables = new ArrayList<>();
     for (RabbitmqProperties.Binding binding : bindings) {
 
-      Exchange exchange = initializeExchange(service, binding.getExchange(), channel);
+      Exchange exchange = initializeExchange(binding.getExchange(), channel);
       declarables.add(exchange);
 
       Queue queue = initializeQueue(service, binding.getQueue(), channel);
@@ -89,17 +90,17 @@ public class TemplateUtility {
     return new Declarables(declarables);
   }
 
-  public String getExchangeName(String service, String exchange) {
-    return service + "." + exchange;
+  public String getExchangeName(String exchange) {
+    return RabbitmqService.EXCHANGE_PREFIX + "." + exchange;
   }
 
   public String getQueueName(String service, String queue) {
     return service + "." + queue;
   }
 
-  private Exchange initializeExchange(String service, RabbitmqProperties.Exchange exchange, Channel channel) {
+  private Exchange initializeExchange(RabbitmqProperties.Exchange exchange, Channel channel) {
 
-    String exchangeName = getExchangeName(service, exchange.getName());
+    String exchangeName = getExchangeName(exchange.getName());
     BuiltinExchangeType exchangeType = getExchangeType(exchange.getType());
     boolean durable = Boolean.TRUE.equals(exchange.getDurable());
     boolean autoDelete = Boolean.TRUE.equals(exchange.getAutoDelete());

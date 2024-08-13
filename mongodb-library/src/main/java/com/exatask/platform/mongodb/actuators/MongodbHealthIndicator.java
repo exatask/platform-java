@@ -31,14 +31,32 @@ public class MongodbHealthIndicator implements HealthIndicator {
     }
 
     Health.Builder databaseHealth = Health.up();
+    prepareMongodbTemplateHealth(databaseHealth);
+    prepareReactiveMongodbTemplateHealth(databaseHealth);
+
+    return databaseHealth.build();
+  }
+
+  private void prepareMongodbTemplateHealth(Health.Builder databaseHealth) {
+
+    if (CollectionUtils.isEmpty(mongoTemplates)) {
+      return;
+    }
+
     for (MongoTemplate mongoTemplate : mongoTemplates) {
 
       Health entityHealth = dataSourceHealth(mongoTemplate);
       if (entityHealth.getStatus() != Status.UP) {
         databaseHealth.down();
       }
-
       databaseHealth.withDetail(entityHealth.getDetails().get("database").toString(), entityHealth);
+    }
+  }
+
+  private void prepareReactiveMongodbTemplateHealth(Health.Builder databaseHealth) {
+
+    if (CollectionUtils.isEmpty(reactiveMongoTemplates)) {
+      return;
     }
 
     for (ReactiveMongoTemplate reactivMongoTemplate : reactiveMongoTemplates) {
@@ -47,17 +65,14 @@ public class MongodbHealthIndicator implements HealthIndicator {
       if (entityHealth.getStatus() != Status.UP) {
         databaseHealth.down();
       }
-
       databaseHealth.withDetail(entityHealth.getDetails().get("database").toString(), entityHealth);
     }
-
-    return databaseHealth.build();
   }
 
   private Health dataSourceHealth(MongoTemplate mongoTemplate) {
 
     Document serverStatus = getServerStatusCommand();
-    Document databaseName = new Document("getName", 1);
+    Document databaseName = new Document("dbStats", 1);
 
     Health.Builder entityHealth = Health.up()
         .withDetail("query", serverStatus.toJson());
@@ -66,7 +81,7 @@ public class MongodbHealthIndicator implements HealthIndicator {
     entityHealth.withDetail("version", resultSet.getString("version"));
 
     resultSet = mongoTemplate.executeCommand(databaseName);
-    entityHealth.withDetail("database", resultSet.toString());
+    entityHealth.withDetail("database", resultSet.getString("db"));
 
     return entityHealth.build();
   }
@@ -74,7 +89,7 @@ public class MongodbHealthIndicator implements HealthIndicator {
   private Health dataSourceHealth(ReactiveMongoTemplate mongoTemplate) {
 
     Document serverStatus = getServerStatusCommand();
-    Document databaseName = new Document("getName", 1);
+    Document databaseName = new Document("dbStats", 1);
 
     Health.Builder entityHealth = Health.up()
         .withDetail("query", serverStatus.toJson());
@@ -85,7 +100,7 @@ public class MongodbHealthIndicator implements HealthIndicator {
 
     resultSetMono = mongoTemplate.executeCommand(databaseName);
     resultSet = resultSetMono.block();
-    entityHealth.withDetail("database", resultSet.toString());
+    entityHealth.withDetail("database", resultSet.getString("db"));
 
     return entityHealth.build();
   }
