@@ -3,7 +3,7 @@ plugins {
   id "org.springframework.boot"
 }
 
-version = "1.0.0-SNAPSHOT"
+version = "1.0.1-SNAPSHOT"
 
 bootJar {
   enabled = false
@@ -19,6 +19,7 @@ dependencies {
   api project(":utilities-library")
 
   implementation group: "org.springframework.boot", name: "spring-boot-starter-web"
+  implementation group: "org.springframework.boot", name: "spring-boot-starter-aop"
   implementation group: "io.github.openfeign", name: "feign-okhttp", version: "${feignOkhttpVersion}"
   implementation group: "io.github.openfeign", name: "feign-jackson", version: "${feignOkhttpVersion}"
   implementation project(":logging-library")
