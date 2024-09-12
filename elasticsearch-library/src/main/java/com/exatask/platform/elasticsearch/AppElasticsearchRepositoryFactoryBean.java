@@ -16,11 +16,11 @@ import org.springframework.data.util.TypeInformation;
 
 import java.io.Serializable;
 
-public class AppElasticRepositoryFactoryBean<R extends ElasticsearchRepository<T, ID>, T, ID extends Serializable> extends ElasticsearchRepositoryFactoryBean<R, T, ID> {
+public class AppElasticsearchRepositoryFactoryBean<R extends ElasticsearchRepository<T, ID>, T, ID extends Serializable> extends ElasticsearchRepositoryFactoryBean<R, T, ID> {
 
   private ElasticsearchOperations operations;
 
-  public AppElasticRepositoryFactoryBean(Class<? extends R> repositoryInterface) {
+  public AppElasticsearchRepositoryFactoryBean(Class<? extends R> repositoryInterface) {
     super(repositoryInterface);
   }
 
@@ -52,12 +52,12 @@ public class AppElasticRepositoryFactoryBean<R extends ElasticsearchRepository<T
       ElasticsearchPersistentEntity<T> persistentEntity = new SimpleElasticsearchPersistentEntity<>(information);
       ElasticsearchEntityInformation<T, I> elasticEntityInformation = new MappingElasticsearchEntityInformation<>(persistentEntity);
 
-      return new AppElasticRepositoryImpl<>(elasticEntityInformation, this.elasticOperations);
+      return new AppElasticsearchRepositoryImpl<>(elasticEntityInformation, this.elasticOperations);
     }
 
     @Override
     protected Class<?> getRepositoryBaseClass(RepositoryMetadata metadata) {
-      return AppElasticRepository.class;
+      return AppElasticsearchRepository.class;
     }
   }
 }

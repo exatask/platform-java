@@ -1,4 +1,4 @@
-package com.exatask.platform.elasticsearch.exceptions;
+package com.exatask.platform.elasticsearch.system.exceptions;
 
 import lombok.Getter;
 
