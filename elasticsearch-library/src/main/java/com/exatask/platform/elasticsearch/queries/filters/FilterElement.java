@@ -1,14 +1,16 @@
-package com.exatask.platform.mongodb.queries.filters;
+package com.exatask.platform.elasticsearch.queries.filters;
 
-import com.exatask.platform.mongodb.system.exceptions.InvalidIdentifierException;
+import com.exatask.platform.elasticsearch.system.exceptions.InvalidIdentifierException;
 import com.exatask.platform.utilities.ResourceUtility;
 import lombok.AllArgsConstructor;
+import lombok.Getter;
 import org.apache.commons.lang3.StringUtils;
-import org.springframework.data.mongodb.core.query.Criteria;
+import org.springframework.data.elasticsearch.core.query.Criteria;
 
 import java.util.Arrays;
 import java.util.List;
 
+@Getter
 @AllArgsConstructor
 public class FilterElement {
 
@@ -52,37 +54,58 @@ public class FilterElement {
 
       case NOT_EQUAL:
         if (value instanceof List) {
-          return criteria.nin((List<?>) value);
+          return criteria.notIn((List<?>) value);
         } else if (value.getClass().isArray()) {
-          return criteria.nin(Arrays.asList((Object[]) value));
+          return criteria.notIn(Arrays.asList((Object[]) value));
         } else if (value.getClass().isEnum()) {
-          return criteria.ne(value.toString());
+          return criteria.is(value.toString()).not();
         } else {
-          return criteria.ne(value);
+          return criteria.is(value).not();
+        }
+
+      case MATCHES:
+        if (value instanceof List) {
+          return criteria.matchesAll(value);
+        } else if (value.getClass().isArray()) {
+          return criteria.matchesAll(Arrays.asList((Object[]) value));
+        } else if (value.getClass().isEnum()) {
+          return criteria.matches(value.toString());
+        } else {
+          return criteria.matches(value);
+        }
+
+      case NOT_MATCHES:
+        if (value instanceof List) {
+          return criteria.matchesAll(value).not();
+        } else if (value.getClass().isArray()) {
+          return criteria.matchesAll(Arrays.asList((Object[]) value)).not();
+        } else if (value.getClass().isEnum()) {
+          return criteria.matches(value.toString()).not();
+        } else {
+          return criteria.matches(value).not();
         }
 
       case GREATER:
-        return criteria.gt(value);
+        return criteria.greaterThan(value);
 
       case GREATER_EQUAL:
-        return criteria.gte(value);
+        return criteria.greaterThanEqual(value);
 
       case LESSER:
-        return criteria.lt(value);
+        return criteria.lessThan(value);
 
       case LESSER_EQUAL:
-        return criteria.lte(value);
-
-      case REGEX:
-        return criteria.regex(value.toString());
-
-      case NOT_REGEX:
-        return criteria.not().regex(value.toString());
+        return criteria.lessThanEqual(value);
 
       case EXISTS:
-        return criteria.exists(Boolean.parseBoolean(value.toString()));
+        criteria = criteria.exists();
+        if (!Boolean.parseBoolean(value.toString())) {
+          criteria = criteria.not();
+        }
+        return criteria;
     }
 
     return criteria;
   }
 }
+

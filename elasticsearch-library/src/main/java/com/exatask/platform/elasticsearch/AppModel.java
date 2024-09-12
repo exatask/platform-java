@@ -10,15 +10,19 @@ import org.springframework.data.elasticsearch.annotations.Field;
 import org.springframework.data.elasticsearch.annotations.FieldType;
 import org.springframework.format.annotation.DateTimeFormat;
 
+import java.io.Serializable;
 import java.time.LocalDateTime;
 
 @Getter
 @NoArgsConstructor
-public abstract class AppModel {
+public abstract class AppModel implements Serializable {
 
   @Id
   @Field("id")
   protected String id;
+
+  @Field(name = "tenant", type = FieldType.Keyword)
+  protected String tenant;
 
   @CreatedDate
   @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME)

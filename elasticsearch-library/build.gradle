@@ -17,8 +17,12 @@ dependencies {
 
   api group: "org.springframework.boot", name: "spring-boot-starter-data-elasticsearch"
 
+  implementation group: "org.elasticsearch.client", name: "elasticsearch-rest-high-level-client", version: "${elasticsearchVersion}"
+  implementation group: "org.apache.commons", name: "commons-lang3", version: "${apacheLangVersion}"
   implementation project(":logging-library")
   implementation project(":utilities-library")
+
+  compileOnly group: "org.springframework.boot", name: "spring-boot-starter-actuator"
 
   compileOnly group: "org.projectlombok", name: "lombok", version: "${lombokVersion}"
   annotationProcessor group: "org.projectlombok", name: "lombok", version: "${lombokVersion}"

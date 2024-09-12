@@ -17,9 +17,6 @@ import java.util.Optional;
 @UtilityClass
 public class RepositoryUtility {
 
-  private static final String CREATED_AT = "created_at";
-  private static final String UPDATED_AT = "updated_at";
-
   /**
    * @param query
    * @param filters
