@@ -4,6 +4,7 @@ import com.exatask.platform.jpa.AppModel;
 import com.exatask.platform.jpa.system.exceptions.InvalidFilterException;
 import com.exatask.platform.jpa.system.exceptions.InvalidIdentifierException;
 import com.exatask.platform.jpa.utilities.QueryUtility;
+import com.exatask.platform.utilities.IdentifierUtility;
 import com.exatask.platform.utilities.ResourceUtility;
 import lombok.Builder;
 import lombok.Singular;
@@ -58,9 +59,11 @@ public class FilterElement {
   public static FilterElement identifier(Class<? extends AppModel> model, String value) {
 
     if (StringUtils.isNumeric(value)) {
-      return new FilterElement(model, "id", FilterOperation.EQUAL, Integer.parseInt(value));
+      return new FilterElement(model, "id", Integer.parseInt(value));
+    } else if (IdentifierUtility.isUuid(value)) {
+      return new FilterElement(model, "id", value);
     } else if (ResourceUtility.isUrn(value)) {
-      return new FilterElement(model, "urn", FilterOperation.EQUAL, value);
+      return new FilterElement(model, "urn", value);
     } else {
       throw new InvalidIdentifierException(value);
     }

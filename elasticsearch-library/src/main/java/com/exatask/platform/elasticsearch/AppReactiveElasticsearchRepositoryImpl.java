@@ -8,31 +8,29 @@ import com.exatask.platform.logging.AppLogManager;
 import com.exatask.platform.logging.AppLogger;
 import com.exatask.platform.utilities.contexts.RequestContextProvider;
 import org.springframework.data.domain.PageRequest;
-import org.springframework.data.elasticsearch.core.ElasticsearchOperations;
+import org.springframework.data.elasticsearch.core.ReactiveElasticsearchOperations;
 import org.springframework.data.elasticsearch.core.SearchHit;
-import org.springframework.data.elasticsearch.core.SearchHits;
 import org.springframework.data.elasticsearch.core.query.Criteria;
 import org.springframework.data.elasticsearch.core.query.CriteriaQuery;
 import org.springframework.data.elasticsearch.repository.support.ElasticsearchEntityInformation;
-import org.springframework.data.elasticsearch.repository.support.SimpleElasticsearchRepository;
+import org.springframework.data.elasticsearch.repository.support.SimpleReactiveElasticsearchRepository;
+import reactor.core.publisher.Flux;
+import reactor.core.publisher.Mono;
 
 import java.io.Serializable;
-import java.util.List;
-import java.util.Optional;
-import java.util.stream.Collectors;
 
-public class AppElasticsearchRepositoryImpl<T extends AppModel, ID extends Serializable>
-    extends SimpleElasticsearchRepository<T, ID>
-    implements AppElasticsearchRepository<T, ID> {
+public class AppReactiveElasticsearchRepositoryImpl<T extends AppModel, ID extends Serializable>
+    extends SimpleReactiveElasticsearchRepository<T, ID>
+    implements AppReactiveElasticsearchRepository<T, ID> {
 
   private static final AppLogger LOGGER = AppLogManager.getLogger();
 
-  private final ElasticsearchOperations elasticOperations;
+  private final ReactiveElasticsearchOperations elasticOperations;
   private final ElasticsearchEntityInformation<T, ID> elasticEntityInformation;
 
   private String lastQuery = null;
 
-  public AppElasticsearchRepositoryImpl(ElasticsearchEntityInformation<T, ID> elasticEntityInformation, ElasticsearchOperations elasticOperations) {
+  public AppReactiveElasticsearchRepositoryImpl(ElasticsearchEntityInformation<T, ID> elasticEntityInformation, ReactiveElasticsearchOperations elasticOperations) {
 
     super(elasticEntityInformation, elasticOperations);
     this.elasticEntityInformation = elasticEntityInformation;
@@ -40,7 +38,7 @@ public class AppElasticsearchRepositoryImpl<T extends AppModel, ID extends Seria
   }
 
   @Override
-  public List<T> find(AppQuery query) {
+  public Flux<T> find(AppQuery query) {
 
     query.getFilters().add(new FilterElement("tenant", RequestContextProvider.getTenant()));
 
@@ -59,14 +57,13 @@ public class AppElasticsearchRepositoryImpl<T extends AppModel, ID extends Seria
         findQuery.getPageable().getPageSize());
     LOGGER.trace(this.lastQuery);
 
-    SearchHits<T> results = elasticOperations.search(findQuery, elasticEntityInformation.getJavaType(), elasticEntityInformation.getIndexCoordinates());
-    return results.get()
-        .map(document -> elasticEntityInformation.getJavaType().cast(document.getContent()))
-        .collect(Collectors.toList());
+    Flux<SearchHit<T>> results = elasticOperations.search(findQuery, elasticEntityInformation.getJavaType(), elasticEntityInformation.getIndexCoordinates());
+    return results
+        .map(document -> elasticEntityInformation.getJavaType().cast(document.getContent()));
   }
 
   @Override
-  public Optional<T> findOne(AppQuery query) {
+  public Mono<T> findOne(AppQuery query) {
 
     query.getFilters().add(new FilterElement("tenant", RequestContextProvider.getTenant()));
 
@@ -83,13 +80,12 @@ public class AppElasticsearchRepositoryImpl<T extends AppModel, ID extends Seria
         findQuery.getSort());
     LOGGER.trace(this.lastQuery);
 
-    SearchHit<T> result = elasticOperations.searchOne(findQuery, elasticEntityInformation.getJavaType(), elasticEntityInformation.getIndexCoordinates());
-    return Optional.ofNullable(result)
-        .map(document -> elasticEntityInformation.getJavaType().cast(document.getContent()));
+    Flux<SearchHit<T>> result = elasticOperations.search(findQuery, elasticEntityInformation.getJavaType(), elasticEntityInformation.getIndexCoordinates());
+    return result.singleOrEmpty().map(document -> elasticEntityInformation.getJavaType().cast(document.getContent()));
   }
 
   @Override
-  public long count(AppQuery query) {
+  public Mono<Long> count(AppQuery query) {
 
     query.getFilters().add(new FilterElement("tenant", RequestContextProvider.getTenant()));
 
@@ -110,22 +106,22 @@ public class AppElasticsearchRepositoryImpl<T extends AppModel, ID extends Seria
   }
 
   @Override
-  public void deleteById(ID id) {
+  public Mono<Void> deleteById(ID id) {
     throw new InvalidOperationException(this.getClass().getEnclosingMethod().getName());
   }
 
   @Override
-  public void delete(T entity) {
+  public Mono<Void> delete(T entity) {
     throw new InvalidOperationException(this.getClass().getEnclosingMethod().getName());
   }
 
   @Override
-  public void deleteAll(Iterable<? extends T> entities) {
+  public Mono<Void> deleteAll(Iterable<? extends T> entities) {
     throw new InvalidOperationException(this.getClass().getEnclosingMethod().getName());
   }
 
   @Override
-  public void deleteAll() {
+  public Mono<Void> deleteAll() {
     throw new InvalidOperationException(this.getClass().getEnclosingMethod().getName());
   }
 }
