@@ -1,13 +1,13 @@
 package com.exatask.platform.elasticsearch;
 
-import org.springframework.data.elasticsearch.core.ElasticsearchOperations;
+import org.springframework.data.elasticsearch.core.ReactiveElasticsearchOperations;
 import org.springframework.data.elasticsearch.core.mapping.ElasticsearchPersistentEntity;
 import org.springframework.data.elasticsearch.core.mapping.SimpleElasticsearchPersistentEntity;
-import org.springframework.data.elasticsearch.repository.ElasticsearchRepository;
+import org.springframework.data.elasticsearch.repository.ReactiveElasticsearchRepository;
 import org.springframework.data.elasticsearch.repository.support.ElasticsearchEntityInformation;
-import org.springframework.data.elasticsearch.repository.support.ElasticsearchRepositoryFactory;
-import org.springframework.data.elasticsearch.repository.support.ElasticsearchRepositoryFactoryBean;
 import org.springframework.data.elasticsearch.repository.support.MappingElasticsearchEntityInformation;
+import org.springframework.data.elasticsearch.repository.support.ReactiveElasticsearchRepositoryFactory;
+import org.springframework.data.elasticsearch.repository.support.ReactiveElasticsearchRepositoryFactoryBean;
 import org.springframework.data.repository.core.RepositoryInformation;
 import org.springframework.data.repository.core.RepositoryMetadata;
 import org.springframework.data.repository.core.support.RepositoryFactorySupport;
@@ -16,33 +16,33 @@ import org.springframework.data.util.TypeInformation;
 
 import java.io.Serializable;
 
-public class AppElasticsearchRepositoryFactoryBean<R extends ElasticsearchRepository<T, ID>, T extends AppModel, ID extends Serializable>
-    extends ElasticsearchRepositoryFactoryBean<R, T, ID> {
+public class AppReactiveElasticsearchRepositoryFactoryBean<R extends ReactiveElasticsearchRepository<T, ID>, T extends AppModel, ID extends Serializable>
+    extends ReactiveElasticsearchRepositoryFactoryBean<R, T, ID> {
 
-  private ElasticsearchOperations operations;
+  private ReactiveElasticsearchOperations operations;
 
-  public AppElasticsearchRepositoryFactoryBean(Class<? extends R> repositoryInterface) {
+  public AppReactiveElasticsearchRepositoryFactoryBean(Class<? extends R> repositoryInterface) {
     super(repositoryInterface);
   }
 
   @Override
-  public void setElasticsearchOperations(ElasticsearchOperations operations) {
+  public void setReactiveElasticsearchOperations(ReactiveElasticsearchOperations operations) {
 
-    super.setElasticsearchOperations(operations);
+    super.setReactiveElasticsearchOperations(operations);
     this.operations = operations;
   }
 
   @Override
-  protected RepositoryFactorySupport createRepositoryFactory() {
+  protected RepositoryFactorySupport getFactoryInstance(ReactiveElasticsearchOperations operations) {
     return new AppRepositoryFactory<T, ID>(this.operations);
   }
 
   private static class AppRepositoryFactory<T extends AppModel, I extends Serializable>
-      extends ElasticsearchRepositoryFactory {
+      extends ReactiveElasticsearchRepositoryFactory {
 
-    private final ElasticsearchOperations elasticOperations;
+    private final ReactiveElasticsearchOperations elasticOperations;
 
-    public AppRepositoryFactory(ElasticsearchOperations elasticOperations) {
+    public AppRepositoryFactory(ReactiveElasticsearchOperations elasticOperations) {
       super(elasticOperations);
       this.elasticOperations = elasticOperations;
     }
@@ -54,12 +54,12 @@ public class AppElasticsearchRepositoryFactoryBean<R extends ElasticsearchReposi
       ElasticsearchPersistentEntity<T> persistentEntity = new SimpleElasticsearchPersistentEntity<>(information);
       ElasticsearchEntityInformation<T, I> elasticEntityInformation = new MappingElasticsearchEntityInformation<>(persistentEntity);
 
-      return new AppElasticsearchRepositoryImpl<>(elasticEntityInformation, this.elasticOperations);
+      return new AppReactiveElasticsearchRepositoryImpl<>(elasticEntityInformation, this.elasticOperations);
     }
 
     @Override
     protected Class<?> getRepositoryBaseClass(RepositoryMetadata metadata) {
-      return AppElasticsearchRepository.class;
+      return AppReactiveElasticsearchRepository.class;
     }
   }
 }

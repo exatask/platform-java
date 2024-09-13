@@ -1,6 +1,7 @@
 package com.exatask.platform.elasticsearch.queries.filters;
 
 import com.exatask.platform.elasticsearch.system.exceptions.InvalidIdentifierException;
+import com.exatask.platform.utilities.IdentifierUtility;
 import com.exatask.platform.utilities.ResourceUtility;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -26,10 +27,12 @@ public class FilterElement {
 
   public static FilterElement identifier(String value) {
 
-    if (StringUtils.isNumeric(value)) {
-      return new FilterElement("id", FilterOperation.EQUAL, Integer.parseInt(value));
+    if (IdentifierUtility.isUuid(value)) {
+      return new FilterElement("_id", value);
+    } else if (StringUtils.isNumeric(value)) {
+      return new FilterElement("_id", Integer.parseInt(value));
     } else if (ResourceUtility.isUrn(value)) {
-      return new FilterElement("urn", FilterOperation.EQUAL, value);
+      return new FilterElement("urn", value);
     } else {
       throw new InvalidIdentifierException(value);
     }

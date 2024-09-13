@@ -7,7 +7,8 @@ import java.io.Serializable;
 import java.util.List;
 import java.util.Optional;
 
-public interface AppElasticsearchRepository<T, ID extends Serializable> extends ElasticsearchRepository<T, ID> {
+public interface AppElasticsearchRepository<T extends AppModel, ID extends Serializable>
+    extends ElasticsearchRepository<T, ID> {
 
   List<T> find(AppQuery query);
 
