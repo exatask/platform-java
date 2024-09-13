@@ -1,11 +1,13 @@
 package com.exatask.platform.elasticsearch.actuators;
 
 import com.exatask.platform.elasticsearch.constants.ElasticsearchService;
+import org.elasticsearch.client.RestHighLevelClient;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.actuate.elasticsearch.ElasticsearchReactiveHealthIndicator;
+import org.springframework.boot.actuate.elasticsearch.ElasticsearchRestHealthIndicator;
 import org.springframework.boot.actuate.health.Health;
 import org.springframework.boot.actuate.health.HealthIndicator;
-import org.springframework.boot.actuate.health.Status;
-import org.springframework.data.elasticsearch.core.ElasticsearchRestTemplate;
+import org.springframework.data.elasticsearch.client.reactive.ReactiveElasticsearchClient;
 import org.springframework.stereotype.Component;
 import org.springframework.util.CollectionUtils;
 
@@ -15,51 +17,50 @@ import java.util.Set;
 public class ElasticsearchHealthIndicator implements HealthIndicator {
 
   @Autowired(required = false)
-  private Set<ElasticsearchRestTemplate> elasticsearchTemplates;
+  private Set<RestHighLevelClient> elasticsearchClients;
+
+  @Autowired(required = false)
+  private Set<ReactiveElasticsearchClient> reactiveElasticsearchClients;
 
   @Override
   public Health health() {
 
-    if (CollectionUtils.isEmpty(elasticsearchTemplates)) {
+    if (CollectionUtils.isEmpty(elasticsearchClients) && CollectionUtils.isEmpty(reactiveElasticsearchClients)) {
       return Health.unknown().build();
     }
 
     Health.Builder databaseHealth = Health.up();
-    prepareElasticsearchTemplateHealth(databaseHealth);
+    prepareElasticsearchClientHealth(databaseHealth);
+    prepareReactiveElasticsearchClientHealth(databaseHealth);
 
     return databaseHealth.build();
   }
 
-  private void prepareElasticsearchTemplateHealth(Health.Builder databaseHealth) {
+  private void prepareElasticsearchClientHealth(Health.Builder databaseHealth) {
 
-    if (CollectionUtils.isEmpty(elasticsearchTemplates)) {
+    if (CollectionUtils.isEmpty(elasticsearchClients)) {
       return;
     }
 
-    for (ElasticsearchRestTemplate elasticTemplate : elasticsearchTemplates) {
+    for (RestHighLevelClient elasticClient : elasticsearchClients) {
 
-      Health entityHealth = dataSourceHealth(elasticTemplate);
-      if (entityHealth.getStatus() != Status.UP) {
-        databaseHealth.down();
-      }
-      databaseHealth.withDetail(entityHealth.getDetails().get("database").toString(), entityHealth);
+      ElasticsearchRestHealthIndicator healthIndicator = new ElasticsearchRestHealthIndicator(elasticClient);
+      Health health = healthIndicator.getHealth(true);
+      databaseHealth.withDetail(health.getDetails().get("cluster_name").toString(), health);
     }
   }
 
-  private Health dataSourceHealth(ElasticsearchRestTemplate elasticTemplate) {
+  private void prepareReactiveElasticsearchClientHealth(Health.Builder databaseHealth) {
 
-//    Document serverStatus = getServerStatusCommand();
-//    Document databaseName = new Document("dbStats", 1);
+    if (CollectionUtils.isEmpty(reactiveElasticsearchClients)) {
+      return;
+    }
 
-    Health.Builder entityHealth = Health.up()
-        /*.withDetail("query", serverStatus.toJson())*/;
+    for (ReactiveElasticsearchClient reactiveElasticClient : reactiveElasticsearchClients) {
 
-//    Document resultSet = mongoTemplate.executeCommand(serverStatus);
-//    entityHealth.withDetail("version", resultSet.getString("version"));
-
-//    resultSet = mongoTemplate.executeCommand(databaseName);
-//    entityHealth.withDetail("database", resultSet.getString("db"));
-
-    return entityHealth.build();
+      ElasticsearchReactiveHealthIndicator healthIndicator = new ElasticsearchReactiveHealthIndicator(reactiveElasticClient);
+      Health health = healthIndicator.getHealth(true).block();
+      databaseHealth.withDetail(health.getDetails().get("cluster_name").toString(), health);
+    }
   }
 }
