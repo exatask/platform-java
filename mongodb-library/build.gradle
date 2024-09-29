@@ -17,8 +17,6 @@ dependencies {
 
   api group: "org.springframework.boot", name: "spring-boot-starter-data-mongodb"
   api group: "org.springframework.boot", name: "spring-boot-starter-data-mongodb-reactive"
-  api group: "io.mongock", name: "mongock-springboot"
-  api group: "io.mongock", name: "mongodb-springdata-v3-driver"
 
   implementation group: "org.apache.commons", name: "commons-lang3", version: "${apacheLangVersion}"
   implementation project(":logging-library")
