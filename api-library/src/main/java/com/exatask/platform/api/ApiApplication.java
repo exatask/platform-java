@@ -21,10 +21,6 @@ public interface ApiApplication {
     return checkOption(args, "disable-api");
   }
 
-  static boolean isMigrateSchema(String[] args) {
-    return checkOption(args, "migrate-schema");
-  }
-
   private static boolean checkOption(String[] args, String option) {
 
     CommandLine.ParseResult parsedCommand = apiCommand.getCommandLine().parseArgs(args);

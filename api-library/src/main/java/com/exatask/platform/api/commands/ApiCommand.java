@@ -14,12 +14,6 @@ public class ApiCommand {
   )
   private boolean disableApi;
 
-  @CommandLine.Option(
-      names = "--migrate-schema",
-      description = "Execute schema migration in the service"
-  )
-  private boolean migrateSchema;
-
   public ApiCommand() {
 
     this.commandLine = new CommandLine(this);

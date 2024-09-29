@@ -3,7 +3,7 @@ plugins {
   id "org.springframework.boot"
 }
 
-version = "1.0.0-SNAPSHOT"
+version = "1.0.1-SNAPSHOT"
 
 bootJar {
   enabled = false
@@ -15,8 +15,9 @@ jar {
 
 dependencies {
 
+  api project(":jpa-library")
+
   implementation group: "org.postgresql", name: "postgresql", version: "${postgresqlVersion}"
-  implementation project(":jpa-library")
 
   compileOnly group: "org.springframework.boot", name: "spring-boot-starter-actuator"
 
