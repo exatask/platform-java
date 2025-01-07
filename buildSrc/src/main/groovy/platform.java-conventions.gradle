@@ -1,55 +1,8 @@
 plugins {
-  id "java"
-  id "java-library"
-  id "maven-publish"
-  id "io.spring.dependency-management"
-  id "jacoco"
+  id "com.exatask.buildSrc"
 }
 
 group = "com.exatask.platform"
-
-java {
-  toolchain {
-    languageVersion.set(JavaLanguageVersion.of(11))
-  }
-}
-
-compileJava {
-  options.encoding = "UTF-8"
-}
-
-test {
-  useJUnitPlatform()
-  finalizedBy jacocoTestReport
-}
-
-jacocoTestReport {
-  dependsOn test
-}
-
-jacoco {
-  toolVersion = "${jacocoVersion}"
-  reportsDir = file("$buildDir/jacoco")
-}
-
-repositories {
-
-  mavenLocal()
-  mavenCentral()
-
-  maven {
-
-    url "https://gitlab.com/api/v4/groups/6962407/-/packages/maven"
-    name "Gitlab"
-    credentials(HttpHeaderCredentials) {
-      name = "Private-Token"
-      value = gitlabPrivateToken
-    }
-    authentication {
-      header(HttpHeaderAuthentication)
-    }
-  }
-}
 
 publishing {
 
@@ -58,8 +11,8 @@ publishing {
 
       url "https://gitlab.com/api/v4/projects/26367176/packages/maven"
       credentials(HttpHeaderCredentials) {
-        name = "Private-Token"
-        value = gitlabPrivateToken
+        name = "Deploy-Token"
+        value = gitlabDeployToken
       }
       authentication {
         header(HttpHeaderAuthentication)
@@ -74,12 +27,4 @@ dependencyManagement {
     mavenBom "software.amazon.awssdk:bom:${awsSdkVersion}"
     mavenBom "io.mongock:mongock-bom:${mongockVersion}"
   }
-}
-
-configurations.all {
-  exclude module: "spring-boot-starter-logging"
-}
-
-configurations {
-  testCompile.extendsFrom compileOnly
 }

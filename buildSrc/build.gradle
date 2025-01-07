@@ -4,8 +4,24 @@ plugins {
 
 dependencies {
   implementation group: "io.spring.gradle", name: "dependency-management-plugin", version: "${springDependencyMgmtVersion}"
+  implementation group: "com.exatask", name: "gradle-buildSrc", version: "${exataskGradleBuildsrcVersion}"
 }
 
 repositories {
+
+  mavenLocal()
   mavenCentral()
+
+  maven {
+
+    url "https://gitlab.com/api/v4/groups/6962407/-/packages/maven"
+    name "Gitlab"
+    credentials(HttpHeaderCredentials) {
+      name = "Private-Token"
+      value = gitlabPrivateToken
+    }
+    authentication {
+      header(HttpHeaderAuthentication)
+    }
+  }
 }
