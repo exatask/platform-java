@@ -4,7 +4,7 @@ plugins {
 
 dependencies {
   implementation group: "io.spring.gradle", name: "dependency-management-plugin", version: "${springDependencyMgmtVersion}"
-  implementation group: "com.exatask", name: "gradle-buildSrc", version: "${exataskGradleBuildsrcVersion}"
+  implementation group: "com.exatask", name: "gradle-buildSrc", version: "${exataskBuildSrcVersion}"
 }
 
 repositories {
