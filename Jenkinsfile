@@ -12,7 +12,7 @@ pipeline {
 
   parameters {
 
-    activeChoiceParam(
+    activeChoice(
         name: 'library',
         description: 'Select the library to be published',
         choiceType: 'SINGLE_SELECT',
