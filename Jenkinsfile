@@ -28,7 +28,7 @@ return data
 '''
           ],
           fallbackScript: [
-            sandbox: true
+            sandbox: true,
             script: '''
 return ["No library found"]
 '''
