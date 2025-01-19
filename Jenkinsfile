@@ -18,9 +18,11 @@ pipeline {
         choiceType: 'SINGLE_SELECT',
         script: [
           $class: 'GroovyScript',
-          script: '''
-            return com.exatask.GitUtilities.listDirectories("git@gitlab.com:exatask/platform/platform-java.git", "main")
-          ''',
+          script: [
+            script: '''
+              return com.exatask.GitUtilities.listDirectories("git@gitlab.com:exatask/platform/platform-java.git", "main")
+            '''
+          ],
           sandbox: false
         ]
     )
