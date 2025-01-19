@@ -1,5 +1,7 @@
 @Library("git") _
 
+import com.exatask.GitUtilities
+
 pipeline {
 
   agent any
