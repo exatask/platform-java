@@ -1,3 +1,5 @@
+@Library("git") _
+
 pipeline {
 
   agent any
@@ -10,11 +12,21 @@ pipeline {
 
   parameters {
 
-    choice(
-      name: 'library',
-      description: 'Select the library to be published',
-      choices: getDirectories()
+    activeChoiceParam(
+        name: 'library',
+        description: 'Select the library to be published',
+        choiceType: 'SINGLE_SELECT',
+        groovyScript: [
+          script: 'return com.exatask.GitUtilities.listDirectories("git@gitlab.com:exatask/platform/platform-java.git", "main")',
+          sandbox: false
+        ]
     )
+
+//    choice(
+//      name: 'library',
+//      description: 'Select the library to be published',
+//      choices: getDirectories()
+//    )
   }
 
   stages {
