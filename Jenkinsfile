@@ -1,5 +1,3 @@
-@Library("groovy-jenkins-library") _
-
 import com.exatask.GitUtilities
 
 pipeline {
@@ -22,12 +20,17 @@ pipeline {
           $class: 'GroovyScript',
           script: [
             script: '''
-            println("Executing the script to list directories")
-            def data = GitUtilities.listDirectories("git@gitlab.com:exatask/platform/platform-java.git", "main")
-            print("Directories loaded: {0}", data)
-            return data
-            '''
+println("Executing the script to list directories")
+def data = GitUtilities.listDirectories("git@gitlab.com:exatask/platform/platform-java.git", "main")
+print("Directories loaded: {0}", data)
+return data
+'''
           ],
+          fallback_script: [
+            script: '''
+return ["No library found"]
+'''
+          ]
           sandbox: true
         ]
     )
