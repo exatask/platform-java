@@ -17,7 +17,10 @@ pipeline {
         description: 'Select the library to be published',
         choiceType: 'SINGLE_SELECT',
         script: [
-          script: 'return com.exatask.GitUtilities.listDirectories("git@gitlab.com:exatask/platform/platform-java.git", "main")',
+          $class: 'GroovyScript',
+          script: '''
+            return com.exatask.GitUtilities.listDirectories("git@gitlab.com:exatask/platform/platform-java.git", "main")
+          ''',
           sandbox: false
         ]
     )
