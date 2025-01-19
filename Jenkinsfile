@@ -15,7 +15,7 @@ pipeline {
     activeChoice(
         name: 'library',
         description: 'Select the library to be published',
-        choiceType: 'SINGLE_SELECT',
+        choiceType: 'PT_SINGLE_SELECT',
         script: [
           $class: 'GroovyScript',
           script: [
