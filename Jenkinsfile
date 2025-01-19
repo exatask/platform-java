@@ -20,10 +20,13 @@ pipeline {
           $class: 'GroovyScript',
           script: [
             script: '''
-              return com.exatask.GitUtilities.listDirectories("git@gitlab.com:exatask/platform/platform-java.git", "main")
+            echo "Executing the script to list directories"
+            def data = com.exatask.GitUtilities.listDirectories("git@gitlab.com:exatask/platform/platform-java.git", "main")
+            echo "Directories loaded: ${data}"
+            return data
             '''
           ],
-          sandbox: false
+          sandbox: true
         ]
     )
 
