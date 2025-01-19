@@ -1,4 +1,4 @@
-@Library("git") _
+@Library("groovy-jenkins-library") _
 
 import com.exatask.GitUtilities
 
