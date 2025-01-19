@@ -75,9 +75,9 @@ pipeline {
     failure {
       echo "Build or publishing failed"
     }
-    always {
-      cleanWs()
-    }
+//    always {
+//     cleanWs()
+//    }
   }
 }
 
