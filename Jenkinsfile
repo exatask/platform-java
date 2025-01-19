@@ -83,10 +83,12 @@ pipeline {
 
 def getDirectories() {
 
-  def directories = []
-  def result = sh(script: "ls -d ${env.WORKSPACE}/*-library/ | sed 's|/||'", returnStdout: true).trim()
-  result.split('\n').each { directory ->
-    directories << directory
+  node {
+    def directories = []
+    def result = sh(script: "ls -d ${env.WORKSPACE}/*-library/ | sed 's|/||'", returnStdout: true).trim()
+    result.split('\n').each { directory ->
+      directories << directory
+    }
+    return directories
   }
-  return directories
 }
