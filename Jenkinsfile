@@ -30,7 +30,7 @@ return data
             script: '''
 return ["No library found"]
 '''
-          ]
+          ],
           sandbox: true
         ]
     )
