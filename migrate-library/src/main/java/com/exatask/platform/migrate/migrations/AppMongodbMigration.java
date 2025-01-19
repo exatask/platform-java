@@ -39,19 +39,18 @@ public class AppMongodbMigration {
 
   private static final String CHANGELOG_COLLECTION = "changelogs";
   private static final String CHANGELOG_LOCK_COLLECTION = "changelog_locks";
-  private static final String SCHEMA_CHANGELOG_PACKAGE = "changelogs.mongodb.package.schema";
-  private static final String DATA_CHANGELOG_PACKAGE = "changelogs.mongodb.package.data";
+  private static final String CHANGELOG_PACKAGE = "changelogs.mongodb.package";
 
-  public void migrate(MongoProperties mongoProperties, boolean schema) {
+  public void migrate(MongoProperties mongoProperties) {
 
     MongoTemplate mongoTemplate = prepareMongoTemplate(mongoProperties);
-    MongockRunner mongockRunner = createRunner(mongoTemplate, schema);
+    MongockRunner mongockRunner = createRunner(mongoTemplate);
     if (mongockRunner != null) {
       mongockRunner.execute();
     }
   }
 
-  private MongockRunner createRunner(MongoTemplate mongoTemplate, boolean schema) {
+  private MongockRunner createRunner(MongoTemplate mongoTemplate) {
 
     MongockConfiguration configuration = new MongockConfiguration();
     configuration.setMigrationRepositoryName(CHANGELOG_COLLECTION);
@@ -64,11 +63,7 @@ public class AppMongodbMigration {
     driver.setReadPreference(ReadPreference.primary());
     driver.disableTransaction();
 
-    String location = ServiceUtility.getServiceProperty(SCHEMA_CHANGELOG_PACKAGE, "");
-    if (!schema) {
-      location  = ServiceUtility.getServiceProperty(DATA_CHANGELOG_PACKAGE, "");
-    }
-
+    String location = ServiceUtility.getServiceProperty(CHANGELOG_PACKAGE, "");
     if (StringUtils.isEmpty(location)) {
       return null;
     }

@@ -1,16 +1,29 @@
 package com.exatask.platform.sdk.utilities;
 
-import com.exatask.platform.utilities.services.ServiceEnvironment;
 import com.exatask.platform.logging.AppLogManager;
 import com.exatask.platform.logging.AppLogger;
 import com.exatask.platform.utilities.ServiceUtility;
 import com.exatask.platform.utilities.exceptions.RuntimePropertyNotFoundException;
+import com.exatask.platform.utilities.services.ServiceEnvironment;
 import lombok.experimental.UtilityClass;
+
+import java.util.Arrays;
+import java.util.List;
 
 @UtilityClass
 public class SdkServiceUtility {
 
   private static final AppLogger LOGGER = AppLogManager.getLogger();
+
+  private static final List<ServiceEnvironment> DEVELOPMENT_ENVIRONMENT = Arrays.asList(
+      ServiceEnvironment.LOCAL,
+      ServiceEnvironment.DEBUG
+  );
+
+  private static final List<ServiceEnvironment> TESTING_ENVIRONMENT = Arrays.asList(
+      ServiceEnvironment.SANDBOX,
+      ServiceEnvironment.PERFORMANCE
+  );
 
   private static ServiceEnvironment environment = null;
 
@@ -31,5 +44,13 @@ public class SdkServiceUtility {
     }
 
     return environment;
+  }
+
+  public static boolean isDevelopmentEnvironment() {
+    return DEVELOPMENT_ENVIRONMENT.contains(getServiceEnvironment());
+  }
+
+  public static boolean isTestingEnvironment() {
+    return TESTING_ENVIRONMENT.contains(getServiceEnvironment());
   }
 }
