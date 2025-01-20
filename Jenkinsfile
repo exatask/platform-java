@@ -34,7 +34,6 @@ try {
         name: 'library',
         description: 'Select the library to be published',
         choiceType: 'PT_SINGLE_SELECT',
-        groovyScript:
         script: [
           $class: 'GroovyScript',
           script: [
