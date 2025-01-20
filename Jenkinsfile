@@ -58,7 +58,9 @@ try {
                 filterable: true,
                 script: [
                   $class: 'GroovyScript',
-                  script: '''println("Executing the script to list directories")
+                  script: [
+                    sandbox: true,
+                    script: '''println("Executing the script to list directories")
 try {
  def data = com.exatask.GitUtilities.listDirectories("git@gitlab.com:exatask/platform/platform-java.git", "main")
  println("Directories loaded: {0}", data)
@@ -66,6 +68,7 @@ try {
 } catch (err) {
  println(err)
 }'''
+                   ]
                 ]
               ]
             ])
