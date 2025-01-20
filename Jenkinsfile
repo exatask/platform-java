@@ -20,18 +20,18 @@ pipeline {
           $class: 'GroovyScript',
           script: [
             sandbox: true,
-            script: '''println("Executing the script to list directories")
+            script: """println("Executing the script to list directories")
 try {
-  def data = com.exatask.GitUtilities.listDirectories("git@gitlab.com:exatask/platform/platform-java.git", "main")
+  def data = GitUtilities.listDirectories("git@gitlab.com:exatask/platform/platform-java.git", "main")
   println("Directories loaded: {0}", data)
   return data
 } catch (err) {
   println(err)
-}'''
+}"""
           ],
           fallbackScript: [
             sandbox: true,
-            script: 'return ["No directories found"]'
+            script: """return ["No directories found"]"""
           ]
         ]
     )
