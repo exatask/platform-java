@@ -15,10 +15,26 @@ pipeline {
 
   parameters {
 
+    activeChoiceParam("LIBRARY") {
+      choiceType("SINGLE_SELECT")
+      groovyScript {
+        script('''println("Executing the script to list directories")
+try {
+  def data = GitUtilities.listDirectories("git@gitlab.com:exatask/platform/platform-java.git", "main")
+  println("Directories loaded: {0}", data)
+  return data
+} catch (err) {
+  println(err)
+}''')
+      }
+      fallbackScript('return ["error"]')
+    }
+
     activeChoice(
         name: 'library',
         description: 'Select the library to be published',
         choiceType: 'PT_SINGLE_SELECT',
+        groovyScript:
         script: [
           $class: 'GroovyScript',
           script: [
