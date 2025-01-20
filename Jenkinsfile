@@ -12,6 +12,11 @@ pipeline {
 
   parameters {
 
+    choice(
+      name: "LIBRARY",
+      choices: GitUtilities.listDirectories("git@gitlab.com:exatask/platform/platform-java.git", "main").join('\n')
+    )
+
     activeChoice(
         name: 'library',
         description: 'Select the library to be published',
