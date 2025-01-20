@@ -60,7 +60,8 @@ try {
                   $class: 'GroovyScript',
                   script: [
                     sandbox: true,
-                    script: '''println("Executing the script to list directories")
+                    script: '''import com.exatask.GitUtilities
+println("Executing the script to list directories")
 try {
  def data = com.exatask.GitUtilities.listDirectories("git@gitlab.com:exatask/platform/platform-java.git", "main")
  println("Directories loaded: {0}", data)
