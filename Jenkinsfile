@@ -53,7 +53,9 @@ try {
             parameters([
               [
                 $class: 'CascadeChoiceParameter',
-                choiceType: 'PT_SINGLE_SELECT',
+                choiceType: 'SINGLE_SELECT',
+                name: 'LIBRARY',
+                filterable: true,
                 script: [
                   $class: 'GroovyScript',
                   script: '''println("Executing the script to list directories")
