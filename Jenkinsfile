@@ -53,7 +53,7 @@ try {
             parameters([
               [
                 $class: 'CascadeChoiceParameter',
-                choiceType: 'SINGLE_SELECT',
+                choiceType: 'PT_SINGLE_SELECT',
                 name: 'LIBRARY',
                 filterable: true,
                 script: [
