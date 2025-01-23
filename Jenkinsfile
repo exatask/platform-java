@@ -182,9 +182,7 @@ properties([
         script: [
           sandbox: true,
           script: '''
-          import com.exatask.*
-          def gitUtilities = new GitUtilities()
-def directories = gitUtilities.listDirectories()
+def directories = listDirectories()
 return directories
 '''
         ]
