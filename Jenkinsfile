@@ -12,7 +12,7 @@ pipeline {
     GRADLE_SETTINGS_FILE = '~/.gradle/gradle.properties'
   }
 
-  parameters {
+  // parameters {
 
 //     activeChoice(
 //         name: 'library',
@@ -44,7 +44,7 @@ pipeline {
 //      description: 'Select the library to be published',
 //      choices: getDirectories()
 //    )
-  }
+  // }
 
   stages {
 
@@ -63,11 +63,11 @@ pipeline {
                   $class: 'GroovyScript',
                   script: [
                     sandbox: true,
-                    script: '''@Library("groovy-jenkins-library") _
-import com.exatask.GitUtilities
+                    script: '''
 println("Executing the script to list directories")
 try {
- def data = com.exatask.GitUtilities.listDirectories("git@gitlab.com:exatask/platform/platform-java.git", "main")
+ def gitUtilities = new GitUtilities()
+ def data = gitUtilities.listDirectories("git@gitlab.com:exatask/platform/platform-java.git", "main")
  println("Directories loaded: {0}", data)
  return data
 } catch (err) {
