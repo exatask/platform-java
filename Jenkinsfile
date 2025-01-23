@@ -1,6 +1,6 @@
 @Library("groovy-jenkins-library") _
 
-import com.exatask.GitUtilities
+// import com.exatask.GitUtilities
 
 pipeline {
 
@@ -66,7 +66,7 @@ pipeline {
                     script: '''
 println("Executing the script to list directories")
 try {
- def gitUtilities = new GitUtilities()
+ def gitUtilities = new com.exatask.GitUtilities()
  def data = gitUtilities.listDirectories("git@gitlab.com:exatask/platform/platform-java.git", "main")
  println("Directories loaded: {0}", data)
  return data
