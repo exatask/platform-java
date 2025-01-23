@@ -161,7 +161,12 @@
 
 import com.exatask.*
 
-def gitUtilities = new GitUtilities()
+node {
+  try {
+
+    stage("Load Parameters") {
+
+      def gitUtilities = new GitUtilities()
 def directories = gitUtilities.listDirectories("git@gitlab.com:exatask/platform/platform-java.git", "main")
 
 properties([
@@ -193,8 +198,8 @@ properties([
   ])
 ])
 
-node {
-  try {
+
+    }
 
     stage("Checkout") {
       checkout scm
