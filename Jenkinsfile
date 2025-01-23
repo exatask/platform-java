@@ -13,7 +13,7 @@ pipeline {
     gitParameter(
       name: 'branch',
       description: 'Branch being used for deployment',
-      type: 'PT_BRANCH'
+      type: 'PT_BRANCH',
       branchFilter: 'origin/(.*)',
       defaultValue: 'origin/main',
       sortMode: 'ASCENDING_SMART',
