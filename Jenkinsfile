@@ -15,9 +15,9 @@ pipeline {
       description: 'Branch being used for deployment',
       type: 'PT_BRANCH',
       branchFilter: 'origin/(.*)',
-      defaultValue: 'origin/main',
+      // defaultValue: 'origin/main',
       sortMode: 'ASCENDING_SMART',
-      selectedValue: 'NONE',
+      // selectedValue: 'DEFAULT',
       listSize: '10',
       quickFilterEnabled: true,
       requiredParameter: true
@@ -58,14 +58,6 @@ pipeline {
       steps {
 
         script {
-          println("params.branch = " + params.branch)
-          println("params.library = " + params.library)
-          println("!params.branch = " + !params.branch)
-          println("params.branch == null = " + params.branch == null)
-          println("params.branch == '' = " + params.branch == '')
-          println("!params.library = " + !params.library)
-          println("params.library == null = " + params.library == null)
-          println("params.library = '' = " + params.library == '')
           if (!params.branch) {
             error("Branch is required for deployment")
           } else if (!params.library) {
