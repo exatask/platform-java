@@ -167,7 +167,7 @@ node {
     stage("Load Parameters") {
 
       def gitUtilities = new GitUtilities()
-def directories = gitUtilities.listDirectories("git@gitlab.com:exatask/platform/platform-java.git", "main")
+def directories = gitUtilities.listDirectories()
 
 properties([
   parameters([
