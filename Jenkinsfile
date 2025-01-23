@@ -11,56 +11,59 @@ pipeline {
   parameters {
 
     gitParameter(
-      name: 'Branch',
-      description: 'Branch being deployed',
+      name: 'branch',
+      description: 'Branch being used for deployment',
       type: 'PT_BRANCH'
       branchFilter: 'origin/(.*)',
       defaultValue: 'origin/main',
+      sortMode: 'ASCENDING_SMART',
+      selectedValue: 'NONE',
+      listSize: 10,
+      quickFilterEnabled: true,
+      requiredParameterEnabled: true
     )
 
-//    choice(
-//      name: 'library',
-//      description: 'Select the library to be published',
-//      choices: getDirectories()
-//    )
+    choice(
+      name: 'library',
+      description: 'Library being published',
+      choices: [
+        'api-library',
+        'crypto-library',
+        'dto-library',
+        'i18n-library',
+        'jpa-library',
+        'logging-library',
+        'mailer-library',
+        'mariadb-library',
+        'micrometer-library',
+        'migrate-library',
+        'mongodb-library',
+        'mysql-library',
+        'oracle-library',
+        'postgresql-library',
+        'rabbitmq-library',
+        'redis-library',
+        'sdk-library',
+        'storage-library',
+        'subscriber-library',
+        'utilities-library',
+        'validator-library'
+      ]
+    )
   }
 
   stages {
 
-//     stage("Setup") {
-//       steps {
+    stage("Validate") {
+      steps {
 
-//         script {
-//           properties([
-//             parameters([
-//               [
-//                 $class: 'CascadeChoiceParameter',
-//                 choiceType: 'PT_SINGLE_SELECT',
-//                 name: 'LIBRARY',
-//                 filterable: true,
-//                 script: [
-//                   $class: 'GroovyScript',
-//                   script: [
-//                     sandbox: true,
-//                     script: '''
-// println("Executing the script to list directories")
-// try {
-//  def gitUtilities = new GitUtilities()
-//  def data = gitUtilities.listDirectories("git@gitlab.com:exatask/platform/platform-java.git", "main")
-//  println("Directories loaded: {0}", data)
-//  return data
-// } catch (err) {
-//  println(err)
-//  return ["There is nothing"]
-// }'''
-//                    ]
-//                 ]
-//               ]
-//             ])
-//           ])
-//         }
-//       }
-//     }
+        if (!params.branch) {
+          error("Branch is required for deployment")
+        } else if (!params.library) {
+          error("Library is required for publishing")
+        }
+      }
+    }
 
     stage("Checkout") {
       steps {
@@ -75,7 +78,7 @@ pipeline {
 
         echo "Configuring gradle properties..."
         withCredentials([string(
-          credentialsId: 'gitlab-deploy-token-id',
+          credentialsId: 'gitlab-deploy-token',
           variable: 'GITLAB_DEPLOY_TOKEN'
         )]) {
 
@@ -123,83 +126,3 @@ pipeline {
 //    }
   }
 }
-
-// def getDirectories() {
-
-//   node {
-//     def directories = []
-//     def result = sh(script: "ls -d ${env.WORKSPACE}/*-library/ | sed 's|/||'", returnStdout: true).trim()
-//     result.split('\n').each { directory ->
-//       directories << directory
-//     }
-//     return directories
-//   }
-// }
-
-// @Library("groovy-jenkins-library") _
-
-// import com.exatask.*
-
-// node {
-//   try {
-
-//     stage("Load Parameters") {
-
-//       def gitUtilities = new GitUtilities()
-// def directories = gitUtilities.listDirectories()
-
-// properties([
-//   parameters([
-//     [
-//       $class: 'CascadeChoiceParameter',
-//       choiceType: 'PT_SINGLE_SELECT',
-//       name: 'LIBRARY',
-//       filterable: true,
-//       // choices: directories.join("\n")
-//       script: [
-//         $class: 'GroovyScript',
-//         script: [
-//           sandbox: true,
-//           script: '''
-// def directories = listDirectories{ }
-// return directories
-// '''
-//         ]
-//       ]
-// // println("Executing the script to list directories")
-// // try {
-// //  def gitUtilities = new GitUtilities()
-// //  def data = gitUtilities.listDirectories("git@gitlab.com:exatask/platform/platform-java.git", "main")
-// //  println("Directories loaded: {0}", data)
-// //  return data
-// // } catch (err) {
-// //  println(err)
-// //  return ["There is nothing"]
-// // }'''
-// //         ]
-// //       ]
-//     ]
-//   ])
-// ])
-
-
-//     }
-
-//     stage("Checkout") {
-//       checkout scm
-//     }
-
-//   } catch(Exception exception) {
-
-//     currentBuild.result = 'FAILURE'
-//     echo "Build failed: ${exception.getMessage()}"
-//     throw exception
-
-//   } finally {
-
-//     // stage('Cleanup') {
-//     //   echo "Cleaning up workspace..."
-//     //   cleanWs()
-//     // }
-//   }
-// }
