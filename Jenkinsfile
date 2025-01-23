@@ -18,9 +18,9 @@ pipeline {
       defaultValue: 'origin/main',
       sortMode: 'ASCENDING_SMART',
       selectedValue: 'NONE',
-      listSize: 10,
+      listSize: '10',
       quickFilterEnabled: true,
-      requiredParameterEnabled: true
+      requiredParameter: true
     )
 
     choice(
@@ -57,10 +57,12 @@ pipeline {
     stage("Validate") {
       steps {
 
-        if (!params.branch) {
-          error("Branch is required for deployment")
-        } else if (!params.library) {
-          error("Library is required for publishing")
+        script {
+          if (!params.branch) {
+            error("Branch is required for deployment")
+          } else if (!params.library) {
+            error("Library is required for publishing")
+          }
         }
       }
     }
