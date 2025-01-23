@@ -161,6 +161,9 @@
 
 import com.exatask.*
 
+def gitUtilities = new GitUtilities()
+def directories = gitUtilities.listDirectories("git@gitlab.com:exatask/platform/platform-java.git", "main")
+
 properties([
   parameters([
     [
@@ -168,23 +171,24 @@ properties([
       choiceType: 'PT_SINGLE_SELECT',
       name: 'LIBRARY',
       filterable: true,
-      script: [
-        $class: 'GroovyScript',
-        script: [
-          sandbox: true,
-          script: '''
-println("Executing the script to list directories")
-try {
- def gitUtilities = new GitUtilities()
- def data = gitUtilities.listDirectories("git@gitlab.com:exatask/platform/platform-java.git", "main")
- println("Directories loaded: {0}", data)
- return data
-} catch (err) {
- println(err)
- return ["There is nothing"]
-}'''
-        ]
-      ]
+      choices: directories.join("\n")
+//       script: [
+//         $class: 'GroovyScript',
+//         script: [
+//           sandbox: true,
+//           script: '''
+// println("Executing the script to list directories")
+// try {
+//  def gitUtilities = new GitUtilities()
+//  def data = gitUtilities.listDirectories("git@gitlab.com:exatask/platform/platform-java.git", "main")
+//  println("Directories loaded: {0}", data)
+//  return data
+// } catch (err) {
+//  println(err)
+//  return ["There is nothing"]
+// }'''
+//         ]
+//       ]
     ]
   ])
 ])
