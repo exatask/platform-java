@@ -56,11 +56,9 @@ pipeline {
 
         script {
           println("params = " + params)
-          println("params.branch = " + params.branch)
-          println("params.library = " + params.library)
-          if (!params.branch) {
+          if (!params.branch || params.branch == null) {
             error("Branch is required for deployment")
-          } else if (!params.library) {
+          } else if (!params.library || params.library == null) {
             error("Library is required for publishing")
           }
         }
@@ -123,8 +121,8 @@ pipeline {
     failure {
       echo "Build or publishing failed"
     }
-//    always {
-//     cleanWs()
-//    }
+    always {
+     cleanWs()
+    }
   }
 }
