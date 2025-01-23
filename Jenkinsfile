@@ -1,7 +1,3 @@
-// @Library("groovy-jenkins-library") _
-
-// import com.exatask.*
-
 pipeline {
 
   agent any
@@ -14,25 +10,12 @@ pipeline {
 
   parameters {
 
-    activeChoice(
-        name: 'library',
-        description: 'Select the library to be published',
-        choiceType: 'PT_SINGLE_SELECT',
-        script: [
-          $class: 'GroovyScript',
-          script: [
-            sandbox: true,
-            script: """
-            import groovyJenkinsLibrary.SourceUtilities
-            def directories = SourceUtilities.directories()
-            return directories
-            """
-          ],
-          fallbackScript: [
-            sandbox: true,
-            script: """return ["No directories found"]"""
-          ]
-        ]
+    gitParameter(
+      name: 'Branch',
+      description: 'Branch being deployed',
+      type: 'PT_BRANCH'
+      branchFilter: 'origin/(.*)',
+      defaultValue: 'origin/main',
     )
 
 //    choice(
