@@ -181,7 +181,7 @@ properties([
         $class: 'GroovyScript',
         script: [
           sandbox: true,
-          script: 'return directories.join("\n")'
+          script: 'return directories'
         ]
       ]
 // println("Executing the script to list directories")
