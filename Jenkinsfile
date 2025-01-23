@@ -176,12 +176,12 @@ properties([
       choiceType: 'PT_SINGLE_SELECT',
       name: 'LIBRARY',
       filterable: true,
-      choices: directories.join("\n")
-//       script: [
-//         $class: 'GroovyScript',
-//         script: [
-//           sandbox: true,
-//           script: '''
+      // choices: directories.join("\n")
+      script: [
+        $class: 'GroovyScript',
+        script: [
+          sandbox: true,
+          script: 'return directories.join("\n")'
 // println("Executing the script to list directories")
 // try {
 //  def gitUtilities = new GitUtilities()
