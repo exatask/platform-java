@@ -181,7 +181,7 @@ properties([
         $class: 'GroovyScript',
         script: [
           sandbox: true,
-          script: '''@Library("groovy-jenkins-library") _
+          script: '''
           import com.exatask.*
           def gitUtilities = new GitUtilities()
 def directories = gitUtilities.listDirectories()
