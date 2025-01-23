@@ -182,7 +182,7 @@ properties([
         script: [
           sandbox: true,
           script: '''
-def directories = listDirectories()
+def directories = listDirectories{ }
 return directories
 '''
         ]
