@@ -58,6 +58,14 @@ pipeline {
       steps {
 
         script {
+          println("params.branch = " + params.branch)
+          println("params.library = " + params.library)
+          println("!params.branch = " + !params.branch)
+          println("params.branch == null = " + params.branch == null)
+          println("params.branch == '' = " + params.branch == '')
+          println("!params.library = " + !params.library)
+          println("params.library == null = " + params.library == null)
+          println("params.library = '' = " + params.library == '')
           if (!params.branch) {
             error("Branch is required for deployment")
           } else if (!params.library) {
