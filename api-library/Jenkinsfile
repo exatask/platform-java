@@ -1,0 +1,6 @@
+@Library('groovyJenkinsLibrary') _
+
+publishJavaLibrary(
+    branch: params.branch,
+    library: 'api-library'
+)
