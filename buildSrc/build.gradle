@@ -14,14 +14,11 @@ repositories {
 
   maven {
 
-    url "https://gitlab.com/api/v4/groups/6962407/-/packages/maven"
-    name "Gitlab"
-    credentials(HttpHeaderCredentials) {
-      name = "Private-Token"
-      value = gitlabPrivateToken
-    }
-    authentication {
-      header(HttpHeaderAuthentication)
+    url "https://exatask-911876467176.d.codeartifact.ap-south-1.amazonaws.com/maven/exatask-java/"
+    name "AWS_CODE_ARTIFACT"
+    credentials(PasswordCredentials) {
+      username = "aws"
+      password = System.env.AWS_CODE_ARTIFACT_TOKEN
     }
   }
 }

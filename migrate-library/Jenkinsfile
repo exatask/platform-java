@@ -2,5 +2,6 @@
 
 publishJavaLibrary(
     branch: params.branch,
+    service: 'platform-java',
     library: 'migrate-library'
 )
