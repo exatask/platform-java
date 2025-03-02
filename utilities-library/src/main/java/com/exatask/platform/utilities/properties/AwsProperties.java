@@ -1,5 +1,7 @@
 package com.exatask.platform.utilities.properties;
 
+import java.util.List;
+
 import com.exatask.platform.utilities.ServiceUtility;
 import com.exatask.platform.utilities.constants.AwsConstant;
 import lombok.AllArgsConstructor;
@@ -15,8 +17,6 @@ import software.amazon.awssdk.auth.credentials.DefaultCredentialsProvider;
 import software.amazon.awssdk.auth.credentials.StaticCredentialsProvider;
 import software.amazon.awssdk.regions.Region;
 
-import java.util.List;
-
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor
@@ -25,10 +25,13 @@ public class AwsProperties {
   private static final String AWS_ACCESS_KEY_ID = "aws.accessKeyId";
   private static final String AWS_SECRET_KEY = "aws.secretKey";
   private static final String AWS_REGION = "aws.region";
+  private static final String AWS_PROFILE = "aws.profile";
 
   private static final Region DEFAULT_REGION = Region.AP_SOUTH_1;
 
   private String region;
+
+  private String profile;
 
   private String accessKeyId;
 
@@ -69,13 +72,20 @@ public class AwsProperties {
       secretKey = ServiceUtility.getServiceProperty(AWS_SECRET_KEY);
     }
 
+    if (StringUtils.isEmpty(profile)) {
+      profile = ServiceUtility.getServiceProperty(AWS_PROFILE);
+    }
+
     if (StringUtils.isNotEmpty(accessKeyId) && StringUtils.isNotEmpty(secretKey)) {
 
       AwsBasicCredentials basicCredentials = AwsBasicCredentials.create(accessKeyId, secretKey);
       return StaticCredentialsProvider.create(basicCredentials);
 
     } else {
-      return DefaultCredentialsProvider.create();
+
+      return DefaultCredentialsProvider.builder()
+          .profileName(profile)
+          .build();
     }
   }
 }

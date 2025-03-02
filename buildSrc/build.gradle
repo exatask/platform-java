@@ -2,6 +2,11 @@ plugins {
   id "groovy-gradle-plugin"
 }
 
+ext {
+  accountId = System.env.AWS_ACCOUNT_ID ?: "571908293071"
+  domain = System.env.AWS_DOMAIN ?: "exatask"
+}
+
 dependencies {
   implementation group: "io.spring.gradle", name: "dependency-management-plugin", version: "${springDependencyMgmtVersion}"
   implementation group: "com.exatask", name: "gradle-buildSrc", version: "${exataskBuildSrcVersion}"
@@ -14,7 +19,7 @@ repositories {
 
   maven {
 
-    url "https://exatask-911876467176.d.codeartifact.ap-south-1.amazonaws.com/maven/exatask-java/"
+    url "https://${domain}-${accountId}.d.codeartifact.ap-south-1.amazonaws.com/maven/exatask-java/"
     name "AWS_CODE_ARTIFACT"
     credentials(PasswordCredentials) {
       username = "aws"

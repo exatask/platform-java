@@ -1,15 +1,21 @@
 package com.exatask.platform.storage.transports;
 
-import com.exatask.platform.storage.exceptions.InvalidStorageException;
-import com.exatask.platform.utilities.properties.AwsProperties;
-import com.exatask.platform.utilities.properties.SshProperties;
-import lombok.experimental.UtilityClass;
-
+import java.io.IOException;
 import java.util.EnumMap;
 import java.util.Map;
 
+import com.exatask.platform.logging.AppLogManager;
+import com.exatask.platform.logging.AppLogger;
+import com.exatask.platform.storage.exceptions.InvalidStorageException;
+import com.exatask.platform.utilities.properties.AwsProperties;
+import com.exatask.platform.utilities.properties.GcpProperties;
+import com.exatask.platform.utilities.properties.SshProperties;
+import lombok.experimental.UtilityClass;
+
 @UtilityClass
 public class AppTransportFactory {
+
+  private static final AppLogger LOGGER = AppLogManager.getLogger();
 
   private static final Map<AppTransportType, AppTransport> storageList = new EnumMap<>(AppTransportType.class);
 
@@ -43,6 +49,15 @@ public class AppTransportFactory {
 
       case AWS:
         appTransport = new AwsTransport((AwsProperties) properties);
+        break;
+
+      case GCP:
+        try {
+          appTransport = new GcpTransport((GcpProperties) properties);
+        } catch (IOException exception) {
+          LOGGER.error(exception);
+          throw new InvalidStorageException(exception.getMessage());
+        }
         break;
 
       default:
