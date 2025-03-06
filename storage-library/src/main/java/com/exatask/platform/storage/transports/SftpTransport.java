@@ -1,5 +1,15 @@
 package com.exatask.platform.storage.transports;
 
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+import java.io.IOException;
+import java.io.InputStream;
+import java.nio.file.Path;
+import java.util.Arrays;
+import java.util.Map;
+import java.util.Properties;
+
 import com.exatask.platform.storage.constants.MetadataProperties;
 import com.exatask.platform.storage.exceptions.CopyFailedException;
 import com.exatask.platform.storage.exceptions.DeleteFailedException;
@@ -15,16 +25,6 @@ import com.jcraft.jsch.JSchException;
 import com.jcraft.jsch.Session;
 import com.jcraft.jsch.SftpException;
 import org.springframework.boot.actuate.health.Health;
-
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileNotFoundException;
-import java.io.IOException;
-import java.io.InputStream;
-import java.nio.file.Path;
-import java.util.Arrays;
-import java.util.Map;
-import java.util.Properties;
 
 public class SftpTransport extends AppTransport {
 
@@ -87,7 +87,7 @@ public class SftpTransport extends AppTransport {
       sftpChannel.put(inputStream, uploadPath);
 
       return UploadResponse.builder()
-              .fileUrl(this.url(uploadPath, null))
+              .fileUrl(this.downloadUrl(uploadPath, null))
               .fileUri(AppTransportType.SFTP.getPathPrefix() + uploadPath)
               .build();
 
@@ -138,7 +138,7 @@ public class SftpTransport extends AppTransport {
       sftpChannel.rename(filePath, destinationPath);
 
       return CopyResponse.builder()
-              .fileUrl(this.url(destinationPath, null))
+              .fileUrl(this.downloadUrl(destinationPath, null))
               .fileUri(AppTransportType.SFTP.getPathPrefix() + destinationPath)
               .build();
 
@@ -167,7 +167,12 @@ public class SftpTransport extends AppTransport {
   }
 
   @Override
-  public String url(String filePath, Long ttl) {
+  public String uploadUrl(String filePath, Map<MetadataProperties, String> metadata, Map<String, String> tags, Long ttl) {
+    throw new UnsupportedOperationException("Operation: uploadUrl is not supported within storage library");
+  }
+
+  @Override
+  public String downloadUrl(String filePath, Long ttl) {
     return this.sftpUrl + filePath;
   }
 

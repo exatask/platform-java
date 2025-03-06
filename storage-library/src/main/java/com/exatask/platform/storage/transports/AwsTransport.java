@@ -1,5 +1,20 @@
 package com.exatask.platform.storage.transports;
 
+import java.io.BufferedInputStream;
+import java.io.IOException;
+import java.net.URL;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.time.Duration;
+import java.time.temporal.ChronoUnit;
+import java.util.Arrays;
+import java.util.List;
+import java.util.Map;
+import java.util.Optional;
+import java.util.Set;
+import java.util.function.Function;
+import java.util.stream.Collectors;
+
 import com.exatask.platform.storage.constants.MetadataProperties;
 import com.exatask.platform.storage.exceptions.CopyFailedException;
 import com.exatask.platform.storage.exceptions.DeleteFailedException;
@@ -32,23 +47,10 @@ import software.amazon.awssdk.services.s3.model.Tagging;
 import software.amazon.awssdk.services.s3.presigner.S3Presigner;
 import software.amazon.awssdk.services.s3.presigner.model.GetObjectPresignRequest;
 import software.amazon.awssdk.services.s3.presigner.model.PresignedGetObjectRequest;
+import software.amazon.awssdk.services.s3.presigner.model.PresignedPutObjectRequest;
+import software.amazon.awssdk.services.s3.presigner.model.PutObjectPresignRequest;
 import software.amazon.awssdk.utils.CollectionUtils;
 import software.amazon.awssdk.utils.StringUtils;
-
-import java.io.BufferedInputStream;
-import java.io.IOException;
-import java.net.URL;
-import java.nio.file.Files;
-import java.nio.file.Path;
-import java.time.Duration;
-import java.time.temporal.ChronoUnit;
-import java.util.Arrays;
-import java.util.List;
-import java.util.Map;
-import java.util.Optional;
-import java.util.Set;
-import java.util.function.Function;
-import java.util.stream.Collectors;
 
 public class AwsTransport extends AppTransport {
 
@@ -101,14 +103,7 @@ public class AwsTransport extends AppTransport {
     AwsProperties.S3Properties bucketProperty = getBucket(uploadPath);
     String uploadKey = uploadPath.replace(bucketProperty.getBucketName() + FILE_SEPARATOR, "");
 
-    PutObjectRequest.Builder putObjectRequestBuilder = PutObjectRequest.builder()
-        .bucket(bucketProperty.getBucketName())
-        .key(uploadKey)
-        .acl(ObjectCannedACL.valueOf(bucketProperty.getAcl().toString()))
-        .storageClass(StorageClass.valueOf(bucketProperty.getStorageClass().toString()));
-
-    prepareTags(putObjectRequestBuilder, tags);
-    prepareMetadata(putObjectRequestBuilder, metadata);
+    PutObjectRequest.Builder putObjectRequestBuilder = preparePutObjectRequest(uploadPath, metadata, tags);
     try {
       putObjectRequestBuilder.contentType(Files.probeContentType(inputPath));
     } catch (IOException exception) {
@@ -122,7 +117,7 @@ public class AwsTransport extends AppTransport {
     }
 
     return UploadResponse.builder()
-            .fileUrl(this.getPublicUrl(bucketProperty, uploadKey, null))
+            .fileUrl(this.getPublicDownloadUrl(bucketProperty, uploadKey, null))
             .fileUri(AppTransportType.AWS.getPathPrefix() + uploadPath)
             .build();
   }
@@ -191,7 +186,7 @@ public class AwsTransport extends AppTransport {
     }
 
     return CopyResponse.builder()
-            .fileUrl(this.getPublicUrl(destinationBucket, destinationKey, null))
+            .fileUrl(this.getPublicDownloadUrl(destinationBucket, destinationKey, null))
             .fileUri(AppTransportType.AWS.getPathPrefix() + destinationPath)
             .build();
   }
@@ -218,13 +213,28 @@ public class AwsTransport extends AppTransport {
   }
 
   @Override
-  public String url(String filePath, Long ttl) {
+  public String uploadUrl(String filePath, Map<MetadataProperties, String> metadata, Map<String, String> tags, Long ttl) {
+
+    PutObjectRequest.Builder putObjectRequestBuilder = preparePutObjectRequest(filePath, metadata, tags);
+
+    PutObjectPresignRequest putObjectPresignRequest = PutObjectPresignRequest.builder()
+        .putObjectRequest(putObjectRequestBuilder.build())
+        .signatureDuration(Duration.of(Optional.ofNullable(ttl).orElse(60L), ChronoUnit.SECONDS))
+        .build();
+
+    PresignedPutObjectRequest presignedPutObjectRequest = S3Presigner.create()
+        .presignPutObject(putObjectPresignRequest);
+    return presignedPutObjectRequest.url().toString();
+  }
+
+  @Override
+  public String downloadUrl(String filePath, Long ttl) {
 
     filePath = filePath.replace(AppTransportType.AWS.getPathPrefix(), "");
     AwsProperties.S3Properties fileBucket = getBucket(filePath);
     String fileKey = filePath.replace(fileBucket.getBucketName() + FILE_SEPARATOR, "");
 
-    return this.getPublicUrl(fileBucket, fileKey, ttl);
+    return this.getPublicDownloadUrl(fileBucket, fileKey, ttl);
   }
 
   private AwsProperties.S3Properties getBucket(String filePath) {
@@ -238,7 +248,24 @@ public class AwsTransport extends AppTransport {
     return bucketProperties.get(bucketKey);
   }
 
-  private String getPublicUrl(AwsProperties.S3Properties bucketProperties, String objectKey, Long ttl) {
+  private PutObjectRequest.Builder preparePutObjectRequest(String filePath, Map<MetadataProperties, String> metadata, Map<String, String> tags) {
+
+    filePath = filePath.replace(AppTransportType.AWS.getPathPrefix(), "");
+    AwsProperties.S3Properties fileBucket = getBucket(filePath);
+    String fileKey = filePath.replace(fileBucket.getBucketName() + FILE_SEPARATOR, "");
+
+    PutObjectRequest.Builder putObjectRequestBuilder = PutObjectRequest.builder()
+        .bucket(fileBucket.getBucketName())
+        .key(fileKey)
+        .acl(ObjectCannedACL.valueOf(fileBucket.getAcl().toString()))
+        .storageClass(StorageClass.valueOf(fileBucket.getStorageClass().toString()));
+
+    prepareTags(putObjectRequestBuilder, tags);
+    prepareMetadata(putObjectRequestBuilder, metadata);
+    return putObjectRequestBuilder;
+  }
+
+  private String getPublicDownloadUrl(AwsProperties.S3Properties bucketProperties, String objectKey, Long ttl) {
 
     if (bucketProperties.getAcl() == AwsConstant.S3Acl.PUBLIC_READ) {
 

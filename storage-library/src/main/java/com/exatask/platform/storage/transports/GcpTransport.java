@@ -31,6 +31,7 @@ import com.google.cloud.storage.Blob;
 import com.google.cloud.storage.BlobInfo;
 import com.google.cloud.storage.Bucket;
 import com.google.cloud.storage.CopyWriter;
+import com.google.cloud.storage.HttpMethod;
 import com.google.cloud.storage.Storage;
 import com.google.cloud.storage.StorageClass;
 import com.google.cloud.storage.StorageException;
@@ -77,12 +78,7 @@ public class GcpTransport extends AppTransport {
     GcpProperties.StorageProperties bucketProperty = getBucket(uploadPath);
     String uploadKey = uploadPath.replace(bucketProperty.getBucketName() + FILE_SEPARATOR, "");
 
-    Acl objectAcl = Acl.of(Acl.User.ofAllUsers(), Acl.Role.valueOf(bucketProperty.getAcl().toString()));
-
-    BlobInfo.Builder blobInfoBuilder = BlobInfo.newBuilder(bucketProperty.getBucketName(), uploadKey);
-    blobInfoBuilder.setAcl(Collections.singletonList(objectAcl))
-        .setStorageClass(StorageClass.valueOf(bucketProperty.getStorageClass().toString()))
-        .setMetadata(prepareMetadata(blobInfoBuilder, metadata, tags));
+    BlobInfo.Builder blobInfoBuilder = prepareBlobInfo(uploadPath, metadata, tags);
 
     try {
       blobInfoBuilder.setContentType(Files.probeContentType(inputPath));
@@ -91,8 +87,7 @@ public class GcpTransport extends AppTransport {
     }
 
     try {
-      storageClient.create(BlobInfo.newBuilder(bucketProperty.getBucketName(), uploadKey).build(),
-          Files.readAllBytes(inputPath));
+      storageClient.create(blobInfoBuilder.build(), Files.readAllBytes(inputPath));
     } catch (IOException exception) {
       LOGGER.error(exception.toString());
       throw new UploadFailedException(uploadPath, null);
@@ -198,7 +193,21 @@ public class GcpTransport extends AppTransport {
   }
 
   @Override
-  public String url(String filePath, Long ttl) {
+  public String uploadUrl(String filePath, Map<MetadataProperties, String> metadata, Map<String, String> tags, Long ttl) {
+
+    BlobInfo.Builder blobInfoBuilder = prepareBlobInfo(filePath, metadata, tags);
+
+    List<Storage.SignUrlOption> signUrlOptions = new ArrayList<>();
+    signUrlOptions.add(Storage.SignUrlOption.httpMethod(HttpMethod.PUT));
+    signUrlOptions.add(Storage.SignUrlOption.withExtHeaders(Collections.singletonMap("Content-Type", "application/octet-stream")));
+    signUrlOptions.add(Storage.SignUrlOption.withV4Signature());
+
+    URL url = storageClient.signUrl(blobInfoBuilder.build(), Optional.ofNullable(ttl).orElse(60L), TimeUnit.SECONDS, signUrlOptions.toArray(new Storage.SignUrlOption[0]));
+    return url.toString();
+  }
+
+  @Override
+  public String downloadUrl(String filePath, Long ttl) {
 
     filePath = filePath.replace(AppTransportType.GCP.getPathPrefix(), "");
     GcpProperties.StorageProperties storageProperties = getBucket(filePath);
@@ -210,12 +219,27 @@ public class GcpTransport extends AppTransport {
   private GcpProperties.StorageProperties getBucket(String filePath) {
 
     String bucketKey = Arrays.stream(filePath.split(FILE_SEPARATOR)).findFirst().orElse("");
-    if (StringUtils.isEmpty(bucketKey)) {
+    if (!StringUtils.hasText(bucketKey)) {
       LOGGER.error(String.format("Bucket not found for file path: %s", filePath));
       throw new UploadFailedException(filePath, null);
     }
 
     return bucketProperties.get(bucketKey);
+  }
+
+  private BlobInfo.Builder prepareBlobInfo(String filePath, Map<MetadataProperties, String> metadata, Map<String, String> tags) {
+
+    filePath = filePath.replace(AppTransportType.GCP.getPathPrefix(), "");
+    GcpProperties.StorageProperties bucketProperty = getBucket(filePath);
+    String fileKey = filePath.replace(bucketProperty.getBucketName() + FILE_SEPARATOR, "");
+    Acl objectAcl = Acl.of(Acl.User.ofAllUsers(), Acl.Role.valueOf(bucketProperty.getAcl().toString()));
+
+    BlobInfo.Builder blobInfoBuilder = BlobInfo.newBuilder(bucketProperty.getBucketName(), fileKey);
+    blobInfoBuilder.setAcl(Collections.singletonList(objectAcl))
+        .setStorageClass(StorageClass.valueOf(bucketProperty.getStorageClass().toString()))
+        .setMetadata(prepareMetadata(blobInfoBuilder, metadata, tags));
+
+    return blobInfoBuilder;
   }
 
   private Map<String, String> prepareMetadata(BlobInfo.Builder blobInfoBuilder, Map<MetadataProperties, String> metadata, Map<String, String> tags) {
