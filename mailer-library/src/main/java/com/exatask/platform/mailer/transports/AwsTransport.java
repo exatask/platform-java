@@ -1,5 +1,13 @@
 package com.exatask.platform.mailer.transports;
 
+import javax.mail.MessagingException;
+import javax.mail.Session;
+import javax.mail.internet.MimeMessage;
+import java.io.ByteArrayOutputStream;
+import java.io.IOException;
+import java.util.List;
+import java.util.Properties;
+
 import com.exatask.platform.mailer.email.EmailMessage;
 import com.exatask.platform.mailer.email.EmailResponse;
 import com.exatask.platform.mailer.templates.AppTemplateEngine;
@@ -8,14 +16,6 @@ import software.amazon.awssdk.core.SdkBytes;
 import software.amazon.awssdk.services.ses.SesClient;
 import software.amazon.awssdk.services.ses.model.SendRawEmailRequest;
 import software.amazon.awssdk.services.ses.model.SendRawEmailResponse;
-
-import javax.mail.MessagingException;
-import javax.mail.Session;
-import javax.mail.internet.MimeMessage;
-import java.io.ByteArrayOutputStream;
-import java.io.IOException;
-import java.util.List;
-import java.util.Properties;
 
 public class AwsTransport extends AppTransport {
 
@@ -26,6 +26,7 @@ public class AwsTransport extends AppTransport {
     super(templateEngine);
 
     sesClient = SesClient.builder()
+        .endpointOverride(awsProperties.getEndpoint())
         .region(awsProperties.getRegion())
         .credentialsProvider(awsProperties.getCredentialsProvider())
         .build();

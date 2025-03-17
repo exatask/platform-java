@@ -1,5 +1,6 @@
 package com.exatask.platform.utilities.properties;
 
+import java.net.URI;
 import java.util.List;
 
 import com.exatask.platform.utilities.ServiceUtility;
@@ -22,12 +23,15 @@ import software.amazon.awssdk.regions.Region;
 @NoArgsConstructor
 public class AwsProperties {
 
+  private static final String AWS_ENDPOINT = "aws.endpoint";
   private static final String AWS_ACCESS_KEY_ID = "aws.accessKeyId";
   private static final String AWS_SECRET_KEY = "aws.secretKey";
   private static final String AWS_REGION = "aws.region";
   private static final String AWS_PROFILE = "aws.profile";
 
   private static final Region DEFAULT_REGION = Region.AP_SOUTH_1;
+
+  private String endpoint;
 
   private String region;
 
@@ -51,6 +55,19 @@ public class AwsProperties {
     private AwsConstant.S3Acl acl = AwsConstant.S3Acl.PRIVATE;
 
     private AwsConstant.S3Storage storageClass = AwsConstant.S3Storage.STANDARD;
+  }
+
+  public URI getEndpoint() {
+
+    if (StringUtils.isEmpty(this.endpoint)) {
+
+      this.endpoint = ServiceUtility.getServiceProperty(AWS_ENDPOINT, null);
+      if (StringUtils.isEmpty(this.endpoint)) {
+        return null;
+      }
+    }
+
+    return URI.create(this.endpoint);
   }
 
   public Region getRegion() {

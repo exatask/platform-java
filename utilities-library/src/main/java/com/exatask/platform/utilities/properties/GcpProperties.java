@@ -21,8 +21,11 @@ import org.apache.commons.lang3.StringUtils;
 public class GcpProperties {
 
   private static final String GCP_KEY_FILE_PATH = "gcp.keyFilePath";
+  private static final String GCP_PROJECT_ID = "gcp.projectId";
 
   private String keyFilePath;
+
+  private String projectId;
 
   @Getter
   private List<GcpProperties.StorageProperties> storage;
@@ -38,6 +41,10 @@ public class GcpProperties {
     private GcpConstant.StorageAcl acl = GcpConstant.StorageAcl.READER;
 
     private GcpConstant.StorageClass storageClass = GcpConstant.StorageClass.STANDARD;
+  }
+
+  public String getProjectId() {
+    return this.projectId;
   }
 
   public GoogleCredentials getCredentialsProvider() throws IOException {

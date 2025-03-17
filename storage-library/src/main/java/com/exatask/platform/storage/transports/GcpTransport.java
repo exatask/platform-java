@@ -49,6 +49,7 @@ public class GcpTransport extends AppTransport {
   public GcpTransport(GcpProperties gcpProperties) throws IOException {
 
     storageClient = StorageOptions.newBuilder()
+        .setProjectId(gcpProperties.getProjectId())
         .setCredentials(gcpProperties.getCredentialsProvider())
         .build()
         .getService();
