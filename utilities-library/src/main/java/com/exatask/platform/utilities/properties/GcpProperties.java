@@ -1,7 +1,9 @@
 package com.exatask.platform.utilities.properties;
 
-import java.io.FileInputStream;
+import java.io.ByteArrayInputStream;
 import java.io.IOException;
+import java.io.InputStream;
+import java.nio.charset.StandardCharsets;
 import java.util.List;
 
 import com.exatask.platform.utilities.ServiceUtility;
@@ -20,12 +22,15 @@ import org.apache.commons.lang3.StringUtils;
 @NoArgsConstructor
 public class GcpProperties {
 
-  private static final String GCP_KEY_FILE_PATH = "gcp.keyFilePath";
+  private static final String GCP_HOST = "gcp.host";
+  private static final String GCP_ACCOUNT_KEY = "gcp.accountKey";
   private static final String GCP_PROJECT_ID = "gcp.projectId";
 
-  private String keyFilePath;
+  private String host;
 
   private String projectId;
+
+  private String accountKey;
 
   @Getter
   private List<GcpProperties.StorageProperties> storage;
@@ -43,18 +48,35 @@ public class GcpProperties {
     private GcpConstant.StorageClass storageClass = GcpConstant.StorageClass.STANDARD;
   }
 
+  public String getHost() {
+
+    if (StringUtils.isEmpty(this.host)) {
+      this.host = ServiceUtility.getServiceProperty(GCP_HOST, null);
+    }
+
+    return this.host;
+  }
+
   public String getProjectId() {
+
+    if (StringUtils.isEmpty(this.projectId)) {
+      this.projectId = ServiceUtility.getServiceProperty(GCP_PROJECT_ID, null);
+    }
+
     return this.projectId;
   }
 
   public GoogleCredentials getCredentialsProvider() throws IOException {
 
-    if (StringUtils.isEmpty(keyFilePath)) {
-      keyFilePath = ServiceUtility.getServiceProperty(GCP_KEY_FILE_PATH);
+    if (StringUtils.isEmpty(accountKey)) {
+      accountKey = ServiceUtility.getServiceProperty(GCP_ACCOUNT_KEY);
     }
 
-    if (StringUtils.isNotEmpty(keyFilePath)) {
-      return GoogleCredentials.fromStream(new FileInputStream(keyFilePath));
+    if (StringUtils.isNotEmpty(accountKey)) {
+
+      InputStream accountKeyStream = new ByteArrayInputStream(accountKey.getBytes(StandardCharsets.UTF_8));
+      return GoogleCredentials.fromStream(accountKeyStream);
+
     } else {
       return GoogleCredentials.getApplicationDefault();
     }

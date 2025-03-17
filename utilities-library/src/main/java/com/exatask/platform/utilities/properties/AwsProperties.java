@@ -23,7 +23,7 @@ import software.amazon.awssdk.regions.Region;
 @NoArgsConstructor
 public class AwsProperties {
 
-  private static final String AWS_ENDPOINT = "aws.endpoint";
+  private static final String AWS_HOST = "aws.host";
   private static final String AWS_ACCESS_KEY_ID = "aws.accessKeyId";
   private static final String AWS_SECRET_KEY = "aws.secretKey";
   private static final String AWS_REGION = "aws.region";
@@ -31,7 +31,7 @@ public class AwsProperties {
 
   private static final Region DEFAULT_REGION = Region.AP_SOUTH_1;
 
-  private String endpoint;
+  private String host;
 
   private String region;
 
@@ -57,17 +57,17 @@ public class AwsProperties {
     private AwsConstant.S3Storage storageClass = AwsConstant.S3Storage.STANDARD;
   }
 
-  public URI getEndpoint() {
+  public URI getHost() {
 
-    if (StringUtils.isEmpty(this.endpoint)) {
+    if (StringUtils.isEmpty(this.host)) {
 
-      this.endpoint = ServiceUtility.getServiceProperty(AWS_ENDPOINT, null);
-      if (StringUtils.isEmpty(this.endpoint)) {
+      this.host = ServiceUtility.getServiceProperty(AWS_HOST, null);
+      if (StringUtils.isEmpty(this.host)) {
         return null;
       }
     }
 
-    return URI.create(this.endpoint);
+    return URI.create(this.host);
   }
 
   public Region getRegion() {

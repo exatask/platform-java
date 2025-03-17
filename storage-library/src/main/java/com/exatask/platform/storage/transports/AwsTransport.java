@@ -61,7 +61,7 @@ public class AwsTransport extends AppTransport {
   public AwsTransport(AwsProperties awsProperties) {
 
     s3Client = S3Client.builder()
-        .endpointOverride(awsProperties.getEndpoint())
+        .endpointOverride(awsProperties.getHost())
         .region(awsProperties.getRegion())
         .credentialsProvider(awsProperties.getCredentialsProvider())
         .build();

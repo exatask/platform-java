@@ -26,7 +26,7 @@ public class AwsTransport extends AppTransport {
     super(templateEngine);
 
     sesClient = SesClient.builder()
-        .endpointOverride(awsProperties.getEndpoint())
+        .endpointOverride(awsProperties.getHost())
         .region(awsProperties.getRegion())
         .credentialsProvider(awsProperties.getCredentialsProvider())
         .build();

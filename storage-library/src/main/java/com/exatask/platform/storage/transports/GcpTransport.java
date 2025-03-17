@@ -48,10 +48,13 @@ public class GcpTransport extends AppTransport {
 
   public GcpTransport(GcpProperties gcpProperties) throws IOException {
 
-    storageClient = StorageOptions.newBuilder()
+    StorageOptions.Builder storageBuilder = StorageOptions.newBuilder()
         .setProjectId(gcpProperties.getProjectId())
-        .setCredentials(gcpProperties.getCredentialsProvider())
-        .build()
+        .setCredentials(gcpProperties.getCredentialsProvider());
+
+    Optional.ofNullable(gcpProperties.getHost()).ifPresent(storageBuilder::setHost);
+
+    storageClient = storageBuilder.build()
         .getService();
 
     bucketProperties = gcpProperties.getStorage().stream()
@@ -95,7 +98,7 @@ public class GcpTransport extends AppTransport {
     }
 
     return UploadResponse.builder()
-        .fileUrl(this.getPublicUrl(bucketProperty, uploadKey, null))
+        .fileUrl(this.getPublicDownloadUrl(bucketProperty, uploadKey, null))
         .fileUri(AppTransportType.GCP.getPathPrefix() + uploadPath)
         .build();
   }
@@ -168,7 +171,7 @@ public class GcpTransport extends AppTransport {
     }
 
     return CopyResponse.builder()
-        .fileUrl(this.getPublicUrl(destinationBucket, destinationKey, null))
+        .fileUrl(this.getPublicDownloadUrl(destinationBucket, destinationKey, null))
         .fileUri(AppTransportType.GCP.getPathPrefix() + destinationPath)
         .build();
   }
@@ -214,7 +217,7 @@ public class GcpTransport extends AppTransport {
     GcpProperties.StorageProperties storageProperties = getBucket(filePath);
     String fileKey = filePath.replace(storageProperties.getBucketName() + FILE_SEPARATOR, "");
 
-    return this.getPublicUrl(storageProperties, fileKey, ttl);
+    return this.getPublicDownloadUrl(storageProperties, fileKey, ttl);
   }
 
   private GcpProperties.StorageProperties getBucket(String filePath) {
@@ -264,7 +267,7 @@ public class GcpTransport extends AppTransport {
     return objectMetadata;
   }
 
-  private String getPublicUrl(GcpProperties.StorageProperties bucketProperties, String objectKey, Long ttl) {
+  private String getPublicDownloadUrl(GcpProperties.StorageProperties bucketProperties, String objectKey, Long ttl) {
 
     if (bucketProperties.getAcl() == GcpConstant.StorageAcl.READER) {
       return String.format("https://storage.googleapis.com/%s/%s", bucketProperties.getBucketName(), objectKey);
